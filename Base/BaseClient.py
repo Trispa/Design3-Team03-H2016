@@ -1,6 +1,6 @@
 from socketIO_client import SocketIO, LoggingNamespace
 
-url="192.168.0.100"
+url="10.248.96.8"
 port=9000
 
 def receiveResponse(*args):
