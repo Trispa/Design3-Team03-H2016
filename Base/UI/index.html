@@ -15,12 +15,14 @@
     <h4>Carte</h4>
     <div class="row">
         <div class="col-md-10 col-md-offset-1" id="map-section">
+            <img id="path">
             <video id="video" autoplay></video>
         </div>
     </div>
 </div>
 <div class="col-md-6">
     <h4>Informations</h4>
+    <div class="col-md-8 col-sm-12 col-xs-12">
     <div class="col-md-6 col-sm-3 col-xs-3">Statut :</div>
     <div class="col-md-6 col-sm-3 col-xs-3" id="botStatus">N/A</div>
     <div class="col-md-6 col-sm-3 col-xs-3">Symbole décodé :</div>
@@ -29,6 +31,9 @@
     <div class="col-md-6 col-sm-3 col-xs-3" id="target">N/A</div>
     <div class="col-md-6 col-sm-3 col-xs-3">Tension :</div>
     <div class="col-md-6 col-sm-3 col-xs-3" id="voltage">N/A</div>
+    </div>
+
+    <button id="buttonGo" class="col-md-3 col-sm-12 col-xs-12 btn-lg btn-success" onclick="start()">GO</button>
 </div>
 </body>
 </html>

@@ -1,11 +1,14 @@
 from socketIO_client import SocketIO, LoggingNamespace
+import base64
 
-url="10.248.96.8"
+url="192.168.0.100"
 port=9000
 
-def receiveResponse(*args):
-    print('receiveResponse', args)
+def sendImage():
+    encoded = base64.b64encode(open("UI/style/img/Picture 1.jpg", "rb").read())
+    print(encoded)
+    return encoded
 
 with SocketIO(url, port, LoggingNamespace) as socketIO:
-    socketIO.on('status', receiveResponse)
+    socketIO.emit('sendingImage', sendImage())
     socketIO.wait()
