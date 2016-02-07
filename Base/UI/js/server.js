@@ -10,10 +10,33 @@ var io = socket.listen(server);
 var url="192.168.0.100";
 var port=9000;
 
+var allClients = [];
+
+var pythonClientStatus = "Not connected";
+var robot;
+
 io.on('connection', function (client) {
+    allClients.push(socket);
+    io.emit('pythonClientStatus', pythonClientStatus);
     client.on('pythonClientStatus', function(status){
         console.log(status);
+        robot = client;
+        pythonClientStatus = status;
         io.emit('pythonClientStatus', status);
+    });
+    client.on('sendingImage', function(encodedString){
+        console.log(encodedString.substr(0,2));
+        io.emit('sendingImage', encodedString);
+    });
+    client.on('disconnect', function() {
+        console.log('A client got disconnected');
+        if(client == robot){
+            console.log('Bad news, it\'s the bot');
+            pythonClientStatus = "Not connected";
+            io.emit('pythonClientStatus', pythonClientStatus);
+        }
+        var i = allClients.indexOf(client);
+        allClients.splice(i, 1);
     });
 });
 
