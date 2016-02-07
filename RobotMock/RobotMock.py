@@ -3,17 +3,14 @@ import numpy as np
 import random
 import time
 import math
-
+import Movement
 
 class RobotMock:
-    isMoving = False
-    positionX, positionY = 0, 0
-    orientation = 0;
-
     def __init__(self):
-
-        self.positionX = random.randrange(100,900)
-        self.positionY = random.randrange(100,500)
+        self.isMoving = False
+        self.orientation = 0;
+        self.positionX = random.randrange(100, 900)
+        self.positionY = random.randrange(100, 500)
 
         self.__displayMock()
 
