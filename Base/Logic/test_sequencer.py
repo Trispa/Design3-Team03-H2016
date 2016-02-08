@@ -1,5 +1,10 @@
 from unittest import TestCase
-from State.AwaitingStartState import AwaitingStartState
+import State.AwaitingStartState
+import State.AwaitingBotGraspingTreasureState
+import State.SendingBotToChargingStationState
+import State.AwaitingTargetState
+import State.SendingBotToTargetState
+import State.SendingBotToTreasureState
 from Sequencer import Sequencer
 
 class TestSequencer(TestCase):
@@ -17,22 +22,50 @@ class TestSequencer(TestCase):
 
         self.assertEqual(testedSequencer.myState.__class__.__name__, "AwaitingStartState")
 
-    def test_whenAssignNextStateOnFreshlyBuiltSequencerThenStateIsSendingBotToChargingStation(self):
+    def test_givenSequencerAwaitingStartWhenAssignNextStateSequencerThenStateIsSendingBotToChargingStation(self):
         testedSequencer = Sequencer()
+        testedSequencer.setState(State.AwaitingStartState.AwaitingStartState())
+
         testedSequencer.assignNextState()
 
         self.assertEqual(testedSequencer.myState.__class__.__name__, "SendingBotToChargingStationState")
 
-    def test_whenAssignNextStateTwoTimesSequencerThenStateIsAwaitingTarget(self):
+    def test_givenSequencerIsSendingBotToChargingStationWhenAssignNextStateOnSequencerThenStateIsAwaitingTarget(self):
         testedSequencer = Sequencer()
-        testedSequencer.assignNextState()
+        testedSequencer.setState(State.SendingBotToChargingStationState.SendingBotToChargingStationState())
+
         testedSequencer.assignNextState()
 
         self.assertEqual(testedSequencer.myState.__class__.__name__, "AwaitingTargetState")
 
-    def test_whenAssignNextStateTwoTimesSequencerThenStateIsAwaitingTarget(self):
+    def test_givenSequencerAwaitingTargetWhenAssignNextStateOnSequencerThenStateIsSendingBotToTreasure(self):
         testedSequencer = Sequencer()
-        testedSequencer.assignNextState()
+        testedSequencer.setState(State.AwaitingTargetState.AwaitingTargetState())
+
         testedSequencer.assignNextState()
 
-        self.assertEqual(testedSequencer.myState.__class__.__name__, "AwaitingTargetState")
+        self.assertEqual(testedSequencer.myState.__class__.__name__, "SendingBotToTreasureState")
+
+    def test_givenSequencerSendingBotToTreasureWhenAssignNextStateOnSequencerThenStateIsAwaitingBotGraspingTreasure(self):
+        testedSequencer = Sequencer()
+        testedSequencer.setState(State.SendingBotToTreasureState.SendingBotToTreasureState())
+
+        testedSequencer.assignNextState()
+
+        self.assertEqual(testedSequencer.myState.__class__.__name__, "AwaitingBotGraspingTreasureState")
+
+    def test_givenSequencerAwaitingBotGraspingTreasureWhenAssignNextStateOnSequencerThenStateIsSendingBotToTarget(self):
+        testedSequencer = Sequencer()
+        testedSequencer.setState(State.AwaitingBotGraspingTreasureState.AwaitingBotGraspingTreasureState())
+
+        testedSequencer.assignNextState()
+
+        self.assertEqual(testedSequencer.myState.__class__.__name__, "SendingBotToTargetState")
+
+    def test_givenSequencerSendingBotToTargetWhenAssignNextStateOnSequencerThenStateIsAwaitingStart(self):
+        testedSequencer = Sequencer()
+        testedSequencer.setState(State.SendingBotToTargetState.SendingBotToTargetState())
+
+        testedSequencer.assignNextState()
+
+        self.assertEqual(testedSequencer.myState.__class__.__name__, "AwaitingStartState")
