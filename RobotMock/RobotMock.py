@@ -20,7 +20,7 @@ class RobotMock:
 
     def move(self, pointToMoveTo):
         self.isMoving = True
-        #dans la classe qui serais Mouvement
+        #dans la classe qui serais Movement
         deplacementX = pointToMoveTo.__getitem__(0) - self.positionX
         deplacementY = pointToMoveTo.__getitem__(1) - self.positionY
         deplacementTotal = float(abs(deplacementX) +abs(deplacementY))
