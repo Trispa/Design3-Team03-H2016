@@ -1,8 +1,6 @@
-import AwaitingBotGraspingTreasureState
+import SendingBotToTargetState
 
 class SendingBotToTreasureState():
-    def getNextState(self, context):
-        context.setState(AwaitingBotGraspingTreasureState.AwaitingBotGraspingTreasureState())
-
-    def handle(self):
-        pass
+    def handle(self, context):
+        #call to pathfinder to return path to treasure
+        context.setState(SendingBotToTargetState.SendingBotToTargetState())

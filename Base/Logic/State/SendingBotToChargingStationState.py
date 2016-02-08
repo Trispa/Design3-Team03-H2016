@@ -1,8 +1,6 @@
-import AwaitingTargetState
+import SendingBotToTreasureState
 
 class SendingBotToChargingStationState():
-    def getNextState(self, context):
-        context.setState(AwaitingTargetState.AwaitingTargetState())
-
-    def handle(self):
-        pass
+    def handle(self, context):
+        #call to pathfinder to return path to charging station
+        context.setState(SendingBotToTreasureState.SendingBotToTreasureState())

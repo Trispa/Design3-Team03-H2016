@@ -1,4 +1,4 @@
-from Base.Logic.State import AwaitingStartState
+from Base.Logic.State import SendingBotToChargingStationState
 
 
 class Sequencer :
@@ -6,11 +6,9 @@ class Sequencer :
         self.myState = newState
 
     def __init__(self) :
-        self.setState(AwaitingStartState.AwaitingStartState())
+        self.setState(SendingBotToChargingStationState.SendingBotToChargingStationState())
 
     def handleCurrentState(self):
         self.myState.handle(self)
 
-    def assignNextState(self):
-        self.myState.getNextState(self)
 
