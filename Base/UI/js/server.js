@@ -1,14 +1,15 @@
 var socket = require('socket.io');
 var express = require('express');
 var http = require('http');
+var obj = require("../../../Shared/config.json");
 
 var app = express();
 var server = http.createServer(app);
 
 var io = socket.listen(server);
 
-var url="192.168.0.100";
-var port=9000;
+var url=obj.url;
+var port=obj.port;
 
 var allClients = [];
 
