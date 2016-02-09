@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-import Base.Logic.State.SendingBotToChargingStationState
-import Base.Logic.State.SendingBotToTreasureState
+import Base.Logic.SendingBotToChargingStationState
+import Base.Logic.SendingBotToTreasureState
 
 import Base.Logic.SendingBotToTargetState
 from Base.Logic.Sequencer import Sequencer

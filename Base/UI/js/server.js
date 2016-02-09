@@ -30,7 +30,6 @@ io.on('connection', function (client) {
        io.emit('needNewImage');
     });
     client.on('sendingImage', function(encodedString){
-        console.log(encodedString.substr(0,2));
         io.emit('sendingImage', encodedString);
     });
 
