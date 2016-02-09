@@ -26,6 +26,9 @@ io.on('connection', function (client) {
         io.emit('pythonClientStatus', status);
     });
 
+    client.on('needNewImage', function(){
+       io.emit('needNewImage');
+    });
     client.on('sendingImage', function(encodedString){
         console.log(encodedString.substr(0,2));
         io.emit('sendingImage', encodedString);

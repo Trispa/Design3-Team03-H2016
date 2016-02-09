@@ -18,6 +18,9 @@ $.getJSON('../../Shared/config.json', function(json) {
         $("#buttonGo").prop("disabled",false);
     });
 
+    setInterval(function(){ socket.emit("needNewImage");}, 5000);
+
+
     start = function() {
         socket.emit("launch");
         $("#buttonGo").prop("disabled",true);

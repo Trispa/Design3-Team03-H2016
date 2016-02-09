@@ -11,6 +11,7 @@ with open("../Shared/config.json") as json_data_file:
 socketIO = SocketIO(config['url'], int(config['port']))
 
 def clickGo():
+    print("Go button clicked")
     print("Sending bot to charging station")
     socketIO.emit("goBot", sequencer.handleCurrentState())
 
@@ -25,10 +26,11 @@ def sendTargetpath():
     socketIO.emit('sendingTargetPath', targetCoordinate)
 
 def sendImage():
+    print("asking for new images")
     encoded = base64.b64encode(open("UI/style/img/Picture 1.jpg", "rb").read())
-    return encoded
+    socketIO.emit('sendingImage', encoded)
 
-socketIO.emit('sendingImage', sendImage())
+socketIO.on('needNewImage', sendImage)
 socketIO.on('launch', clickGo)
 socketIO.on('needTreasurePath', sendTreasurePath)
 socketIO.on('needTargetPath', sendTargetpath)
