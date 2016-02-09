@@ -25,10 +25,37 @@ io.on('connection', function (client) {
         pythonClientStatus = status;
         io.emit('pythonClientStatus', status);
     });
+
     client.on('sendingImage', function(encodedString){
         console.log(encodedString.substr(0,2));
         io.emit('sendingImage', encodedString);
     });
+
+    client.on('launch', function(){
+        io.emit('launch');
+    });
+    client.on('goBot', function(data){
+        io.emit('goBot', data);
+    });
+
+    client.on('needTreasurePath', function(){
+        io.emit('needTreasurePath');
+    });
+    client.on('sendingTreasurePath', function(data){
+        io.emit('sendingTreasurePath', data);
+    });
+
+    client.on('needTargetPath', function(){
+        io.emit('needTargetPath');
+    });
+    client.on('sendingTargetPath', function(data){
+        io.emit('sendingTargetPath', data);
+    });
+
+    client.on('endSignal', function(){
+        io.emit('endSignal');
+    });
+
     client.on('disconnect', function() {
         console.log('A client got disconnected');
         if(client == robot){

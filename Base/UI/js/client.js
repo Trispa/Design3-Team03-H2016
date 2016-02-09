@@ -9,17 +9,24 @@ $.getJSON('../../Shared/config.json', function(json) {
         $("#botStatus").text(msg);
     });
     socket.on("sendingImage", function(encodedImage){
-
         var image = new Image();
         image.src = 'data:image/jpg;base64,' + encodedImage;
         $("#path").attr("src",'data:image/jpg;base64,' + encodedImage);
-
     });
-    function start(){
+
+    socket.on("endSignal", function(){
+        $("#buttonGo").prop("disabled",false);
+    });
+
+    start = function() {
         socket.emit("launch");
+        $("#buttonGo").prop("disabled",true);
     }
+
 });
 
+function start(){
+}
 
 
 //Affiche les images de la caméra dans le browser, solution temporaire qui sera
