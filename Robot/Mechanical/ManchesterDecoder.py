@@ -29,7 +29,7 @@ def main():
     a.pinMode(pinManchester, a.INPUT)
     a.pinMode(pinClock, a.INPUT)
     trame  = []
-    
+
     while(1):
 
         bit = a.digitalRead(pinManchester)
