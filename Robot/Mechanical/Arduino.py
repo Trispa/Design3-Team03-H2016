@@ -6,3 +6,4 @@ class Arduino:
         self.a = ArduinoApi(connection=connection)
 
     def initCameraTower(self):
+        pass
