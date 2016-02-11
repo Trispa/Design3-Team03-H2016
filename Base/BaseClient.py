@@ -27,7 +27,7 @@ def sendTargetpath():
 
 def sendImage():
     print("asking for new images")
-    encoded = base64.b64encode(open("UI/style/img/Picture 1.jpg", "rb").read())
+    encoded = base64.b64encode(open("UI/static/style/img/Picture 1.jpg", "rb").read())
     socketIO.emit('sendingImage', encoded)
 
 socketIO.on('needNewImage', sendImage)

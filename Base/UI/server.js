@@ -1,10 +1,25 @@
 var socket = require('socket.io');
 var express = require('express');
 var http = require('http');
-var obj = require("../../../Shared/config.json");
+var obj = require("../../Shared/config.json");
+
+
+
+
+
+
+
+
+
+
 
 var app = express();
+app.use(express.static('static'));
+
 var server = http.createServer(app);
+
+
+
 
 var io = socket.listen(server);
 
