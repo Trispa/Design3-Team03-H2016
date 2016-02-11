@@ -1,10 +1,10 @@
 from unittest import TestCase
 
 import Base.Logic.SendingBotToChargingStationState
-import Base.Logic.SendingBotToTreasureState
-
 import Base.Logic.SendingBotToTargetState
 from Base.Logic.Sequencer import Sequencer
+
+import Base.Client.BaseClient.Logic.SendingBotToTreasureState
 
 
 class SequencerTest(TestCase):
@@ -17,7 +17,8 @@ class SequencerTest(TestCase):
 
     def test_givenSequencerIsSendingBotToChargingStationWhenHandlingCurrentStateThenStateBecomesSendingBotToTreasure(self):
         testedSequencer = Sequencer()
-        testedSequencer.setState(Base.Logic.SendingBotToChargingStationState.SendingBotToChargingStationState())
+        testedSequencer.setState(
+            Base.Client.BaseClient.Logic.SendingBotToChargingStationState.SendingBotToChargingStationState())
 
         testedSequencer.handleCurrentState()
 
@@ -26,7 +27,7 @@ class SequencerTest(TestCase):
 
     def test_givenSequencerSendingBotToTreasureWhenHandlingCurrentStateThenStateBecomesSendingBotToTarget(self):
         testedSequencer = Sequencer()
-        testedSequencer.setState(Base.Logic.SendingBotToTreasureState.SendingBotToTreasureState())
+        testedSequencer.setState(Base.Client.BaseClient.Logic.SendingBotToTreasureState.SendingBotToTreasureState())
 
         testedSequencer.handleCurrentState()
 
@@ -35,7 +36,7 @@ class SequencerTest(TestCase):
 
     def test_givenSequencerSendingBotToTargetWhenHandlingCurrentStateThenStateBecomesSendingBotToChargingStation(self):
         testedSequencer = Sequencer()
-        testedSequencer.setState(Base.Logic.SendingBotToTargetState.SendingBotToTargetState())
+        testedSequencer.setState(Base.Client.BaseClient.Logic.SendingBotToTargetState.SendingBotToTargetState())
 
         testedSequencer.handleCurrentState()
 

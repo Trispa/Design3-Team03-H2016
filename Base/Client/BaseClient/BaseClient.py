@@ -1,11 +1,18 @@
-from socketIO_client import SocketIO
 import base64
 import json
-import Logic.Sequencer
 
-sequencer = Logic.Sequencer.Sequencer()
 
-with open("../Shared/config.json") as json_data_file:
+
+
+from Base.Client.BaseClient.Logic.Sequencer import Sequencer as seq
+sequencer = seq()
+
+
+from socketIO_client import SocketIO
+
+
+
+with open("../../../Shared/config.json") as json_data_file:
     config = json.load(json_data_file)
 
 socketIO = SocketIO(config['url'], int(config['port']))

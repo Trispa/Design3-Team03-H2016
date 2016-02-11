@@ -3,24 +3,10 @@ var express = require('express');
 var http = require('http');
 var obj = require("../../Shared/config.json");
 
-
-
-
-
-
-
-
-
-
-
 var app = express();
-app.use(express.static('static'));
+app.use(express.static('Client/UI'));
 
 var server = http.createServer(app);
-
-
-
-
 var io = socket.listen(server);
 
 var url=obj.url;
