@@ -3,7 +3,7 @@ import numpy as np
 import random
 import time
 import math
-import Movement
+import thread
 
 class RobotMock:
     def __init__(self):
@@ -12,8 +12,7 @@ class RobotMock:
         self.positionX = random.randrange(100, 900)
         self.positionY = random.randrange(100, 500)
 
-        self.__displayMock()
-
+        hello = thread.start_new_thread(self.displayMock,())
 
     def move(self, pointToMoveTo):
         self.isMoving = True
@@ -63,7 +62,7 @@ class RobotMock:
         time.sleep(0.05)
 
 
-    def __displayMock(self):
+    def displayMock(self):
             #mouse callback function
             def mouseAction(event, x, y, flags, param):
                 if event == cv2.EVENT_FLAG_LBUTTON:
@@ -90,6 +89,11 @@ class RobotMock:
 
 
 robot = RobotMock()
+print "banana"
+time.sleep(5)
+robot.move((100,0))
+
+
 
 
 
