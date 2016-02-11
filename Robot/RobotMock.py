@@ -15,7 +15,7 @@ class RobotMock:
         self.positionX = random.randrange(100,900)
         self.positionY = random.randrange(100,500)
 
-        self.__displayMock()
+        #self.displayMock()
 
 
     def move(self, pointToMoveTo):
@@ -66,7 +66,7 @@ class RobotMock:
         time.sleep(0.05)
 
 
-    def __displayMock(self):
+    def displayMock(self):
             #mouse callback function
             def mouseAction(event, x, y, flags, param):
                 if event == cv2.EVENT_FLAG_LBUTTON:

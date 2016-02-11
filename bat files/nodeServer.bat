@@ -1,5 +1,4 @@
 cd ..
 cd Base
-cd UI
-cd js
+cd Server
 node server.js
