@@ -1,16 +1,10 @@
 import base64
 import json
 
-
-
-
-from Base.Client.BaseClient.Logic.Sequencer import Sequencer as seq
+from Logic.Sequencer import Sequencer as seq
 sequencer = seq()
 
-
 from socketIO_client import SocketIO
-
-
 
 with open("../../../Shared/config.json") as json_data_file:
     config = json.load(json_data_file)
@@ -34,7 +28,7 @@ def sendTargetpath():
 
 def sendImage():
     print("asking for new images")
-    encoded = base64.b64encode(open("UI/static/style/img/Picture 1.jpg", "rb").read())
+    encoded = base64.b64encode(open("../UI/style/img/Picture 1.jpg", "rb").read())
     socketIO.emit('sendingImage', encoded)
 
 socketIO.on('needNewImage', sendImage)

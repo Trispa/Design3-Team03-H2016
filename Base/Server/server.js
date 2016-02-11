@@ -4,7 +4,7 @@ var http = require('http');
 var obj = require("../../Shared/config.json");
 
 var app = express();
-app.use(express.static('Client/UI'));
+app.use(express.static('../Client/UI'));
 
 var server = http.createServer(app);
 var io = socket.listen(server);
