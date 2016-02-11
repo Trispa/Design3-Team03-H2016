@@ -1,4 +1,4 @@
-from Base.Logic.State import SendingBotToChargingStationState
+from State import SendingBotToChargingStationState
 
 
 class Sequencer :
@@ -9,6 +9,6 @@ class Sequencer :
         self.setState(SendingBotToChargingStationState.SendingBotToChargingStationState())
 
     def handleCurrentState(self):
-        self.myState.handle(self)
+        return self.myState.handle(self)
 
 

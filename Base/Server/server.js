@@ -1,14 +1,16 @@
 var socket = require('socket.io');
 var express = require('express');
 var http = require('http');
+var obj = require("../../Shared/config.json");
 
 var app = express();
-var server = http.createServer(app);
+app.use(express.static('../Client/UI'));
 
+var server = http.createServer(app);
 var io = socket.listen(server);
 
-var url="192.168.0.100";
-var port=9000;
+var url=obj.url;
+var port=obj.port;
 
 var allClients = [];
 
@@ -24,10 +26,39 @@ io.on('connection', function (client) {
         pythonClientStatus = status;
         io.emit('pythonClientStatus', status);
     });
+
+    client.on('needNewImage', function(){
+       io.emit('needNewImage');
+    });
     client.on('sendingImage', function(encodedString){
-        console.log(encodedString.substr(0,2));
         io.emit('sendingImage', encodedString);
     });
+
+    client.on('launch', function(){
+        io.emit('launch');
+    });
+    client.on('goBot', function(data){
+        io.emit('goBot', data);
+    });
+
+    client.on('needTreasurePath', function(){
+        io.emit('needTreasurePath');
+    });
+    client.on('sendingTreasurePath', function(data){
+        io.emit('sendingTreasurePath', data);
+    });
+
+    client.on('needTargetPath', function(){
+        io.emit('needTargetPath');
+    });
+    client.on('sendingTargetPath', function(data){
+        io.emit('sendingTargetPath', data);
+    });
+
+    client.on('endSignal', function(){
+        io.emit('endSignal');
+    });
+
     client.on('disconnect', function() {
         console.log('A client got disconnected');
         if(client == robot){

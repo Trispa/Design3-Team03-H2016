@@ -2,5 +2,6 @@ import SendingBotToTargetState
 
 class SendingBotToTreasureState():
     def handle(self, context):
-        #call to pathfinder to return path to treasure
         context.setState(SendingBotToTargetState.SendingBotToTargetState())
+        #call to pathfinder to return path to treasure
+        return((45,90))

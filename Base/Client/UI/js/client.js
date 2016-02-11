@@ -1,22 +1,28 @@
-var url = "http://192.168.0.100";
-var port = 9000;
 
-var socket = io.connect(url + ":" + port);
 
-socket.on("pythonClientStatus", function(msg){
-    console.log(msg);
-    $("#botStatus").text(msg);
-});
-socket.on("sendingImage", function(encodedImage){
+    var socket = io.connect();
 
-    var image = new Image();
-    image.src = 'data:image/jpg;base64,' + encodedImage;
-    $("#path").attr("src",'data:image/jpg;base64,' + encodedImage);
+    socket.on("pythonClientStatus", function(msg){
+        console.log(msg);
+        $("#botStatus").text(msg);
+    });
+    socket.on("sendingImage", function(encodedImage){
+        var image = new Image();
+        image.src = 'data:image/jpg;base64,' + encodedImage;
+        $("#path").attr("src",'data:image/jpg;base64,' + encodedImage);
+    });
 
-});
+    socket.on("endSignal", function(){
+        $("#buttonGo").prop("disabled",false);
+    });
+
+    setInterval(function(){ socket.emit("needNewImage");}, 5000);
+
 function start(){
-    socket.emit("launch");
-}
+        socket.emit("launch");
+        $("#buttonGo").prop("disabled",true);
+    }
+
 
 //Affiche les images de la caméra dans le browser, solution temporaire qui sera
 //éventuellement d'afficher les images traités par la vision via le socket
