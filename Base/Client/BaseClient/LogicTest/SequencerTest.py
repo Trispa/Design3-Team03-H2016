@@ -1,10 +1,10 @@
 from unittest import TestCase
 
-import Base.Logic.SendingBotToChargingStationState
-import Base.Logic.SendingBotToTargetState
-from Base.Logic.Sequencer import Sequencer
+import Base.Client.BaseClient.Logic.State.SendingBotToChargingStationState as SendingBotToChargingStationState
+import Base.Client.BaseClient.Logic.State.SendingBotToTargetState as SendingBotToTargetState
+from Base.Client.BaseClient.Logic.Sequencer import Sequencer
 
-import Base.Client.BaseClient.Logic.SendingBotToTreasureState
+import Base.Client.BaseClient.Logic.State.SendingBotToTreasureState
 
 
 class SequencerTest(TestCase):
@@ -18,7 +18,7 @@ class SequencerTest(TestCase):
     def test_givenSequencerIsSendingBotToChargingStationWhenHandlingCurrentStateThenStateBecomesSendingBotToTreasure(self):
         testedSequencer = Sequencer()
         testedSequencer.setState(
-            Base.Client.BaseClient.Logic.SendingBotToChargingStationState.SendingBotToChargingStationState())
+            SendingBotToChargingStationState.SendingBotToChargingStationState())
 
         testedSequencer.handleCurrentState()
 
@@ -27,7 +27,8 @@ class SequencerTest(TestCase):
 
     def test_givenSequencerSendingBotToTreasureWhenHandlingCurrentStateThenStateBecomesSendingBotToTarget(self):
         testedSequencer = Sequencer()
-        testedSequencer.setState(Base.Client.BaseClient.Logic.SendingBotToTreasureState.SendingBotToTreasureState())
+        testedSequencer.setState(
+            Base.Client.BaseClient.Logic.State.SendingBotToTreasureState.SendingBotToTreasureState())
 
         testedSequencer.handleCurrentState()
 
@@ -36,7 +37,7 @@ class SequencerTest(TestCase):
 
     def test_givenSequencerSendingBotToTargetWhenHandlingCurrentStateThenStateBecomesSendingBotToChargingStation(self):
         testedSequencer = Sequencer()
-        testedSequencer.setState(Base.Client.BaseClient.Logic.SendingBotToTargetState.SendingBotToTargetState())
+        testedSequencer.setState(SendingBotToTargetState.SendingBotToTargetState())
 
         testedSequencer.handleCurrentState()
 
