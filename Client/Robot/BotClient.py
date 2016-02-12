@@ -2,12 +2,7 @@ import json
 
 from socketIO_client import SocketIO
 
-import RobotMock
-
-
-robot = RobotMock.RobotMock()
-
-with open("../Shared/config.json") as json_data_file:
+with open("../../Shared/config.json") as json_data_file:
     config = json.load(json_data_file)
 
 

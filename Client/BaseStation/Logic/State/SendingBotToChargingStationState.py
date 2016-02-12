@@ -1,4 +1,3 @@
-import json
 import SendingBotToTreasureState
 
 class SendingBotToChargingStationState():
