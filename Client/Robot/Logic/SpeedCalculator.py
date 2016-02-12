@@ -4,7 +4,6 @@ import ReferentialConverter
 class SpeedCalculator:
     VITESSE = 20 #constante vitesse angulaire, to be updated
 
-
     def __init__(self, positionRobot, orientation):
         #envoyer une valeur pour identifier le channel de chaque roue
         #self.horizontalWheelFront = WheelMotor(1)
@@ -18,20 +17,8 @@ class SpeedCalculator:
     def moveTo(self, pointToMoveTo):
         self.isMoving = True
         matrixDeplacementRobot = self.referentialConverter.convertWorldToRobot(pointToMoveTo)
-
-        deplacementRobotX = matrixDeplacementRobot.__getitem__(0)
-        deplacementRobotY = matrixDeplacementRobot.__getitem__(1)
-        deplacementTotal = deplacementRobotX + deplacementRobotY
-        speedX = (deplacementRobotX/deplacementTotal)*self.VITESSE
-        speedY = (deplacementRobotY/deplacementTotal)*self.VITESSE
-
-        self.__setWheelSpeed(speedX, speedY)
-
-        while deplacementRobotX != 0 and deplacementRobotY != 0: #deplacement not finished
-            deplacementRobotY -= speedX
-            deplacementRobotY -= speedY
-            time.sleep(1) #to be updated
-
+        timeForDeplacement = self.__transformCoordinatesToSpeed(matrixDeplacementRobot)
+        time.sleep(timeForDeplacement)
         self.__stopWheel()
         self.isMoving = False
 
@@ -42,6 +29,19 @@ class SpeedCalculator:
 
     def isMoving(self):
         return self.isMoving
+
+
+    def __transformCoordinatesToSpeed(self, matrixDeplacementRobot):
+        deplacementRobotX = matrixDeplacementRobot.__getitem__(0)
+        deplacementRobotY = matrixDeplacementRobot.__getitem__(1)
+        deplacementTotal = deplacementRobotX + deplacementRobotY
+
+        speedX = (deplacementRobotX / deplacementTotal) * self.VITESSE
+        speedY = (deplacementRobotY / deplacementTotal) * self.VITESSE
+
+        timeForDeplacement = speedX / deplacementRobotX
+        self.__setWheelSpeed(speedX, speedY)
+        return timeForDeplacement
 
 
     def __stopWheel(self):
