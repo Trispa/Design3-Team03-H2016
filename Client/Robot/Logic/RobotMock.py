@@ -3,20 +3,16 @@ import numpy as np
 import random
 import time
 import math
-
+import thread
 
 class RobotMock:
-    isMoving = False
-    positionX, positionY = 0, 0
-    orientation = 0;
-
     def __init__(self):
+        self.isMoving = False
+        self.orientation = 0;
+        self.positionX = random.randrange(100, 900)
+        self.positionY = random.randrange(100, 500)
 
-        self.positionX = random.randrange(100,900)
-        self.positionY = random.randrange(100,500)
-
-        #self.displayMock()
-
+        hello = thread.start_new_thread(self.displayMock,())
 
     def move(self, pointToMoveTo):
         self.isMoving = True
@@ -93,6 +89,11 @@ class RobotMock:
 
 
 robot = RobotMock()
+print "banana"
+time.sleep(5)
+robot.move((100,0))
+
+
 
 
 
