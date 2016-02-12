@@ -1,53 +1,59 @@
-import numpy as np
-
+import time
 import ReferentialConverter
 
-
 class SpeedCalculator:
-    VITESSE = 20 #constante vitesse scalaire
+    VITESSE = 20 #constante vitesse angulaire, to be updated
 
-    def __init__(self, positionRobotX, positionRobotY, orientation):
+    def __init__(self, positionRobot, orientation):
         #envoyer une valeur pour identifier le channel de chaque roue
-        #self.horizontalWheelFront = Wheel(1)
-        #self.horizontalWheelBack = Wheel(2)
-        #self.verticalWheelLeft = Wheel(3)
-        #self.verticalWheelRight = Wheel(4)
-        self.referentialConverter = ReferentialConverter(positionRobotX, positionRobotY, orientation)
+        #self.horizontalWheelFront = WheelMotor(1)
+        #self.horizontalWheelBack = WheelMotor(2)
+        #self.verticalWheelLeft = WheelMotor(3)
+        #self.verticalWheelRight = WheelMotor(4)
+        self.referentialConverter = ReferentialConverter(positionRobot, orientation)
         self.isMoving = False
-        self.orientation = (float(orientation%360))/180
-        self.positionWorldX = positionRobotX
-        self.positionWorldY = positionRobotY
+
 
     def moveTo(self, pointToMoveTo):
-        deplacementXWorld = pointToMoveTo.__getitem__(0) - self.positionWorldX
-        deplacementYWorld = pointToMoveTo.__getitem__(1) - self.positionWorldY
-
-        print self.orientation,np.cos(self.orientation*np.pi),-np.sin(self.orientation*np.pi)
-        matrixDeplacementWorld = np.array([[deplacementXWorld], [deplacementYWorld]])
-        matrixRotation = np.array( [[np.cos(self.orientation*np.pi), -np.sin(self.orientation*np.pi)],
-                                    [np.sin(self.orientation*np.pi), np.cos(self.orientation*np.pi)]] )
-        matrixDeplacementRobot = matrixRotation.dot(matrixDeplacementWorld)
-
-        deplacementXRobot = matrixDeplacementRobot.__getitem__(0)
-        deplacementYRobot = matrixDeplacementRobot.__getitem__(1)
-        deplacementTotal = deplacementXRobot + deplacementYRobot
-        vitesseX = deplacementXRobot/deplacementTotal
-        vitesseY = deplacementYRobot/deplacementTotal
-        print deplacementXWorld, deplacementYWorld
-        print deplacementXRobot, deplacementYRobot
+        self.isMoving = True
+        matrixDeplacementRobot = self.referentialConverter.convertWorldToRobot(pointToMoveTo)
+        timeForDeplacement = self.__transformCoordinatesToSpeed(matrixDeplacementRobot)
+        time.sleep(timeForDeplacement)
+        self.__stopWheel()
+        self.isMoving = False
 
 
+    def setPosition(self, positionRobot, orientation):
+        self.referentialConverter.setPosition(positionRobot, orientation)
 
 
-        #self.horizontalWheelFront.setVitesse(vitesseX)
-        #self.horizontalWheelBack.setVitesse(vitesseX)
-        #self.verticalWheelLeft.setVitesse(vitesseY)
-        #self.verticalWheelRight.setVitesse(vitesseY)
+    def isMoving(self):
+        return self.isMoving
 
 
-    def setPosition(self, positionX, positionY):
-        self.positionWorldX = positionX
-        self.positionWorldY = positionY
+    def __transformCoordinatesToSpeed(self, matrixDeplacementRobot):
+        deplacementRobotX = matrixDeplacementRobot.__getitem__(0)
+        deplacementRobotY = matrixDeplacementRobot.__getitem__(1)
+        deplacementTotal = deplacementRobotX + deplacementRobotY
 
-mouv = SpeedCalculator(0, 0, 45)
-mouv.moveTo((10,0))
+        speedX = (deplacementRobotX / deplacementTotal) * self.VITESSE
+        speedY = (deplacementRobotY / deplacementTotal) * self.VITESSE
+
+        timeForDeplacement = speedX / deplacementRobotX
+        self.__setWheelSpeed(speedX, speedY)
+        return timeForDeplacement
+
+
+    def __stopWheel(self):
+        pass
+        # self.horizontalWheelFront.setVitesse(0)
+        # self.horizontalWheelBack.setVitesse(0)
+        # self.verticalWheelLeft.setVitesse(0)
+        # self.verticalWheelRight.setVitesse(0)
+
+    def __setWheelSpeed(self, vitesseX, vitesseY):
+        pass
+        # self.horizontalWheelFront.setVitesse(vitesseX)
+        # self.horizontalWheelBack.setVitesse(-vitesseX)
+        # self.verticalWheelLeft.setVitesse(vitesseY)
+        # self.verticalWheelRight.setVitesse(-vitesseY)

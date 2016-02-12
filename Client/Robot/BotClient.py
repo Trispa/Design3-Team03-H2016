@@ -13,7 +13,7 @@ socketIO = SocketIO(config['url'], int(config['port']))
 
 def needNewCoordinates(*args):
     print("Bot going to " + args[0]["type"] + " at : (" + args[0]["position"]["positionX"] + " " + args[0]["position"]["positionY"] + ")")
-    robot.move((int(args[0]["position"]["positionX"]), int(args[0]["position"]["positionY"])))
+    robot.moveTo((int(args[0]["position"]["positionX"]), int(args[0]["position"]["positionY"])))
     if(args[0]["type"] == "target"):
         socketIO.emit('endSignal')
     else:
