@@ -14,7 +14,7 @@ class RobotMock:
 
         hello = thread.start_new_thread(self.displayMock,())
 
-    def move(self, pointToMoveTo):
+    def moveTo(self, pointToMoveTo):
         self.isMoving = True
         #dans la classe qui serais Movement
         deplacementX = pointToMoveTo.__getitem__(0) - self.positionX
@@ -68,7 +68,7 @@ class RobotMock:
                 if event == cv2.EVENT_FLAG_LBUTTON:
                     pointToMove = (x, y)
                     if self.isMoving == False:
-                        self.move(pointToMove);
+                        self.moveTo(pointToMove);
 
             self.__setFirstDisplay(mouseAction)
 
@@ -87,11 +87,6 @@ class RobotMock:
                       (0, 255, 0), -1, 1)
         cv2.imshow('image', img)
 
-
-robot = RobotMock()
-print "banana"
-time.sleep(5)
-robot.move((100,0))
 
 
 
