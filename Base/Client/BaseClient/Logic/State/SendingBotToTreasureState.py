@@ -1,7 +1,12 @@
 import SendingBotToTargetState
 
 class SendingBotToTreasureState():
-    def handle(self, context):
-        context.setState(SendingBotToTargetState.SendingBotToTargetState())
+    def handle(self, sequencer):
+        sequencer.setState(SendingBotToTargetState.SendingBotToTargetState())
         #call to pathfinder to return path to treasure
-        return((45,90))
+        coordinates = {"type" : "treasure",
+                      "position" : {
+                            "positionX" : "45",
+                            "positionY" : "90"
+        }}
+        return(coordinates)

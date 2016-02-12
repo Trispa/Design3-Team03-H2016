@@ -13,23 +13,15 @@ with open("../Shared/config.json") as json_data_file:
 
 socketIO = SocketIO(config['url'], int(config['port']))
 
-def launchSequence(*args):
-    print("Bot going to charging station at : ", args[0])
-    socketIO.emit('needTreasurePath', ("A", "cercle"))
+def needNewCoordinates(*args):
+    print("Bot going to " + args[0]["type"] + " at : (" + args[0]["position"]["positionX"] + " " + args[0]["position"]["positionY"] + ")")
+    if(args[0]["type"] == "target"):
+        socketIO.emit('endSignal')
+    else:
+        socketIO.emit('needNewCoordinates', ("A", "cercle"))
 
-def goToTreasure(*args):
-    print("Bot going to treasure at : ", args[0])
-    socketIO.emit('needTargetPath')
-
-def goToTarget(*args):
-    print("Bot going to target at : ", args[0])
-    socketIO.emit('endSignal')
-
-
-socketIO.emit('pythonClientStatus','Connected')
-socketIO.on('goBot', launchSequence)
-socketIO.on('sendingTreasurePath', goToTreasure)
-socketIO.on('sendingTargetPath', goToTarget)
+socketIO.emit('botClientStatus','Connected')
+socketIO.on('sendingNextCoordinates', needNewCoordinates)
 
 socketIO.wait()
 

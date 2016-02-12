@@ -1,7 +1,13 @@
 import SendingBotToChargingStationState
 
 class SendingBotToTargetState():
-    def handle(self, context):
-        context.setState(SendingBotToChargingStationState.SendingBotToChargingStationState())
+    def handle(self, sequencer):
+        sequencer.setState(SendingBotToChargingStationState.SendingBotToChargingStationState())
         #call to pathfinder to return path to target
-        return((50,60))
+        coordinates = {"type" : "target",
+                        "position": {
+                            "positionX" : "50",
+                            "positionY" : "60"
+        }}
+        return(coordinates)
+
