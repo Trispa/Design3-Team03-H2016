@@ -6,4 +6,6 @@ class WheelMotor:
 
     def _setVitesse(self, vitesse):
         # si vitesse positive alors avance sinon recule
+        
         pass
+
