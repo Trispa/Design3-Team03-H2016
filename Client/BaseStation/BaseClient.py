@@ -12,16 +12,16 @@ with open("../../Shared/config.json") as json_data_file:
 
 socketIO = SocketIO(config['url'], int(config['port']))
 
-def sendingNextCoordinates():
+def sendingNextCoordinates(*args):
     print("Sending orders")
     socketIO.emit("sendingNextCoordinates", sequencer.handleCurrentState())
 
 def sendImage():
     print("asking for new images")
-    encoded = base64.b64encode(open("../UI/style/img/Picture 1.jpg", "rb").read())
+    encoded = base64.b64encode(open("../../shared/Picture 1.jpg", "rb").read())
     socketIO.emit('sendingImage', encoded)
 
-socketIO.on('needNewImage', sendImage)
+socketIO.on('needUpdatedInfo', sendImage)
 socketIO.on('needNewCoordinates', sendingNextCoordinates)
 
 socketIO.wait()

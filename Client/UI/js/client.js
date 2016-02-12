@@ -12,11 +12,20 @@ socket.on("sendingImage", function(encodedImage){
     $("#path").attr("src",'data:image/jpg;base64,' + encodedImage);
 });
 
+socket.on("sendingVoltage", function(voltage){
+    $("#voltage").text(voltage);
+});
+
 socket.on("endSignal", function(){
     $("#buttonGo").prop("disabled",false);
 });
 
-setInterval(function(){ socket.emit("needNewImage");}, 5000);
+socket.on("needNewCoordinates", function(data){
+    $("#asciiCharacter").text(data['decodedCharacter']);
+    $("#target").text(data['target']);
+});
+
+setInterval(function(){ socket.emit("needUpdatedInfo");}, 5000);
 
 function start(){
     socket.emit("needNewCoordinates");
