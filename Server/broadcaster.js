@@ -1,7 +1,7 @@
 var socket = require('socket.io');
 var express = require('express');
 var http = require('http');
-var obj = require("../../Shared/config.json");
+var obj = require("../Shared/config.json");
 
 var app = express();
 app.use(express.static('../Client/UI'));
@@ -14,17 +14,17 @@ var port=obj.port;
 
 var allClients = [];
 
-var pythonClientStatus = "Not connected";
+var botClientStatus = "Not connected";
 var robot;
 
 io.on('connection', function (client) {
     allClients.push(socket);
-    io.emit('pythonClientStatus', pythonClientStatus);
-    client.on('pythonClientStatus', function(status){
+    io.emit('botClientStatus', botClientStatus);
+    client.on('botClientStatus', function(status){
         console.log(status);
         robot = client;
-        pythonClientStatus = status;
-        io.emit('pythonClientStatus', status);
+        botClientStatus = status;
+        io.emit('botClientStatus', status);
     });
 
     client.on('needNewImage', function(){
@@ -34,25 +34,12 @@ io.on('connection', function (client) {
         io.emit('sendingImage', encodedString);
     });
 
-    client.on('launch', function(){
-        io.emit('launch');
-    });
-    client.on('goBot', function(data){
-        io.emit('goBot', data);
+    client.on('sendingNextCoordinates', function(data){
+        io.emit('sendingNextCoordinates', data);
     });
 
-    client.on('needTreasurePath', function(){
-        io.emit('needTreasurePath');
-    });
-    client.on('sendingTreasurePath', function(data){
-        io.emit('sendingTreasurePath', data);
-    });
-
-    client.on('needTargetPath', function(){
-        io.emit('needTargetPath');
-    });
-    client.on('sendingTargetPath', function(data){
-        io.emit('sendingTargetPath', data);
+    client.on('needNewCoordinates', function(){
+        io.emit('needNewCoordinates');
     });
 
     client.on('endSignal', function(){
@@ -63,8 +50,8 @@ io.on('connection', function (client) {
         console.log('A client got disconnected');
         if(client == robot){
             console.log('Bad news, it\'s the bot');
-            pythonClientStatus = "Not connected";
-            io.emit('pythonClientStatus', pythonClientStatus);
+            botClientStatus = "Not connected";
+            io.emit('botClientStatus', botClientStatus);
         }
         var i = allClients.indexOf(client);
         allClients.splice(i, 1);

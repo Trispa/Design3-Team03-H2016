@@ -1,4 +1,3 @@
 cd ..
-cd Base
 cd Server
-node server.js
+node broadcaster.js

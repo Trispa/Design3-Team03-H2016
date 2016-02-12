@@ -1,27 +1,27 @@
 
 
-    var socket = io.connect();
+var socket = io.connect();
 
-    socket.on("pythonClientStatus", function(msg){
-        console.log(msg);
-        $("#botStatus").text(msg);
-    });
-    socket.on("sendingImage", function(encodedImage){
-        var image = new Image();
-        image.src = 'data:image/jpg;base64,' + encodedImage;
-        $("#path").attr("src",'data:image/jpg;base64,' + encodedImage);
-    });
+socket.on("botClientStatus", function(msg){
+    console.log(msg);
+    $("#botStatus").text(msg);
+});
+socket.on("sendingImage", function(encodedImage){
+    var image = new Image();
+    image.src = 'data:image/jpg;base64,' + encodedImage;
+    $("#path").attr("src",'data:image/jpg;base64,' + encodedImage);
+});
 
-    socket.on("endSignal", function(){
-        $("#buttonGo").prop("disabled",false);
-    });
+socket.on("endSignal", function(){
+    $("#buttonGo").prop("disabled",false);
+});
 
-    setInterval(function(){ socket.emit("needNewImage");}, 5000);
+setInterval(function(){ socket.emit("needNewImage");}, 5000);
 
 function start(){
-        socket.emit("launch");
-        $("#buttonGo").prop("disabled",true);
-    }
+    socket.emit("needNewCoordinates");
+    $("#buttonGo").prop("disabled",true);
+}
 
 
 //Affiche les images de la caméra dans le browser, solution temporaire qui sera

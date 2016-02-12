@@ -1,10 +1,10 @@
 from unittest import TestCase
 
-import Base.Client.BaseClient.Logic.State.SendingBotToChargingStationState as SendingBotToChargingStationState
-import Base.Client.BaseClient.Logic.State.SendingBotToTargetState as SendingBotToTargetState
-from Base.Client.BaseClient.Logic.Sequencer import Sequencer
+from Client.BaseStation.Logic.Sequencer import Sequencer
 
-import Base.Client.BaseClient.Logic.State.SendingBotToTreasureState
+import Client.BaseStation.Logic.State.SendingBotToChargingStationState as SendingBotToChargingStationState
+import Client.BaseStation.Logic.State.SendingBotToTargetState as SendingBotToTargetState
+import Client.BaseStation.Logic.State.SendingBotToTreasureState
 
 
 class SequencerTest(TestCase):
@@ -12,7 +12,7 @@ class SequencerTest(TestCase):
     def test_whenCreatingSequencerThenStateIsAwaitingStart(self):
         testedSequencer = Sequencer()
 
-        self.assertEqual(testedSequencer.myState.__class__.__name__, "SendingBotToChargingStationState")
+        self.assertEqual(testedSequencer.state.__class__.__name__, "SendingBotToChargingStationState")
 
 
     def test_givenSequencerIsSendingBotToChargingStationWhenHandlingCurrentStateThenStateBecomesSendingBotToTreasure(self):
@@ -22,17 +22,17 @@ class SequencerTest(TestCase):
 
         testedSequencer.handleCurrentState()
 
-        self.assertEqual(testedSequencer.myState.__class__.__name__, "SendingBotToTreasureState")
+        self.assertEqual(testedSequencer.state.__class__.__name__, "SendingBotToTreasureState")
 
 
     def test_givenSequencerSendingBotToTreasureWhenHandlingCurrentStateThenStateBecomesSendingBotToTarget(self):
         testedSequencer = Sequencer()
         testedSequencer.setState(
-            Base.Client.BaseClient.Logic.State.SendingBotToTreasureState.SendingBotToTreasureState())
+            Client.BaseStation.Logic.State.SendingBotToTreasureState.SendingBotToTreasureState())
 
         testedSequencer.handleCurrentState()
 
-        self.assertEqual(testedSequencer.myState.__class__.__name__, "SendingBotToTargetState")
+        self.assertEqual(testedSequencer.state.__class__.__name__, "SendingBotToTargetState")
 
 
     def test_givenSequencerSendingBotToTargetWhenHandlingCurrentStateThenStateBecomesSendingBotToChargingStation(self):
@@ -41,4 +41,4 @@ class SequencerTest(TestCase):
 
         testedSequencer.handleCurrentState()
 
-        self.assertEqual(testedSequencer.myState.__class__.__name__, "SendingBotToChargingStationState")
+        self.assertEqual(testedSequencer.state.__class__.__name__, "SendingBotToChargingStationState")

@@ -1,5 +1,7 @@
-import ReferentialConverter
 import numpy as np
+
+import ReferentialConverter
+
 
 class SpeedCalculator:
     VITESSE = 20 #constante vitesse scalaire
