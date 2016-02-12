@@ -27,19 +27,22 @@ io.on('connection', function (client) {
         io.emit('botClientStatus', status);
     });
 
-    client.on('needNewImage', function(){
-       io.emit('needNewImage');
+    client.on('needUpdatedInfo', function(){
+       io.emit('needUpdatedInfo');
     });
     client.on('sendingImage', function(encodedString){
         io.emit('sendingImage', encodedString);
+    });
+    client.on('sendingVoltage', function(voltage){
+        io.emit('sendingVoltage', voltage);
     });
 
     client.on('sendingNextCoordinates', function(data){
         io.emit('sendingNextCoordinates', data);
     });
 
-    client.on('needNewCoordinates', function(){
-        io.emit('needNewCoordinates');
+    client.on('needNewCoordinates', function(data){
+        io.emit('needNewCoordinates', data);
     });
 
     client.on('endSignal', function(){

@@ -6,7 +6,7 @@ class SendingBotToTreasureState():
         #call to pathfinder to return path to treasure
         coordinates = {"type" : "treasure",
                       "position" : {
-                            "positionX" : "45",
-                            "positionY" : "90"
+                            "positionX" : "500",
+                            "positionY" : "400"
         }}
         return(coordinates)
