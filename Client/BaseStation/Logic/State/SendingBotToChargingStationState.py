@@ -6,7 +6,7 @@ class SendingBotToChargingStationState():
         #call to pathfinder to return path to charging station
         coordinates = {"type":"charging station",
                         "position": {
-                            "positionX" : "12",
-                            "positionY" : "50"
+                            "positionX" : "0",
+                            "positionY" : "0"
         }}
         return(coordinates)

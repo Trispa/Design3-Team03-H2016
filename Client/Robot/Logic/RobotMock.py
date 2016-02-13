@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import random
 import time
+import json
 import math
 import thread
 
@@ -11,6 +12,9 @@ class RobotMock:
         self.orientation = 0;
         self.positionX = random.randrange(100, 900)
         self.positionY = random.randrange(100, 500)
+        self.botInfo = {"voltage" : "N/A",
+                        "decodedCharacter" : "N/A",
+                        "target" : "N/A"}
 
         hello = thread.start_new_thread(self.displayMock,())
 
@@ -86,9 +90,6 @@ class RobotMock:
         cv2.rectangle(img, (self.positionX - 20, self.positionY - 20), (self.positionX + 20, self.positionY + 20),
                       (0, 255, 0), -1, 1)
         cv2.imshow('image', img)
-
-
-
 
 
 
