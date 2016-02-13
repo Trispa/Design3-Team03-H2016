@@ -3,8 +3,6 @@ import SpeedCalculator
 from Client.Robot.Mechanical.WheelMotor import WheelMotor
 
 class WheelManager:
-    ROTATION_SPEED = 5 #totallement random value!
-
     def __init__(self, positionRobot, orientation):
         #envoyer une valeur pour identifier le channel de chaque roue
         self.horizontalWheelFront = WheelMotor(1)
@@ -26,11 +24,15 @@ class WheelManager:
 
 
     def rotate(self, angle):
-        pass
-        self.horizontalWheelFront.setVitesse(self.ROTATION_SPEED)
-        self.horizontalWheelBack.setVitesse(self.ROTATION_SPEED)
-        self.verticalWheelLeft.setVitesse(self.ROTATION_SPEED)
-        self.verticalWheelRight.setVitesse(self.ROTATION_SPEED)
+        angle = angle%360
+        self.horizontalWheelFront.setVitesse(self.speedCalculator.ROTATION_SPEED)
+        self.horizontalWheelBack.setVitesse(self.speedCalculator.ROTATION_SPEED)
+        self.verticalWheelLeft.setVitesse(self.speedCalculator.ROTATION_SPEED)
+        self.verticalWheelRight.setVitesse(self.speedCalculator.ROTATION_SPEED)
+
+        timeNeededToDoTheRotation = 5*float(angle/360) # 5 = temps pour effectuer un 360 != vraiment 5!!!!
+        time.sleep(timeNeededToDoTheRotation)
+        self.__stopWheel()
 
 
     def setPosition(self, positionRobot, orientation):
@@ -42,14 +44,13 @@ class WheelManager:
 
 
     def __stopWheel(self):
-        pass
         self.horizontalWheelFront.setVitesse(0)
         self.horizontalWheelBack.setVitesse(0)
         self.verticalWheelLeft.setVitesse(0)
         self.verticalWheelRight.setVitesse(0)
 
+
     def __setWheelSpeed(self, vitesseX, vitesseY):
-        pass
         self.horizontalWheelFront.setVitesse(vitesseX)
         self.horizontalWheelBack.setVitesse(-vitesseX)
         self.verticalWheelLeft.setVitesse(vitesseY)

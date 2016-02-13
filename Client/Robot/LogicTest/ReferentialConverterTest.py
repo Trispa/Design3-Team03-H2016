@@ -15,7 +15,7 @@ class ReferentialConverterTest(TestCase):
         positionX = self.referentialConverter.positionRobotInWorldX
         positionY = self.referentialConverter.positionRobotInWorldY
         orientation = self.referentialConverter.orientation
-        defaultOrientation = (float("{0:.3f}".format(float(self.DEFAULT_ORIENTATION%360)/180)))
+        defaultOrientation = float(self.DEFAULT_ORIENTATION%360)/180
 
         self.assertEqual(self.DEFAULT_POINT.__getitem__(0), positionX)
         self.assertEqual(self.DEFAULT_POINT.__getitem__(1), positionY)
@@ -26,7 +26,7 @@ class ReferentialConverterTest(TestCase):
         self.referentialConverter = ReferentialConverter(self.ANOTHER_POINT, self.ANOTHER_ORIENTATION)
 
         thePoint = self.ANOTHER_POINT
-        theOrientation = (float("{0:.3f}".format(float(self.ANOTHER_ORIENTATION%360)/180)))
+        theOrientation = float(self.ANOTHER_ORIENTATION%360)/180
         positionX = self.referentialConverter.positionRobotInWorldX
         positionY = self.referentialConverter.positionRobotInWorldY
         orientation = self.referentialConverter.orientation

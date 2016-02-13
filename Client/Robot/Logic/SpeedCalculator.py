@@ -2,19 +2,14 @@ import ReferentialConverter
 
 class SpeedCalculator:
     VITESSE = 20 #constante vitesse angulaire, to be updated
+    ROTATION_SPEED = 5 #totallement random value!
 
-    def __init__(self, positionRobot, orientation):
-        self.referentialConverter = ReferentialConverter(positionRobot, orientation)
-
+    def __init__(self):
+        self = self
 
     def generateSpeedInfo(self, pointToMoveTo):
-        matrixDeplacementRobot = self.referentialConverter.convertWorldToRobot(pointToMoveTo)
-        return self.__transformCoordinatesToSpeed(matrixDeplacementRobot)
-
-
-    def __transformCoordinatesToSpeed(self, matrixDeplacementRobot):
-        deplacementRobotX = matrixDeplacementRobot.__getitem__(0)
-        deplacementRobotY = matrixDeplacementRobot.__getitem__(1)
+        deplacementRobotX = pointToMoveTo.__getitem__(0)
+        deplacementRobotY = pointToMoveTo.__getitem__(1)
         deplacementTotal = deplacementRobotX + deplacementRobotY
 
         speedX = (deplacementRobotX / deplacementTotal)* self.VITESSE

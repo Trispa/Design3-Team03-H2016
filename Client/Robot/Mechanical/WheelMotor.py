@@ -1,5 +1,4 @@
 class WheelMotor:
-
     def __init__(self, codeRoue):
         #utilise code pour savoir c'est quel roue
         pass
