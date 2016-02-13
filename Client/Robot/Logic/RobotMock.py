@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import random
 import time
+import json
 import math
 import thread
 
@@ -11,7 +12,9 @@ class RobotMock:
         self.orientation = 0;
         self.positionX = random.randrange(100, 900)
         self.positionY = random.randrange(100, 500)
-        self.tension = "N/A"
+        self.botInfo = {"voltage" : "N/A",
+                        "decodedCharacter" : "N/A",
+                        "target" : "N/A"}
 
         hello = thread.start_new_thread(self.displayMock,())
 
