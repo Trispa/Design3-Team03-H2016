@@ -17,19 +17,19 @@ var robot;
 
 io.on('connection', function (client) {
     allClients.push(socket);
-    io.emit('botClientStatus', botClientStatus);
-    client.on('botClientStatus', function(status){
+    io.emit('sendingBotClientStatus', botClientStatus);
+    client.on('sendingBotClientStatus', function(status){
         console.log(status);
         robot = client;
         botClientStatus = status;
-        io.emit('botClientStatus', status);
+        io.emit('sendingBotClientStatus', status);
     });
     client.on('disconnect', function() {
         console.log('A client got disconnected');
         if(client == robot){
             console.log('Bad news, it\'s the bot');
             botClientStatus = "Not connected";
-            io.emit('botClientStatus', botClientStatus);
+            io.emit('sendingBotClientStatus', botClientStatus);
         }
         var i = allClients.indexOf(client);
         allClients.splice(i, 1);
@@ -52,8 +52,8 @@ io.on('connection', function (client) {
         io.emit('sendingNextCoordinates', data);
     });
 
-    client.on('endSignal', function(){
-        io.emit('endSignal');
+    client.on('sendingEndSignal', function(){
+        io.emit('sendingEndSignal');
     });
 });
 

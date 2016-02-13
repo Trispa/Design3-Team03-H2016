@@ -1,6 +1,6 @@
 var socket = io.connect();
 
-socket.on("botClientStatus", function(msg){
+socket.on("sendingBotClientStatus", function(msg){
     console.log(msg);
     $("#botStatus").text(msg);
 });
@@ -16,7 +16,7 @@ socket.on("sendingInfo", function(info){
     $("#voltage").text(info['voltage']);
 });
 
-socket.on("endSignal", function(){
+socket.on("sendingEndSignal", function(){
     $("#buttonGo").prop("disabled",false);
 });
 
