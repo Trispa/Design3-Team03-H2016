@@ -1,0 +1,31 @@
+from nanpy import ArduinoApi, SerialManager, Servo, ReadManchester
+import time
+import ctypes
+#class ManchesterDecoder permet de decoder le code manchester
+
+class ManchesterDecoder:
+    def __init__(self, ):
+        self.manchester_buffer = []
+
+
+    def manchester_decode(self, manchester_buffer):
+        """
+        :param manchester_buffer:
+        :return: Decode a manchester array to a single data byte.
+        """
+
+def main():
+        connection = SerialManager(device='COM3')
+        man =  ReadManchester(2,3, connection = connection)
+
+        while(1):
+            maChaine = man.getMaschesterBits()
+            time.sleep(1)
+            if(maChaine != '\0'):
+                print(maChaine)
+
+
+if __name__ == '__main__':
+    main()
+
+

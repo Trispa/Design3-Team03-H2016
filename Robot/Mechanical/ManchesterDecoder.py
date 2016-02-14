@@ -1,8 +1,8 @@
-from nanpy import ArduinoApi, SerialManager, Servo
+from nanpy import ArduinoApi, SerialManager, Servo, ReadManchester
 import time
-
+import ctypes
 #class ManchesterDecoder permet de decoder le code manchester
-
+chaine = '\0'
 class ManchesterDecoder:
     def __init__(self, ):
         self.manchester_buffer = []
@@ -13,35 +13,23 @@ class ManchesterDecoder:
         :param manchester_buffer:
         :return: Decode a manchester array to a single data byte.
         """
-        decoded = 0
-        for i in range(0, 8):
-            bit = 7 - i;
-            # Use the second value of each encoded bit, as that is the bit value
-            # eg. 1 is encoded to [0, 1], so retrieve the second bit (1)
-            decoded |= manchester_buffer[4 + (i * 2) + 1] << (bit)
-        return decoded
 
 def main():
-    connection = SerialManager(device='COM3')
-    a = ArduinoApi(connection = connection)
-    pinManchester = 3
-    pinClock = 2
-    a.pinMode(pinManchester, a.INPUT)
-    a.pinMode(pinClock, a.INPUT)
-    trame  = []
+        connection = SerialManager(device="/dev/ttyUSB0")
+        man =  ReadManchester(2,3, connection = connection)
+        #man.enableInterrupt(True);
 
-    while(1):
+        while(1):
+            chaine = man.getMaschesterBits()
+            if(chaine != '\0'):
+                print(chaine)
+                #man.enableInterrupt(False)
 
-        bit = a.digitalRead(pinManchester)
-        print(bit)
-        trame.append(bit)
 
-    decoder = ManchesterDecoder()
-    decoder.manchester_buffer = trame
-    decoded = decoder.manchester_decode(decoder.manchester_buffer)
 
-    print(decoded)
+
 if __name__ == '__main__':
     main()
+
 
 
