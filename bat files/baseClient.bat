@@ -1,3 +1,6 @@
+
 cd ..
-cd Base
+cd Client
+cd BaseStation
+
 py BaseClient.py
