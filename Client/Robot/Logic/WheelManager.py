@@ -1,42 +1,47 @@
 import time
-import SpeedCalculator
+from Client.Robot.Logic.SpeedCalculator import SpeedCalculator
 from Client.Robot.Mechanical.WheelMotor import WheelMotor
 
 class WheelManager:
-    def __init__(self, positionRobot, orientation):
+    def __init__(self,horizontalWheelFront, horizontalWheelBack, verticalWheelLeft, verticalWheelRight):
         #envoyer une valeur pour identifier le channel de chaque roue
-        self.horizontalWheelFront = WheelMotor(1)
-        self.horizontalWheelBack = WheelMotor(2)
-        self.verticalWheelLeft = WheelMotor(3)
-        self.verticalWheelRight = WheelMotor(4)
+        self.horizontalWheelFront = horizontalWheelFront
+        self.horizontalWheelBack = horizontalWheelBack
+        self.verticalWheelLeft = verticalWheelLeft
+        self.verticalWheelRight = verticalWheelRight
 
-        self.speedCalculator = SpeedCalculator(positionRobot, orientation)
+        self.speedCalculator = SpeedCalculator()
         self.isMoving = False
 
 
     def moveTo(self, pointToMoveTo):
-        self.isMoving = True
-        speedX, speedY, timeForDeplacement = self.speedCalculator.generateSpeedInfo(pointToMoveTo)
-        self.__setWheelSpeed(speedX, speedY)
-        time.sleep(timeForDeplacement)
-        self.__stopWheel()
-        self.isMoving = False
+        if self.__pointNotNull(pointToMoveTo):
+            self.isMoving = True
+
+            speedX, speedY, timeForDeplacement = self.speedCalculator.generateSpeedInfos(pointToMoveTo)
+            self.__setWheelDeplacementSpeed(speedX, speedY)
+
+            time.sleep(timeForDeplacement)
+
+            self.__stopWheel()
+            self.isMoving = False
 
 
     def rotate(self, angle):
         angle = angle%360
-        self.horizontalWheelFront.setVitesse(self.speedCalculator.ROTATION_SPEED)
-        self.horizontalWheelBack.setVitesse(self.speedCalculator.ROTATION_SPEED)
-        self.verticalWheelLeft.setVitesse(self.speedCalculator.ROTATION_SPEED)
-        self.verticalWheelRight.setVitesse(self.speedCalculator.ROTATION_SPEED)
+        if angle != 0 :
+            self.isMoving = True
+            rotationSpeed, timeForRotation = self.speedCalculator.generateRotationInfos(angle)
 
-        timeNeededToDoTheRotation = 5*float(angle/360) # 5 = temps pour effectuer un 360 != vraiment 5!!!!
-        time.sleep(timeNeededToDoTheRotation)
-        self.__stopWheel()
+            self.horizontalWheelFront.setVitesse(rotationSpeed)
+            self.horizontalWheelBack.setVitesse(rotationSpeed)
+            self.verticalWheelLeft.setVitesse(rotationSpeed)
+            self.verticalWheelRight.setVitesse(rotationSpeed)
 
+            time.sleep(timeForRotation)
 
-    def setPosition(self, positionRobot, orientation):
-        self.referentialConverter.setPosition(positionRobot, orientation)
+            self.__stopWheel()
+            self.isMoving = False
 
 
     def isMoving(self):
@@ -50,8 +55,13 @@ class WheelManager:
         self.verticalWheelRight.setVitesse(0)
 
 
-    def __setWheelSpeed(self, vitesseX, vitesseY):
+    def __setWheelDeplacementSpeed(self, vitesseX, vitesseY):
         self.horizontalWheelFront.setVitesse(vitesseX)
         self.horizontalWheelBack.setVitesse(-vitesseX)
         self.verticalWheelLeft.setVitesse(vitesseY)
         self.verticalWheelRight.setVitesse(-vitesseY)
+
+
+    def __pointNotNull(self, pointToVerify):
+        return (pointToVerify.__getitem__(0) != 0 or pointToVerify.__getitem__(1) != 0)
+
