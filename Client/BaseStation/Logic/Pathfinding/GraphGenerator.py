@@ -6,7 +6,7 @@ import cv2
 class GraphGenerator:
     MAP_SIZE_X = 1000
     MAP_SIZE_Y = 600
-    SAFE_MARGIN = 20
+    SAFE_MARGIN = 40
 
     def __init__(self, obstaclesList):
         self.obstaclesList = obstaclesList
@@ -15,35 +15,52 @@ class GraphGenerator:
 
 
     def generateGraph(self):
-        cornerTL = (0,0)
-        cornerBL = (0, self.MAP_SIZE_Y)
-        cornerTR = (self.obstaclesList.__getitem__(0).__getitem__(0) - self.SAFE_MARGIN, cornerTL.__getitem__(1))
-        nodeSafeZoneLeft = Node(SafeZone(cornerTL, cornerTR, cornerBL).getCenterOfSafeZone())
+        firstObstacle = self.obstaclesList.__getitem__(0)
+        if (firstObstacle.__getitem__(0) - self.SAFE_MARGIN > 0):
+            nodeSafeZoneLeft = self.__defaultStart(firstObstacle)
+            compteur = 0
 
-        for compteur in range (0, self.obstaclesList.__len__()):
+        else:
+            #quand colle au mur en partant TO DO
+            pass
+            compteur = 1
+
+        for compteur in range (compteur, self.obstaclesList.__len__()):
             currentObstacle = self.obstaclesList.__getitem__(compteur)
             topLeftCorner = (currentObstacle.__getitem__(0) - self.SAFE_MARGIN, currentObstacle.__getitem__(1) - self.SAFE_MARGIN)
             topRightCorner = (currentObstacle.__getitem__(0) + self.SAFE_MARGIN, currentObstacle.__getitem__(1) - self.SAFE_MARGIN)
             bottomRightCorner = (currentObstacle.__getitem__(0) + self.SAFE_MARGIN, currentObstacle.__getitem__(1) + self.SAFE_MARGIN)
             bottomLeftCorner = (currentObstacle.__getitem__(0) - self.SAFE_MARGIN, currentObstacle.__getitem__(1) + self.SAFE_MARGIN)
-            Corners = [topLeftCorner, topRightCorner, bottomLeftCorner, bottomRightCorner]
 
-            cornerTR = (topLeftCorner.__getitem__(0), cornerTL.__getitem__(1))
-            borderNodeLeftTop = Node((topLeftCorner.__getitem__(0), topLeftCorner.__getitem__(1)/2))
-            borderNodeLeftDown = Node((bottomLeftCorner.__getitem__(0), (bottomLeftCorner.__getitem__(1)+self.MAP_SIZE_Y)/2))
+
+            if (compteur != 0 and self.obstaclesList.__getitem__(compteur-1).__getitem__(0) >= currentObstacle.__getitem__(0) - self.SAFE_MARGIN):
+                collisionObstacle = self.obstaclesList.__getitem__(compteur-1)
+                borderNodeLeftTop = Node((topLeftCorner.__getitem__(0), (topLeftCorner.__getitem__(1)+collisionObstacle.__getitem__(1))/2))
+            else:
+                borderNodeLeftTop = Node((topLeftCorner.__getitem__(0), topLeftCorner.__getitem__(1)/2))
             self.__connectTwoNodes(nodeSafeZoneLeft,borderNodeLeftTop)
-            self.__connectTwoNodes(nodeSafeZoneLeft,borderNodeLeftDown)
 
-            if (compteur == self.obstaclesList.__len__()-1):
+            if (compteur != self.obstaclesList.__len__()-1 and self.obstaclesList.__getitem__(compteur+1).__getitem__(0) <= currentObstacle.__getitem__(0) + self.SAFE_MARGIN):
+                collisionObstacle = self.obstaclesList.__getitem__(compteur+1)
+                borderNodeLeftBottom = Node(bottomLeftCorner.__getitem__(0), (bottomLeftCorner.__getitem__(1)+collisionObstacle.__getitem__(1))/2)
+            else:
+                borderNodeLeftBottom = Node((bottomLeftCorner.__getitem__(0), (bottomLeftCorner.__getitem__(1)+self.MAP_SIZE_Y)/2))
+
+            self.__connectTwoNodes(nodeSafeZoneLeft,borderNodeLeftBottom)
+
+
+
+            if (compteur == self.obstaclesList.__len__()-1): #si dernier obstacle
                 cornerTR = (self.MAP_SIZE_X,0)
+
             elif (self.obstaclesList.__getitem__(compteur+1).__getitem__(0) > currentObstacle.__getitem__(0) + self.SAFE_MARGIN):
-                cornerTR = (self.obstaclesList.__getitem__(compteur+1).__getitem__(0),0)
+                cornerTR = (self.obstaclesList.__getitem__(compteur+1).__getitem__(0)-self.SAFE_MARGIN,0)
             else:
                 pass
             borderNodeRightTop = Node((topRightCorner.__getitem__(0), topRightCorner.__getitem__(1)/2))
             borderNodeRightDown = Node((bottomRightCorner.__getitem__(0), (bottomRightCorner.__getitem__(1)+self.MAP_SIZE_Y)/2))
             self.__connectTwoNodes(borderNodeLeftTop,borderNodeRightTop)
-            self.__connectTwoNodes(borderNodeLeftDown, borderNodeRightDown)
+            self.__connectTwoNodes(borderNodeLeftBottom, borderNodeRightDown)
             cornerTL = (borderNodeRightDown.positionX,0)
             cornerBL = (borderNodeRightDown, self.MAP_SIZE_Y)
             nodeSafeZoneRight = Node(SafeZone(cornerTL, cornerTR, cornerBL).getCenterOfSafeZone())
@@ -51,6 +68,13 @@ class GraphGenerator:
             self.__connectTwoNodes(borderNodeRightDown, nodeSafeZoneRight)
             nodeSafeZoneLeft = nodeSafeZoneRight
         self.__displayGraph()
+
+    def __defaultStart(self, firstObstacle):
+        cornerTL = (0, 0)
+        cornerBL = (0, self.MAP_SIZE_Y)
+        cornerTR = (firstObstacle.__getitem__(0) - self.SAFE_MARGIN, cornerTL.__getitem__(1))
+        nodeSafeZoneLeft = Node(SafeZone(cornerTL, cornerTR, cornerBL).getCenterOfSafeZone())
+        return nodeSafeZoneLeft
 
     def __connectTwoNodes(self, firstNode, secondNode):
         firstNode, secondNode = self.__areNodesPresentInNodesList(firstNode, secondNode)
@@ -79,18 +103,17 @@ class GraphGenerator:
         cv2.namedWindow('image')
         for compteur in range (0, self.obstaclesList.__len__()):
             currentObstacle = self.obstaclesList.__getitem__(compteur)
-            cv2.rectangle(img, (currentObstacle.__getitem__(0) - 20, currentObstacle.__getitem__(1) - 20), (currentObstacle.__getitem__(0) + 20, currentObstacle.__getitem__(1) + 20),
+            cv2.rectangle(img, (currentObstacle.__getitem__(0) - self.SAFE_MARGIN, currentObstacle.__getitem__(1) - self.SAFE_MARGIN), (currentObstacle.__getitem__(0) + self.SAFE_MARGIN, currentObstacle.__getitem__(1) + self.SAFE_MARGIN),
                       (0, 255, 0), -1, 1)
         for compteur in range (0, self.nodesList.__len__()):
             currentNode = self.nodesList.__getitem__(compteur)
             departPoint = (currentNode.positionX, currentNode.positionY)
-            print departPoint
             connectedNode = currentNode.getConnectedNodesList()
             for compteurConnected in range(0, connectedNode.__len__()):
                 finalNode = connectedNode.__getitem__(compteurConnected)
                 finalPoint = (finalNode.positionX, finalNode.positionY)
                 cv2.line(img, departPoint, finalPoint,
-                      (255, 0, 0), 3, 1)
+                      (255, 0, 0), 1, 1)
         cv2.imshow('image', img)
         while (1):
             esc = cv2.waitKey(1)
@@ -98,5 +121,5 @@ class GraphGenerator:
                 break
         cv2.destroyAllWindows
 
-bob = GraphGenerator ([(100,100), (300,300), (500,500)])
+bob = GraphGenerator ([(200,200), (350,300), (450,500)])
 bob.generateGraph()

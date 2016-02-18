@@ -11,6 +11,3 @@ class Node:
 
     def getConnectedNodesList(self):
         return self.connectedNodes
-
-    def __str__(self):
-        print self.positionX, self.positionY
