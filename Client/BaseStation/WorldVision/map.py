@@ -4,8 +4,8 @@ import shape
 
 class Map:
 
-    def __init__(self, shapes = []):
-        self.__shapes = shapes
+    def __init__(self):
+        self.__shapes = []
 
 
 

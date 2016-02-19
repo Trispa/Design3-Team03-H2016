@@ -4,7 +4,7 @@ import cv2
 class worldVision:
 
     def __init__(self):
-        self.cap = cv2.VideoCapture(1)
+        self.cap = cv2.VideoCapture(2)
 
 
     def saveImage(self):
@@ -16,4 +16,4 @@ class worldVision:
         geometricalImage.addLabels()
 
         worldImage = geometricalImage.drawMapOnImage()
-        cv2.imwrite( "../../../Shared/worldImage.jpg", worldImage );
+        cv2.imwrite( "../../Shared/worldImage.jpg", worldImage );

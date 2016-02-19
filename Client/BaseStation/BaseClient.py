@@ -21,7 +21,7 @@ def sendImage():
     print("asking for new images")
     world = worldVision()
     world.saveImage()
-    encoded = base64.b64encode(open("../../Shared/worldVision.jpg", "rb").read())
+    encoded = base64.b64encode(open("../../Shared/worldImage.jpg", "rb").read())
     socketIO.emit('sendingImage', encoded)
 
 socketIO.on('needUpdatedInfo', sendImage)
