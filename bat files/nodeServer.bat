@@ -1,5 +1,3 @@
 cd ..
-cd Base
-cd UI
-cd js
-node server.js
+cd Server
+node broadcaster.js
