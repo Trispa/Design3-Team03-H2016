@@ -2,7 +2,7 @@ from nanpy import ArduinoApi, SerialManager, Servo, ReadManchester
 import time
 import ctypes
 #class ManchesterDecoder permet de decoder le code manchester
-
+chaine = '\0'
 class ManchesterDecoder:
     def __init__(self, ):
         self.manchester_buffer = []
@@ -15,17 +15,21 @@ class ManchesterDecoder:
         """
 
 def main():
-        connection = SerialManager(device='COM3')
+        connection = SerialManager(device="/dev/ttyUSB0")
         man =  ReadManchester(2,3, connection = connection)
+        #man.enableInterrupt(True);
 
         while(1):
-            maChaine = man.getMaschesterBits()
-            time.sleep(1)
-            if(maChaine != '\0'):
-                print(maChaine)
+            chaine = man.getMaschesterBits()
+            if(chaine != '\0'):
+                print(chaine)
+                #man.enableInterrupt(False)
+
+
 
 
 if __name__ == '__main__':
     main()
+
 
 
