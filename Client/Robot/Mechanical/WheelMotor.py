@@ -3,7 +3,7 @@ class WheelMotor:
         #utilise code pour savoir c'est quel roue
         pass
 
-    def _setVitesse(self, vitesse):
+    def setVitesse(self, vitesse):
         # si vitesse positive alors avance sinon recule
         
         pass
