@@ -1,5 +1,5 @@
 #include "commandReceiver.h"
-
+#include <stdlib.h>
 #define StandardHeaderLenght 5
 #define NumberOfBytesInLong 4
 #define ASCIIOffset 48
@@ -8,6 +8,8 @@
 #define MilimetersToTicks 7.69
 #define endingLEDPin 13
 
+ char  *machaine;
+ int bitRecu;
 CommandReceiver::CommandReceiver()
 {
 
@@ -17,6 +19,13 @@ CommandReceiver::CommandReceiver(DriveMoteur* d)
 {
   dm = d;
 }
+
+CommandReceiver::CommandReceiver(ReadManchester* rm)
+{
+  readManchester = rm;
+  
+}
+  
 
 void CommandReceiver::decomposeParameters() {
 	byte numberOfParameters = Serial.read() - ASCIIOffset;
@@ -71,6 +80,13 @@ void CommandReceiver::dispatchCommand() {
     dm[parameters[0]-1].driveMoteur(parameters[1]/100.0, parameters[2]);
     break;
 
+  case 4: // ReadMAnchesterBits
+    machaine = readManchester->getMaschesterBits();
+    bitRecu =   atoi( machaine );
+    if(callbackRequested == 1){
+      sendCallback(bitRecu);
+    }
+    break;
 	default: //for test purposes
 		if(callbackRequested == 1) {
 			sendCallback(parameters[0]);
@@ -84,6 +100,10 @@ void CommandReceiver::sendCallback(long callbackData) {
 	Serial.print(callbackData, DEC);
 }
 
+/*void CommandReceiver::sendCallback(char* callbackData) {
+  Serial.print('R');
+  Serial.print(callbackData);
+}*/
 
 void CommandReceiver::executeCommand() {
 	readPort();

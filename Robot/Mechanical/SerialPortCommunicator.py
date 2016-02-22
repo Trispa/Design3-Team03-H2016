@@ -1,6 +1,8 @@
 import serial
 from time import sleep
 import struct
+import binascii
+
 
 class SerialPortCommunicator:
     COMMAND_INDICATOR = "C"
@@ -12,10 +14,13 @@ class SerialPortCommunicator:
     LED_FUNCTION_ON = 1
     LED_FUNCTION_OFF = 2
     CHANGE_MOTEUR_SPEED = 3
+    GET_CODE_MANCHESTER = 4
     CW = 0
     CCW = 1
 
-    def __init__(self, bitrateArduino = 115200, arduinoPort = "/dev/ttyUSB0"):
+	
+
+    def __init__(self, bitrateArduino = 9600, arduinoPort = "/dev/ttyUSB0"):
         self.arduino = serial.Serial(arduinoPort, bitrateArduino, timeout = 1)
         #self.polulu = serial.Serial(poluluPort, bitratePolulu, timeout = 1)
         sleep(1)
@@ -40,7 +45,8 @@ class SerialPortCommunicator:
         if waitedTime < timeoutDelay:
             receivedCallback = self.arduino.readline()
         else:
-            receivedCallback = -1
+            receivedCallback = self.arduino.readline()
+            #receivedCallback = -1
 
         return receivedCallback
 
@@ -57,13 +63,57 @@ class SerialPortCommunicator:
     def driveMoteur(self, noMoteur, speed, direction): #!!! speed * 100 !!!
         self._sendCommand(self.CHANGE_MOTEUR_SPEED, self.FALSE, self.ONE_SECOND_DELAY, noMoteur, speed, direction)
 
+    #################################### MANCHESTER ################################
+    def getManchesterCode(self):
+		return self._sendCommand(self.GET_CODE_MANCHESTER,self.TRUE,self.ONE_SECOND_DELAY, 1)
+
+    def getCodebits(self):
+        trouve = 0
+        indice = 0
+        chaine = self.getManchesterCode();
+        c = ''
+        data = ""
+        patern = "111111110"
+        if(chaine != ""):
+            while  (trouve == 0):
+                indice  = indice + 1
+                bitStop = chaine[indice: indice+16]
+                if(bitStop[:9] == patern):
+                    trouve == 1
+                    data = bitStop[9:]
+                    break
+        else:
+            return -1
+        print("chaine recu : "+chaine)
+        print("code  : " + data)
+        return data
+
+    def letter_from_bits(self,bits, encoding='utf-8', errors='surrogatepass'):
+        n = int(bits, 2)
+        return self.int2bytes(n).decode(encoding, errors)
+
+    def int2bytes(self, i):
+        hex_string = '%x' % i
+        n = len(hex_string)
+        return binascii.unhexlify(hex_string.zfill(n + (n & 1)))
+
+    def getAsciiManchester(self):
+        data = spc.getCodebits()
+        if(data == -1):
+            print ("la chaine recu est vide ")
+        else:
+            return spc.letter_from_bits(data)
+        return -2
+    #################################### END MANCHESTER ################################
+
+
+
+
 if __name__ == "__main__":
-	spc = SerialPortCommunicator()
-	spc.turnOnEndingLED()
-	spc.driveMoteur(1, 20, 0)
-	sleep(4)
-	spc.driveMoteur(1, 30, 1)
-	sleep(4)
-	spc.driveMoteur(1, 0, 0)
-	spc.turnOffEndingLED()
-	sleep(1)
+    spc = SerialPortCommunicator()
+    letter = spc.getAsciiManchester()
+    if(letter ==-2):
+        print("Erreur")
+    else:
+        print("ASCII :" + letter)
+

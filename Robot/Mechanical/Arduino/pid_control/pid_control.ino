@@ -11,28 +11,46 @@
 #include "DriveMoteur.h"
 #include "commandReceiver.h"
 
-DriveMoteur dv[4] = {DriveMoteur(4,18, 46, 47), DriveMoteur(5,19, 48, 49), DriveMoteur(6,20, 50, 51), DriveMoteur(7,21, 52, 53)};
+#include "ReadManchester.h"
 
-CommandReceiver cmdRec = CommandReceiver(dv);
+//DriveMoteur dv[4] = {DriveMoteur(4,18, 46, 47), DriveMoteur(5,19, 48, 49), DriveMoteur(6,20, 50, 51), DriveMoteur(7,21, 52, 53)};
+
+
+ReadManchester rm =  ReadManchester(2,3);
+CommandReceiver cmdR = CommandReceiver(&rm);
+
+
+
+char* maChaine;
 
 void setup() {
-  Serial.begin(115200);
-  for(int i = 0; i < NB_DRIVEMOTEUR; i++)
+  Serial.begin(9600);
+  
+  
+  /*for(int i = 0; i < NB_DRIVEMOTEUR; i++)
     dv[i].driveMoteur(0.2, 0);
-//dv[0].driveMoteur(0.2, 0);
-//dv[3].driveMoteur(0.2, 1);
+  dv[0].driveMoteur(0.2, 0);
+  dv[3].driveMoteur(0.2, 1);
+  */
 }
 
 void loop() 
 {
-  cmdRec.process();
-  for(int i = 0; i < NB_DRIVEMOTEUR; i++)
+  
+  //cmdR.process();
+  
+  maChaine = rm.getMaschesterBits();
+  if(maChaine != '\0')
+  Serial.println(maChaine);
+  
+  /*for(int i = 0; i < NB_DRIVEMOTEUR; i++)
   {
       if(cmdRec.dm[i].isRunning())
       {
         cmdRec.dm[i].asservissement();
       }
   }
+  */
 
 }
 
