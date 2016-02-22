@@ -6,26 +6,6 @@
 #include "DriveMoteur.h"
 
 
-volatile unsigned long freqEnco1 = 0;
-volatile unsigned long startCounting = 0;
-volatile unsigned long endCounting = 0;
-volatile unsigned long nbPulse = 0;
-int limitNbPulse = 150;
-
-
-static void fctInterrupt()
-	{
-		if(nbPulse >= limitNbPulse)
-  		{
-    		endCounting = micros();
-    		freqEnco1 = (1000000*nbPulse/(endCounting - startCounting));
-    		startCounting = endCounting;
-    		nbPulse = 0;
-  		}
-  		else if(nbPulse < limitNbPulse)
-   			 nbPulse ++;
-	}
-
 DriveMoteur::DriveMoteur(){}
 
 DriveMoteur::DriveMoteur(int pinMoteur, int enco, int pin1, int pin2)
@@ -37,32 +17,23 @@ DriveMoteur::DriveMoteur(int pinMoteur, int enco, int pin1, int pin2)
 	_pinEnco = enco;
 	_pin1 = pin1;
 	_pin2 = pin2;
-	input = 1000;
-	output = 1000;
-	setpoint = 1000;
-	
-	myPID.SetMode(AUTOMATIC);
-	myPID.SetOutputLimits(550, 2760);
-	interrupAttach =false;
-	digitalWrite(_pin1, LOW);
-	digitalWrite(_pin2, LOW);
+	input = 0;
+	output = 0;
+	setpoint = 0;
 
+  driveMoteur(0,0);
 }
-//0 = CW -- 1 = CCW
+//0 = CW
+//1 = CCW
 void DriveMoteur::driveMoteur(double speed, int direction)
 {
   //On active l'interrup pour l'encodeur du moteur
 	//On analogWrite avec un pwm passer prealablement dans lasservissement
-	Serial.print("Vitesse desire : "); Serial.print(speed);
-	Serial.print("   Vitesse reel : "); Serial.print(encoFreqToSpeed(input));
-	Serial.print("   Output : "); Serial.println(encoFreqToSpeed(output));
+//	Serial.print("Vitesse desire : "); Serial.print(speed);
+//	Serial.print("   Vitesse reel : "); Serial.print(encoFreqToSpeed(input));
+//	Serial.print("   Output : "); Serial.println(encoFreqToSpeed(output));
 	if(speed > 0)
 		{
-			if(!interrupAttach)
-				{
-					interrupAttach = true;
-					setInterrupForEnco(interrupAttach);
-				}
 			if(direction == 0)
 			{
 				digitalWrite(_pin1, LOW);
@@ -74,14 +45,12 @@ void DriveMoteur::driveMoteur(double speed, int direction)
 				digitalWrite(_pin2, LOW);
 			}
 			setpoint = speedToEncoFreq(speed);
-			asservissement();
+      asservissement();
 		}
 	//On desactive l'interrup de lencodeur
 	//On analogWrite 0 pour arreter l'envoi des pwm et imobiliser le moteur
 	else
 		{
-			interrupAttach = false;
-			setInterrupForEnco(interrupAttach);
 			analogWrite(_pinMoteur, 0);
 			setpoint = 0;
 			digitalWrite(_pin1, LOW);
@@ -120,26 +89,10 @@ double DriveMoteur::PWMToEncoFreq(int PWM)
 
 void DriveMoteur::asservissement()
 {
-	input = freqEnco1;
-	myPID.Compute();
 	analogWrite(_pinMoteur, encoFreqToPWM(output));
 	Serial.print("Vitesse desire : "); Serial.print(encoFreqToSpeed(setpoint));
 	Serial.print("   Vitesse reel : "); Serial.print(encoFreqToSpeed(input));
 	Serial.print("   Output : "); Serial.println(encoFreqToSpeed(output));
-}
-
-double DriveMoteur::getFreqFromEnco()
-{
-	return freqEnco1;
-}
-
-void DriveMoteur::setInterrupForEnco(boolean attach)
-{
-//Pin dinterruption arduino mega 18, 19, 20, 21
-	if(attach)
-		attachInterrupt(digitalPinToInterrupt(_pinEnco), fctInterrupt, RISING);
-	else
-		detachInterrupt(digitalPinToInterrupt(_pinEnco)); 
 }
 
 boolean DriveMoteur::isRunning()
@@ -147,5 +100,25 @@ boolean DriveMoteur::isRunning()
 	return setpoint != 0;
 }
 
+void DriveMoteur::setInput(double i)
+{
+  input = i;
+}
 
+int DriveMoteur::getPinEncoInterrup()
+{
+  return _pinEnco;
+}
 
+double* DriveMoteur::getInput()
+{
+ return &input;
+}
+double* DriveMoteur::getOutput()
+{
+  return &output;
+}
+double* DriveMoteur::getSetpoint()
+{
+  return &setpoint;
+}

@@ -71,6 +71,12 @@ void CommandReceiver::dispatchCommand() {
     dm[parameters[0]-1].driveMoteur(parameters[1]/100.0, parameters[2]);
     break;
 
+ case 4:
+    for(int i = 0; i<4; i++)
+    {
+      dm[i].driveMoteur(0,0);
+    }
+
 	default: //for test purposes
 		if(callbackRequested == 1) {
 			sendCallback(parameters[0]);

@@ -12,10 +12,11 @@ class SerialPortCommunicator:
     LED_FUNCTION_ON = 1
     LED_FUNCTION_OFF = 2
     CHANGE_MOTEUR_SPEED = 3
+    STOP_ALL_MOTEUR = 4
     CW = 0
     CCW = 1
 
-    def __init__(self, bitrateArduino = 115200, arduinoPort = "/dev/ttyUSB0"):
+    def __init__(self, bitrateArduino = 115200, arduinoPort = "/dev/ttyUSB2"):
         self.arduino = serial.Serial(arduinoPort, bitrateArduino, timeout = 1)
         #self.polulu = serial.Serial(poluluPort, bitratePolulu, timeout = 1)
         sleep(1)
@@ -54,16 +55,13 @@ class SerialPortCommunicator:
 
     def turnOffEndingLED(self):
         self._sendCommand(self.LED_FUNCTION_OFF, self.FALSE, self.ONE_SECOND_DELAY, 1)
-    def driveMoteur(self, noMoteur, speed, direction): #!!! speed * 100 !!!
-        self._sendCommand(self.CHANGE_MOTEUR_SPEED, self.FALSE, self.ONE_SECOND_DELAY, noMoteur, speed, direction)
+
+    def driveMoteur(self, noMoteur, speed, direction):
+        self._sendCommand(self.CHANGE_MOTEUR_SPEED, self.FALSE, self.ONE_SECOND_DELAY, noMoteur, speed*100, direction)
+
+    def stopAllMotor(self):
+        self._sendCommand(self.STOP_ALL_MOTEUR, self.FALSE, self.ONE_SECOND_DELAY, 1)
 
 if __name__ == "__main__":
-	spc = SerialPortCommunicator()
-	spc.turnOnEndingLED()
-	spc.driveMoteur(1, 20, 0)
-	sleep(4)
-	spc.driveMoteur(1, 30, 1)
-	sleep(4)
-	spc.driveMoteur(1, 0, 0)
-	spc.turnOffEndingLED()
-	sleep(1)
+    spc = SerialPortCommunicator()
+    spc.stopAllMotor()

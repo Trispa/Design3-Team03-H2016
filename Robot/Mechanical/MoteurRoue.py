@@ -9,34 +9,110 @@ class MoteurRoue:
 
 
     def stopAllMotors(self):
-        for i in range(1, NB_MOTEUR):
-            self.spc.driveMoteur(i, 0, 0)
+        self.spc.stopAllMotor()
 
     def avancerCardinal(self, direction, speed):
-        if(direction.find("N") != -1):
-            self.spc.driveMoteur(1, speed*100, CCW)
-            self.spc.driveMoteur(4, speed*100, CW)
-        if(direction.find("S") != -1):
-            self.spc.driveMoteur(1, speed*100, CW)
-            self.spc.driveMoteur(4, speed*100, CCW)
-        if(direction.find("W") != -1):
-            self.spc.driveMoteur(3, speed*100, CCW)
-            self.spc.driveMoteur(2, speed*100, CW)
-        if(direction.find("E") != -1):
-            self.spc.driveMoteur(3, speed*100, CW)
-            self.spc.driveMoteur(2, speed*100, CCW)
+        self.beforeChangeDirection()
+        if(direction == "N"):
+            self.spc.driveMoteur(3, speed, CCW)
+            self.spc.driveMoteur(2, speed, CW)
+        if(direction == "S"):
+            self.spc.driveMoteur(3, speed, CW)
+            self.spc.driveMoteur(2, speed, CCW)
+        if(direction == "W"):
+            self.spc.driveMoteur(1, speed, CCW)
+            self.spc.driveMoteur(4, speed, CW)
+        if(direction == "E"):
+            self.spc.driveMoteur(1, speed, CW)
+            self.spc.driveMoteur(4, speed, CCW)
+        if(direction == "NE"):
+            self.spc.driveMoteur(3, speed, CCW)
+            self.spc.driveMoteur(2, speed, CW)
+            self.spc.driveMoteur(1, speed, CW)
+            self.spc.driveMoteur(4, speed, CCW)
+        if(direction == "NW"):
+            self.spc.driveMoteur(3, speed, CCW)
+            self.spc.driveMoteur(2, speed, CW)
+            self.spc.driveMoteur(1, speed, CCW)
+            self.spc.driveMoteur(4, speed, CW)
+        if(direction == "SE"):
+            self.spc.driveMoteur(3, speed, CW)
+            self.spc.driveMoteur(2, speed, CCW)
+            self.spc.driveMoteur(1, speed, CW)
+            self.spc.driveMoteur(4, speed, CCW)
+        if(direction == "SW"):
+            self.spc.driveMoteur(3, speed, CW)
+            self.spc.driveMoteur(2, speed, CCW)
+            self.spc.driveMoteur(1, speed, CCW)
+            self.spc.driveMoteur(4, speed, CW)
 
     def rotation(self, direction, speed):
+        self.beforeChangeDirection()
         if(direction == "CW"):
             for i in range(1, NB_MOTEUR):
-                self.spc.driveMoteur(i, speed * 100, CW)
+                self.spc.driveMoteur(i, speed, CW)
+                # time.sleep(0.01)
         elif(direction == "CCW"):
             for i in range(1, NB_MOTEUR):
-                self.spc.driveMoteur(i, speed * 100, CCW)
+                self.spc.driveMoteur(i, speed, CCW)
+
+    def beforeChangeDirection(self):
+        self.stopAllMotors()
+        time.sleep(0.1)
+
+    def demo(self):
+        self.avancerCardinal("W", 0.18)
+        time.sleep(2)
+
+        self.avancerCardinal("E", 0.18)
+        time.sleep(4)
+
+        self.avancerCardinal("W",0.18)
+        time.sleep(2)
+
+        self.stopAllMotors()
+
+    def demo2(self):
+        self.avancerCardinal("SW", 0.18)
+        time.sleep(2)
+
+        self.avancerCardinal("NE", 0.18)
+        time.sleep(4)
+
+        self.avancerCardinal("SW",0.18)
+        time.sleep(2)
+
+        self.stopAllMotors()
 
 if __name__ == '__main__':
     mr = MoteurRoue()
-    mr.rotation("CW", 0.2)
-    time.sleep(4)
+    mr.demo()
+
+    # mr.rotation("CCW", 0.1)
+    # time.sleep(2)
+    # mr.stopAllMotors()
+    # time.sleep(1)
+    #
+    # mr.rotation("CCW", 0.2)
+    # time.sleep(1.05)
+    # mr.stopAllMotors()
+    # time.sleep(1)
+    #
+    # mr.rotation("CW", 0.2)
+    # time.sleep(1.05)
+    # mr.stopAllMotors()
+    # time.sleep(1)
+    #
+    # mr.rotation("CCW", 0.2)
+    # time.sleep(1.05)
+    # mr.stopAllMotors()
+    # time.sleep(1)
+
+
+    # mr.avancerCardinal("N", 0.2)
+    # time.sleep(3)
+    #
+    # mr.avancerCardinal("SW", 0.2)
+    # time.sleep(3)
     mr.stopAllMotors()
 
