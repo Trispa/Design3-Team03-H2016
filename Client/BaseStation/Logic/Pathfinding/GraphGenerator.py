@@ -1,23 +1,25 @@
 from Client.BaseStation.Logic.Pathfinding.Node import Node
 from Client.BaseStation.Logic.Pathfinding.SafeZone import SafeZone
+from Client.BaseStation.Logic.Pathfinding.Obstacle import Obstacle
 import numpy as np
 import cv2
 
 class GraphGenerator:
     MAP_SIZE_X = 1000
     MAP_SIZE_Y = 600
-    SAFE_MARGIN = 40
+    SAFE_MARGIN = 30
 
     def __init__(self, obstaclesList):
         self.obstaclesList = obstaclesList
         self.nodesList = []
-        self.obstaclesList.sort()
+        self.obstaclesList.sort(key=lambda obstacle: obstacle.positionX)
 
 
     def generateGraph(self):
-        firstObstacle = self.obstaclesList.__getitem__(0)
-        if (firstObstacle.__getitem__(0) - self.SAFE_MARGIN > 0):
-            nodeSafeZoneLeft = self.__defaultStart(firstObstacle)
+        firstObstacle = self.obstaclesList[0]
+        if (firstObstacle.positionX - self.SAFE_MARGIN > 0):
+            startingNode = self.__defaultStart(firstObstacle)
+            firstObstacle.setStartingNode(startingNode)
             compteur = 0
 
         else:
@@ -26,53 +28,101 @@ class GraphGenerator:
             compteur = 1
 
         for compteur in range (compteur, self.obstaclesList.__len__()):
-            currentObstacle = self.obstaclesList.__getitem__(compteur)
-            topLeftCorner = (currentObstacle.__getitem__(0) - self.SAFE_MARGIN, currentObstacle.__getitem__(1) - self.SAFE_MARGIN)
-            topRightCorner = (currentObstacle.__getitem__(0) + self.SAFE_MARGIN, currentObstacle.__getitem__(1) - self.SAFE_MARGIN)
-            bottomRightCorner = (currentObstacle.__getitem__(0) + self.SAFE_MARGIN, currentObstacle.__getitem__(1) + self.SAFE_MARGIN)
-            bottomLeftCorner = (currentObstacle.__getitem__(0) - self.SAFE_MARGIN, currentObstacle.__getitem__(1) + self.SAFE_MARGIN)
+            currentObstacle = self.obstaclesList[(compteur)]
 
-
-            if (compteur != 0 and self.obstaclesList.__getitem__(compteur-1).__getitem__(0) >= currentObstacle.__getitem__(0) - self.SAFE_MARGIN):
-                collisionObstacle = self.obstaclesList.__getitem__(compteur-1)
-                borderNodeLeftTop = Node((topLeftCorner.__getitem__(0), (topLeftCorner.__getitem__(1)+collisionObstacle.__getitem__(1))/2))
+            startingNode = currentObstacle.startingNode
+            if (startingNode.positionX == 0 and startingNode.positionY == 0):
+                startingNode = endNode
+            topLeftCorner = (currentObstacle.positionX - self.SAFE_MARGIN, currentObstacle.positionY - self.SAFE_MARGIN)
+            topRightCorner = (currentObstacle.positionX + self.SAFE_MARGIN, currentObstacle.positionY - self.SAFE_MARGIN)
+            bottomRightCorner = (currentObstacle.positionX + self.SAFE_MARGIN, currentObstacle.positionY + self.SAFE_MARGIN)
+            bottomLeftCorner = (currentObstacle.positionX - self.SAFE_MARGIN, currentObstacle.positionY + self.SAFE_MARGIN)
+            collisionUpperLeftCorner, collisionUpperRightCorner, collisionBottomLeftCorner, collisionBottomRightCorner = self.__detectStackedObstacleXAxis(currentObstacle)
+            
+            borderNodeLeftTop = Node((topLeftCorner[0], (topLeftCorner[1]+collisionUpperLeftCorner.positionY+self.SAFE_MARGIN)/2))
+            self.__connectTwoNodes(startingNode,borderNodeLeftTop)
+            
+            borderNodeRightTop = Node((topRightCorner[0], (topRightCorner[1]+collisionUpperRightCorner.positionY+self.SAFE_MARGIN)/2))
+            
+            if(collisionUpperLeftCorner.positionY != 0):
+                tempNode = Node((collisionUpperLeftCorner.positionX + self.SAFE_MARGIN, (collisionUpperLeftCorner.positionY+self.SAFE_MARGIN + topLeftCorner[1])/2))
+                self.__connectTwoNodes(borderNodeLeftTop,tempNode)
+            elif(collisionUpperRightCorner.positionY != 0):
+                if collisionUpperLeftCorner.positionY == 0:
+                    tempNode = Node(((topLeftCorner[0]+collisionUpperRightCorner.positionX-self.SAFE_MARGIN)/2,topLeftCorner[1]/2))
+                    collisionUpperRightCorner.setStartingNode(tempNode)
+                    self.__connectTwoNodes(borderNodeLeftTop,tempNode)
+                    
+                if (collisionUpperRightCorner.positionX > collisionBottomRightCorner.positionX):
+                    collisionUpperLeftCornerTemp, collisionUpperRightCornerTemp, collisionBottomLeftCornerTemP, collisionBottomRightCornerTemp = self.__detectStackedObstacleXAxis(collisionUpperRightCorner)
+                    endNode = Node(collisionUpperRightCorner.positionX+self.SAFE_MARGIN,(collisionUpperRightCorner.positionY+collisionBottomRightCornerTemp)/2)
             else:
-                borderNodeLeftTop = Node((topLeftCorner.__getitem__(0), topLeftCorner.__getitem__(1)/2))
-            self.__connectTwoNodes(nodeSafeZoneLeft,borderNodeLeftTop)
-
-            if (compteur != self.obstaclesList.__len__()-1 and self.obstaclesList.__getitem__(compteur+1).__getitem__(0) <= currentObstacle.__getitem__(0) + self.SAFE_MARGIN):
-                collisionObstacle = self.obstaclesList.__getitem__(compteur+1)
-                borderNodeLeftBottom = Node(bottomLeftCorner.__getitem__(0), (bottomLeftCorner.__getitem__(1)+collisionObstacle.__getitem__(1))/2)
+                self.__connectTwoNodes(borderNodeLeftTop,borderNodeRightTop)
+                
+            borderNodeLeftBottom = Node((bottomLeftCorner[0], (bottomLeftCorner[1]+collisionBottomLeftCorner.positionY-self.SAFE_MARGIN)/2))
+            self.__connectTwoNodes(startingNode,borderNodeLeftBottom)
+            
+            borderNodeRightBottom = Node((bottomRightCorner[0], (bottomRightCorner[1]+collisionBottomRightCorner.positionY-self.SAFE_MARGIN)/2))
+            
+            if(collisionBottomLeftCorner.positionY != self.MAP_SIZE_Y):
+                tempNode = Node((collisionBottomLeftCorner.positionX + self.SAFE_MARGIN, (collisionBottomLeftCorner.positionY+self.SAFE_MARGIN + bottomLeftCorner[1])/2))
+                self.__connectTwoNodes(borderNodeLeftBottom,tempNode)
+            elif(collisionBottomRightCorner.positionY != self.MAP_SIZE_Y):
+                if collisionBottomLeftCorner.positionY == self.MAP_SIZE_Y:
+                    tempNode = Node(((bottomLeftCorner[0]+collisionBottomRightCorner.positionX-self.SAFE_MARGIN)/2,(bottomLeftCorner[1]+self.MAP_SIZE_Y-self.SAFE_MARGIN)/2))
+                    collisionBottomRightCorner.setStartingNode(tempNode)
+                    self.__connectTwoNodes(borderNodeLeftBottom,tempNode)
+                    
+                if (collisionBottomRightCorner.positionX > collisionUpperRightCorner.positionX):
+                    collisionUpperLeftCornerTemp, collisionUpperRightCornerTemp, collisionBottomLeftCornerTemP, collisionBottomRightCornerTemp = self.__detectStackedObstacleXAxis(collisionBottomRightCorner)
+                    endNode = Node((collisionBottomRightCorner.positionX+self.SAFE_MARGIN,(collisionBottomRightCorner.positionY+collisionUpperRightCornerTemp.positionY)/2))
             else:
-                borderNodeLeftBottom = Node((bottomLeftCorner.__getitem__(0), (bottomLeftCorner.__getitem__(1)+self.MAP_SIZE_Y)/2))
+                 self.__connectTwoNodes(borderNodeLeftBottom,borderNodeRightBottom)
 
-            self.__connectTwoNodes(nodeSafeZoneLeft,borderNodeLeftBottom)
-
-
-
-            if (compteur == self.obstaclesList.__len__()-1): #si dernier obstacle
-                cornerTR = (self.MAP_SIZE_X,0)
-
-            elif (self.obstaclesList.__getitem__(compteur+1).__getitem__(0) > currentObstacle.__getitem__(0) + self.SAFE_MARGIN):
-                cornerTR = (self.obstaclesList.__getitem__(compteur+1).__getitem__(0)-self.SAFE_MARGIN,0)
-            else:
-                pass
-            borderNodeRightTop = Node((topRightCorner.__getitem__(0), topRightCorner.__getitem__(1)/2))
-            borderNodeRightDown = Node((bottomRightCorner.__getitem__(0), (bottomRightCorner.__getitem__(1)+self.MAP_SIZE_Y)/2))
-            self.__connectTwoNodes(borderNodeLeftTop,borderNodeRightTop)
-            self.__connectTwoNodes(borderNodeLeftBottom, borderNodeRightDown)
-            cornerTL = (borderNodeRightDown.positionX,0)
-            cornerBL = (borderNodeRightDown, self.MAP_SIZE_Y)
-            nodeSafeZoneRight = Node(SafeZone(cornerTL, cornerTR, cornerBL).getCenterOfSafeZone())
-            self.__connectTwoNodes(borderNodeRightTop, nodeSafeZoneRight)
-            self.__connectTwoNodes(borderNodeRightDown, nodeSafeZoneRight)
-            nodeSafeZoneLeft = nodeSafeZoneRight
+            if (collisionBottomRightCorner.positionY == self.MAP_SIZE_Y and collisionUpperRightCorner.positionY == 0):
+                cornerTL = (borderNodeRightTop.positionX, 0)
+                cornerBL = (borderNodeRightBottom.positionX, self.MAP_SIZE_Y)
+                if(compteur == self.obstaclesList.__len__() - 1):
+                    cornerTR = (self.MAP_SIZE_X,0)
+                else:
+                    cornerTR = (self.obstaclesList[compteur+1].positionX-self.SAFE_MARGIN,0)
+                endNode =  Node(SafeZone(cornerTL, cornerTR, cornerBL).getCenterOfSafeZone())
+            self.__connectTwoNodes(borderNodeRightTop,endNode)
+            self.__connectTwoNodes(borderNodeRightBottom,endNode)
+            
         self.__displayGraph()
+
+
+    def __detectStackedObstacleXAxis(self, verifiedObstacle):
+        collisionUpperLeftCorner = Obstacle((verifiedObstacle.positionX, 0))
+        collisionUpperRightCorner = Obstacle((verifiedObstacle.positionX, 0))
+        collisionBottomLeftCorner = Obstacle((verifiedObstacle.positionX, self.MAP_SIZE_Y))
+        collisionBottomRightCorner = Obstacle((verifiedObstacle.positionX, self.MAP_SIZE_Y))
+        for compteur in range(0, self.obstaclesList.__len__()):
+            currentObstacle = self.obstaclesList[compteur]
+            if currentObstacle != verifiedObstacle:
+                if (verifiedObstacle.positionX - 2*self.SAFE_MARGIN <= currentObstacle.positionX and verifiedObstacle.positionX + 2*self.SAFE_MARGIN >= currentObstacle.positionX):
+                    if currentObstacle.positionX <= verifiedObstacle.positionX and currentObstacle .positionY < verifiedObstacle .positionY:
+                        if currentObstacle.positionY > collisionUpperLeftCorner.positionY:
+                            collisionUpperLeftCorner = currentObstacle
+                    if currentObstacle.positionX >= verifiedObstacle.positionX and currentObstacle .positionY < verifiedObstacle .positionY:
+                        if currentObstacle.positionY > collisionUpperRightCorner.positionY:
+                            collisionUpperRightCorner = currentObstacle
+                    if currentObstacle.positionX <= verifiedObstacle.positionX and currentObstacle .positionY > verifiedObstacle .positionY:
+                        if currentObstacle.positionY < collisionBottomLeftCorner:
+                            collisionBottomLeftCorner = currentObstacle
+                    if currentObstacle.positionX >= verifiedObstacle.positionX and currentObstacle .positionY > verifiedObstacle .positionY:
+                        if currentObstacle.positionY < collisionBottomRightCorner:
+                            collisionBottomRightCorner = currentObstacle
+        return collisionUpperLeftCorner, collisionUpperRightCorner, collisionBottomLeftCorner, collisionBottomRightCorner
+
+
+
 
     def __defaultStart(self, firstObstacle):
         cornerTL = (0, 0)
         cornerBL = (0, self.MAP_SIZE_Y)
-        cornerTR = (firstObstacle.__getitem__(0) - self.SAFE_MARGIN, cornerTL.__getitem__(1))
+        cornerTR = (firstObstacle.positionX - self.SAFE_MARGIN, cornerTL[1])
         nodeSafeZoneLeft = Node(SafeZone(cornerTL, cornerTR, cornerBL).getCenterOfSafeZone())
         return nodeSafeZoneLeft
 
@@ -85,7 +135,7 @@ class GraphGenerator:
         toBeAddFirst = True
         toBeAddSecond = True
         for compteur in range(0, self.nodesList.__len__()):
-            currentNode = self.nodesList.__getitem__(compteur)
+            currentNode = self.nodesList[(compteur)]
             if (firstNode.positionX == currentNode.positionX and firstNode.positionY == currentNode.positionY):
                 firstNode = currentNode
                 toBeAddFirst = False
@@ -102,15 +152,15 @@ class GraphGenerator:
         img = np.zeros((600, 1000, 3), np.uint8)
         cv2.namedWindow('image')
         for compteur in range (0, self.obstaclesList.__len__()):
-            currentObstacle = self.obstaclesList.__getitem__(compteur)
-            cv2.rectangle(img, (currentObstacle.__getitem__(0) - self.SAFE_MARGIN, currentObstacle.__getitem__(1) - self.SAFE_MARGIN), (currentObstacle.__getitem__(0) + self.SAFE_MARGIN, currentObstacle.__getitem__(1) + self.SAFE_MARGIN),
+            currentObstacle = self.obstaclesList[(compteur)]
+            cv2.rectangle(img, (currentObstacle.positionX - self.SAFE_MARGIN, currentObstacle.positionY - self.SAFE_MARGIN), (currentObstacle.positionX + self.SAFE_MARGIN, currentObstacle.positionY + self.SAFE_MARGIN),
                       (0, 255, 0), -1, 1)
         for compteur in range (0, self.nodesList.__len__()):
-            currentNode = self.nodesList.__getitem__(compteur)
+            currentNode = self.nodesList[(compteur)]
             departPoint = (currentNode.positionX, currentNode.positionY)
             connectedNode = currentNode.getConnectedNodesList()
             for compteurConnected in range(0, connectedNode.__len__()):
-                finalNode = connectedNode.__getitem__(compteurConnected)
+                finalNode = connectedNode[(compteurConnected)]
                 finalPoint = (finalNode.positionX, finalNode.positionY)
                 cv2.line(img, departPoint, finalPoint,
                       (255, 0, 0), 1, 1)
@@ -120,6 +170,9 @@ class GraphGenerator:
             if esc == 27: #escape pressed
                 break
         cv2.destroyAllWindows
-
-bob = GraphGenerator ([(200,200), (350,300), (450,500)])
+listObs = []
+listObs.append(Obstacle((200,200)))
+listObs.append(Obstacle((240,300)))
+listObs.append(Obstacle((600,150)))
+bob = GraphGenerator (listObs)
 bob.generateGraph()
