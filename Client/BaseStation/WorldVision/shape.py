@@ -1,7 +1,14 @@
 import cv2
 import numpy as np
+from color import Color
 
 class Shape:
+
+    colors = []
+    colors.append(Color(np.uint8([[[0,255,0]]]), "Green"))
+    colors.append(Color(np.uint8([[[255,0,0]]]), "Blue"))
+    colors.append(Color(np.uint8([[[150,179,255]]]), "Red"))
+    colors.append(Color(np.uint8([[[0,255,255]]]), "Yellow"))
 
     def __init__(self, geometricName, contour):
         self.contour = contour

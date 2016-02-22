@@ -14,13 +14,8 @@ class WorldImage:
     def setImage(self, mapImage):
         self.__mapImage = mapImage
 
-    def setMap(self, builder):
-        if builder == "GeometricalFilter":
+    def setMap(self):
             self.__map = self.__myMapBuilder.buildMapWithAllFilter(self.__mapImage)
-        elif builder == "ColorBuildByClosing":
-            self.__map = self.__myMapBuilder.buildByColorClosing(self.__mapImage)
-        elif builder == "ColorBuildByOpening":
-            self.__map = self.__myMapBuilder.buildByColorOpening(self.__mapImage)
 
     def getMap(self):
         return self.__map

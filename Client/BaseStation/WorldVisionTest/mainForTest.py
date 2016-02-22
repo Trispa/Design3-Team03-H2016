@@ -3,32 +3,25 @@ import cv2
 
 
 if __name__ == '__main__':
-    myImageName = "Images\Test1.jpg"
 
-    cv2.imshow("Drawn world", cv2.imread(myImageName, 1))
-    cv2.waitKey(0)
+    cap = cv2.VideoCapture(0)
 
-    closingImage = WorldImage(cv2.imread(myImageName, 1))
-    closingImage.setMap("ColorBuildByClosing")
-    closingImage.addLabels()
-    closingMap = closingImage.getMap()
-    cv2.imshow("Closing", closingImage.drawMapOnImage())
-    cv2.waitKey(0)
+    while(True):
+        # Capture frame-by-frame
+        ret, frame = cap.read()
 
-    openingImage = WorldImage(cv2.imread(myImageName, 1))
-    openingImage.setMap("ColorBuildByOpening")
-    openingImage.addLabels()
-    openingMap = openingImage.getMap()
-    cv2.imshow("Opening", openingImage.drawMapOnImage())
-    cv2.waitKey(0)
+        geometricalImage = WorldImage(frame)
+        geometricalImage.setMap()
+        geometricalImage.addLabels()
 
-    geometricalImage = WorldImage(cv2.imread(myImageName, 1))
-    geometricalImage.setMap("GeometricalFilter")
-    geometricalImage.addLabels()
-    geometricalMap = geometricalImage.getMap()
-    cv2.imshow("Geometric", geometricalImage.drawMapOnImage())
-    cv2.waitKey(0)
+        worldImage = geometricalImage.drawMapOnImage()
 
-    mergedMap = closingMap.mergeShapeList(openingMap)
-    print(len(mergedMap.getContourList()))
+        cv2.imshow('frame', worldImage)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+
+    # When everything done, release the capture
+    cap.release()
+    cv2.destroyAllWindows()
 
