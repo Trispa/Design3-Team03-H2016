@@ -15,8 +15,12 @@ class WorldImage:
         self.__mapImage = mapImage
 
     def setMap(self, builder):
-        if builder == "AllFilter":
+        if builder == "GeometricalFilter":
             self.__map = self.__myMapBuilder.buildMapWithAllFilter(self.__mapImage)
+        elif builder == "ColorBuildByClosing":
+            self.__map = self.__myMapBuilder.buildByColorClosing(self.__mapImage)
+        elif builder == "ColorBuildByOpening":
+            self.__map = self.__myMapBuilder.buildByColorOpening(self.__mapImage)
 
     def getMap(self):
         return self.__map
@@ -30,7 +34,7 @@ class WorldImage:
             size, baseline = cv2.getTextSize(shape.getName(), font, scale, thickness)
             textWidth = size[0]
             textHeight = size[1]
-            x,y,w,h = shape.getBoudingRectangle()
+            x,y,w,h = shape.getBoundingRectangle()
             #Center text
             point = (x + ((w - textWidth) / 2), y + ((h + textHeight) / 2))
             cv2.putText(self.__mapImage, shape.getName(), point, font, scale, (0,0,0), thickness, 8)

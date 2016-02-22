@@ -1,6 +1,27 @@
-from Client.BaseStation.WorldVision import worldVision as WV
+from Client.BaseStation.WorldVision.worldImage import WorldImage
 import cv2
 
+
 if __name__ == '__main__':
-    myWorldVision = WV.WorldVision(cv2.imread("Images\easyPicture.png", 1))
-    myWorldVision.printDrawnWorld()
+
+    cap = cv2.VideoCapture(1)
+
+    ret, frame = cap.read()
+
+    geometricalImage = WorldImage(frame)
+    geometricalImage.setMap("GeometricalFilter")
+    geometricalImage.addLabels()
+
+    worldImage = geometricalImage.drawMapOnImage()
+    cv2.imwrite( "../../../Shared/worldImage.jpg", worldImage )
+
+    ret, frame = cap.read()
+
+    geometricalImage = WorldImage(frame)
+    geometricalImage.setMap("GeometricalFilter")
+    geometricalImage.addLabels()
+
+    worldImage = geometricalImage.drawMapOnImage()
+    cv2.imwrite( "../../../Shared/worldImage2.jpg", worldImage )
+
+
