@@ -22,7 +22,7 @@ def needNewCoordinates(*args):
         robot.botInfo = {"voltage" : "N/A",
                         "decodedCharacter" : "N/A",
                         "target" : "N/A"}
-        socketIO.emit('sendingEndSignal')
+        socketIO.emit('sendEndSignal')
     else:
         robot.botInfo['voltage'] = "12V"
         robot.botInfo['decodedCharacter'] = "A"
@@ -30,11 +30,11 @@ def needNewCoordinates(*args):
         socketIO.emit('needNewCoordinates')
 
 def sendInfo():
-    socketIO.emit('sendingInfo', robot.botInfo)
+    socketIO.emit('sendInfo', robot.botInfo)
 
-socketIO.emit('sendingBotClientStatus','Connected')
+socketIO.emit('sendBotClientStatus','Connected')
 socketIO.on('needUpdatedInfo', sendInfo)
-socketIO.on('sendingNextCoordinates', needNewCoordinates)
+socketIO.on('sendNextCoordinates', needNewCoordinates)
 
 socketIO.wait()
 

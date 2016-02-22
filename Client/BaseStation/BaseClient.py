@@ -12,9 +12,9 @@ with open("../../Shared/config.json") as json_data_file:
 
 socketIO = SocketIO(config['url'], int(config['port']))
 
-def sendingNextCoordinates(*args):
+def sendNextCoordinates(*args):
     print("Sending orders")
-    socketIO.emit("sendingNextCoordinates", sequencer.handleCurrentState())
+    socketIO.emit("sendNextCoordinates", sequencer.handleCurrentState())
 
 def sendImage():
     print("asking for new images")
@@ -22,7 +22,7 @@ def sendImage():
     socketIO.emit('sendingImage', encoded)
 
 socketIO.on('needUpdatedInfo', sendImage)
-socketIO.on('needNewCoordinates', sendingNextCoordinates)
+socketIO.on('needNewCoordinates', sendNextCoordinates)
 
 socketIO.wait()
 
