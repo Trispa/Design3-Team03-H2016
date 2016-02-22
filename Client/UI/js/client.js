@@ -20,7 +20,7 @@ socket.on("sendingEndSignal", function(){
     $("#buttonGo").prop("disabled",false);
 });
 
-setInterval(function(){ socket.emit("needUpdatedInfo");}, 5000);
+setInterval(function(){ socket.emit("needUpdatedInfo");}, 3000);
 
 function start(){
     socket.emit("needNewCoordinates");
