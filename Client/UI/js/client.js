@@ -14,6 +14,8 @@ socket.on("sendingInfo", function(info){
     $("#asciiCharacter").text(info['decodedCharacter']);
     $("#target").text(info['target']);
     $("#voltage").text(info['voltage']);
+    $("#position").text(info['position']);
+    $("#orientation").text(info['orientation']);
 });
 
 socket.on("sendingEndSignal", function(){
