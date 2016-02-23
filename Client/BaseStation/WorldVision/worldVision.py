@@ -13,7 +13,7 @@ class worldVision:
 
         geometricalImage = WorldImage(frame)
 
-        geometricalImage.setMap("GeometricalFilter")
+        geometricalImage.setMap()
         geometricalImage.addLabels()
 
         worldImage = geometricalImage.drawMapOnImage()
