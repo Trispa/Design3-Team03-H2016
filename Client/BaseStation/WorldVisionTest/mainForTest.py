@@ -4,28 +4,23 @@ import cv2
 
 if __name__ == '__main__':
 
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(1)
 
-    while(True):
-        # Capture frame-by-frame
-        #ret, frame = cap.read()
-        frame = cv2.imread("Images/Test3.jpg")
+    ret, frame = cap.read()
 
-        geometricalImage = WorldImage(frame)
-        geometricalImage.setMap()
-        geometricalImage.addLabels()
-        worldImage = geometricalImage.drawMapOnImage()
-        cv2.imshow('frame', worldImage)
-        cv2.waitKey(0)
-        geometricalImage.defineShapesColor()
+    geometricalImage = WorldImage(frame)
+    geometricalImage.setMap("GeometricalFilter")
+    geometricalImage.addLabels()
 
+    worldImage = geometricalImage.drawMapOnImage()
+    cv2.imwrite( "../../../Shared/worldImage.jpg", worldImage )
 
-        cv2.imshow('frame', worldImage)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+    ret, frame = cap.read()
 
+    geometricalImage = WorldImage(frame)
+    geometricalImage.setMap("GeometricalFilter")
+    geometricalImage.addLabels()
 
-    # When everything done, release the capture
-    cap.release()
-    cv2.destroyAllWindows()
+    worldImage = geometricalImage.drawMapOnImage()
+    cv2.imwrite( "../../../Shared/worldImage2.jpg", worldImage )
 
