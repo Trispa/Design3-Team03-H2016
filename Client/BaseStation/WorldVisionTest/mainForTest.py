@@ -3,32 +3,25 @@ import cv2
 
 
 if __name__ == '__main__':
-    myImageName = "Images\Test1.jpg"
 
-    cv2.imshow("Drawn world", cv2.imread(myImageName, 1))
-    cv2.waitKey(0)
+    cap = cv2.VideoCapture(1)
 
-    closingImage = WorldImage(cv2.imread(myImageName, 1))
-    closingImage.setMap("ColorBuildByClosing")
-    closingImage.addLabels()
-    closingMap = closingImage.getMap()
-    cv2.imshow("Closing", closingImage.drawMapOnImage())
-    cv2.waitKey(0)
+    ret, frame = cap.read()
 
-    openingImage = WorldImage(cv2.imread(myImageName, 1))
-    openingImage.setMap("ColorBuildByOpening")
-    openingImage.addLabels()
-    openingMap = openingImage.getMap()
-    cv2.imshow("Opening", openingImage.drawMapOnImage())
-    cv2.waitKey(0)
-
-    geometricalImage = WorldImage(cv2.imread(myImageName, 1))
+    geometricalImage = WorldImage(frame)
     geometricalImage.setMap("GeometricalFilter")
     geometricalImage.addLabels()
-    geometricalMap = geometricalImage.getMap()
-    cv2.imshow("Geometric", geometricalImage.drawMapOnImage())
-    cv2.waitKey(0)
 
-    mergedMap = closingMap.mergeShapeList(openingMap)
-    print(len(mergedMap.getContourList()))
+    worldImage = geometricalImage.drawMapOnImage()
+    cv2.imwrite( "../../../Shared/worldImage.jpg", worldImage )
+
+    ret, frame = cap.read()
+
+    geometricalImage = WorldImage(frame)
+    geometricalImage.setMap("GeometricalFilter")
+    geometricalImage.addLabels()
+
+    worldImage = geometricalImage.drawMapOnImage()
+    cv2.imwrite( "../../../Shared/worldImage2.jpg", worldImage )
+
 
