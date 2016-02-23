@@ -22,34 +22,40 @@ class Square(Shape):
 #TODO
 class Triangle(Shape):
 
-    def __length(self, vector):
-        return math.sqrt(np.dot(vector, vector))
-
-    def __angle(self, vector1, vector2):
-        dot = np.dot(vector1,vector2)
-        x_modulus = np.sqrt((vector1*vector1).sum())
-        y_modulus = np.sqrt((vector2*vector2).sum())
-        cos_angle = dot / x_modulus / y_modulus # cosine of angle between x and y
-        angle = np.arccos(cos_angle)
-        return angle * 360 / 2 / np.pi # angle in degrees
-
     def __init__(self, geometricName, contour):
         Shape.__init__(self, geometricName, contour)
 
+    def __angle(self, vector1, vector2):
+        dot = vector1[0]*vector2[0] + vector1[1]*vector2[1]
+        x_modulus = np.sqrt((vector1[0]*vector1[0]) + (vector1[1]*vector1[1]))
+        y_modulus = np.sqrt((vector2[0]*vector2[0]) + (vector2[1]*vector2[1]))
+        cos_angle = dot / x_modulus / y_modulus
+        angle = np.arccos(cos_angle)
+        angleInDegree = (angle * 360 / 2 / np.pi)
+        return abs(angleInDegree - 180)
+
     def checkAngleValue(self):
         vectorList = []
-        vectorList.append(np.array([self.contour[0], self.contour[1]]))
-        vectorList.append(np.array([self.contour[1], self.contour[2]]))
-        vectorList.append(np.array([self.contour[2], self.contour[0]]))
+        for point in range(0, len(self.contour) - 1):
+            vectorList.append(self.getVector(np.array([self.contour[point], self.contour[point + 1]]).tolist()))
+
+        vectorList.append(self.getVector(np.array([self.contour[2], self.contour[0]]).tolist()))
 
         angleList = []
         angleList.append(self.__angle(vectorList[2], vectorList[0]))
         for vector in range(0, len(vectorList) - 1):
             angleList.append(self.__angle(vectorList[vector], vectorList[vector + 1]))
 
+        totalAngleInPolygone = ((len(self.contour) - 2) * 180)/len(self.contour)
+        maxAngle = totalAngleInPolygone + 15
+        minAngle = totalAngleInPolygone - 15
         for angle in angleList:
-            if angle > 65 or angle < 55:
+            if angle > maxAngle or minAngle < 45:
                 return False
 
         return True
+
+    def getVector(self, specialArray):
+        newArray = [specialArray[1][0][0] - specialArray[0][0][0], specialArray[1][0][1] - specialArray[0][0][1]]
+        return newArray
 

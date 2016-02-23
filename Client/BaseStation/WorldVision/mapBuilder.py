@@ -29,7 +29,7 @@ class MapBuilder:
                     cnt = cv2.approxPolyDP(cnt, 0.02*cnt_len, True)
                     if cv2.contourArea(cnt) > 300 and cv2.isContourConvex(cnt):
                         if len(cnt) == 3:
-                            myShape = Shape("Triangle", cnt)
+                            myShape = Triangle("Triangle", cnt)
                         elif len(cnt) == 4:
                             myShape = Square("Square", cnt)
                         elif len(cnt) == 5:
@@ -37,7 +37,8 @@ class MapBuilder:
                         elif len(cnt) > 5:
                             myShape = Shape("Circle", cnt)
 
-                        if myShape.checkAngleValue() and myShape.isEqualEdges():
-                            self.__map.addShape(myShape)
+                        if myShape.isEqualEdges():
+                            if myShape.checkAngleValue():
+                                self.__map.addShape(myShape)
 
         return self.__map
