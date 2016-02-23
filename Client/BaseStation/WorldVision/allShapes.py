@@ -19,7 +19,6 @@ class Square(Shape):
         if max_cos < 0.1:
             return True
 
-#TODO
 class Triangle(Shape):
 
     def __init__(self, geometricName, contour):
