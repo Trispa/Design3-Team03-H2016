@@ -27,8 +27,6 @@ def needNewCoordinates(*args):
         robot.botInfo['voltage'] = "12V"
         robot.botInfo['decodedCharacter'] = "A"
         robot.botInfo['target'] = "cercle"
-        robot.botInfo['position'] = "(" + str(robot.positionX) + "," + str(robot.positionY) + ")"
-        robot.botInfo['orientation'] = str(robot.orientation)
         socketIO.emit('needNewCoordinates')
 
 def sendInfo():
