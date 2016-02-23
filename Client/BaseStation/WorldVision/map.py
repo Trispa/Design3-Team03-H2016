@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import shape
+import copy
 
 class Map:
 
@@ -36,6 +37,10 @@ class Map:
 
     def setShapes(self, shapes):
         self.__shapes = shapes
+
+    def setShapesColor(self, mapImage):
+        for shape in self.__shapes:
+            shape.setColor(copy.copy(mapImage))
 
 
 

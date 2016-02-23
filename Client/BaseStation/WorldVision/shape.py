@@ -62,4 +62,11 @@ class Shape:
         d1, d2 = (p0-p1).astype('float'), (p2-p1).astype('float')
         return abs( np.dot(d1, d2) / np.sqrt( np.dot(d1, d1)*np.dot(d2, d2) ) )
 
+    def setColor(self, mapImage):
+        x, y, w, h = self.getBoundingRectangle()
+        xStart = x
+        xEnd = x + w
+        yStart = y
+        yEnd = y + h
+        cropped = mapImage[yStart:yEnd, xStart:xEnd]
 

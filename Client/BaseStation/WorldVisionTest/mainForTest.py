@@ -8,14 +8,17 @@ if __name__ == '__main__':
 
     while(True):
         # Capture frame-by-frame
-        ret, frame = cap.read()
-        #frame = cv2.imread("Images/Test3.jpg")
+        #ret, frame = cap.read()
+        frame = cv2.imread("Images/Test3.jpg")
 
         geometricalImage = WorldImage(frame)
         geometricalImage.setMap()
         geometricalImage.addLabels()
-
         worldImage = geometricalImage.drawMapOnImage()
+        cv2.imshow('frame', worldImage)
+        cv2.waitKey(0)
+        geometricalImage.defineShapesColor()
+
 
         cv2.imshow('frame', worldImage)
         if cv2.waitKey(1) & 0xFF == ord('q'):

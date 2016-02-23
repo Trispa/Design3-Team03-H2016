@@ -15,9 +15,8 @@ class MapBuilder:
     def buildMapWithAllFilter(self, mapImage):
         imgCopy = copy.copy(mapImage)
         img = cv2.GaussianBlur(mapImage, (5, 5), 0)
-
         for gray in cv2.split(img):
-            for thrs in xrange(0, 255, 26):
+            for thrs in xrange(0, 255, 24):
                 if thrs == 0:
                     bin = cv2.Canny(gray, 0, 50, apertureSize=5)
                     bin = cv2.dilate(bin, None)

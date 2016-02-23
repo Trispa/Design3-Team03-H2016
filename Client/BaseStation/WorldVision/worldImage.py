@@ -15,7 +15,10 @@ class WorldImage:
         self.__mapImage = mapImage
 
     def setMap(self):
-            self.__map = self.__myMapBuilder.buildMapWithAllFilter(self.__mapImage)
+        self.__map = self.__myMapBuilder.buildMapWithAllFilter(self.__mapImage)
+
+    def defineShapesColor(self):
+        self.__map.setShapesColor(self.__mapImage)
 
     def getMap(self):
         return self.__map
