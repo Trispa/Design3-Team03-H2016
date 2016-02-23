@@ -14,6 +14,11 @@ class Shape:
         self.contour = contour
         self.geometricName = geometricName
 
+    def __eq__(self, other):
+        if other == None:
+            return False
+        return cv2.contourArea(self.contour) == cv2.contourArea(other.contour)
+
     def findCenterOfMass(self):
         moment = cv2.moments(self.contour)
         centerOfMassX = int(moment['m10']/moment['m00'])
@@ -37,7 +42,7 @@ class Shape:
         return self.contour
 
     def getArea(self):
-        return cv2.countArea(self.contour)
+        return cv2.contourArea(self.contour)
 
     def getBoundingRectangle(self):
         return cv2.boundingRect(self.contour)

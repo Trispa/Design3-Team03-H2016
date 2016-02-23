@@ -2,8 +2,9 @@ import cv2
 import numpy as np
 import map
 import copy
-import shape
-import square
+from shape import Shape
+from allShapes import Square, Triangle
+
 from color import Color
 
 class MapBuilder:
@@ -28,13 +29,13 @@ class MapBuilder:
                     cnt = cv2.approxPolyDP(cnt, 0.02*cnt_len, True)
                     if cv2.contourArea(cnt) > 300 and cv2.isContourConvex(cnt):
                         if len(cnt) == 3:
-                            myShape = shape.Shape("Triangle", cnt)
+                            myShape = Shape("Triangle", cnt)
                         elif len(cnt) == 4:
-                            myShape = square.Square("Square", cnt)
+                            myShape = Square("Square", cnt)
                         elif len(cnt) == 5:
-                            myShape = shape.Shape("Pentagone", cnt)
+                            myShape = Shape("Pentagone", cnt)
                         elif len(cnt) > 5:
-                            myShape = shape.Shape("Circle", cnt)
+                            myShape = Shape("Circle", cnt)
 
                         if myShape.checkAngleValue() and myShape.isEqualEdges():
                             self.__map.addShape(myShape)

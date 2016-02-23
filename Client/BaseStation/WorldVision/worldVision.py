@@ -16,4 +16,4 @@ class worldVision:
         geometricalImage.addLabels()
 
         worldImage = geometricalImage.drawMapOnImage()
-        cv2.imwrite( "../../../Shared/worldImage.jpg", worldImage );
+        cv2.imwrite( "../../../Shared/worldImage.jpg", worldImage )

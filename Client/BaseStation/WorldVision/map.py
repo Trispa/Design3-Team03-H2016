@@ -7,8 +7,6 @@ class Map:
     def __init__(self):
         self.__shapes = []
 
-
-
     def findSimilarShape(self, shape):
         newContourCenterOfMassX, newContourCenterOfMassY = shape.findCenterOfMass()
         for shapeAlreadyFound in self.__shapes:
@@ -17,12 +15,12 @@ class Map:
                 return shapeAlreadyFound
         return None
 
-    #TODO
     def addShape(self, shapeToAdd):
         similarShape = self.findSimilarShape(shapeToAdd)
-        #if similarShape != None:
-         #   if similarShape.getArea < shapeToAdd.getArea:
-          #      self.__shapes.remove(similarShape)
+        if similarShape != None:
+            if similarShape.getArea() < shapeToAdd.getArea():
+                self.__shapes.remove(similarShape)
+                self.__shapes.append(shapeToAdd)
         if similarShape == None:
             self.__shapes.append(shapeToAdd)
 
@@ -39,18 +37,5 @@ class Map:
     def setShapes(self, shapes):
         self.__shapes = shapes
 
-    def mergeShapeList(self, otherMap):
-        shapesDifference = []
-
-        for otherMapShape in otherMap.getShapesList():
-            notInShapeList = True
-            for myShape in self.__shapes:
-                if otherMapShape.asSimilarCenterOfMass(myShape):
-                    notInShapeList = False
-            if notInShapeList:
-                shapesDifference.append(otherMapShape)
-
-        newMap = Map(shapesDifference)
-        return newMap
 
 

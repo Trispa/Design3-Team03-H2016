@@ -8,7 +8,8 @@ if __name__ == '__main__':
 
     while(True):
         # Capture frame-by-frame
-        ret, frame = cap.read()
+        #ret, frame = cap.read()
+        frame = cv2.imread("Images/Test3.jpg")
 
         geometricalImage = WorldImage(frame)
         geometricalImage.setMap()
