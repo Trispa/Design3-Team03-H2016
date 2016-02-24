@@ -24,4 +24,3 @@ if __name__ == '__main__':
     worldImage = geometricalImage.drawMapOnImage()
     cv2.imwrite( "../../../Shared/worldImage2.jpg", worldImage )
 
-
