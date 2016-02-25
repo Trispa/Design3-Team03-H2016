@@ -29,7 +29,7 @@ PID listPID[4] = {PID(dv[1 - 1].getInput(), dv[1 - 1].getOutput(), dv[1 - 1].get
 
 CommandReceiver cmdRec = CommandReceiver(dv);
 
-void updateFreqEnco(int noMoteur);
+void updateFreqEnco();
 
 void setup() {
   Serial.begin(115200);
@@ -40,38 +40,41 @@ void setup() {
   
   for(int i = 0; i < NB_DRIVEMOTEUR; i++)
   {
-//    dv[i].driveMoteur(0, 0);
+    dv[i].driveMoteur(0, 0);
     listPID[i].SetMode(AUTOMATIC);
     listPID[i].SetOutputLimits(550, 2760);
   }
-  dv[0].driveMoteur(0.21, 0);
+//  dv[2].driveMoteur(0.03, 0);
 
 }
 
 void loop() 
 {
   cmdRec.process();
+  updateFreqEnco();
   for(int i = 0; i < NB_DRIVEMOTEUR; i++)
   {
       if(dv[i].isRunning())
       {
-        updateFreqEnco(i);
         listPID[i].Compute();
         dv[i].asservissement();
       }
   }
-  
+   
 }
 
 
 
 
-void updateFreqEnco(int noMoteur)
+void updateFreqEnco()
 {
-  listEndCounting[noMoteur] = micros();
-  dv[noMoteur].setInput(1000000*listNbTicks[noMoteur]/(listEndCounting[noMoteur] - listStartCounting[noMoteur]));
-  listStartCounting[noMoteur] = listEndCounting[noMoteur];
-  listNbTicks[noMoteur] = 0;
+  for(int i = 0; i < NB_DRIVEMOTEUR; i++)
+  {
+  listEndCounting[i] = micros();
+  dv[i].setInput(1000000*listNbTicks[i]/(listEndCounting[i] - listStartCounting[i]));
+  listStartCounting[i] = listEndCounting[i];
+  listNbTicks[i] = 0;
+  }
 }
 
 
