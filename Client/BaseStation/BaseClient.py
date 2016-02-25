@@ -2,6 +2,7 @@ import base64
 import json
 
 from Logic.Sequencer import Sequencer as seq
+from WorldVision.worldVision import worldVision
 
 sequencer = seq()
 
@@ -18,7 +19,9 @@ def sendingNextCoordinates(*args):
 
 def sendImage():
     print("asking for new images")
-    encoded = base64.b64encode(open("../../shared/Picture 1.jpg", "rb").read())
+    world = worldVision()
+    world.saveImage()
+    encoded = base64.b64encode(open("../../Shared/worldImage.jpg", "rb").read())
     socketIO.emit('sendingImage', encoded)
 
 socketIO.on('needUpdatedInfo', sendImage)

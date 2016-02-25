@@ -1,13 +1,12 @@
 import cv2
 import numpy as np
 import shape
+import copy
 
 class Map:
 
-    def __init__(self, shapes = []):
-        self.__shapes = shapes
-
-
+    def __init__(self):
+        self.__shapes = []
 
     def findSimilarShape(self, shape):
         newContourCenterOfMassX, newContourCenterOfMassY = shape.findCenterOfMass()
@@ -17,12 +16,12 @@ class Map:
                 return shapeAlreadyFound
         return None
 
-    #TODO
     def addShape(self, shapeToAdd):
         similarShape = self.findSimilarShape(shapeToAdd)
-        #if similarShape != None:
-         #   if similarShape.getArea < shapeToAdd.getArea:
-          #      self.__shapes.remove(similarShape)
+        if similarShape != None:
+            if similarShape.getArea() < shapeToAdd.getArea():
+                self.__shapes.remove(similarShape)
+                self.__shapes.append(shapeToAdd)
         if similarShape == None:
             self.__shapes.append(shapeToAdd)
 
@@ -39,18 +38,9 @@ class Map:
     def setShapes(self, shapes):
         self.__shapes = shapes
 
-    def mergeShapeList(self, otherMap):
-        shapesDifference = []
+    def setShapesColor(self, mapImage):
+        for shape in self.__shapes:
+            shape.setColor(copy.copy(mapImage))
 
-        for otherMapShape in otherMap.getShapesList():
-            notInShapeList = True
-            for myShape in self.__shapes:
-                if otherMapShape.asSimilarCenterOfMass(myShape):
-                    notInShapeList = False
-            if notInShapeList:
-                shapesDifference.append(otherMapShape)
-
-        newMap = Map(shapesDifference)
-        return newMap
 
 
