@@ -80,6 +80,7 @@ void CommandReceiver::dispatchCommand() {
     dm[parameters[0]-1].driveMoteur(parameters[1]/100.0, parameters[2]);
     break;
 
+<<<<<<< HEAD:Robot/Mechanical/Arduino/pid_control/commandReceiver.cpp
   case 4: // ReadMAnchesterBits
     machaine = readManchester->getMaschesterBits();
     bitRecu =   atoi( machaine );
@@ -87,6 +88,14 @@ void CommandReceiver::dispatchCommand() {
       sendCallback(bitRecu);
     }
     break;
+=======
+ case 4:
+    for(int i = 0; i<4; i++)
+    {
+      dm[i].driveMoteur(0,0);
+    }
+
+>>>>>>> 33afebe9c8c2e1843c4952c56761ba11bd5b6db6:Client/Robot/Mechanical/Arduino/pid_control/commandReceiver.cpp
 	default: //for test purposes
 		if(callbackRequested == 1) {
 			sendCallback(parameters[0]);

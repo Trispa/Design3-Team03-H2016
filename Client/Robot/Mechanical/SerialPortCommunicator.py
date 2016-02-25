@@ -14,6 +14,7 @@ class SerialPortCommunicator:
     LED_FUNCTION_ON = 1
     LED_FUNCTION_OFF = 2
     CHANGE_MOTEUR_SPEED = 3
+<<<<<<< HEAD:Robot/Mechanical/SerialPortCommunicator.py
     GET_CODE_MANCHESTER = 4
     CW = 0
     CCW = 1
@@ -21,6 +22,13 @@ class SerialPortCommunicator:
 	
 
     def __init__(self, bitrateArduino = 9600, arduinoPort = "/dev/ttyUSB0"):
+=======
+    STOP_ALL_MOTEUR = 4
+    CW = 0
+    CCW = 1
+
+    def __init__(self, bitrateArduino = 115200, arduinoPort = "/dev/ttyUSB2"):
+>>>>>>> 33afebe9c8c2e1843c4952c56761ba11bd5b6db6:Client/Robot/Mechanical/SerialPortCommunicator.py
         self.arduino = serial.Serial(arduinoPort, bitrateArduino, timeout = 1)
         #self.polulu = serial.Serial(poluluPort, bitratePolulu, timeout = 1)
         sleep(1)
@@ -60,8 +68,12 @@ class SerialPortCommunicator:
 
     def turnOffEndingLED(self):
         self._sendCommand(self.LED_FUNCTION_OFF, self.FALSE, self.ONE_SECOND_DELAY, 1)
-    def driveMoteur(self, noMoteur, speed, direction): #!!! speed * 100 !!!
-        self._sendCommand(self.CHANGE_MOTEUR_SPEED, self.FALSE, self.ONE_SECOND_DELAY, noMoteur, speed, direction)
+
+    def driveMoteur(self, noMoteur, speed, direction):
+        self._sendCommand(self.CHANGE_MOTEUR_SPEED, self.FALSE, self.ONE_SECOND_DELAY, noMoteur, speed*100, direction)
+
+    def stopAllMotor(self):
+        self._sendCommand(self.STOP_ALL_MOTEUR, self.FALSE, self.ONE_SECOND_DELAY, 1)
 
     #################################### MANCHESTER ################################
     def getManchesterCode(self):
@@ -111,9 +123,13 @@ class SerialPortCommunicator:
 
 if __name__ == "__main__":
     spc = SerialPortCommunicator()
+<<<<<<< HEAD:Robot/Mechanical/SerialPortCommunicator.py
     letter = spc.getAsciiManchester()
     if(letter ==-2):
         print("Erreur")
     else:
         print("ASCII :" + letter)
 
+=======
+    spc.stopAllMotor()
+>>>>>>> 33afebe9c8c2e1843c4952c56761ba11bd5b6db6:Client/Robot/Mechanical/SerialPortCommunicator.py
