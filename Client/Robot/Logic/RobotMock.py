@@ -13,7 +13,9 @@ class RobotMock:
         self.positionY = random.randrange(100, 500)
         self.botInfo = {"voltage" : "N/A",
                         "decodedCharacter" : "N/A",
-                        "target" : "N/A"}
+                        "target" : "N/A",
+                        "position" : "(" + str(self.positionX) + "," + str(self.positionY) + ")",
+                        "orientation" : str(self.orientation)}
         thread.start_new_thread(self.__displayMock, ())
 
 
@@ -89,3 +91,4 @@ class RobotMock:
         cv2.rectangle(img, (self.positionX - 20, self.positionY - 20), (self.positionX + 20, self.positionY + 20),
                       (0, 255, 0), -1, 1)
         cv2.imshow('image', img)
+

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 h1, h4{
     text-align:center;
 }
@@ -20,4 +21,32 @@ body {
 #path{
     height:100%;
     width:100%;
+=======
+h1, h4{
+    text-align:center;
+}
+body {
+    background: url(img/girlita.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    color:WHITE;
+}
+
+.roww{
+    height:100%;
+}
+
+#buttonGo{
+    height:60px;
+}
+#path{
+    height:100%;
+    width:100%;
+}
+
+.timer-font{
+    font-size:200%;
+>>>>>>> master
 }

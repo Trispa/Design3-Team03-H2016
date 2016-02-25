@@ -1,6 +1,9 @@
 import time
 import SerialPortCommunicator
+<<<<<<< HEAD
 import math
+=======
+>>>>>>> 78062ee91767dca66298eff591d85e1a5849e1f0
 NB_MOTEUR = 5
 CW = 0
 CCW = 1
@@ -59,6 +62,7 @@ class MoteurRoue:
 
     def beforeChangeDirection(self):
         self.stopAllMotors()
+<<<<<<< HEAD
         time.sleep(0.2)
 
 
@@ -100,11 +104,24 @@ class MoteurRoue:
         time.sleep(4)
 
         self.avancerCardinal("W",0.2)
+=======
+        time.sleep(0.1)
+
+    def demo(self):
+        self.avancerCardinal("W", 0.18)
+        time.sleep(2)
+
+        self.avancerCardinal("E", 0.18)
+        time.sleep(4)
+
+        self.avancerCardinal("W",0.18)
+>>>>>>> 78062ee91767dca66298eff591d85e1a5849e1f0
         time.sleep(2)
 
         self.stopAllMotors()
 
     def demo2(self):
+<<<<<<< HEAD
         self.avancerCardinal("SW", 0.15)
         time.sleep(2.5)
 
@@ -144,5 +161,48 @@ if __name__ == '__main__':
     time.sleep(0.1)
     mr.demo3()
 
+=======
+        self.avancerCardinal("SW", 0.18)
+        time.sleep(2)
+
+        self.avancerCardinal("NE", 0.18)
+        time.sleep(4)
+
+        self.avancerCardinal("SW",0.18)
+        time.sleep(2)
+
+        self.stopAllMotors()
+
+if __name__ == '__main__':
+    mr = MoteurRoue()
+    mr.demo()
+
+    # mr.rotation("CCW", 0.1)
+    # time.sleep(2)
+    # mr.stopAllMotors()
+    # time.sleep(1)
+    #
+    # mr.rotation("CCW", 0.2)
+    # time.sleep(1.05)
+    # mr.stopAllMotors()
+    # time.sleep(1)
+    #
+    # mr.rotation("CW", 0.2)
+    # time.sleep(1.05)
+    # mr.stopAllMotors()
+    # time.sleep(1)
+    #
+    # mr.rotation("CCW", 0.2)
+    # time.sleep(1.05)
+    # mr.stopAllMotors()
+    # time.sleep(1)
+
+
+    # mr.avancerCardinal("N", 0.2)
+    # time.sleep(3)
+    #
+    # mr.avancerCardinal("SW", 0.2)
+    # time.sleep(3)
+>>>>>>> 78062ee91767dca66298eff591d85e1a5849e1f0
     mr.stopAllMotors()
 

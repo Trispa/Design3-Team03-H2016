@@ -1,11 +1,23 @@
 import cv2
 import numpy as np
+from color import Color
 
 class Shape:
+
+    colors = []
+    colors.append(Color(np.uint8([[[0,255,0]]]), "Green"))
+    colors.append(Color(np.uint8([[[255,0,0]]]), "Blue"))
+    colors.append(Color(np.uint8([[[150,179,255]]]), "Red"))
+    colors.append(Color(np.uint8([[[0,255,255]]]), "Yellow"))
 
     def __init__(self, geometricName, contour):
         self.contour = contour
         self.geometricName = geometricName
+
+    def __eq__(self, other):
+        if other == None:
+            return False
+        return cv2.contourArea(self.contour) == cv2.contourArea(other.contour)
 
     def findCenterOfMass(self):
         moment = cv2.moments(self.contour)
@@ -30,7 +42,7 @@ class Shape:
         return self.contour
 
     def getArea(self):
-        return cv2.countArea(self.contour)
+        return cv2.contourArea(self.contour)
 
     def getBoundingRectangle(self):
         return cv2.boundingRect(self.contour)
@@ -50,4 +62,11 @@ class Shape:
         d1, d2 = (p0-p1).astype('float'), (p2-p1).astype('float')
         return abs( np.dot(d1, d2) / np.sqrt( np.dot(d1, d1)*np.dot(d2, d2) ) )
 
+    def setColor(self, mapImage):
+        xCoordinate, yCoordinate, width, height = self.getBoundingRectangle()
+        xStart = xCoordinate
+        xEnd = xCoordinate + width
+        yStart = yCoordinate
+        yEnd = yCoordinate + height
+        cropped = mapImage[yStart:yEnd, xStart:xEnd]
 

@@ -29,7 +29,11 @@ PID listPID[4] = {PID(dv[1 - 1].getInput(), dv[1 - 1].getOutput(), dv[1 - 1].get
 
 CommandReceiver cmdRec = CommandReceiver(dv);
 
+<<<<<<< HEAD
 void updateFreqEnco();
+=======
+void updateFreqEnco(int noMoteur);
+>>>>>>> 78062ee91767dca66298eff591d85e1a5849e1f0
 
 void setup() {
   Serial.begin(115200);
@@ -40,32 +44,52 @@ void setup() {
   
   for(int i = 0; i < NB_DRIVEMOTEUR; i++)
   {
+<<<<<<< HEAD
     dv[i].driveMoteur(0, 0);
     listPID[i].SetMode(AUTOMATIC);
     listPID[i].SetOutputLimits(550, 2760);
   }
 //  dv[2].driveMoteur(0.03, 0);
+=======
+//    dv[i].driveMoteur(0, 0);
+    listPID[i].SetMode(AUTOMATIC);
+    listPID[i].SetOutputLimits(550, 2760);
+  }
+  dv[0].driveMoteur(0.21, 0);
+>>>>>>> 78062ee91767dca66298eff591d85e1a5849e1f0
 
 }
 
 void loop() 
 {
   cmdRec.process();
+<<<<<<< HEAD
   updateFreqEnco();
+=======
+>>>>>>> 78062ee91767dca66298eff591d85e1a5849e1f0
   for(int i = 0; i < NB_DRIVEMOTEUR; i++)
   {
       if(dv[i].isRunning())
       {
+<<<<<<< HEAD
+=======
+        updateFreqEnco(i);
+>>>>>>> 78062ee91767dca66298eff591d85e1a5849e1f0
         listPID[i].Compute();
         dv[i].asservissement();
       }
   }
+<<<<<<< HEAD
    
+=======
+  
+>>>>>>> 78062ee91767dca66298eff591d85e1a5849e1f0
 }
 
 
 
 
+<<<<<<< HEAD
 void updateFreqEnco()
 {
   for(int i = 0; i < NB_DRIVEMOTEUR; i++)
@@ -75,6 +99,14 @@ void updateFreqEnco()
   listStartCounting[i] = listEndCounting[i];
   listNbTicks[i] = 0;
   }
+=======
+void updateFreqEnco(int noMoteur)
+{
+  listEndCounting[noMoteur] = micros();
+  dv[noMoteur].setInput(1000000*listNbTicks[noMoteur]/(listEndCounting[noMoteur] - listStartCounting[noMoteur]));
+  listStartCounting[noMoteur] = listEndCounting[noMoteur];
+  listNbTicks[noMoteur] = 0;
+>>>>>>> 78062ee91767dca66298eff591d85e1a5849e1f0
 }
 
 
