@@ -13,7 +13,9 @@ class RobotMock:
         self.positionY = random.randrange(100, 500)
         self.botInfo = {"voltage" : "N/A",
                         "decodedCharacter" : "N/A",
-                        "target" : "N/A"}
+                        "target" : "N/A",
+                        "position" : "(" + str(self.positionX) + "," + str(self.positionY) + ")",
+                        "orientation" : str(self.orientation)}
         thread.start_new_thread(self.__displayMock, ())
 
 
