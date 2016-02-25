@@ -28,9 +28,6 @@ public:
 	long readULongFromBytes();
 	void sendCallback(long callbackData);
   void sendCallback(char* callbackData);
-
-
-
 	byte commandWaitingFlag;
 	byte commandInProgressFlag;
 	volatile long* positionData;
