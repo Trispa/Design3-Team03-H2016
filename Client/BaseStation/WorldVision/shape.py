@@ -41,6 +41,9 @@ class Shape:
     def getContour(self):
         return self.contour
 
+    def getColorName(self):
+        return "colorName"
+
     def getArea(self):
         return cv2.contourArea(self.contour)
 
@@ -62,11 +65,21 @@ class Shape:
         d1, d2 = (p0-p1).astype('float'), (p2-p1).astype('float')
         return abs( np.dot(d1, d2) / np.sqrt( np.dot(d1, d1)*np.dot(d2, d2) ) )
 
-    def setColor(self, mapImage):
+    def setColor(self, HSVmapImage):
         xCoordinate, yCoordinate, width, height = self.getBoundingRectangle()
         xStart = xCoordinate
         xEnd = xCoordinate + width
         yStart = yCoordinate
         yEnd = yCoordinate + height
-        cropped = mapImage[yStart:yEnd, xStart:xEnd]
+        cropped = HSVmapImage[yStart:yEnd, xStart:xEnd]
+        cv2.imshow('frame',cropped)
+        cv2.waitKey(0)
+        for color in self.colors:
+            center = cropped.shape
+            print(center)
+            print(cropped.shape[0], cropped.shape[1])
+            coloredImage = cv2.inRange(cropped,color.lower,color.higher)
+            cv2.imshow('frame',coloredImage)
+            cv2.waitKey(0)
+
 
