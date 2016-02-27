@@ -35,6 +35,7 @@ class DriveMoteur
     int _pinEnco;
 	int _pin1, _pin2;
 	double input, output, setpoint;
+ bool _run;
 
 };
 

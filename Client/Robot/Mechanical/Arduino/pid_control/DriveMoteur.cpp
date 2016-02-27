@@ -20,6 +20,7 @@ DriveMoteur::DriveMoteur(int pinMoteur, int enco, int pin1, int pin2)
 	input = 0;
 	output = 0;
 	setpoint = 0;
+ _run = false;
 
   driveMoteur(0,0);
 }
@@ -27,7 +28,6 @@ DriveMoteur::DriveMoteur(int pinMoteur, int enco, int pin1, int pin2)
 //1 = CCW
 void DriveMoteur::driveMoteur(double speed, int direction)
 {
-  //On active l'interrup pour l'encodeur du moteur
 	//On analogWrite avec un pwm passer prealablement dans lasservissement
 //	Serial.print("Vitesse desire : "); Serial.print(speed);
 //	Serial.print("   Vitesse reel : "); Serial.print(encoFreqToSpeed(input));
@@ -52,7 +52,9 @@ void DriveMoteur::driveMoteur(double speed, int direction)
 	else
 		{
 			analogWrite(_pinMoteur, 0);
-			setpoint = 0;
+			input = 0;
+      output = 0;
+      setpoint = 0;
 			digitalWrite(_pin1, LOW);
 			digitalWrite(_pin2, LOW);
 		}
@@ -75,10 +77,14 @@ int DriveMoteur::encoFreqToPWM(double freq)
 // freq to pwm : 7.081E^-5 * freq^2 - 0.155 * freq + 117.931
 
 //	return int(0.00007081 * freq * freq - 0.155 * freq + 117.931);
-	if(freq <= 1840)
-		return int(0.039*freq+8.805);
-	else
-		return int(0.00007081 * freq * freq - 0.155 * freq + 117.931);
+//	if(freq <= 1840)
+//		return int(0.039*freq+8.805);
+//	else
+//		return int(0.00007081 * freq * freq - 0.155 * freq + 117.931);
+    if(freq <= 1500)
+    return int(0.00001402 * freq * freq + 0.027 * freq + 53.77);
+  else
+    return int(0.0001619 * freq * freq  - 0.378 * freq + 331.876);
 }
 
 double DriveMoteur::PWMToEncoFreq(int PWM)

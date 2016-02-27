@@ -1,9 +1,8 @@
 import time
 import SerialPortCommunicator
-<<<<<<< HEAD
+
 import math
-=======
->>>>>>> 78062ee91767dca66298eff591d85e1a5849e1f0
+
 NB_MOTEUR = 5
 CW = 0
 CCW = 1
@@ -62,14 +61,13 @@ class MoteurRoue:
 
     def beforeChangeDirection(self):
         self.stopAllMotors()
-<<<<<<< HEAD
         time.sleep(0.2)
 
 
 #Distance en centimetre
     def avanceVector(self, x, y):
         self.beforeChangeDirection()
-        maxSpeed = 0.15
+        maxSpeed = 0.1
         xSpeed = maxSpeed
         ySpeed = maxSpeed
         if abs(x) > abs(y):
@@ -104,7 +102,7 @@ class MoteurRoue:
         time.sleep(4)
 
         self.avancerCardinal("W",0.2)
-=======
+
         time.sleep(0.1)
 
     def demo(self):
@@ -115,13 +113,13 @@ class MoteurRoue:
         time.sleep(4)
 
         self.avancerCardinal("W",0.18)
->>>>>>> 78062ee91767dca66298eff591d85e1a5849e1f0
+
         time.sleep(2)
 
         self.stopAllMotors()
 
     def demo2(self):
-<<<<<<< HEAD
+
         self.avancerCardinal("SW", 0.15)
         time.sleep(2.5)
 
@@ -146,63 +144,18 @@ class MoteurRoue:
         time.sleep(0.5)
         self.avanceVector(50, 50)
 
-    def demo4(self):
-        self.rotation("CW", 0.1)
-        time.sleep(3.6)
-        self.stopAllMotors()
-        time.sleep(1)
-        self.rotation("CCW", 0.1)
-        time.sleep(3.6)
-
 
 if __name__ == '__main__':
     mr = MoteurRoue()
     mr.stopAllMotors()
     time.sleep(0.1)
-    mr.demo3()
-
-=======
-        self.avancerCardinal("SW", 0.18)
-        time.sleep(2)
-
-        self.avancerCardinal("NE", 0.18)
-        time.sleep(4)
-
-        self.avancerCardinal("SW",0.18)
-        time.sleep(2)
-
-        self.stopAllMotors()
-
-if __name__ == '__main__':
-    mr = MoteurRoue()
-    mr.demo()
-
-    # mr.rotation("CCW", 0.1)
-    # time.sleep(2)
-    # mr.stopAllMotors()
-    # time.sleep(1)
-    #
-    # mr.rotation("CCW", 0.2)
-    # time.sleep(1.05)
-    # mr.stopAllMotors()
-    # time.sleep(1)
-    #
-    # mr.rotation("CW", 0.2)
-    # time.sleep(1.05)
-    # mr.stopAllMotors()
-    # time.sleep(1)
-    #
-    # mr.rotation("CCW", 0.2)
-    # time.sleep(1.05)
-    # mr.stopAllMotors()
-    # time.sleep(1)
+    # mr.demo3()
+    mr.avanceVector(-60,0)
+    time.sleep(1)
+    mr.avanceVector(120,0)
+    time.sleep(1)
+    mr.avanceVector(-60,0)
+    # print(mr.spc.getAsciiManchester())
 
 
-    # mr.avancerCardinal("N", 0.2)
-    # time.sleep(3)
-    #
-    # mr.avancerCardinal("SW", 0.2)
-    # time.sleep(3)
->>>>>>> 78062ee91767dca66298eff591d85e1a5849e1f0
-    mr.stopAllMotors()
 
