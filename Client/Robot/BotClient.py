@@ -19,9 +19,9 @@ def needNewCoordinates(*args):
     robot.moveTo(pointConverted)
     #wheelManager.moveTo(pointConverted)
     if(args[0]["type"] == "target"):
-        robot.botInfo = {"voltage" : "N/A",
-                        "decodedCharacter" : "N/A",
-                        "target" : "N/A"}
+        robot.botInfo['voltage'] = "N/A"
+        robot.botInfo['decodedCharacter'] = "N/A"
+        robot.botInfo['target'] = "N/A"
         socketIO.emit('sendEndSignal')
     else:
         robot.botInfo['voltage'] = "12V"
@@ -30,6 +30,8 @@ def needNewCoordinates(*args):
         socketIO.emit('needNewCoordinates')
 
 def sendInfo():
+    robot.botInfo['position'] = "(" + str(robot.positionX) + "," + str(robot.positionY) + ")"
+    robot.botInfo['orientation'] = str(robot.orientation)
     socketIO.emit('sendInfo', robot.botInfo)
 
 socketIO.emit('sendBotClientStatus','Connected')
