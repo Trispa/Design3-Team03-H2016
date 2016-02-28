@@ -13,19 +13,19 @@ with open("../../Shared/config.json") as json_data_file:
 
 socketIO = SocketIO(config['url'], int(config['port']))
 
-def sendingNextCoordinates(*args):
+def sendNextCoordinates(*args):
     print("Sending orders")
-    socketIO.emit("sendingNextCoordinates", sequencer.handleCurrentState())
+    socketIO.emit("sendNextCoordinates", sequencer.handleCurrentState())
 
 def sendImage():
     print("asking for new images")
     world = worldVision()
     world.saveImage()
     encoded = base64.b64encode(open("../../Shared/worldImage.jpg", "rb").read())
-    socketIO.emit('sendingImage', encoded)
+    socketIO.emit('sendImage', encoded)
 
 socketIO.on('needUpdatedInfo', sendImage)
-socketIO.on('needNewCoordinates', sendingNextCoordinates)
+socketIO.on('needNewCoordinates', sendNextCoordinates)
 
 socketIO.wait()
 

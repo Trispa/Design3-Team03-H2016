@@ -17,19 +17,19 @@ var robot;
 
 io.on('connection', function (client) {
     allClients.push(socket);
-    io.emit('sendingBotClientStatus', botClientStatus);
-    client.on('sendingBotClientStatus', function(status){
+    io.emit('sendBotClientStatus', botClientStatus);
+    client.on('sendBotClientStatus', function(status){
         console.log(status);
         robot = client;
         botClientStatus = status;
-        io.emit('sendingBotClientStatus', status);
+        io.emit('sendBotClientStatus', status);
     });
     client.on('disconnect', function() {
         console.log('A client got disconnected');
         if(client == robot){
             console.log('Bad news, it\'s the bot');
             botClientStatus = "Not connected";
-            io.emit('sendingBotClientStatus', botClientStatus);
+            io.emit('sendBotClientStatus', botClientStatus);
         }
         var i = allClients.indexOf(client);
         allClients.splice(i, 1);
@@ -38,22 +38,22 @@ io.on('connection', function (client) {
     client.on('needUpdatedInfo', function(){
         io.emit('needUpdatedInfo');
     });
-    client.on('sendingImage', function(encodedString){
-        io.emit('sendingImage', encodedString);
+    client.on('sendImage', function(encodedString){
+        io.emit('sendImage', encodedString);
     });
-    client.on('sendingInfo', function(info){
-        io.emit('sendingInfo', info);
+    client.on('sendInfo', function(info){
+        io.emit('sendInfo', info);
     });
 
     client.on('needNewCoordinates', function(data){
         io.emit('needNewCoordinates', data);
     });
-    client.on('sendingNextCoordinates', function(data){
-        io.emit('sendingNextCoordinates', data);
+    client.on('sendNextCoordinates', function(data){
+        io.emit('sendNextCoordinates', data);
     });
 
-    client.on('sendingEndSignal', function(){
-        io.emit('sendingEndSignal');
+    client.on('sendEndSignal', function(){
+        io.emit('sendEndSignal');
     });
 });
 
