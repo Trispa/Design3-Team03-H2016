@@ -9,7 +9,8 @@ if __name__ == '__main__':
     ret, frame = cap.read()
 
     geometricalImage = WorldImage(frame)
-    geometricalImage.setMap("GeometricalFilter")
+    geometricalImage.setMap()
+    print(geometricalImage.getMap().getShapesList()[0])
     geometricalImage.addLabels()
 
     worldImage = geometricalImage.drawMapOnImage()
