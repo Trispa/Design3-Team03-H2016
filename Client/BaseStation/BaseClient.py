@@ -8,7 +8,7 @@ sequencer = seq()
 
 from socketIO_client import SocketIO
 
-with open("../../Shared/config.json") as json_data_file:
+with open("../../Commun/config.json") as json_data_file:
     config = json.load(json_data_file)
 
 socketIO = SocketIO(config['url'], int(config['port']))
@@ -21,7 +21,7 @@ def sendImage():
     print("asking for new images")
     world = worldVision()
     world.saveImage()
-    encoded = base64.b64encode(open("../../Shared/worldImage.jpg", "rb").read())
+    encoded = base64.b64encode(open("../../Commun/worldImage.jpg", "rb").read())
     socketIO.emit('sendImage', encoded)
 
 socketIO.on('needUpdatedInfo', sendImage)

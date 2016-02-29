@@ -5,7 +5,7 @@ from socketIO_client import SocketIO
 from Logic.RobotMock import RobotMock
 from Logic.ReferentialConverter import ReferentialConverter
 
-with open("../../Shared/config.json") as json_data_file:
+with open("../../Commun/config.json") as json_data_file:
     config = json.load(json_data_file)
 socketIO = SocketIO(config['url'], int(config['port']))
 #referentialConverter = ReferentialConverter(positionRobot, orientation);

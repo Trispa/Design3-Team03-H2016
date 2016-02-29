@@ -1,7 +1,7 @@
 var socket = require('socket.io');
 var express = require('express');
 var http = require('http');
-var obj = require("../Shared/config.json");
+var obj = require("../Commun/config.json");
 var url=obj.url;
 var port=obj.port;
 

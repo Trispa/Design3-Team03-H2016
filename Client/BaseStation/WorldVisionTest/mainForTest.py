@@ -14,7 +14,7 @@ if __name__ == '__main__':
         mapImage.setMap()
         worldImage = mapImage.drawMapOnImage()
 
-        cv2.imwrite( "../../../Shared/worldImage.jpg", worldImage)
+        cv2.imwrite( "../../../Commun/worldImage.jpg", worldImage)
         cv2.imshow('frame',worldImage)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
