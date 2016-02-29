@@ -6,7 +6,7 @@ class SendingBotToTargetState():
         sequencer.setState(SendingBotToChargingStationState.SendingBotToChargingStationState())
         # call to pathfinder to return path to target
         coordinates = {"type": "target",
-                       "position": {
+                       "positionTO": {
                            "positionX": "800",
                            "positionY": "200"},
                        "positionFROM": {

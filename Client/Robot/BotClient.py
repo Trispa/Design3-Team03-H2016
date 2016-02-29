@@ -4,6 +4,9 @@ from Logic.OrderReceiver import OrderReceiver
 from socketIO_client import SocketIO
 from Logic.RobotMock import RobotMock
 from Logic.ReferentialConverter import ReferentialConverter
+import sys
+sys.path.append("/Mechanical")
+
 
 with open("../../Commun/config.json") as json_data_file:
     config = json.load(json_data_file)
@@ -21,8 +24,8 @@ def sendInfo():
 
 def startRound(*args):
     orderReceiver.acceptOrders()
-    position = (int(args["positionX"]), int(args["positionY"]))
-    orientation = int(args["orientation"])
+    position = (int(args[0]["positionX"]), int(args[0]["positionY"]))
+    orientation = int(args[0]["orientation"])
 
     orderReceiver.initializeBot(position, orientation)
     sendInfo()

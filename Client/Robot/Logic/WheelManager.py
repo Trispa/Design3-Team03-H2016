@@ -1,7 +1,6 @@
 import time
-from Client.Robot.Logic.SpeedCalculator import SpeedCalculator
-from Client.Robot.Mechanical.WheelMotor import WheelMotor
-from Client.Robot.Mechanical.MoteurRoue import MoteurRoue
+from SpeedCalculator import SpeedCalculator
+from Mechanical.MoteurRoue import MoteurRoue
 
 class WheelManager:
     def __init__(self):
@@ -26,33 +25,15 @@ class WheelManager:
             self.isMoving = True
             rotationSpeed, timeForRotation = self.speedCalculator.generateRotationInfos(angle)
 
-            self.horizontalWheelFront.setVitesse(rotationSpeed)
-            self.horizontalWheelBack.setVitesse(rotationSpeed)
-            self.verticalWheelLeft.setVitesse(rotationSpeed)
-            self.verticalWheelRight.setVitesse(rotationSpeed)
 
             time.sleep(timeForRotation)
 
-            self.__stopWheel()
             self.isMoving = False
 
 
     def isMoving(self):
         return self.isMoving
 
-
-    def __stopWheel(self):
-        self.horizontalWheelFront.setVitesse(0)
-        self.horizontalWheelBack.setVitesse(0)
-        self.verticalWheelLeft.setVitesse(0)
-        self.verticalWheelRight.setVitesse(0)
-
-
-    def __setWheelDeplacementSpeed(self, vitesseX, vitesseY):
-        self.horizontalWheelFront.setVitesse(vitesseX)
-        self.horizontalWheelBack.setVitesse(-vitesseX)
-        self.verticalWheelLeft.setVitesse(vitesseY)
-        self.verticalWheelRight.setVitesse(-vitesseY)
 
 
     def __pointNotNull(self, pointToVerify):

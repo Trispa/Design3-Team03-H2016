@@ -1,7 +1,7 @@
 from State import ExecutingOrderState
 from State import RefusingOrderState
-from Logic.ReferentialConverter import ReferentialConverter
-from Client.Robot.Logic.WheelManager import WheelManager
+from ReferentialConverter import ReferentialConverter
+from WheelManager import WheelManager
 
 import RobotMock
 
@@ -16,12 +16,13 @@ class OrderReceiver():
         self.setState(ExecutingOrderState.ExecutingOrderState())
 
     def handleCurrentState(self, coordinates):
+        print(coordinates)
         print("Bot going to " + coordinates[0]["type"] +
       " at : (" + coordinates[0]["positionTO"]["positionX"] +
       " " + coordinates[0]["positionTO"]["positionY"] +
       ")")
 
-        botPosition= (int(coordinates[0]["positionFROM"]["positionX"],int(coordinates[0]["positionFROM"]["positionY"])))
+        botPosition= (int(coordinates[0]["positionFROM"]["positionX"]),int(coordinates[0]["positionFROM"]["positionY"]))
         orientation = int(coordinates[0]["positionFROM"]["orientation"])
         referentialConverter = ReferentialConverter(botPosition,orientation)
         pointConverted = referentialConverter.convertWorldToRobot((int(coordinates[0]["positionTO"]["positionX"]), int(coordinates[0]["positionTO"]["positionY"])))

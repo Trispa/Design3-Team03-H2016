@@ -6,7 +6,7 @@ class SendingBotToTreasureState():
         sequencer.setState(SendingBotToTargetState.SendingBotToTargetState())
         # call to pathfinder to return path to treasure
         coordinates = {"type": "treasure",
-                       "position": {
+                       "positionTO": {
                            "positionX": "500",
                            "positionY": "400"},
                        "positionFROM": {

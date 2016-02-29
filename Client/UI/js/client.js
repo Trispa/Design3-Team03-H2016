@@ -18,17 +18,16 @@ socket.on("sendInfo", function(info){
     $("#orientation").text(info['orientation']);
 });
 
-<<<<<<< HEAD
-socket.on("sendEndSignal", function(){
-    $("#buttonGo").prop("disabled",false);
+socket.on("sendEndSignal", function() {
+    $("#buttonGo").prop("disabled", false);
     stopTimer();
-=======
-socket.on("sendingRefusingOrderSignal", function(){
+});
+
+socket.on("sendRefusingOrderSignal", function(){
     if(!isTimerDone()){
         $("#buttonGo").prop("disabled",false);
         stopTimer();
     }
->>>>>>> cd5cb8e9ad3eb736fbc4c19d46f173628f5651ef
 });
 
 function isTimerDone(){
