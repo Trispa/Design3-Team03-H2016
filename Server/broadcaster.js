@@ -16,6 +16,7 @@ var botClientStatus = "Not connected";
 var robot;
 
 io.on('connection', function (client) {
+
     allClients.push(socket);
     io.emit('sendBotClientStatus', botClientStatus);
     client.on('sendBotClientStatus', function(status){
@@ -35,9 +36,6 @@ io.on('connection', function (client) {
         allClients.splice(i, 1);
     });
 
-    client.on('needUpdatedInfo', function(){
-        io.emit('needUpdatedInfo');
-    });
     client.on('sendImage', function(encodedString){
         io.emit('sendImage', encodedString);
     });

@@ -1,8 +1,16 @@
 import base64
 import json
-
 from Logic.Sequencer import Sequencer as seq
 from WorldVision.worldVision import worldVision
+import threading
+
+def set_interval(func, sec):
+    def func_wrapper():
+        set_interval(func, sec)
+        func()
+    t = threading.Timer(sec, func_wrapper)
+    t.start()
+    return t
 
 sequencer = seq()
 
@@ -31,7 +39,8 @@ def sendImage():
     encoded = base64.b64encode(open("../../Commun/worldImage.jpg", "rb").read())
     socketIO.emit('sendImage', encoded)
 
-socketIO.on('needUpdatedInfo', sendImage)
+set_interval(sendImage, 5)
+
 socketIO.on('needNewCoordinates', sendNextCoordinates)
 socketIO.on('startSignal', startRound)
 

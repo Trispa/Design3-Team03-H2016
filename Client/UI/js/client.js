@@ -42,8 +42,6 @@ function isTimerDone(){
     return returnedValue;
 }
 
-setInterval(function(){ socket.emit("needUpdatedInfo");}, 3000);
-
 function start(){
     socket.emit("startSignal");
     $("#buttonGo").prop("disabled",true);

@@ -7,8 +7,8 @@ class SendingBotToTargetState():
         # call to pathfinder to return path to target
         coordinates = {"type": "target",
                        "positionTO": {
-                           "positionX": "800",
-                           "positionY": "200"},
+                           "positionX": "0",
+                           "positionY": "0"},
                        "positionFROM": {
                            "positionX": "0",
                            "positionY": "0",
