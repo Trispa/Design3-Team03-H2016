@@ -14,24 +14,27 @@ socketIO = SocketIO(config['url'], int(config['port']))
 orderReceiver = OrderReceiver()
 
 def needNewCoordinates(*args):
+    print("heading toward next coordinates")
     orderReceiver.handleCurrentState(args)
     print(orderReceiver.state.__class__)
-    socketIO.emit(orderReceiver.state.sendingSignal)
+    #socketIO.emit(orderReceiver.state.sendingSignal)
 
 def sendInfo():
+    print("sending bot information to base")
     botInfo = orderReceiver.getCurrentRobotInformation()
     socketIO.emit('sendingInfo', botInfo)
 
 def startRound(*args):
+    print("start round")
     orderReceiver.acceptOrders()
     position = (int(args[0]["positionX"]), int(args[0]["positionY"]))
     orientation = int(args[0]["orientation"])
-
     orderReceiver.initializeBot(position, orientation)
     sendInfo()
     socketIO.emit(orderReceiver.state.sendingSignal)
 
 def endRound():
+    print("end round")
     orderReceiver.refuseOrders()
 
 socketIO.emit('sendBotClientStatus','Connected')

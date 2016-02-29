@@ -14,13 +14,14 @@ with open("../../Commun/config.json") as json_data_file:
 socketIO = SocketIO(config['url'], int(config['port']))
 
 def sendNextCoordinates(*args):
-    print("Sending orders")
+    print("Sending next coordinates")
     socketIO.emit("sendNextCoordinates", sequencer.handleCurrentState())
 
 def startRound():
     botState = {"positionX":"0",
                 "positionY":"0",
                 "orientation":"0"}
+    print("sending start signal robot")
     socketIO.emit("startSignalRobot",botState)
 
 def sendImage():
