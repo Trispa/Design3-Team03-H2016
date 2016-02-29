@@ -1,19 +1,17 @@
-#define SAMPLE_MICROS 5000 // 0.005 s
-#define DEAD_ZONE 13
-#define THRESHOLD 10
-#define TOP_SPEED 2.7
-#define SPEED_LIM 0.6*TOP_SPEED
-#define DEFAULT_INCREMENT 10
-#define DIAG_INCREMENT 0.7*DEFAULT_INCREMENT
-#define END 7*THRESHOLD
 #define NB_DRIVEMOTEUR 4
 
 #include "DriveMoteur.h"
 #include "commandReceiver.h"
 
-double kp = 0.7;  //1.506897
-double ki = 5; //0.007
-double kd = 0.08;
+double kp = 1.05;  //1.506897
+double ki = 5.25; //0.007
+double kd = 0;
+
+//Constante avec bug serial.print dans DriveMoteur.cpp
+//double kp = 0.7;  //1.506897
+//double ki = 5; //0.007
+//double kd = 0.08;
+
 long listNbTicks[4] = {0, 0, 0, 0};
 unsigned long listEndCounting[4] = {0,0,0,0};
 unsigned long listStartCounting[4] = {0,0,0,0};
@@ -21,6 +19,7 @@ bool timeToCompute = false;
 unsigned long freq = 0;
 unsigned long graphTime = 0;
 unsigned int ar = 0;
+unsigned long diffTime = 0;
 
 DriveMoteur dv[4] = {DriveMoteur(4,18, 26, 27), DriveMoteur(5,19, 28, 29), DriveMoteur(6,20, 30, 31), DriveMoteur(7,21, 32, 33)};
 ReadManchester rm = ReadManchester(2,3);
@@ -47,7 +46,7 @@ void setup() {
   {
     dv[i].driveMoteur(0, 0);
     listPID[i].SetMode(AUTOMATIC);
-    listPID[i].SetOutputLimits(100, 2080);
+    listPID[i].SetOutputLimits(0, 2080);
   }
 //  dv[1].driveMoteur(0.15, 1);
 //  dv[2].driveMoteur(0.15, 0);
@@ -65,14 +64,18 @@ void loop()
 
 
   cmdRec.process();
-  updateFreqEnco();
     for(int i = 0; i < NB_DRIVEMOTEUR; i++)
     {
-      listPID[i].Compute(); // Trouver une facon de compute une fois de plus dans le if quand il ne run pas
         if(dv[i].isRunning() == 1)
         {
+          updateFreqEnco();
+          listPID[i].Compute();
           dv[i].asservissement();
         }
+//        else if(dv[i].isRunning() == -1)
+//        {
+//          listPID[i] = PID(dv[1 - 1].getInput(), dv[1 - 1].getOutput(), dv[1 - 1].getSetpoint(), kp, ki, kd, DIRECT);
+//        }
     }
 
 //    updateFreqEnco(1);
@@ -96,8 +99,9 @@ void updateFreqEnco()
   for(int i = 0; i < NB_DRIVEMOTEUR; i++)
   {
       listEndCounting[i] = micros();
-//      if((listEndCounting[i] - listStartCounting[i]) > 95000)
-//      {
+      diffTime = listEndCounting[i] - listStartCounting[i];
+      if(diffTime >= 9800)
+      {
         
           dv[i].setInput(1000000*listNbTicks[i]/(listEndCounting[i] - listStartCounting[i]));
           
@@ -109,7 +113,7 @@ void updateFreqEnco()
   //        Serial.print(freq); Serial.println(" -- ");
           listStartCounting[i] = listEndCounting[i];
           listNbTicks[i] = 0;
-//        }
+        }
   }
   
 

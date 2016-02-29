@@ -1,75 +1,49 @@
 import time
 import SerialPortCommunicator
 
-import math
-
 NB_MOTEUR = 5
 CW = 0
 CCW = 1
+MAX_SPEED = 0.15
 class MoteurRoue:
     def __init__(self):
         self.spc = SerialPortCommunicator.SerialPortCommunicator()
 
-
     def stopAllMotors(self):
         self.spc.stopAllMotor()
 
-    def avancerCardinal(self, direction, speed):
-        self.beforeChangeDirection()
-        if(direction == "N"):
-            self.spc.driveMoteur(3, speed, CCW)
-            self.spc.driveMoteur(2, speed, CW)
-        if(direction == "S"):
-            self.spc.driveMoteur(3, speed, CW)
-            self.spc.driveMoteur(2, speed, CCW)
-        if(direction == "W"):
-            self.spc.driveMoteur(1, speed, CCW)
-            self.spc.driveMoteur(4, speed, CW)
-        if(direction == "E"):
-            self.spc.driveMoteur(1, speed, CW)
-            self.spc.driveMoteur(4, speed, CCW)
-        if(direction == "NE"):
-            self.spc.driveMoteur(3, speed, CCW)
-            self.spc.driveMoteur(2, speed, CW)
-            self.spc.driveMoteur(1, speed, CW)
-            self.spc.driveMoteur(4, speed, CCW)
-        if(direction == "NW"):
-            self.spc.driveMoteur(3, speed, CCW)
-            self.spc.driveMoteur(2, speed, CW)
-            self.spc.driveMoteur(1, speed, CCW)
-            self.spc.driveMoteur(4, speed, CW)
-        if(direction == "SE"):
-            self.spc.driveMoteur(3, speed, CW)
-            self.spc.driveMoteur(2, speed, CCW)
-            self.spc.driveMoteur(1, speed, CW)
-            self.spc.driveMoteur(4, speed, CCW)
-        if(direction == "SW"):
-            self.spc.driveMoteur(3, speed, CW)
-            self.spc.driveMoteur(2, speed, CCW)
-            self.spc.driveMoteur(1, speed, CCW)
-            self.spc.driveMoteur(4, speed, CW)
+    # def rotation(self, direction, speed):
+    #     self.beforeChangeDirection()
+    #     if(direction == "CW"):
+    #         for i in range(1, NB_MOTEUR):
+    #             self.spc.driveMoteur(i, speed, CW)
+    #             # time.sleep(0.01)
+    #     elif(direction == "CCW"):
+    #         for i in range(1, NB_MOTEUR):
+    #             self.spc.driveMoteur(i, speed, CCW)
 
-    def rotation(self, direction, speed):
+    def rotation(self, direction, degree):
+        speed = 0.05
+        timeToSleep = 0.035 * degree + 0.075
         self.beforeChangeDirection()
         if(direction == "CW"):
             for i in range(1, NB_MOTEUR):
                 self.spc.driveMoteur(i, speed, CW)
-                # time.sleep(0.01)
         elif(direction == "CCW"):
             for i in range(1, NB_MOTEUR):
                 self.spc.driveMoteur(i, speed, CCW)
+        time.sleep(timeToSleep)
+        self.stopAllMotors()
 
     def beforeChangeDirection(self):
         self.stopAllMotors()
         time.sleep(0.2)
 
-
 #Distance en centimetre
     def avanceVector(self, x, y):
         self.beforeChangeDirection()
-        maxSpeed = 0.15
-        xSpeed = maxSpeed
-        ySpeed = maxSpeed
+        xSpeed = MAX_SPEED
+        ySpeed = MAX_SPEED
         if abs(x) > abs(y):
             ySpeed = (abs(y) * xSpeed) / abs(x)
         elif abs(x) < abs(y):
@@ -91,47 +65,11 @@ class MoteurRoue:
         if y < 0:
             self.spc.driveMoteur(1, ySpeed, CW)
             self.spc.driveMoteur(4, ySpeed, CCW)
+
         time.sleep(timeToTravel)
         self.stopAllMotors()
 
         return timeToTravel
-
-    def demo(self):
-        self.avancerCardinal("W", 0.2)
-        time.sleep(2)
-
-        self.avancerCardinal("E", 0.2)
-        time.sleep(4)
-
-        self.avancerCardinal("W",0.2)
-
-        time.sleep(0.1)
-
-    def demo(self):
-        self.avancerCardinal("W", 0.18)
-        time.sleep(2)
-
-        self.avancerCardinal("E", 0.18)
-        time.sleep(4)
-
-        self.avancerCardinal("W",0.18)
-
-        time.sleep(2)
-
-        self.stopAllMotors()
-
-    def demo2(self):
-
-        self.avancerCardinal("SW", 0.15)
-        time.sleep(2.5)
-
-        self.avancerCardinal("NE", 0.15)
-        time.sleep(5)
-
-        self.avancerCardinal("SW",0.15)
-        time.sleep(2.5)
-
-        self.stopAllMotors()
 
     def demo3(self):
         self.avanceVector(0, 66)
@@ -146,17 +84,27 @@ class MoteurRoue:
         time.sleep(0.5)
         self.avanceVector(50, 50)
 
+    def demoR(self):
+        self.rotation("CW", 180)
+        time.sleep(1)
+        self.rotation("CCW", 90)
+        time.sleep(1)
+        self.rotation("CW", 90)
+        time.sleep(1)
+        self.rotation("CCW", 180)
+
+
 
 if __name__ == '__main__':
     mr = MoteurRoue()
     mr.stopAllMotors()
     time.sleep(0.1)
-    # mr.demo3()
-    mr.avanceVector(0,60)
-    time.sleep(1)
+    mr.demoR()
+    # mr.avanceVector(0,60)
+    # time.sleep(1)
     # mr.avanceVector(0,-120)
     # time.sleep(1)
-    mr.avanceVector(0,-60)
+    # mr.avanceVector(0,60)
     # print(mr.spc.getAsciiManchester())
 
 
