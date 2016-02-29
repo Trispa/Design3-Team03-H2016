@@ -69,9 +69,8 @@ void loop()
     for(int i = 0; i < NB_DRIVEMOTEUR; i++)
     {
       listPID[i].Compute(); // Trouver une facon de compute une fois de plus dans le if quand il ne run pas
-        if(dv[i].isRunning())
+        if(dv[i].isRunning() == 1)
         {
-          
           dv[i].asservissement();
         }
     }

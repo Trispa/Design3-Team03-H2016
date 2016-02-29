@@ -22,7 +22,7 @@ class DriveMoteur
 	double encoFreqToSpeed(double freq);
 	int encoFreqToPWM(double freq);
 	double PWMToEncoFreq(int PWM);
-	boolean isRunning();
+	int isRunning();
   int getPinEncoInterrup();
   double* getInput();
   double* getOutput();
@@ -35,7 +35,7 @@ class DriveMoteur
     int _pinEnco;
 	int _pin1, _pin2;
 	double input, output, setpoint;
- bool _run;
+ int _run;
 
 };
 

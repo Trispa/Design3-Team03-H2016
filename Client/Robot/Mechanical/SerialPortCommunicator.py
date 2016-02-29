@@ -19,13 +19,13 @@ class SerialPortCommunicator:
     CCW = 1
 
 
-    def __init__(self, bitrateArduino = 9600, arduinoPort = "/dev/ttyUSB0"):
-        STOP_ALL_MOTEUR = 4
-        CW = 0
-        CCW = 1
+    # def __init__(self, bitrateArduino = 9600, arduinoPort = "/dev/ttyUSB0"):
+    #     STOP_ALL_MOTEUR = 4
+    #     CW = 0
+    #     CCW = 1
 
 
-    def __init__(self, bitrateArduino = 115200, arduinoPort = "/dev/ttyUSB1"):
+    def __init__(self, bitrateArduino = 115200, arduinoPort = "/dev/ttyUSB0"):
         self.arduino = serial.Serial(arduinoPort, bitrateArduino, timeout = 1)
         #self.polulu = serial.Serial(poluluPort, bitratePolulu, timeout = 1)
         sleep(1)
