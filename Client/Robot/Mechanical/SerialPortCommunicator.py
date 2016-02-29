@@ -14,21 +14,18 @@ class SerialPortCommunicator:
     LED_FUNCTION_ON = 1
     LED_FUNCTION_OFF = 2
     CHANGE_MOTEUR_SPEED = 3
-<<<<<<< HEAD:Robot/Mechanical/SerialPortCommunicator.py
     GET_CODE_MANCHESTER = 4
     CW = 0
     CCW = 1
 
-	
+
 
     def __init__(self, bitrateArduino = 9600, arduinoPort = "/dev/ttyUSB0"):
-=======
-    STOP_ALL_MOTEUR = 4
-    CW = 0
-    CCW = 1
+        STOP_ALL_MOTEUR = 4
+        CW = 0
+        CCW = 1
 
     def __init__(self, bitrateArduino = 115200, arduinoPort = "/dev/ttyUSB2"):
->>>>>>> 33afebe9c8c2e1843c4952c56761ba11bd5b6db6:Client/Robot/Mechanical/SerialPortCommunicator.py
         self.arduino = serial.Serial(arduinoPort, bitrateArduino, timeout = 1)
         #self.polulu = serial.Serial(poluluPort, bitratePolulu, timeout = 1)
         sleep(1)
@@ -38,8 +35,8 @@ class SerialPortCommunicator:
         self.arduino.write(command)
 
         for arguments in functionArgs:
-			self.arduino.write(self._packIntegerAsLong(arguments))
-			#self.arduino.write(str(arguments))
+            self.arduino.write(self._packIntegerAsLong(arguments))
+        #self.arduino.write(str(arguments))
 
         if waitForCallback:
             return self._readCallback(timeoutDelay)
@@ -59,7 +56,7 @@ class SerialPortCommunicator:
         return receivedCallback
 
     def _packIntegerAsLong(self, value):
-		return struct.pack('i', value)
+        return struct.pack('i', value)
 
 
 
@@ -77,7 +74,7 @@ class SerialPortCommunicator:
 
     #################################### MANCHESTER ################################
     def getManchesterCode(self):
-		return self._sendCommand(self.GET_CODE_MANCHESTER,self.TRUE,self.ONE_SECOND_DELAY, 1)
+        return self._sendCommand(self.GET_CODE_MANCHESTER,self.TRUE,self.ONE_SECOND_DELAY, 1)
 
     def getCodebits(self):
         trouve = 0
@@ -116,20 +113,18 @@ class SerialPortCommunicator:
         else:
             return spc.letter_from_bits(data)
         return -2
-    #################################### END MANCHESTER ################################
+        #################################### END MANCHESTER ################################
 
 
 
 
 if __name__ == "__main__":
     spc = SerialPortCommunicator()
-<<<<<<< HEAD:Robot/Mechanical/SerialPortCommunicator.py
     letter = spc.getAsciiManchester()
     if(letter ==-2):
         print("Erreur")
     else:
         print("ASCII :" + letter)
 
-=======
+
     spc.stopAllMotor()
->>>>>>> 33afebe9c8c2e1843c4952c56761ba11bd5b6db6:Client/Robot/Mechanical/SerialPortCommunicator.py
