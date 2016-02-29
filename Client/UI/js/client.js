@@ -1,16 +1,16 @@
 var socket = io.connect();
 
-socket.on("sendingBotClientStatus", function(msg){
+socket.on("sendBotClientStatus", function(msg){
     console.log(msg);
     $("#botStatus").text(msg);
 });
-socket.on("sendingImage", function(encodedImage){
+socket.on("sendImage", function(encodedImage){
     var image = new Image();
     image.src = 'data:image/jpg;base64,' + encodedImage;
     $("#path").attr("src",'data:image/jpg;base64,' + encodedImage);
 });
 
-socket.on("sendingInfo", function(info){
+socket.on("sendInfo", function(info){
     $("#asciiCharacter").text(info['decodedCharacter']);
     $("#target").text(info['target']);
     $("#voltage").text(info['voltage']);
@@ -18,7 +18,7 @@ socket.on("sendingInfo", function(info){
     $("#orientation").text(info['orientation']);
 });
 
-socket.on("sendingEndSignal", function(){
+socket.on("sendEndSignal", function(){
     $("#buttonGo").prop("disabled",false);
     stopTimer();
 });
