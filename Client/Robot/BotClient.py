@@ -1,22 +1,15 @@
 import json
+import sys
+
+from socketIO_client import SocketIO
 
 from Logic.OrderReceiver import OrderReceiver
-from socketIO_client import SocketIO
-from Logic.RobotMock import RobotMock
-from Logic.ReferentialConverter import ReferentialConverter
-import sys
 sys.path.append("/Mechanical")
-import threading
+sys.path.append("../../Shared")
+import Utils
 
-def set_interval(func, sec):
-    def func_wrapper():
-        set_interval(func, sec)
-        func()
-    t = threading.Timer(sec, func_wrapper)
-    t.start()
-    return t
 
-with open("../../Commun/config.json") as json_data_file:
+with open("../../Shared/config.json") as json_data_file:
     config = json.load(json_data_file)
 socketIO = SocketIO(config['url'], int(config['port']))
 orderReceiver = OrderReceiver()
@@ -46,12 +39,10 @@ def endRound():
     orderReceiver.refuseOrders()
 
 socketIO.emit('sendBotClientStatus','Connected')
-socketIO.on('needUpdatedInfo', sendInfo)
-
 socketIO.on('sendNextCoordinates', needNewCoordinates)
 socketIO.on('startSignalRobot', startRound)
 socketIO.on('sendEndSignal', endRound)
-set_interval(sendInfo, 5)
+Utils.setInterval(sendInfo, 5)
 
 
 socketIO.wait()

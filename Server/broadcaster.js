@@ -1,7 +1,7 @@
 var socket = require('socket.io');
 var express = require('express');
 var http = require('http');
-var obj = require("../Commun/config.json");
+var obj = require("../Shared/config.json");
 var url=obj.url;
 var port=obj.port;
 
@@ -16,7 +16,6 @@ var botClientStatus = "Not connected";
 var robot;
 
 io.on('connection', function (client) {
-
     allClients.push(socket);
     io.emit('sendBotClientStatus', botClientStatus);
     client.on('sendBotClientStatus', function(status){
