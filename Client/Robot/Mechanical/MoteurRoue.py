@@ -94,6 +94,8 @@ class MoteurRoue:
         time.sleep(timeToTravel)
         self.stopAllMotors()
 
+        return timeToTravel
+
     def demo(self):
         self.avancerCardinal("W", 0.2)
         time.sleep(2)

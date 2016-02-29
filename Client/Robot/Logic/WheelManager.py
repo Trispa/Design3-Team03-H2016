@@ -1,6 +1,7 @@
 import time
 from Client.Robot.Logic.SpeedCalculator import SpeedCalculator
 from Client.Robot.Mechanical.WheelMotor import WheelMotor
+from Client.Robot.Mechanical.MoteurRoue import MoteurRoue
 
 class WheelManager:
     def __init__(self,horizontalWheelFront, horizontalWheelBack, verticalWheelLeft, verticalWheelRight):
@@ -9,21 +10,16 @@ class WheelManager:
         self.horizontalWheelBack = horizontalWheelBack
         self.verticalWheelLeft = verticalWheelLeft
         self.verticalWheelRight = verticalWheelRight
-
+        self.moteurRoue = MoteurRoue()
         self.speedCalculator = SpeedCalculator()
         self.isMoving = False
 
 
     def moveTo(self, pointToMoveTo):
-        if self.__pointNotNull(pointToMoveTo):
+
             self.isMoving = True
-
-            speedX, speedY, timeForDeplacement = self.speedCalculator.generateSpeedInfos(pointToMoveTo)
-            self.__setWheelDeplacementSpeed(speedX, speedY)
-
-            time.sleep(timeForDeplacement)
-
-            self.__stopWheel()
+            timeToTravel = self.moteurRoue.avanceVector(pointToMoveTo[0],pointToMoveTo[1])
+            time.sleep(timeToTravel)
             self.isMoving = False
 
 
