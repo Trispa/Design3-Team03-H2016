@@ -65,7 +65,7 @@ class GraphGenerator:
                     
                 if (collisionUpperRightCorner.positionX <= collisionBottomRightCorner.positionX):
                     collisionUpperLeftCornerTemp, collisionUpperRightCornerTemp, collisionBottomLeftCornerTemp, collisionBottomRightCornerTemp = self.__detectStackedObstacleXAxis(collisionUpperRightCorner)
-                    if collisionBottomRightCornerTemp.positionY != self.MAP_SIZE_Y:
+                    if collisionBottomRightCornerTemp.positionY != self.MAP_SIZE_Y and collisionBottomRightCornerTemp != collisionBottomRightCorner:
                         print compteur
                         print 'bob'
                         cornerTL = (topRightCorner[0], collisionUpperRightCorner.positionY+self.SAFE_MARGIN)
@@ -94,7 +94,7 @@ class GraphGenerator:
                     
                 if (collisionBottomRightCorner.positionX < collisionUpperRightCorner.positionX):
                     collisionUpperLeftCornerTemp, collisionUpperRightCornerTemp, collisionBottomLeftCornerTemP, collisionBottomRightCornerTemp = self.__detectStackedObstacleXAxis(collisionBottomRightCorner)
-                    if collisionUpperRightCornerTemp.positionY != 0:
+                    if collisionUpperRightCornerTemp.positionY != 0 and collisionUpperRightCornerTemp != collisionUpperRightCorner:
                         print compteur
                         cornerTL = (topRightCorner[0], collisionUpperRightCorner.positionY+self.SAFE_MARGIN)
                         cornerTR = (collisionUpperRightCornerTemp.positionX-self.SAFE_MARGIN, collisionUpperRightCorner.positionY+self.SAFE_MARGIN)
@@ -226,9 +226,11 @@ listObs.append(Obstacle((240,300)))
 listObs.append(Obstacle((250,100)))
 listObs.append(Obstacle((280,220)))
 listObs.append(Obstacle((300,400)))
-#listObs.append(Obstacle((220,400)))
 listObs.append(Obstacle((330,100)))
-#listObs.append(Obstacle((300,500)))
+
+#listObs.append(Obstacle((220,400)))
+
+listObs.append(Obstacle((700,350)))
 #listObs.append(Obstacle((210,500)))
 
 
