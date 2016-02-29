@@ -67,7 +67,7 @@ class MoteurRoue:
 #Distance en centimetre
     def avanceVector(self, x, y):
         self.beforeChangeDirection()
-        maxSpeed = 0.1
+        maxSpeed = 0.15
         xSpeed = maxSpeed
         ySpeed = maxSpeed
         if abs(x) > abs(y):
@@ -152,11 +152,11 @@ if __name__ == '__main__':
     mr.stopAllMotors()
     time.sleep(0.1)
     # mr.demo3()
-    mr.avanceVector(-60,0)
+    mr.avanceVector(0,60)
     time.sleep(1)
-    mr.avanceVector(120,0)
-    time.sleep(1)
-    mr.avanceVector(-60,0)
+    # mr.avanceVector(0,-120)
+    # time.sleep(1)
+    mr.avanceVector(0,-60)
     # print(mr.spc.getAsciiManchester())
 
 

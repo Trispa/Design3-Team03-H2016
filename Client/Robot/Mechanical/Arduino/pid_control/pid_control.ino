@@ -69,9 +69,8 @@ void loop()
     for(int i = 0; i < NB_DRIVEMOTEUR; i++)
     {
       listPID[i].Compute(); // Trouver une facon de compute une fois de plus dans le if quand il ne run pas
-        if(dv[i].isRunning())
+        if(dv[i].isRunning() == 1)
         {
-          
           dv[i].asservissement();
         }
     }
@@ -100,16 +99,16 @@ void updateFreqEnco()
 //      if((listEndCounting[i] - listStartCounting[i]) > 95000)
 //      {
         
-        dv[i].setInput(1000000*listNbTicks[i]/(listEndCounting[i] - listStartCounting[i]));
-        
-        
-//        freq = (1000000*listNbTicks[i]/(listEndCounting[i] - listStartCounting[i]));
-//        Serial.print(listNbTicks[i]); Serial.print(" -- ");
-//        Serial.print(listEndCounting[i]); Serial.print(" -- ");
-//        Serial.print(listStartCounting[i]); Serial.print(" -- ");
-//        Serial.print(freq); Serial.println(" -- ");
-        listStartCounting[i] = listEndCounting[i];
-        listNbTicks[i] = 0;
+          dv[i].setInput(1000000*listNbTicks[i]/(listEndCounting[i] - listStartCounting[i]));
+          
+          
+  //        freq = (1000000*listNbTicks[i]/(listEndCounting[i] - listStartCounting[i]));
+  //        Serial.print(listNbTicks[i]); Serial.print(" -- ");
+  //        Serial.print(listEndCounting[i]); Serial.print(" -- ");
+  //        Serial.print(listStartCounting[i]); Serial.print(" -- ");
+  //        Serial.print(freq); Serial.println(" -- ");
+          listStartCounting[i] = listEndCounting[i];
+          listNbTicks[i] = 0;
 //        }
   }
   

@@ -15,7 +15,6 @@ class WheelManager:
 
             self.isMoving = True
             timeToTravel = self.moteurRoue.avanceVector(pointToMoveTo[0],pointToMoveTo[1])
-            time.sleep(timeToTravel)
             self.isMoving = False
 
 

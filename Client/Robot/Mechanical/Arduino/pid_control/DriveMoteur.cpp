@@ -20,7 +20,7 @@ DriveMoteur::DriveMoteur(int pinMoteur, int enco, int pin1, int pin2)
 	input = 0;
 	output = 0;
 	setpoint = 0;
- _run = false;
+ _run = 0;
 
   driveMoteur(0,0);
 }
@@ -44,6 +44,7 @@ void DriveMoteur::driveMoteur(double speed, int direction)
 				digitalWrite(_pin1, HIGH);
 				digitalWrite(_pin2, LOW);
 			}
+      _run = 1;
 			setpoint = speedToEncoFreq(speed);
       asservissement();
 		}
@@ -55,6 +56,7 @@ void DriveMoteur::driveMoteur(double speed, int direction)
 			input = 0;
       output = 0;
       setpoint = 0;
+      _run = -1;
 			digitalWrite(_pin1, LOW);
 			digitalWrite(_pin2, LOW);
 		}
@@ -95,15 +97,29 @@ double DriveMoteur::PWMToEncoFreq(int PWM)
 
 void DriveMoteur::asservissement()
 {
-	analogWrite(_pinMoteur, encoFreqToPWM(output));
+  if(_run == 1)
+	  analogWrite(_pinMoteur, encoFreqToPWM(output));
 	Serial.print("Vitesse desire : "); Serial.print(encoFreqToSpeed(setpoint));
 	Serial.print("   Vitesse reel : "); Serial.print(encoFreqToSpeed(input));
 	Serial.print("   Output : "); Serial.println(encoFreqToSpeed(output));
 }
 
-boolean DriveMoteur::isRunning()
+int DriveMoteur::isRunning()
 {
-	return setpoint != 0;
+	if(_run == 0)
+    {
+      return 0;
+    }
+  else if(_run == -1)
+    {
+      _run = 0;
+      return 1;
+    }
+    
+  else
+    {
+      return 1;
+    }
 }
 
 void DriveMoteur::setInput(double i)
