@@ -14,8 +14,7 @@ class CommandReceiver {
 public:  
 	CommandReceiver();
   CommandReceiver(DriveMoteur* listDriveMoteur);
-  CommandReceiver(ReadManchester* rm); 
-	
+  	
 	void executeCommand();
 	void process();
 

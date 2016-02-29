@@ -61,7 +61,7 @@ bool PID::Compute()
  
       /*Compute PID Output*/
       double output = kp * error + ITerm- kd * dInput;
-      
+//      Serial.println(ITerm);
 	  if(output > outMax) output = outMax;
       else if(output < outMin) output = outMin;
 	  *myOutput = output;
