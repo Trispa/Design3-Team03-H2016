@@ -45,6 +45,14 @@ io.on('connection', function (client) {
         io.emit('sendInfo', info);
     });
 
+    client.on('startSignal', function(){
+        io.emit('startSignal');
+    });
+
+    client.on('startSignalRobot', function(data){
+        io.emit('startSignalRobot', data);
+    });
+
     client.on('needNewCoordinates', function(data){
         io.emit('needNewCoordinates', data);
     });
@@ -54,6 +62,10 @@ io.on('connection', function (client) {
 
     client.on('sendEndSignal', function(){
         io.emit('sendEndSignal');
+    });
+
+    client.on('sendRefusingOrderSignal', function(){
+        io.emit('sendRefusingOrderSignal');
     });
 });
 

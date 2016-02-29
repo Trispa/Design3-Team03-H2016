@@ -17,6 +17,12 @@ def sendNextCoordinates(*args):
     print("Sending orders")
     socketIO.emit("sendNextCoordinates", sequencer.handleCurrentState())
 
+def startRound():
+    botState = {"positionX":"0",
+                "positionY":"0",
+                "orientation":"0"}
+    socketIO.emit("startSignalRobot",botState)
+
 def sendImage():
     print("asking for new images")
     world = worldVision()
@@ -26,6 +32,7 @@ def sendImage():
 
 socketIO.on('needUpdatedInfo', sendImage)
 socketIO.on('needNewCoordinates', sendNextCoordinates)
+socketIO.on('startSignal', startRound)
 
 socketIO.wait()
 

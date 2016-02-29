@@ -4,12 +4,9 @@ from Client.Robot.Mechanical.WheelMotor import WheelMotor
 from Client.Robot.Mechanical.MoteurRoue import MoteurRoue
 
 class WheelManager:
-    def __init__(self,horizontalWheelFront, horizontalWheelBack, verticalWheelLeft, verticalWheelRight):
+    def __init__(self):
         #envoyer une valeur pour identifier le channel de chaque roue
-        self.horizontalWheelFront = horizontalWheelFront
-        self.horizontalWheelBack = horizontalWheelBack
-        self.verticalWheelLeft = verticalWheelLeft
-        self.verticalWheelRight = verticalWheelRight
+
         self.moteurRoue = MoteurRoue()
         self.speedCalculator = SpeedCalculator()
         self.isMoving = False

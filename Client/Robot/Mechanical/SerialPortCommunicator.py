@@ -26,7 +26,7 @@ class SerialPortCommunicator:
 
 
     def __init__(self, bitrateArduino = 115200, arduinoPort = "/dev/ttyUSB1"):
-        self.arduino = serial.Serial(arduinoPort, bitrateArduino, timeout = 1)
+        #self.arduino = serial.Serial(arduinoPort, bitrateArduino, timeout = 1)
         #self.polulu = serial.Serial(poluluPort, bitratePolulu, timeout = 1)
         sleep(1)
 
