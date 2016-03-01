@@ -1,7 +1,7 @@
 var socket = require('socket.io');
 var express = require('express');
 var http = require('http');
-var obj = require("../Commun/config.json");
+var obj = require("../Shared/config.json");
 var url=obj.url;
 var port=obj.port;
 
@@ -35,9 +35,6 @@ io.on('connection', function (client) {
         allClients.splice(i, 1);
     });
 
-    client.on('needUpdatedInfo', function(){
-        io.emit('needUpdatedInfo');
-    });
     client.on('sendImage', function(encodedString){
         io.emit('sendImage', encodedString);
     });
@@ -61,6 +58,7 @@ io.on('connection', function (client) {
     });
 
     client.on('sendEndSignal', function(){
+        console.log("END");
         io.emit('sendEndSignal');
     });
 

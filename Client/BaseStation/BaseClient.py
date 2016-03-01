@@ -1,14 +1,20 @@
 import base64
 import json
-
+import sys
+import os
 from Logic.Sequencer import Sequencer as seq
 from WorldVision.worldVision import worldVision
+import Shared.Utils as Utils
 
 sequencer = seq()
 
 from socketIO_client import SocketIO
 
-with open("../../Commun/config.json") as json_data_file:
+c = os.path.dirname(__file__)
+configPath = os.path.join(c, "..", "..", "Shared", "config.json")
+picturePath = os.path.join(c, "..", "..", "Shared", "worldImage.jpg")
+
+with open(configPath) as json_data_file:
     config = json.load(json_data_file)
 
 socketIO = SocketIO(config['url'], int(config['port']))
@@ -28,10 +34,11 @@ def sendImage():
     print("asking for new images")
     world = worldVision()
     world.saveImage()
-    encoded = base64.b64encode(open("../../Commun/worldImage.jpg", "rb").read())
+
+    encoded = base64.b64encode(open(picturePath, "rb").read())
     socketIO.emit('sendImage', encoded)
 
-socketIO.on('needUpdatedInfo', sendImage)
+Utils.setInterval(sendImage, 5)
 socketIO.on('needNewCoordinates', sendNextCoordinates)
 socketIO.on('startSignal', startRound)
 

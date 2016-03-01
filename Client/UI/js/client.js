@@ -42,8 +42,6 @@ function isTimerDone(){
     return returnedValue;
 }
 
-setInterval(function(){ socket.emit("needUpdatedInfo");}, 3000);
-
 function start(){
     socket.emit("startSignal");
     $("#buttonGo").prop("disabled",true);
@@ -64,7 +62,7 @@ function runTimer(){
     if(seconds == 0){
         if(minutes == 0){
             stopTimer();
-            socket.emit("sendingEndSignal");
+            socket.emit("sendEndSignal");
             $("#buttonGo").prop("disabled",true);
         }else{
             $("#minute-left").text(nextMinutes);
