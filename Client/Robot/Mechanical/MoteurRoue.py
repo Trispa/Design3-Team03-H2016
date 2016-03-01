@@ -49,13 +49,13 @@ class MoteurRoue:
             self.spc.driveMoteur(1, speed, CCW)
             self.spc.driveMoteur(4, speed, CW)
 
-    def rotation(self, direction, speed):
+    def rotation(self, angle, speed):
         self.beforeChangeDirection()
-        if(direction == "CW"):
+        if(angle >= 0):
             for i in range(1, NB_MOTEUR):
                 self.spc.driveMoteur(i, speed, CW)
                 # time.sleep(0.01)
-        elif(direction == "CCW"):
+        elif(angle < 0):
             for i in range(1, NB_MOTEUR):
                 self.spc.driveMoteur(i, speed, CCW)
 
