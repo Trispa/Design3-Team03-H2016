@@ -99,27 +99,32 @@ void DriveMoteur::asservissement()
 {
   if(_run == 1)
 	  analogWrite(_pinMoteur, encoFreqToPWM(output));
-	Serial.print("Vitesse desire : "); Serial.print(encoFreqToSpeed(setpoint));
-	Serial.print("   Vitesse reel : "); Serial.print(encoFreqToSpeed(input));
-	Serial.print("   Output : "); Serial.println(encoFreqToSpeed(output));
+//	Serial.print("Vitesse desire : "); Serial.print(encoFreqToSpeed(setpoint));
+//	Serial.print("   Vitesse reel : "); Serial.print(encoFreqToSpeed(input));
+//	Serial.print("   Output : "); Serial.println(encoFreqToSpeed(output));
 }
 
+//1 is running
+//0 is not running
+//-1 time to change pid constants and is not running
 int DriveMoteur::isRunning()
 {
-	if(_run == 0)
-    {
-      return 0;
-    }
-  else if(_run == -1)
+//	if(_run == -1)
+//    {
+//      _run = 0;
+//      return -1;
+//    }
+//  else
+//  {
+//    return _run;
+//  }
+    if(_run == -1)
     {
       _run = 0;
-      return 1;
+      return  1;
     }
-    
-  else
-    {
-      return 1;
-    }
+    else
+      return _run;
 }
 
 void DriveMoteur::setInput(double i)
