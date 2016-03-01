@@ -1,4 +1,2 @@
 cd ..
-cd Client
-cd Robot
-py BotClient.py
+py -m Client.Robot.BotClient.py

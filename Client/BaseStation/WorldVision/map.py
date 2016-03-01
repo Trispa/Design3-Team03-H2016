@@ -8,8 +8,8 @@ class Map:
     def __init__(self):
         self.__shapes = []
 
-    def findSimilarShape(self, shape):
-        newContourCenterOfMassX, newContourCenterOfMassY = shape.findCenterOfMass()
+    def findSimilarShape(self, newPossibleshape):
+        newContourCenterOfMassX, newContourCenterOfMassY = newPossibleshape.findCenterOfMass()
         for shapeAlreadyFound in self.__shapes:
             oldContourCenterOfMassX, oldContourCenterOfMassY = shapeAlreadyFound.findCenterOfMass()
             if(abs(newContourCenterOfMassX - oldContourCenterOfMassX) < 10 and abs(newContourCenterOfMassY - oldContourCenterOfMassY) < 10):

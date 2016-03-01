@@ -1,4 +1,5 @@
 from worldImage import WorldImage
+import os
 import cv2
 
 class worldVision:
@@ -17,4 +18,6 @@ class worldVision:
         geometricalImage.addLabels()
 
         worldImage = geometricalImage.drawMapOnImage()
-        cv2.imwrite( "../../Shared/worldImage.jpg", worldImage )
+        c = os.path.dirname(__file__)
+        picturePath = os.path.join(c, "..", "..", "..", "Shared", "worldImage.jpg")
+        cv2.imwrite( picturePath, worldImage )
