@@ -55,7 +55,14 @@ class GraphGenerator:
             borderNodeRightTop = Node((topRightCorner[0], (topRightCorner[1]+collisionUpperRightCorner.positionY+self.SAFE_MARGIN)/2))
             
             if(collisionUpperLeftCorner.positionY != 0):
+
                 tempNode = Node((collisionUpperLeftCorner.positionX + self.SAFE_MARGIN, (collisionUpperLeftCorner.positionY+self.SAFE_MARGIN + topLeftCorner[1])/2))
+                if collisionUpperRightCorner.positionX-self.SAFE_MARGIN <= collisionUpperLeftCorner.positionX+self.SAFE_MARGIN and collisionUpperRightCorner.positionY > collisionUpperLeftCorner.positionY:
+                    cornerTL = (topLeftCorner[0], collisionUpperLeftCorner.positionY+self.SAFE_MARGIN)
+                    cornerTR = (collisionUpperRightCorner.positionX-self.SAFE_MARGIN, collisionUpperLeftCorner.positionY+self.SAFE_MARGIN)
+                    cornerBL = (topLeftCorner[0], topLeftCorner[1])
+                    tempNode = Node(SafeZone(cornerTL,cornerTR,cornerBL).getCenterOfSafeZone())
+                    collisionUpperRightCorner.setStartingNode(tempNode)
                 self.__connectTwoNodes(borderNodeLeftTop,tempNode)
             elif(collisionUpperRightCorner.positionY != 0):
                 if collisionUpperLeftCorner.positionY == 0:
@@ -88,8 +95,15 @@ class GraphGenerator:
                 self.__connectTwoNodes(borderNodeLeftBottom,tempNode)
             elif(collisionBottomRightCorner.positionY != self.MAP_SIZE_Y):
                 if collisionBottomLeftCorner.positionY == self.MAP_SIZE_Y:
-                    tempNode = Node(((bottomLeftCorner[0]+collisionBottomRightCorner.positionX-self.SAFE_MARGIN)/2,(bottomLeftCorner[1]+self.MAP_SIZE_Y-self.SAFE_MARGIN)/2))
-                    collisionBottomRightCorner.setStartingNode(tempNode)
+                    collisionUpperLeftCornerTemp, collisionUpperRightCornerTemp, collisionBottomLeftCornerTemp, collisionBottomRightCornerTemp = self.__detectStackedObstacleXAxis(collisionBottomRightCorner)
+                    collisionGoodOne = collisionBottomRightCorner
+                    while collisionBottomLeftCornerTemp.positionY != self.MAP_SIZE_Y:
+                        collisionGoodOne = collisionBottomLeftCornerTemp
+                        collisionUpperLeftCornerTemp, collisionUpperRightCornerTemp, collisionBottomLeftCornerTemp, collisionBottomRightCornerTemp = self.__detectStackedObstacleXAxis(collisionBottomLeftCornerTemp)
+                    print "boba fett"
+                    print collisionGoodOne.positionX,collisionGoodOne.positionY
+                    tempNode = Node(((bottomLeftCorner[0]+collisionGoodOne.positionX-self.SAFE_MARGIN)/2,(bottomLeftCorner[1]+self.MAP_SIZE_Y-self.SAFE_MARGIN)/2))
+                    collisionGoodOne.setStartingNode(tempNode)
                     self.__connectTwoNodes(borderNodeLeftBottom,tempNode)
                     
                 if (collisionBottomRightCorner.positionX < collisionUpperRightCorner.positionX):
@@ -201,12 +215,16 @@ class GraphGenerator:
     def __displayGraph(self):
         img = np.zeros((600, 1000, 3), np.uint8)
         cv2.namedWindow('image')
+        couleur = 0
         for compteur in range (0, self.obstaclesList.__len__()):
             currentObstacle = self.obstaclesList[(compteur)]
             cv2.rectangle(img, (currentObstacle.positionX - self.SAFE_MARGIN, currentObstacle.positionY - self.SAFE_MARGIN), (currentObstacle.positionX + self.SAFE_MARGIN, currentObstacle.positionY + self.SAFE_MARGIN),
                       (0, 255, 0), -1, 1)
+            self.nodesList.sort(key=lambda node: node.positionX)
         for compteur in range (0, self.nodesList.__len__()):
+
             currentNode = self.nodesList[(compteur)]
+            print currentNode.positionX, currentNode.positionY
             departPoint = (currentNode.positionX, currentNode.positionY)
             connectedNode = currentNode.getConnectedNodesList()
             for compteurConnected in range(0, connectedNode.__len__()):
@@ -228,7 +246,7 @@ listObs.append(Obstacle((280,220)))
 listObs.append(Obstacle((300,400)))
 listObs.append(Obstacle((330,100)))
 
-#listObs.append(Obstacle((220,400)))
+listObs.append(Obstacle((220,400)))
 
 listObs.append(Obstacle((700,350)))
 #listObs.append(Obstacle((210,500)))
