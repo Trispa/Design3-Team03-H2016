@@ -13,7 +13,8 @@ class WheelManagerTest(TestCase):
 
     def setUp(self):
         self.wheelMotorMock = MagicMock()
-        self.wheelManager = WheelManager(self.wheelMotorMock,self.wheelMotorMock,self.wheelMotorMock,self.wheelMotorMock)
+        self.moteurRoueMock = MagicMock()
+        self.wheelManager = WheelManager(self.moteurRoueMock)
 
 
     @patch('Client.Robot.Logic.WheelManager.SpeedCalculator.generateRotationInfos', autospec=True)

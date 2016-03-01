@@ -9,10 +9,9 @@ class OrderReceiver():
     def setState(self, newState) :
         self.state = newState
 
-        self.wheelManager = WheelManager()
-
-    def __init__(self):
-        self.robot = RobotMock.RobotMock()
+    def __init__(self, robot, wheelManager):
+        self.robot = robot
+        self.wheelManager = wheelManager
         self.setState(ExecutingOrderState.ExecutingOrderState())
 
     def handleCurrentState(self, coordinates):

@@ -1,18 +1,20 @@
 import json
 import sys
-
 from socketIO_client import SocketIO
-
 from Logic.OrderReceiver import OrderReceiver
-sys.path.append("/Mechanical")
-sys.path.append("../../Shared")
-import Utils
+from Logic.WheelManager import WheelManager
+from Logic.RobotMock import RobotMock
+from Mechanical.MoteurRoue import MoteurRoue
+import os
+import Shared.Utils as Utils
 
+c = os.path.dirname(__file__)
+configPath = os.path.join(c, "..", "..", "Shared", "config.json")
 
-with open("../../Shared/config.json") as json_data_file:
+with open(configPath) as json_data_file:
     config = json.load(json_data_file)
 socketIO = SocketIO(config['url'], int(config['port']))
-orderReceiver = OrderReceiver()
+orderReceiver = OrderReceiver(RobotMock(), WheelManager(MoteurRoue()))
 
 def needNewCoordinates(*args):
     print("heading toward next coordinates")

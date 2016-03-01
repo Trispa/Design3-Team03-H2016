@@ -1,12 +1,13 @@
 import time
 from SpeedCalculator import SpeedCalculator
-from Mechanical.MoteurRoue import MoteurRoue
+import sys
+
 
 class WheelManager:
-    def __init__(self):
+    def __init__(self, moteurRoue):
         #envoyer une valeur pour identifier le channel de chaque roue
 
-        self.moteurRoue = MoteurRoue()
+        self.moteurRoue = moteurRoue
         self.speedCalculator = SpeedCalculator()
         self.isMoving = False
 
