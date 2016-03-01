@@ -58,6 +58,7 @@ io.on('connection', function (client) {
     });
 
     client.on('sendEndSignal', function(){
+        console.log("END");
         io.emit('sendEndSignal');
     });
 

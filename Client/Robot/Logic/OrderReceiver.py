@@ -9,27 +9,27 @@ class OrderReceiver():
     def setState(self, newState) :
         self.state = newState
 
-    def __init__(self, robot, wheelManager):
+    def __init__(self, robot):
         self.robot = robot
-        self.wheelManager = wheelManager
+        #self.wheelManager = wheelManager
         self.setState(ExecutingOrderState.ExecutingOrderState())
 
     def handleCurrentState(self, coordinates):
         print(coordinates)
-        print("Bot going to " + coordinates[0]["type"] +
-      " at : (" + coordinates[0]["positionTO"]["positionX"] +
-      " " + coordinates[0]["positionTO"]["positionY"] +
+        print("Bot going to " + coordinates["type"] +
+      " at : (" + coordinates["positionTO"]["positionX"] +
+      " " + coordinates["positionTO"]["positionY"] +
       ")")
 
-        botPosition= (int(coordinates[0]["positionFROM"]["positionX"]),int(coordinates[0]["positionFROM"]["positionY"]))
-        orientation = int(coordinates[0]["positionFROM"]["orientation"])
+        botPosition= (int(coordinates["positionFROM"]["positionX"]),int(coordinates["positionFROM"]["positionY"]))
+        orientation = int(coordinates["positionFROM"]["orientation"])
         referentialConverter = ReferentialConverter(botPosition,orientation)
-        pointConverted = referentialConverter.convertWorldToRobot((int(coordinates[0]["positionTO"]["positionX"]), int(coordinates[0]["positionTO"]["positionY"])))
+        pointConverted = referentialConverter.convertWorldToRobot((int(coordinates["positionTO"]["positionX"]), int(coordinates["positionTO"]["positionY"])))
         #pointConverted = (int(coordinates[0]["position"]["positionX"]), int(coordinates[0]["position"]["positionY"]))
         self.state.handle(self, pointConverted)
 
         #TODO Trouver une facon de se debarrasser de ce if la
-        if(coordinates[0]["type"] == "target"):
+        if(coordinates["type"] == "target"):
             self.setState(RefusingOrderState.RefusingOrderState())
 
     def getCurrentRobotInformation(self):

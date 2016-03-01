@@ -62,7 +62,7 @@ function runTimer(){
     if(seconds == 0){
         if(minutes == 0){
             stopTimer();
-            socket.emit("sendingEndSignal");
+            socket.emit("sendEndSignal");
             $("#buttonGo").prop("disabled",true);
         }else{
             $("#minute-left").text(nextMinutes);
