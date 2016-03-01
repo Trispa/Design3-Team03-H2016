@@ -7,7 +7,6 @@ if __name__ == '__main__':
 
     cap = cv2.VideoCapture(0)
 
-<<<<<<< HEAD
 #while(True):
     #ret, frame = cap.read()
     frame = cv2.imread('Images/Test1.jpg')
