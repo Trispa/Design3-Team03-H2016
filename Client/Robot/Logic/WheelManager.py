@@ -25,7 +25,7 @@ class WheelManager:
             self.isMoving = True
             rotationSpeed, timeForRotation = self.speedCalculator.generateRotationInfos(angle)
 
-            self.moteurRoue.rotation(angle,rotationSpeed)
+            self.moteurRoue.rotation(angle)
 
 
             self.isMoving = False

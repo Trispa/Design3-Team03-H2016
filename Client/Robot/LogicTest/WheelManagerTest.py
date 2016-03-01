@@ -23,7 +23,7 @@ class WheelManagerTest(TestCase):
         speedCalculatorMock.return_value = theSpeed,0
 
         self.wheelManager.rotate(self.AN_ANGLE)
-        calls = [call(self.AN_ANGLE,5)]
+        calls = [call(self.AN_ANGLE)]
 
         self.moteurRoueMock.rotation.assert_has_calls(calls)
         self.assertEqual(1, self.moteurRoueMock.rotation.call_count)
