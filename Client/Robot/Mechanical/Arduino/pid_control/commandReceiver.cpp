@@ -19,12 +19,6 @@ CommandReceiver::CommandReceiver(DriveMoteur* d)
 {
   dm = d;
 }
-
-CommandReceiver::CommandReceiver(ReadManchester* rm)
-{
-  readManchester = rm;
-  
-}
   
 
 void CommandReceiver::decomposeParameters() {

@@ -1,4 +1,5 @@
 from Client.BaseStation.WorldVision.worldImage import WorldImage
+import os
 import cv2
 
 
@@ -14,7 +15,9 @@ if __name__ == '__main__':
         mapImage.setMap()
         worldImage = mapImage.drawMapOnImage()
 
-        cv2.imwrite( "../../../Commun/worldImage.jpg", worldImage)
+        c = os.path.dirname(__file__)
+        picturePath = os.path.join(c, "..", "..", "..", "Shared", "worldImage.jpg")
+        cv2.imwrite( picturePath, worldImage)
         cv2.imshow('frame',worldImage)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break

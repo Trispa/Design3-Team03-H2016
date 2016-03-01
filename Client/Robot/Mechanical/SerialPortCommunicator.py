@@ -3,7 +3,6 @@ from time import sleep
 import struct
 import binascii
 
-
 class SerialPortCommunicator:
     COMMAND_INDICATOR = "C"
     FALSE = 0
@@ -15,17 +14,18 @@ class SerialPortCommunicator:
     LED_FUNCTION_OFF = 2
     CHANGE_MOTEUR_SPEED = 3
     GET_CODE_MANCHESTER = 4
+    STOP_ALL_MOTEUR = 5
     CW = 0
     CCW = 1
 
 
+    # def __init__(self, bitrateArduino = 9600, arduinoPort = "/dev/ttyUSB0"):
+    #     STOP_ALL_MOTEUR = 4
+    #     CW = 0
+    #     CCW = 1
 
-    def __init__(self, bitrateArduino = 9600, arduinoPort = "/dev/ttyUSB0"):
-        STOP_ALL_MOTEUR = 4
-        CW = 0
-        CCW = 1
-
-    def __init__(self, bitrateArduino = 115200, arduinoPort = "/dev/ttyUSB2"):
+#Pololu : /dev/serial/by-id/pci-Pololu_Corporation_Pololu_Micro_Maestro_6-Servo_Controller_00021864-if0
+    def __init__(self, bitrateArduino = 115200, arduinoPort = "/dev/serial/by-id/pci-FTDI_FT232R_USB_UART_A7007dag-if00-port0"):
         self.arduino = serial.Serial(arduinoPort, bitrateArduino, timeout = 1)
         #self.polulu = serial.Serial(poluluPort, bitratePolulu, timeout = 1)
         sleep(1)
@@ -50,8 +50,8 @@ class SerialPortCommunicator:
         if waitedTime < timeoutDelay:
             receivedCallback = self.arduino.readline()
         else:
+            # receivedCallback = -1
             receivedCallback = self.arduino.readline()
-            #receivedCallback = -1
 
         return receivedCallback
 
@@ -72,7 +72,7 @@ class SerialPortCommunicator:
     def stopAllMotor(self):
         self._sendCommand(self.STOP_ALL_MOTEUR, self.FALSE, self.ONE_SECOND_DELAY, 1)
 
-    #################################### MANCHESTER ################################
+     #################################### MANCHESTER ################################
     def getManchesterCode(self):
         return self._sendCommand(self.GET_CODE_MANCHESTER,self.TRUE,self.ONE_SECOND_DELAY, 1)
 
@@ -107,16 +107,13 @@ class SerialPortCommunicator:
         return binascii.unhexlify(hex_string.zfill(n + (n & 1)))
 
     def getAsciiManchester(self):
-        data = spc.getCodebits()
+        data = self.getCodebits()
         if(data == -1):
             print ("la chaine recu est vide ")
         else:
             return spc.letter_from_bits(data)
         return -2
         #################################### END MANCHESTER ################################
-
-
-
 
 if __name__ == "__main__":
     spc = SerialPortCommunicator()
@@ -125,6 +122,7 @@ if __name__ == "__main__":
         print("Erreur")
     else:
         print("ASCII :" + letter)
-
-
     spc.stopAllMotor()
+
+    print(spc.getAsciiManchester())
+

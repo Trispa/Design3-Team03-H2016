@@ -18,18 +18,34 @@ socket.on("sendInfo", function(info){
     $("#orientation").text(info['orientation']);
 });
 
-socket.on("sendEndSignal", function(){
-    $("#buttonGo").prop("disabled",false);
+socket.on("sendEndSignal", function() {
+    $("#buttonGo").prop("disabled", false);
     stopTimer();
 });
 
-setInterval(function(){ socket.emit("needUpdatedInfo");}, 3000);
+socket.on("sendRefusingOrderSignal", function(){
+    if(!isTimerDone()){
+        $("#buttonGo").prop("disabled",false);
+        stopTimer();
+    }
+});
+
+function isTimerDone(){
+    var seconds = $("#seconds-left").text();
+    var minutes = $("#minute-left").text();
+    var returnedValue = false;
+    if(seconds == 0) {
+        if (minutes == 0) {
+            returnedValue = true;
+        }
+    }
+    return returnedValue;
+}
 
 function start(){
-    socket.emit("needNewCoordinates");
+    socket.emit("startSignal");
     $("#buttonGo").prop("disabled",true);
     startTimer();
-
 }
 
 var currentTimer;
@@ -46,16 +62,23 @@ function runTimer(){
     if(seconds == 0){
         if(minutes == 0){
             stopTimer();
-            socket.emit("sendingEndSignal");
+            socket.emit("sendEndSignal");
+            $("#buttonGo").prop("disabled",true);
         }else{
             $("#minute-left").text(nextMinutes);
         }
         nextSeconds = 59;
     }else{
-            $("#seconds-left").text(nextSeconds);
+        $("#seconds-left").text(nextSeconds);
     }
 }
 
 function stopTimer(){
     clearInterval(currentTimer);
+}
+
+function reset(){
+    $("#buttonGo").prop("disabled",false);
+    $("#seconds-left").text("15");
+    $("#minute-left").text("0");
 }
