@@ -9,9 +9,9 @@ class OrderReceiver():
     def setState(self, newState) :
         self.state = newState
 
-    def __init__(self, robot):
+    def __init__(self, robot, wheelManager):
         self.robot = robot
-        #self.wheelManager = wheelManager
+        self.wheelManager = wheelManager
         self.setState(ExecutingOrderState.ExecutingOrderState())
 
     def handleCurrentState(self, coordinates):
