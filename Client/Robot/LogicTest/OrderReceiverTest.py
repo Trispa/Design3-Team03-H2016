@@ -1,14 +1,13 @@
 from unittest import TestCase
 from mock import MagicMock
 from Client.Robot.Logic.OrderReceiver import OrderReceiver
-from Client.Robot.Logic.ReferentialConverter import ReferentialConverter
-import array
-from mock import patch
-from mock import call
+
 
 class OrderReceiverTest(TestCase):
 
     RANDOM_COORDINATES = {"type": "charging station",
+                          "end":"no",
+                          "index":"0",
                           "positionTO": {
                               "positionX": "15",
                               "positionY": "15"},
@@ -56,12 +55,13 @@ class OrderReceiverTest(TestCase):
 
     def test_givenOrderReceiverWhenHandlingCurrentStateWithTreasureCoordinateThenStateIsExecutingOrders(self):
         self.RANDOM_COORDINATES['type'] = "treasure"
+        self.RANDOM_COORDINATES['end'] = "no"
         self.orderReceiver.handleCurrentState(self.RANDOM_COORDINATES)
 
         self.assertEquals('ExecutingOrderState', self.orderReceiver.state.__class__.__name__)
 
-    def test_givenOrderReceiverWhenHandlingCurrentStateWithTargetCoordinateThenStateIsRefusingOrders(self):
-        self.RANDOM_COORDINATES['type'] = "target"
+    def test_givenOrderReceiverWhenHandlingCurrentStateWithEndCoordinateThenStateIsRefusingOrders(self):
+        self.RANDOM_COORDINATES['end'] = "yes"
         self.orderReceiver.handleCurrentState(self.RANDOM_COORDINATES)
 
         self.assertEquals('RefusingOrderState', self.orderReceiver.state.__class__.__name__)

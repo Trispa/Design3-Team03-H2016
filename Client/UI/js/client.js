@@ -10,14 +10,6 @@ socket.on("sendImage", function(encodedImage){
     $("#path").attr("src",'data:image/jpg;base64,' + encodedImage);
 });
 
-socket.on("sendInfo", function(info){
-    $("#asciiCharacter").text(info['decodedCharacter']);
-    $("#target").text(info['target']);
-    $("#voltage").text(info['voltage']);
-    $("#position").text(info['position']);
-    $("#orientation").text(info['orientation']);
-});
-
 socket.on("sendEndSignal", function() {
     $("#buttonGo").prop("disabled", false);
     stopTimer();
