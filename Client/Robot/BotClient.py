@@ -1,42 +1,40 @@
 import json
-
-
 from socketIO_client import SocketIO
+from Logic.OrderReceiver import OrderReceiver
+from Logic.WheelManager import WheelManager
 from Logic.RobotMock import RobotMock
-from Logic.ReferentialConverter import ReferentialConverter
+from Mechanical.MoteurRoue import MoteurRoue
+import os
 
-with open("../../Shared/config.json") as json_data_file:
+c = os.path.dirname(__file__)
+configPath = os.path.join(c, "..", "..", "Shared", "config.json")
+
+with open(configPath) as json_data_file:
     config = json.load(json_data_file)
 socketIO = SocketIO(config['url'], int(config['port']))
-#referentialConverter = ReferentialConverter(positionRobot, orientation);
-#wheelManager = WheelManager()
+#orderReceiver = OrderReceiver(RobotMock())
+orderReceiver = OrderReceiver(RobotMock(), WheelManager(MoteurRoue()))
 
-robot = RobotMock()
 def needNewCoordinates(*args):
-    print("Bot going to " + args[0]["type"] + " at : (" + args[0]["position"]["positionX"] + " " + args[0]["position"]["positionY"] + ")")
-    #pointConverted = referentialConverter.convertWorldToRobot((int(args[0]["position"]["positionX"]), int(args[0]["position"]["positionY"]))
-    pointConverted = (int(args[0]["position"]["positionX"]), int(args[0]["position"]["positionY"]))
-    robot.moveTo(pointConverted)
-    #wheelManager.moveTo(pointConverted)
-    if(args[0]["type"] == "target"):
-        robot.botInfo['voltage'] = "N/A"
-        robot.botInfo['decodedCharacter'] = "N/A"
-        robot.botInfo['target'] = "N/A"
-        socketIO.emit('sendingEndSignal')
-    else:
-        robot.botInfo['voltage'] = "12V"
-        robot.botInfo['decodedCharacter'] = "A"
-        robot.botInfo['target'] = "cercle"
-        socketIO.emit('needNewCoordinates')
+    print("heading toward next coordinates")
+    orderReceiver.handleCurrentState(args[0])
+    whichObstacleNextIsNeeded = int(args[0]["index"]) + 1
+    print(orderReceiver.state.__class__)
+    socketIO.emit(orderReceiver.state.sendingSignal, {"index" : str(whichObstacleNextIsNeeded)})
 
-def sendInfo():
-    robot.botInfo['position'] = "(" + str(robot.positionX) + "," + str(robot.positionY) + ")"
-    robot.botInfo['orientation'] = str(robot.orientation)
-    socketIO.emit('sendingInfo', robot.botInfo)
+def startRound(*args):
+    print("start round")
+    orderReceiver.acceptOrders()
+    socketIO.emit(orderReceiver.state.sendingSignal, {"index": "0"})
 
-socketIO.emit('sendingBotClientStatus','Connected')
-socketIO.on('needUpdatedInfo', sendInfo)
-socketIO.on('sendingNextCoordinates', needNewCoordinates)
+def endRound():
+    print("end round")
+    orderReceiver.refuseOrders()
+
+socketIO.emit('sendBotClientStatus','Connected')
+socketIO.on('sendNextCoordinates', needNewCoordinates)
+socketIO.on('startSignalRobot', startRound)
+socketIO.on('sendEndSignal', endRound)
 
 socketIO.wait()
 

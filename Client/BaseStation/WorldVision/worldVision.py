@@ -1,15 +1,16 @@
 from worldImage import WorldImage
+import os
 import cv2
 
 class worldVision:
 
     def __init__(self):
-        self.cap = cv2.VideoCapture(0)
+        self.camera = cv2.VideoCapture(1)
 
 
     def saveImage(self):
 
-        ret, frame = self.cap.read()
+        ret, frame = self.camera.read()
 
         geometricalImage = WorldImage(frame)
 
@@ -17,4 +18,6 @@ class worldVision:
         geometricalImage.addLabels()
 
         worldImage = geometricalImage.drawMapOnImage()
-        cv2.imwrite( "../../Shared/worldImage.jpg", worldImage )
+        c = os.path.dirname(__file__)
+        picturePath = os.path.join(c, "..", "..", "..", "Shared", "worldImage.jpg")
+        cv2.imwrite( picturePath, worldImage )

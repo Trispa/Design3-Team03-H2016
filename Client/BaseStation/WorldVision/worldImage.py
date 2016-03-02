@@ -29,12 +29,12 @@ class WorldImage:
         thickness = 1
         mapShapes = self.__map.getShapesList()
         for shape in mapShapes:
-            size, baseline = cv2.getTextSize(shape.getName(), font, scale, thickness)
+            size, baseline = cv2.getTextSize(shape.getName() + " " + shape.myColor.colorName, font, scale, thickness)
             textWidth = size[0]
             textHeight = size[1]
             x,y,w,h = shape.getBoundingRectangle()
             point = (x + ((w - textWidth) / 2), y + ((h + textHeight) / 2))
-            cv2.putText(self.__mapImage, shape.getName(), point, font, scale, (0,0,0), thickness, 8)
+            cv2.putText(self.__mapImage, shape.getName()+ " " + shape.myColor.colorName, point, font, scale, (0,0,0), thickness, 8)
 
     def drawMapOnImage(self):
         cv2.drawContours( self.__mapImage, self.__map.getContourList(), -1, (0, 255, 0), 3 )

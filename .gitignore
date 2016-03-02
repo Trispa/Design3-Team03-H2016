@@ -1,6 +1,5 @@
 .idea/*
 
-
 # Unit test / coverage reports
 htmlcov/
 .tox/
