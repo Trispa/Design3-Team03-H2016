@@ -3,7 +3,6 @@
 
 #include "Arduino.h"
 #include "DriveMoteur.h"
-#include "ReadManchester.h"
 
 #define MaximumBufferLenght 60
 #define MaximumCommandLenght 14
@@ -12,9 +11,13 @@
 
 class CommandReceiver {
 public:  
+
+  boolean * enableManchester;
+
+  String * manchesterToreturn;
 	CommandReceiver();
-  CommandReceiver(DriveMoteur* listDriveMoteur);
-  	
+  CommandReceiver(DriveMoteur* listDriveMoteur, boolean* enableManchester, String * manchesterToreturn);
+  void setEnableManchester(boolean b);
 	void executeCommand();
 	void process();
 
@@ -27,6 +30,7 @@ public:
 	long readULongFromBytes();
 	void sendCallback(long callbackData);
   void sendCallback(char* callbackData);
+  void sendCallback(String callbackData);
 	byte commandWaitingFlag;
 	byte commandInProgressFlag;
 	volatile long* positionData;
@@ -38,11 +42,12 @@ public:
 	byte commandIndex;
 	byte callbackRequested;
   long parameters[MaximumParametersQuantity];
-
+  
 
   DriveMoteur* dm;
 
-  ReadManchester* readManchester;
+
+
 };
 
 #endif

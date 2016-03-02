@@ -8,19 +8,23 @@
 #define MilimetersToTicks 7.69
 #define endingLEDPin 13
 
- char  *machaine;
- int bitRecu;
+ String  machaine;
+
 CommandReceiver::CommandReceiver()
 {
 
 }
 
-CommandReceiver::CommandReceiver(DriveMoteur* d)
+CommandReceiver::CommandReceiver(DriveMoteur* d,  boolean* enableMan, String * manchester)
 {
   dm = d;
+  this->enableManchester = enableMan;
+  this->manchesterToreturn = manchester;
 }
-  
 
+void CommandReceiver::setEnableManchester(boolean b){
+  *this->enableManchester = b;
+}
 void CommandReceiver::decomposeParameters() {
 	byte numberOfParameters = Serial.read() - ASCIIOffset;
 	
@@ -76,12 +80,16 @@ void CommandReceiver::dispatchCommand() {
 
 
 	case 4: // ReadMAnchesterBits
-	    	machaine = readManchester->getMaschesterBits();
-	    	bitRecu =   atoi( machaine );
-	    	if(callbackRequested == 1){
-	      		sendCallback(bitRecu);
-	    	}
-	    	break;
+        *this->enableManchester  = true;
+//        if(callbackRequested == 1){
+//          
+//          if((*manchesterToreturn).length() >= 64){
+//             sendCallback(*manchesterToreturn);
+//              //*enableManchester  = false;
+//          }
+//        } 	
+       
+        break;
 
  	case 5:// j'ai changé le 4 en 5 car le 4 appartenais déjà  au ReadManchester
     		for(int i = 0; i<4; i++)
@@ -102,10 +110,15 @@ void CommandReceiver::sendCallback(long callbackData) {
 	Serial.print(callbackData, DEC);
 }
 
-/*void CommandReceiver::sendCallback(char* callbackData) {
+
+void CommandReceiver::sendCallback(char* callbackData) {
   Serial.print('R');
   Serial.print(callbackData);
-}*/
+}
+void CommandReceiver::sendCallback(String callbackData) {
+  Serial.print('R');
+  Serial.print(callbackData);
+}
 
 void CommandReceiver::executeCommand() {
 	readPort();

@@ -2,12 +2,13 @@ import serial
 from time import sleep
 import struct
 import binascii
+import re
 
 class SerialPortCommunicator:
     COMMAND_INDICATOR = "C"
     FALSE = 0
     TRUE = 1
-    ONE_SECOND_DELAY = 1
+    ONE_SECOND_DELAY = 3
     ONE_MINUTE_DELAY = 60
 
     LED_FUNCTION_ON = 1
@@ -19,13 +20,14 @@ class SerialPortCommunicator:
     CCW = 1
 
 
+
     # def __init__(self, bitrateArduino = 9600, arduinoPort = "/dev/ttyUSB0"):
     #     STOP_ALL_MOTEUR = 4
     #     CW = 0
     #     CCW = 1
 
 #Pololu : /dev/serial/by-id/pci-Pololu_Corporation_Pololu_Micro_Maestro_6-Servo_Controller_00021864-if0
-    def __init__(self, bitrateArduino = 115200, arduinoPort = "/dev/serial/by-id/pci-FTDI_FT232R_USB_UART_A7007dag-if00-port0"):
+    def __init__(self, bitrateArduino = 9600, arduinoPort = "/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A7007dag-if00-port0"):
         self.arduino = serial.Serial(arduinoPort, bitrateArduino, timeout = 1)
         #self.polulu = serial.Serial(poluluPort, bitratePolulu, timeout = 1)
         sleep(1)
@@ -72,14 +74,39 @@ class SerialPortCommunicator:
     def stopAllMotor(self):
         self._sendCommand(self.STOP_ALL_MOTEUR, self.FALSE, self.ONE_SECOND_DELAY, 1)
 
-     #################################### MANCHESTER ################################
+    #################################### MANCHESTER ################################
     def getManchesterCode(self):
-        return self._sendCommand(self.GET_CODE_MANCHESTER,self.TRUE,self.ONE_SECOND_DELAY, 1)
+       return  self._sendCommand(self.GET_CODE_MANCHESTER,self.TRUE,self.ONE_SECOND_DELAY)
+
+    def manchester_decode(self, chaine):
+        i = 0
+        chaine_paire = ""
+        chaine_impaire = ""
+        patern = "111111110"
+        for  indice  in range(0, len(chaine)):
+            if((indice % 2) == 0):
+                chaine_paire += chaine[indice]
+            else :
+                chaine_impaire += chaine[indice]
+
+        if(chaine_paire.find(patern) != -1):
+            #chaine_paire = chaine_paire.replace(patern, '')
+            print("dans la chaine paire")
+            return chaine_paire
+        else:
+            if(chaine_impaire.find(patern) != -1):
+                #chaine_impaire = re.sub(patern,"", chaine_impaire)
+                print("dans la chaine impaire")
+                return chaine_impaire
+        return -2
+
 
     def getCodebits(self):
         trouve = 0
         indice = 0
-        chaine = self.getManchesterCode();
+        bits = self.getManchesterCode()
+        chaine = self.manchester_decode(bits)
+
         c = ''
         data = ""
         patern = "111111110"
@@ -111,18 +138,13 @@ class SerialPortCommunicator:
         if(data == -1):
             print ("la chaine recu est vide ")
         else:
-            return spc.letter_from_bits(data)
+            return self.letter_from_bits(data)
         return -2
-        #################################### END MANCHESTER ################################
+    #################################### END MANCHESTER ################################
 
 if __name__ == "__main__":
     spc = SerialPortCommunicator()
-    letter = spc.getAsciiManchester()
-    if(letter ==-2):
-        print("Erreur")
-    else:
-        print("ASCII :" + letter)
-    spc.stopAllMotor()
-
-    print(spc.getAsciiManchester())
-
+    #maChaine = spc.getManchesterCode()
+    #print(maChaine)
+    #print(spc.getCodebits())
+    print("ASCII :" + spc.getAsciiManchester())
