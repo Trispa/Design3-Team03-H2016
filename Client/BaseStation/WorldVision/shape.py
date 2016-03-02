@@ -57,6 +57,9 @@ class Shape:
     def getColor(self):
         return self.myColor
 
+    def getCornerCount(self):
+        return len(self.contour)
+
     def asSimilarCenterOfMass(self, otherShape):
         myCenterOfMassX, myCenterOfMassY = self.findCenterOfMass()
         otherShapeCenterOfMassX, otherShapeCenterOfMassY = otherShape.findCenterOfMass()

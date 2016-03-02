@@ -29,6 +29,10 @@ class MapBuilder:
                 if myShape.isEqualEdges() and myShape.checkAngleValue():
                     self.__map.addShape(myShape)
 
+            if cv2.contourArea(contour) > 300000 and cv2.isContourConvex(contour):
+                if len(contour) == 4:
+                    self.__map.setMapLimit(contour)
+
 
     def buildMapWithAllFilter(self, mapImage):
         blurMapImage = cv2.GaussianBlur(mapImage, (5, 5), 0)
