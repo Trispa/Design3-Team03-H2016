@@ -1,4 +1,4 @@
-from State import SequencerState
+from Client.BaseStation.Logic import SequencerState
 
 
 class Sequencer :

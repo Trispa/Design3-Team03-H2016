@@ -1,8 +1,7 @@
 from unittest import TestCase
 
+import Client.BaseStation.Logic.SequencerState as SequencerState
 from Client.BaseStation.Logic.Sequencer import Sequencer
-
-import Client.BaseStation.Logic.State.SequencerState as SequencerState
 
 
 class SequencerTest(TestCase):

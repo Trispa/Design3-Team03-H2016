@@ -1,7 +1,8 @@
 from unittest import TestCase
+
 from mock import MagicMock
 
-from Client.BaseStation.Logic.State import SequencerState
+from Client.BaseStation.Logic import SequencerState
 
 
 class SendingBotToTreasureStateTest(TestCase):
