@@ -13,6 +13,7 @@ class Shape:
     def __init__(self, geometricName, contour):
         self.contour = contour
         self.geometricName = geometricName
+        self.myColor = Color(np.uint8([[[0,255,255]]]), "Not defined")
 
     def __eq__(self, other):
         if other == None:
@@ -41,6 +42,9 @@ class Shape:
     def getContour(self):
         return self.contour
 
+    def getColorName(self):
+        return "colorName"
+
     def getArea(self):
         return cv2.contourArea(self.contour)
 
@@ -49,6 +53,9 @@ class Shape:
 
     def getName(self):
         return self.geometricName
+
+    def getColor(self):
+        return self.myColor
 
     def asSimilarCenterOfMass(self, otherShape):
         myCenterOfMassX, myCenterOfMassY = self.findCenterOfMass()
@@ -68,5 +75,15 @@ class Shape:
         xEnd = xCoordinate + width
         yStart = yCoordinate
         yEnd = yCoordinate + height
+        cropped = None
         cropped = mapImage[yStart:yEnd, xStart:xEnd]
+        centerX = cropped.shape[0] / 2
+        centerY = cropped.shape[1] / 2
+        bgrShapeColor = np.uint8([[[cropped[centerX][centerY][0],cropped[centerX][centerY][1],cropped[centerX][centerY][2]]]])
+        hsvShapeColor = cv2.cvtColor(bgrShapeColor,cv2.COLOR_BGR2HSV)
+        for color in self.colors:
+            if color.isInSameColorRange(hsvShapeColor):
+                self.myColor = color
+
+
 

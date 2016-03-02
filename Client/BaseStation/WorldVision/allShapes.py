@@ -24,7 +24,7 @@ class Triangle(Shape):
     def __init__(self, geometricName, contour):
         Shape.__init__(self, geometricName, contour)
 
-    def __angle(self, vector1, vector2):
+    def __getAngle(self, vector1, vector2):
         dot = vector1[0]*vector2[0] + vector1[1]*vector2[1]
         x_modulus = np.sqrt((vector1[0]*vector1[0]) + (vector1[1]*vector1[1]))
         y_modulus = np.sqrt((vector2[0]*vector2[0]) + (vector2[1]*vector2[1]))
@@ -36,14 +36,14 @@ class Triangle(Shape):
     def checkAngleValue(self):
         vectorList = []
         for point in range(0, len(self.contour) - 1):
-            vectorList.append(self.getVector(np.array([self.contour[point], self.contour[point + 1]]).tolist()))
+            vectorList.append(self.__getVector(np.array([self.contour[point], self.contour[point + 1]]).tolist()))
 
-        vectorList.append(self.getVector(np.array([self.contour[2], self.contour[0]]).tolist()))
+        vectorList.append(self.__getVector(np.array([self.contour[2], self.contour[0]]).tolist()))
 
         angleList = []
-        angleList.append(self.__angle(vectorList[2], vectorList[0]))
+        angleList.append(self.__getAngle(vectorList[2], vectorList[0]))
         for vector in range(0, len(vectorList) - 1):
-            angleList.append(self.__angle(vectorList[vector], vectorList[vector + 1]))
+            angleList.append(self.__getAngle(vectorList[vector], vectorList[vector + 1]))
 
         totalAngleInPolygone = ((len(self.contour) - 2) * 180)/len(self.contour)
         maxAngle = totalAngleInPolygone + 15
@@ -54,7 +54,7 @@ class Triangle(Shape):
 
         return True
 
-    def getVector(self, specialArray):
+    def __getVector(self, specialArray):
         newArray = [specialArray[1][0][0] - specialArray[0][0][0], specialArray[1][0][1] - specialArray[0][0][1]]
         return newArray
 

@@ -39,6 +39,7 @@ class Map:
         self.__shapes = shapes
 
     def setShapesColor(self, mapImage):
+        HSVmapImage = cv2.cvtColor(mapImage,cv2.COLOR_BGR2HSV)
         for shape in self.__shapes:
             shape.setColor(copy.copy(mapImage))
 
