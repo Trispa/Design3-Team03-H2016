@@ -5,12 +5,12 @@ import cv2
 class worldVision:
 
     def __init__(self):
-        self.cap = cv2.VideoCapture(0)
+        self.camera = cv2.VideoCapture(1)
 
 
     def saveImage(self):
 
-        ret, frame = self.cap.read()
+        ret, frame = self.camera.read()
 
         geometricalImage = WorldImage(frame)
 

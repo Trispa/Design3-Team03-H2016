@@ -5,23 +5,24 @@ import cv2
 
 if __name__ == '__main__':
 
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
 
-    while(True):
-        #ret, frame = cap.read()
-        frame = cv2.imread('Images/Test2.jpg')
+#while(True):
+    #ret, frame = cap.read()
+    frame = cv2.imread('Images/Test1.jpg')
 
-        mapImage = WorldImage(frame)
-        mapImage.setMap()
-        worldImage = mapImage.drawMapOnImage()
+    geometricalImage = WorldImage(frame)
+    geometricalImage.setMap()
+    geometricalImage.defineShapesColor()
+    geometricalImage.addLabels()
+    worldImage = geometricalImage.drawMapOnImage()
 
-        c = os.path.dirname(__file__)
-        picturePath = os.path.join(c, "..", "..", "..", "Shared", "worldImage.jpg")
-        cv2.imwrite( picturePath, worldImage)
-        cv2.imshow('frame',worldImage)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+    cv2.imwrite( "../../../Shared/worldImage.jpg", worldImage)
+    cv2.imshow('frame',frame)
+    cv2.waitKey(0)
+    #if cv2.waitKey(1) & 0xFF == ord('q'):
+        #break
 
-    cap.release()
-    cv2.destroyAllWindows()
+cap.release()
+cv2.destroyAllWindows()
 

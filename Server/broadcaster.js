@@ -38,9 +38,6 @@ io.on('connection', function (client) {
     client.on('sendImage', function(encodedString){
         io.emit('sendImage', encodedString);
     });
-    client.on('sendInfo', function(info){
-        io.emit('sendInfo', info);
-    });
 
     client.on('startSignal', function(){
         io.emit('startSignal');
