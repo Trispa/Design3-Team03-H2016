@@ -1,13 +1,11 @@
 import SendingBotToChargingStationState
-from SequencerState import SequencerState
 
-
-class SendingBotToTargetState(SequencerState):
+class SendingBotToTargetState():
 
     def pathfinderCallMockup(self):
         return [(400,200), (500,200), (600,200), (700,150)]
 
-    def initializePath(self):
+    def __init__(self):
         self.obstacleIndex = 0
         self.path = self.pathfinderCallMockup()
 

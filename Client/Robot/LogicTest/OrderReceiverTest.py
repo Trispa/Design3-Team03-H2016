@@ -1,10 +1,7 @@
 from unittest import TestCase
 from mock import MagicMock
 from Client.Robot.Logic.OrderReceiver import OrderReceiver
-from Client.Robot.Logic.ReferentialConverter import ReferentialConverter
-import array
-from mock import patch
-from mock import call
+
 
 class OrderReceiverTest(TestCase):
 

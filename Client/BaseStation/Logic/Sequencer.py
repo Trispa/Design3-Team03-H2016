@@ -4,7 +4,6 @@ from State import SendingBotToChargingStationState
 class Sequencer :
     def setState(self, newState) :
         self.state = newState
-        self.state.initializePath()
 
     def visionCallToGetObstacleList(self):
         return "whatever"
