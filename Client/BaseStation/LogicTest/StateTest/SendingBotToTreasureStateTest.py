@@ -12,7 +12,7 @@ class SendingBotToTreasureStateTest(TestCase):
         self.assertEqual(testedState.obstacleIndex, 0)
         self.assertIsNotNone(testedState.path)
 
-    def test_whenCallingHandleOnSaidStateThenReturnCoordinatesWithChargingStationType(self):
+    def test_whenCallingHandleOnSaidStateThenReturnCoordinatesWithTreasureType(self):
         testedState = SequencerState.SendingBotToTreasureState()
         sequencer = MagicMock()
 
@@ -20,7 +20,7 @@ class SendingBotToTreasureStateTest(TestCase):
 
         self.assertEquals(coordinates["type"], "treasure")
 
-    def test_whenCallingHandleOnSaidStateWithThirdItemIndexThenReturnCoordinatesWithPositionTOCorrespondingAtTheCorrectCoordinatesFromPathList(self):
+    def test_whenCallingHandleOnSaidStateWithFirstItemIndexThenReturnCoordinatesWithPositionTOCorrespondingAtTheCorrectCoordinatesFromPathList(self):
         testedState = SequencerState.SendingBotToTreasureState()
         sequencer = MagicMock()
 

@@ -5,4 +5,4 @@ class ExecutingOrderState():
 
     def handle(self, orderReceiver, coordinates):
         orderReceiver.robot.moveTo(coordinates)
-        #orderReceiver.wheelManager.moveTo(coordinates)
+        orderReceiver.wheelManager.moveTo(coordinates)

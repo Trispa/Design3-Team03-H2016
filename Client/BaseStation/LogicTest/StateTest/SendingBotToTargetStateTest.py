@@ -1,6 +1,5 @@
 from unittest import TestCase
 from mock import MagicMock
-import sys
 
 
 from Client.BaseStation.Logic.State import SequencerState
