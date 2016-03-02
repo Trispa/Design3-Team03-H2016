@@ -1,19 +1,19 @@
 from unittest import TestCase
 from mock import MagicMock
 
-from Client.BaseStation.Logic.State.SendingBotToChargingStationState import SendingBotToChargingStationState
+from Client.BaseStation.Logic.State import SequencerState
 
 
 class SendingBotToChargingStationStateTest(TestCase):
 
     def test_whenCreatingSaidStateThenObstacleIndexIs0AndPathIsSet(self):
-        testedState = SendingBotToChargingStationState()
+        testedState = SequencerState.SendingBotToChargingStationState()
 
         self.assertEqual(testedState.obstacleIndex, 0)
         self.assertIsNotNone(testedState.path)
 
     def test_whenCallingHandleOnSaidStateThenReturnCoordinatesWithChargingStationType(self):
-        testedState = SendingBotToChargingStationState()
+        testedState = SequencerState.SendingBotToChargingStationState()
         sequencer = MagicMock()
 
         coordinates = testedState.handle(sequencer, 0)
@@ -22,7 +22,7 @@ class SendingBotToChargingStationStateTest(TestCase):
 
     def test_whenCallingHandleOnSaidStateWithThirdItemIndexThenReturnCoordinatesWithPositionTOCorrespondingAtTheCorrectCoordinatesFromPathList(self):
         thirdItem = 2
-        testedState = SendingBotToChargingStationState()
+        testedState = SequencerState.SendingBotToChargingStationState()
         sequencer = MagicMock()
 
         coordinates = testedState.handle(sequencer, thirdItem)
@@ -31,7 +31,7 @@ class SendingBotToChargingStationStateTest(TestCase):
         self.assertEquals(coordinates["positionTO"]["positionY"], str(testedState.path[thirdItem][1]))
 
     def test_whenCallingHandleOnSaidStateWithLastItemThenSequencerIsCalledToChangeState(self):
-        testedState = SendingBotToChargingStationState()
+        testedState = SequencerState.SendingBotToChargingStationState()
         sequencer = MagicMock()
 
         testedState.handle(sequencer, testedState.path.__len__() - 1)
@@ -39,7 +39,7 @@ class SendingBotToChargingStationStateTest(TestCase):
         assert sequencer.setState.called
 
     def test_whenCallingHandleOnSaidStateWithFirstItemThenSequencerIsNotCalledToChangeState(self):
-        testedState = SendingBotToChargingStationState()
+        testedState = SequencerState.SendingBotToChargingStationState()
         sequencer = MagicMock()
 
         testedState.handle(sequencer, 0)
@@ -47,7 +47,7 @@ class SendingBotToChargingStationStateTest(TestCase):
         assert not sequencer.setState.called
 
     def test_whenCallingHandleOnSaidStateWithLastItemThenReturnedCoordinatesHasEndToNo(self):
-        testedState = SendingBotToChargingStationState()
+        testedState = SequencerState.SendingBotToChargingStationState()
         sequencer = MagicMock()
 
         coordinates = testedState.handle(sequencer, testedState.path.__len__() - 1)
@@ -55,7 +55,7 @@ class SendingBotToChargingStationStateTest(TestCase):
         self.assertEquals(coordinates["end"], "no")
 
     def test_whenCallingHandleOnSaidStateWithLastItemThenReturnedCoordinatesHasIndexAtMinus1(self):
-        testedState = SendingBotToChargingStationState()
+        testedState = SequencerState.SendingBotToChargingStationState()
         sequencer = MagicMock()
 
         coordinates = testedState.handle(sequencer, testedState.path.__len__() - 1)
@@ -63,7 +63,7 @@ class SendingBotToChargingStationStateTest(TestCase):
         self.assertEquals(coordinates["index"], "-1")
 
     def test_whenCallingHandleOnSaidStateWithAnyItemThenReturnedCoordinatesHasIndexAtSameIndex(self):
-        testedState = SendingBotToChargingStationState()
+        testedState = SequencerState.SendingBotToChargingStationState()
         sequencer = MagicMock()
 
         coordinates = testedState.handle(sequencer, 4)

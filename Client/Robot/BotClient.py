@@ -12,8 +12,8 @@ configPath = os.path.join(c, "..", "..", "Shared", "config.json")
 with open(configPath) as json_data_file:
     config = json.load(json_data_file)
 socketIO = SocketIO(config['url'], int(config['port']))
-#orderReceiver = OrderReceiver(RobotMock())
-orderReceiver = OrderReceiver(RobotMock(), WheelManager(MoteurRoue()))
+orderReceiver = OrderReceiver(RobotMock())
+#orderReceiver = OrderReceiver(RobotMock(), WheelManager(MoteurRoue()))
 
 def needNewCoordinates(*args):
     print("heading toward next coordinates")

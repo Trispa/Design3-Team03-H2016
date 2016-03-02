@@ -1,4 +1,4 @@
-from State import SendingBotToChargingStationState
+from State import SequencerState
 
 
 class Sequencer :
@@ -10,7 +10,7 @@ class Sequencer :
 
     def __init__(self) :
         self.obstacleList = self.visionCallToGetObstacleList()
-        self.setState(SendingBotToChargingStationState.SendingBotToChargingStationState())
+        self.setState(SequencerState.SendingBotToChargingStationState())
 
 
     def handleCurrentState(self, obstacleListIndex):
