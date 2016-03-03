@@ -9,7 +9,7 @@ if __name__ == '__main__':
 
 #while(True):
     #ret, frame = cap.read()
-    frame = cv2.imread('Images/Test3.jpg')
+    frame = cv2.imread('Images/Test4.jpg')
 
     geometricalImage = WorldImage(frame)
     geometricalImage.setMap()

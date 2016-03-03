@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 from shape import Shape
+from allShapes import Square
 import copy
 
 class Map:
@@ -59,10 +60,9 @@ class Map:
                 minX = corner[0]
             if(corner[1] < minY):
                 minY = corner[1]
-        self.limit = np.array([[[minX,minY],[minX,maxY],[maxX, maxY],[maxX,minY]]], dtype=np.int32)
+        self.limit = Square("limit", np.array([[[minX,minY + 5],[minX,maxY - 5],[maxX, maxY - 5],[maxX,minY + 5]]], dtype=np.int32))
 
     def setShapesColor(self, mapImage):
-        HSVmapImage = cv2.cvtColor(mapImage,cv2.COLOR_BGR2HSV)
         for shape in self.__shapes:
             shape.setColor(copy.copy(mapImage))
 
@@ -92,12 +92,19 @@ class Map:
                     minX = corner[0]
                 if(corner[1] < minY):
                     minY = corner[1]
-            self.greenSquare = np.array([[[minX,minY],[minX,maxY],[maxX, maxY],[maxX,minY]]], dtype=np.int32)
+            self.greenSquare = Square("greenSquare", np.array([[[minX,minY],[minX,maxY],[maxX, maxY],[maxX,minY]]], dtype=np.int32))
             self.__shapes.remove(biggestShape)
 
     #TODO
     def deleteOutsiderShapes(self):
-        pass
+
+        shapesToDelete = []
+        for shape in self.__shapes:
+            if shape.isOutside(self.limit):
+                shapesToDelete.append(shape)
+
+        for shape in shapesToDelete:
+            self.__shapes.remove(shape)
 
 
     #TODO
