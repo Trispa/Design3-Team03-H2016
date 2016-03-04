@@ -1,30 +1,12 @@
 #define NB_DRIVEMOTEUR 4
 
 #include "DriveMoteur.h"
+#include "ReadManchester.h"
 #include "commandReceiver.h"
 
 double kp = 1.05;  //1.506897
 double ki = 5.25; //0.007
 double kd = 0;
-
-/********** MAN VARIABLE *******************/
-volatile int val = 0;
-volatile int pinManchester = 2;
-volatile unsigned long now = 0;
-volatile unsigned long timeToChange = 0;
-volatile unsigned long timebetweenNowToChange = 0;
-volatile int   isReady = 0;
-String  bits = "";
-boolean enableManchester = false;
-String manchesterToreturn = "";
-boolean interrupt  = false;
-
-void attacherInterrruption (boolean b);
-void getManchester();
-void readBitInterrupt();
-/************END MAN VARIABLE*********/
-
-
 void fctInterrupt1();
 void fctInterrupt2();
 void fctInterrupt3();
@@ -39,7 +21,7 @@ unsigned long freq = 0;
 unsigned long graphTime = 0;
 unsigned int ar = 0;
 unsigned long diffTime = 0;
-
+char* chaine;
 DriveMoteur dv[4] = {DriveMoteur(4,18, 26, 27), DriveMoteur(5,19, 28, 29), DriveMoteur(6,20, 30, 31), DriveMoteur(7,21, 32, 33)};
 
 
@@ -49,7 +31,8 @@ PID listPID[4] = {PID(dv[1 - 1].getInput(), dv[1 - 1].getOutput(), dv[1 - 1].get
                   PID(dv[4 - 1].getInput(), dv[4 - 1].getOutput(), dv[4 - 1].getSetpoint(), kp, ki, kd, DIRECT)};
 
 
-CommandReceiver cmdRec = CommandReceiver(dv, &enableManchester, &manchesterToreturn);
+ReadManchester rm = ReadManchester(2, true);
+CommandReceiver cmdRec = CommandReceiver(dv, &rm);
 
 void updateFreqEnco();
 
@@ -60,9 +43,7 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(dv[2 - 1].getPinEncoInterrup()), fctInterrupt2, RISING);
   attachInterrupt(digitalPinToInterrupt(dv[3 - 1].getPinEncoInterrup()), fctInterrupt3, RISING);
   attachInterrupt(digitalPinToInterrupt(dv[4 - 1].getPinEncoInterrup()), fctInterrupt4, RISING);
-  attacherInterrruption(true);
-  pinMode(pinManchester, INPUT);
-  cmdRec.setEnableManchester(true);
+
   
   for(int i = 0; i < NB_DRIVEMOTEUR; i++)
   {
@@ -76,14 +57,15 @@ void setup() {
 void loop() 
 {
 
-  cmdRec.process();
-  if(enableManchester){
-      if(!interrupt){
-        attacherInterrruption(true);
-      }
-      getManchester();
-  }
-      
+  cmdRec.process();  
+//     rm.enableManchester();
+//     chaine = rm.getMaschesterBits();
+//     if(chaine!='\0'){
+//      Serial.println(chaine);
+//      //rm.disableManchester();
+//     
+//     }
+     
     for(int i = 0; i < NB_DRIVEMOTEUR; i++)
     {
         if(dv[i].isRunning() == 1)
@@ -136,67 +118,5 @@ void fctInterrupt4()
   }
 
 
-/******************MAN FUNCTIONS ****************/
 
-void getManchester(){
-
-    if(isReady){
-    //Serial.pri ntln(now, DEC);
-    val = digitalRead(pinManchester);
-    timebetweenNowToChange = now - timeToChange;
-    //Serial.println(timebetweenNowToChange);
-    if(val == 0){
-      if(timebetweenNowToChange > 150 && timebetweenNowToChange < 250){
-        bits+= "10";
-      }
-      else{
-        bits += "0";
-      }
-    }
-    if(val== 1){
-     if(timebetweenNowToChange > 150 && timebetweenNowToChange < 250){
-        bits+= "01";
-      }
-      else{
-        bits += "1";
-      }
-    }
-    if(bits.length() == 64){
-      manchesterToreturn = bits;
-      bits = "";
-      //cmdRec.sendCallback("HELLO");
-      Serial.print('R');
-      Serial.print(manchesterToreturn);
-      manchesterToreturn = "";
-      
-      attacherInterrruption(false);
-      cmdRec.setEnableManchester(false);
- 
-      
-    }
-    timeToChange = now;
-    isReady = 0;
-    
-  }
-
-  
-}
-void readBitInterrupt(){
-  now = micros();
-  isReady = 1;
- //Serial.println (timeToChange);
-  
-}
-
-void attacherInterrruption(boolean b){
-  if(b){
-    attachInterrupt(digitalPinToInterrupt(pinManchester), readBitInterrupt, CHANGE);
-    interrupt = true;
-  }
-  else{
-    detachInterrupt(digitalPinToInterrupt(pinManchester));
-    interrupt = false;
-  }
-}
-/*****************END MAN FUNCTIONS*************/
 

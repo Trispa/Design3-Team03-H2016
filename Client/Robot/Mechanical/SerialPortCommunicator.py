@@ -8,8 +8,9 @@ class SerialPortCommunicator:
     COMMAND_INDICATOR = "C"
     FALSE = 0
     TRUE = 1
-    ONE_SECOND_DELAY = 3
+    ONE_SECOND_DELAY = 1
     ONE_MINUTE_DELAY = 60
+    FIVE_SECOND_DELAY = 5
 
     LED_FUNCTION_ON = 1
     LED_FUNCTION_OFF = 2
@@ -76,7 +77,7 @@ class SerialPortCommunicator:
 
     #################################### MANCHESTER ################################
     def getManchesterCode(self):
-       return  self._sendCommand(self.GET_CODE_MANCHESTER,self.TRUE,self.ONE_SECOND_DELAY)
+       return  self._sendCommand(self.GET_CODE_MANCHESTER,self.TRUE,self.FIVE_SECOND_DELAY, 1)
 
     def manchester_decode(self, chaine):
         i = 0
@@ -144,7 +145,7 @@ class SerialPortCommunicator:
 
 if __name__ == "__main__":
     spc = SerialPortCommunicator()
-    #maChaine = spc.getManchesterCode()
-    #print(maChaine)
+    maChaine = spc.getManchesterCode()
+    print(maChaine)
     #print(spc.getCodebits())
-    print("ASCII :" + spc.getAsciiManchester())
+    #print("ASCII :" + spc.getAsciiManchester())
