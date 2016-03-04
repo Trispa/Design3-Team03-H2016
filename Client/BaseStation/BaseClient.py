@@ -21,7 +21,7 @@ socketIO = SocketIO(config['url'], int(config['port']))
 
 def sendNextCoordinates(*args):
     print("Sending next coordinates")
-    socketIO.emit("sendNextCoordinates", sequencer.handleCurrentState())
+    socketIO.emit("sendNextCoordinates", sequencer.handleCurrentState(args[0]["index"]))
 
 def startRound():
     botState = {"positionX":"0",

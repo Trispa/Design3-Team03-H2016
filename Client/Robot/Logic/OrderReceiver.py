@@ -1,9 +1,6 @@
 from State import ExecutingOrderState
 from State import RefusingOrderState
 from ReferentialConverter import ReferentialConverter
-from WheelManager import WheelManager
-
-import RobotMock
 
 class OrderReceiver():
     def setState(self, newState) :
@@ -28,24 +25,11 @@ class OrderReceiver():
         #pointConverted = (int(coordinates[0]["position"]["positionX"]), int(coordinates[0]["position"]["positionY"]))
         self.state.handle(self, pointConverted)
 
-        #TODO Trouver une facon de se debarrasser de ce if la
-        if(coordinates["type"] == "target"):
+        if(coordinates["end"] == "yes"):
             self.setState(RefusingOrderState.RefusingOrderState())
-
-    def getCurrentRobotInformation(self):
-        self.robot.botInfo['position'] = "(" + str(self.robot.positionX) + "," + str(self.robot.positionY) + ")"
-        self.robot.botInfo['orientation'] = str(self.robot.orientation)
-        return self.robot.botInfo
 
     def refuseOrders(self):
         self.setState(RefusingOrderState.RefusingOrderState())
 
     def acceptOrders(self):
         self.setState(ExecutingOrderState.ExecutingOrderState())
-
-    def initializeBot(self, position, orientation):
-        print("initializing bot")
-
-        self.robot.botInfo['voltage'] = "N/A"
-        self.robot.botInfo['decodedCharacter'] = "N/A"
-        self.robot.botInfo['target'] = "N/A"
