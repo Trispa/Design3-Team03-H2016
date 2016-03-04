@@ -16,6 +16,8 @@ class WorldImage:
 
     def setMap(self):
         self.__map = self.__myMapBuilder.buildMapWithAllFilter(self.__mapImage)
+        self.__map.setGreenSquare()
+        self.__map.deleteOutsiderShapes()
 
     def defineShapesColor(self):
         self.__map.setShapesColor(self.__mapImage)
@@ -38,4 +40,7 @@ class WorldImage:
 
     def drawMapOnImage(self):
         cv2.drawContours( self.__mapImage, self.__map.getContourList(), -1, (0, 255, 0), 3 )
+        cv2.drawContours( self.__mapImage, self.__map.getMapLimit().getContour(), -1, (0, 255, 0), 3 )
+        cv2.drawContours( self.__mapImage, self.__map.getGreenSquare().getContour(), -1, (0, 255, 0), 3 )
+
         return self.__mapImage

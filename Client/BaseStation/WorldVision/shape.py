@@ -15,10 +15,11 @@ class Shape:
         self.geometricName = geometricName
         self.myColor = Color(np.uint8([[[0,255,255]]]), "Not defined")
 
+
     def __eq__(self, other):
         if other == None:
             return False
-        return cv2.contourArea(self.contour) == cv2.contourArea(other.contour)
+        return self.contour[0].item(0) == other.contour[0].item(0)
 
     def findCenterOfMass(self):
         moment = cv2.moments(self.contour)
@@ -57,6 +58,17 @@ class Shape:
     def getColor(self):
         return self.myColor
 
+    def getCornerCount(self):
+        return len(self.contour)
+
+    def isOutside(self, limit):
+        limitMaxX, limitMaxY = limit.getMaxCorner()
+        limitMinX, limitMinY = limit.getMinCorner()
+        for corner in self.contour:
+            if corner.item(1) < limitMinY or corner.item(1) > limitMaxY:
+                return True
+        return False
+
     def asSimilarCenterOfMass(self, otherShape):
         myCenterOfMassX, myCenterOfMassY = self.findCenterOfMass()
         otherShapeCenterOfMassX, otherShapeCenterOfMassY = otherShape.findCenterOfMass()
@@ -65,9 +77,6 @@ class Shape:
 
         return False
 
-    def angle_cos(p0, p1, p2):
-        d1, d2 = (p0-p1).astype('float'), (p2-p1).astype('float')
-        return abs( np.dot(d1, d2) / np.sqrt( np.dot(d1, d1)*np.dot(d2, d2) ) )
 
     def setColor(self, mapImage):
         xCoordinate, yCoordinate, width, height = self.getBoundingRectangle()

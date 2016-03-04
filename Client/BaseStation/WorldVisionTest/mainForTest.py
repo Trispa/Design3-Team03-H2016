@@ -5,11 +5,11 @@ import cv2
 
 if __name__ == '__main__':
 
-    cap = cv2.VideoCapture(0)
+    #cap = cv2.VideoCapture(0)
 
 #while(True):
     #ret, frame = cap.read()
-    frame = cv2.imread('Images/Test1.jpg')
+    frame = cv2.imread('Images/Test4.jpg')
 
     geometricalImage = WorldImage(frame)
     geometricalImage.setMap()
@@ -23,6 +23,6 @@ if __name__ == '__main__':
     #if cv2.waitKey(1) & 0xFF == ord('q'):
         #break
 
-cap.release()
-cv2.destroyAllWindows()
+#cap.release()
+#cv2.destroyAllWindows()
 
