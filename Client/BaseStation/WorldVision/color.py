@@ -19,10 +19,6 @@ class Color:
             self.higher = np.array([179,higherSaturation,higherValue])
 
     def isInSameColorRange(self, hsvColor):
-        print("Color : " + str(self.colorName))
-        print("Lower : " + str(self.lower[0]))
-        print("Higher : " + str(self.higher[0]))
-        print("HueValue " + str(hsvColor.item(0)))
         if (self.isInHueRange(hsvColor.item(0)) and self.isInSaturationRange(hsvColor.item(1)) and self.isInValueRange(hsvColor.item(2))):
             return True
         return False
