@@ -9,6 +9,7 @@ class Map:
     def __init__(self):
         self.__shapes = []
         self.greenSquare = Square("greenSquare", np.array([[]], dtype=np.int32))
+        self.limit = Square("limit", np.array([[]], dtype=np.int32))
 
     def findSimilarShape(self, newPossibleshape):
         newContourCenterOfMassX, newContourCenterOfMassY = newPossibleshape.findCenterOfMass()
