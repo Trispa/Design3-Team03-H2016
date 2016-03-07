@@ -29,9 +29,12 @@ class EndNodeGenerator:
         cornerBL = (currentObstacle.positionX + self.SAFE_MARGIN, self.MAP_SIZE_Y)
         if (compteur == self.obstaclesList.__len__() - 1):
             cornerTR = (self.MAP_SIZE_X, 0)
+            endNode = Node(SafeZone(cornerTL, cornerTR, cornerBL).getCenterOfSafeZone())
         else:
             cornerTR = (self.obstaclesList[compteur + 1].positionX - self.SAFE_MARGIN, 0)
-        endNode = Node(SafeZone(cornerTL, cornerTR, cornerBL).getCenterOfSafeZone())
+            endNode = Node(SafeZone(cornerTL, cornerTR, cornerBL).getCenterOfSafeZone())
+            self.obstaclesList[compteur+1].setStartingNode(endNode)
+
         return endNode
 
 
