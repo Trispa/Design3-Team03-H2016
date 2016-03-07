@@ -17,7 +17,6 @@ from socketIO_client import SocketIO
 
 c = os.path.dirname(__file__)
 configPath = os.path.join(c, "..", "..", "Shared", "config.json")
-picturePath = os.path.join(c, "..", "..", "Shared", "worldImage.jpg")
 world = worldVision()
 
 with open(configPath) as json_data_file:
@@ -38,9 +37,8 @@ def startRound():
 
 def sendImage():
     print("asking for new images")
-    world.saveImage()
-    encoded = base64.b64encode(open(picturePath, "rb").read())
-    socketIO.emit('sendImage', encoded)
+    image = world.saveImage()
+    socketIO.emit('sendImage', image)
 
 def setInterval(function, seconds):
     def func_wrapper():

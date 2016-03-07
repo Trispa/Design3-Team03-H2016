@@ -1,5 +1,6 @@
 from worldImage import WorldImage
 import os
+import base64
 import cv2
 
 class worldVision:
@@ -18,8 +19,11 @@ class worldVision:
         worldImage = geometricalImage.drawMapOnImage()
 
 
-        c = os.path.dirname(__file__)
-        picturePath = os.path.join(c, "..", "..", "..", "Shared", "worldImage.jpg")
-        cv2.imwrite(picturePath, worldImage)
+        cnt = cv2.imencode('.png',worldImage)[1]
+        b64 = base64.encodestring(cnt)
+        #
+        # c = os.path.dirname(__file__)
+
+        return b64
 
 

@@ -15,9 +15,6 @@ if __name__ == '__main__':
         #frame = cv2.imread('Images/Test6.jpg')
 
 
-
-        #worldVision.saveImage("../../../Shared/worldImage.jpg")
-
         ret, frame = camera.read()
         geometricalImage = WorldImage(frame)
         geometricalImage.setMap()
@@ -25,15 +22,12 @@ if __name__ == '__main__':
 
         worldImage = geometricalImage.drawMapOnImage()
 
-        cv2.imwrite("../../../Shared/worldImage.jpg", worldImage)
-
 
         # geometricalImage = WorldImage(frame)
         # geometricalImage.setMap()
         # geometricalImage.defineShapesColor()
         # geometricalImage.addLabels()
         # worldImage = geometricalImage.drawMapOnImage()
-        # cv2.imwrite( "../../../Shared/worldImage.jpg", worldImage)
 
         # geometricalImage = WorldImage(frame)
         # geometricalImage.setMap()
