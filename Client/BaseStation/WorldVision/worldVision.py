@@ -6,7 +6,7 @@ import cv2
 class worldVision:
 
     def __init__(self):
-        self.camera = cv2.VideoCapture(0)
+        self.camera = cv2.VideoCapture(2)
 
 
     def saveImage(self):
