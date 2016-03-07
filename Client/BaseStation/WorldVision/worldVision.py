@@ -11,13 +11,15 @@ class worldVision:
     def saveImage(self):
 
         ret, frame = self.camera.read()
-
         geometricalImage = WorldImage(frame)
-
         geometricalImage.setMap()
         geometricalImage.addLabels()
 
         worldImage = geometricalImage.drawMapOnImage()
+
+
         c = os.path.dirname(__file__)
         picturePath = os.path.join(c, "..", "..", "..", "Shared", "worldImage.jpg")
-        cv2.imwrite( picturePath, worldImage )
+        cv2.imwrite(picturePath, worldImage)
+
+

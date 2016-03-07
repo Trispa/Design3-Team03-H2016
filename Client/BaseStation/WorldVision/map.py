@@ -82,7 +82,7 @@ class Map:
             maxX = 0
             minY = 1000
             maxY = 0
-            for corner in biggestShape.getContour():
+            for corner in biggestShape.getContour()[0]:
                 cornerList.append((corner.item(0), corner.item(1)))
             for corner in cornerList:
                 if(corner[0] > maxX):

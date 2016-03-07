@@ -1,27 +1,46 @@
 from Client.BaseStation.WorldVision.worldImage import WorldImage
 import os
+import base64
+from Client.BaseStation.WorldVision.worldVision import worldVision
 import cv2
 
 
 if __name__ == '__main__':
 
-    cap = cv2.VideoCapture(0)
+    camera = cv2.VideoCapture(0)
+    #worldVision = worldVision()
 
     while(True):
-        ret, frame = cap.read()
+        #ret, frame = cap.read()
         #frame = cv2.imread('Images/Test6.jpg')
 
+
+
+        #worldVision.saveImage("../../../Shared/worldImage.jpg")
+
+        ret, frame = camera.read()
         geometricalImage = WorldImage(frame)
         geometricalImage.setMap()
-        geometricalImage.defineShapesColor()
         geometricalImage.addLabels()
+
         worldImage = geometricalImage.drawMapOnImage()
 
-        cv2.imwrite( "../../../Shared/worldImage.jpg", worldImage)
-        cv2.imshow('frame',frame)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+        cv2.imwrite("../../../Shared/worldImage.jpg", worldImage)
 
-    cap.release()
+
+        # geometricalImage = WorldImage(frame)
+        # geometricalImage.setMap()
+        # geometricalImage.defineShapesColor()
+        # geometricalImage.addLabels()
+        # worldImage = geometricalImage.drawMapOnImage()
+        # cv2.imwrite( "../../../Shared/worldImage.jpg", worldImage)
+
+        # geometricalImage = WorldImage(frame)
+        # geometricalImage.setMap()
+        # geometricalImage.addLabels()
+        # worldImage = geometricalImage.drawMapOnImage()
+
+
+    #cap.release()
     cv2.destroyAllWindows()
 
