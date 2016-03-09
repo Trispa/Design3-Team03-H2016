@@ -61,7 +61,9 @@ class Map:
                 minX = corner[0]
             if(corner[1] < minY):
                 minY = corner[1]
-        self.limit = Square("limit", np.array([[[minX,minY + 5],[minX,maxY - 5],[maxX, maxY - 5],[maxX,minY + 5]]], dtype=np.int32))
+        newFoundLimit = Square("limit", np.array([[[minX,minY + 5],[minX,maxY - 5],[maxX, maxY - 5],[maxX,minY + 5]]], dtype=np.int32))
+        if newFoundLimit.getArea() < self.limit.getArea() or len(self.limit.getContour()[0]) == 1:
+            self.limit = newFoundLimit
 
     def setShapesColor(self, mapImage):
         for shape in self.__shapes:
