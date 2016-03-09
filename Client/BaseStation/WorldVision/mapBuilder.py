@@ -47,7 +47,7 @@ class MapBuilder:
                 for contour in contours:
                     contour_len = cv2.arcLength(contour, True)
                     contour = cv2.approxPolyDP(contour, 0.02*contour_len, True)
-                    if cv2.contourArea(contour) > 300 and cv2.isContourConvex(contour):
+                    if cv2.contourArea(contour) > 300 and cv2.isContourConvex(contour) and cv2.contourArea(contour) < 300000:
                         if len(contour) == 3:
                             myShape = Triangle("Triangle", contour)
                         elif len(contour) == 4:
@@ -64,7 +64,6 @@ class MapBuilder:
                         if len(contour) == 4:
                             map.setMapLimit(contour)
 
-        #map.setGreenSquare()
         if (len(map.getMapLimit().getContour()[0]) == 4):
             map.deleteOutsiderShapes()
         map.setShapesColor(mapImage)

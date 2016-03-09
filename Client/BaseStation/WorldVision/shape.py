@@ -49,7 +49,7 @@ class Shape:
         return "colorName"
 
     def getArea(self):
-        if len(self.contour[0]) < 3:
+        if len(self.contour) < 3:
             return 0
         return cv2.contourArea(self.contour)
 

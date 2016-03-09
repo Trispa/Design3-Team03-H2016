@@ -72,7 +72,7 @@ class Triangle(Shape):
         maxAngle = totalAngleInPolygone + 15
         minAngle = totalAngleInPolygone - 15
         for angle in angleList:
-            if angle > maxAngle or minAngle < 45:
+            if angle > maxAngle or angle < minAngle:
                 return False
 
         return True

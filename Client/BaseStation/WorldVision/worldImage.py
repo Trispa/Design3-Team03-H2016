@@ -42,6 +42,5 @@ class WorldImage:
         limit = self.__map.getMapLimit().getContour()
         cv2.drawContours( frame, self.__map.getContourList(), -1, (0, 255, 0), 3 )
         cv2.drawContours( frame, limit, -1, (0, 255, 0), 3 )
-        cv2.drawContours( frame, self.__map.getGreenSquare().getContour(), -1, (0, 255, 0), 3 )
 
         return frame
