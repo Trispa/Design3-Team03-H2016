@@ -39,7 +39,7 @@ class WorldImage:
             cv2.putText(frame, shape.getName()+ " " + shape.myColor.colorName, point, font, scale, (0,0,0), thickness, 8)
 
     def drawMapOnImage(self, frame):
-        limit = self.__map.getMapLimit().getContour()
+        limit = np.array([self.__map.getMapLimit().getContour()])
         cv2.drawContours( frame, self.__map.getContourList(), -1, (0, 255, 0), 3 )
         cv2.drawContours( frame, limit, -1, (0, 255, 0), 3 )
 
