@@ -1,6 +1,6 @@
-from Client.BaseStation.Logic.Pathfinding.Node import Node
-from Client.BaseStation.Logic.Pathfinding.SafeZone import SafeZone
-from Client.BaseStation.Logic.Pathfinding.CollisionDetector import CollisionDetector
+from Client.BaseStation.Logic.Pathfinding.Graph.Node import Node
+from Client.BaseStation.Logic.Pathfinding.Graph.SafeZone import SafeZone
+
 
 class EndNodeGenerator:
     def __init__(self, mapSizeX, mapSizeY, safeMargin, obstacleList, collisionDetector):

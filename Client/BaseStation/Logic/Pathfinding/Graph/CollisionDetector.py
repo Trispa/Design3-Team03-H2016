@@ -1,4 +1,4 @@
-from Client.BaseStation.Logic.Pathfinding.Obstacle import Obstacle
+from Client.BaseStation.Logic.Pathfinding.Graph.Obstacle import Obstacle
 class CollisionDetector:
     def __init__(self, mapSizeX, mapSizeY, safeMargin, obstacleList):
         self.MAP_SIZE_X = mapSizeX

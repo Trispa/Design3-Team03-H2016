@@ -1,4 +1,4 @@
-from Client.BaseStation.Logic.Pathfinding.Node import Node
+from Client.BaseStation.Logic.Pathfinding.Graph.Node import Node
 
 class Obstacle:
     def __init__(self, position):
