@@ -42,8 +42,8 @@ class Shape:
         return True
 
     def getContour(self):
-        if len(self.contour[0]) < 1:
-            return np.array([[[]]], dtype=np.int32)
+        if len(self.contour) < 2:
+            return []
         return self.contour
 
     def getColorName(self):
