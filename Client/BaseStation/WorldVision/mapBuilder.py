@@ -64,7 +64,7 @@ class MapBuilder:
                         if len(contour) == 4:
                             map.setMapLimit(contour)
 
-        if (len(map.getMapLimit().getContour()) == 4):
-            map.deleteOutsiderShapes()
+        #if (len(map.getMapLimit().getContour()) == 4):
+            #map.deleteOutsiderShapes()
         map.setShapesColor(mapImage)
         return map

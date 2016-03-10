@@ -19,7 +19,7 @@ if __name__ == '__main__':
 
     while(True):
         ret, frame = camera.read()
-        #frame = cv2.imread('Images/Test5.jpg')
+        #frame = cv2.imread('Images/Test1.jpg')
 
         geometricalImage.setMap(frame)
         geometricalImage.addLabels(frame)
