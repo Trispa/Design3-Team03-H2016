@@ -4,7 +4,6 @@ import numpy as np
 from Client.BaseStation.Logic.Pathfinding.Graph.CollisionDetector import CollisionDetector
 from Client.BaseStation.Logic.Pathfinding.Graph.EndNodeGenerator import EndNodeGenerator
 from Client.BaseStation.Logic.Pathfinding.Graph.Node import Node
-from Client.BaseStation.Logic.Pathfinding.Graph.Obstacle import Obstacle
 from Client.BaseStation.Logic.Pathfinding.Graph.SafeZone import SafeZone
 
 
@@ -61,7 +60,6 @@ class GraphGenerator:
             endNode = self.endNodeGenerator.generateEndNode(currentObstacle, topRightCorner, bottomRightCorner, collisionBottomRightCorner, collisionUpperRightCorner, compteur)
             self.__connectTwoNodes(borderNodeRightTop,endNode)
             self.__connectTwoNodes(borderNodeRightBottom,endNode)
-        self.__displayGraph()
 
 
     def __generateBottomBracket(self, collisionBottomLeftCorner, collisionBottomRightCorner, currentObstacle, borderNodeLeftBottom,
@@ -122,6 +120,16 @@ class GraphGenerator:
             goodRightCollision.setStartingNode(tempNode)
             self.__connectTwoNodes(borderNodeLeftTop, tempNode)
 
+    def findClosestNodeTo(self, point):
+        distance = self.MAP_SIZE_X
+        nodeToBeReturned = Node((0,0))
+        for compteur in range(0, self.nodesList.__len__()):
+            currentNode = self.nodesList[compteur]
+            distanceNode = np.sqrt(np.power((currentNode.positionX - point[0]),2)+np.power((currentNode.positionY - point[1]),2))
+            if distanceNode < distance:
+                distance = distanceNode
+                nodeToBeReturned = currentNode
+        return nodeToBeReturned
 
 
 
@@ -159,48 +167,4 @@ class GraphGenerator:
         return firstNode, secondNode
 
 
-    def __displayGraph(self):
-        img = np.zeros((600, 1000, 3), np.uint8)
-        cv2.namedWindow('image')
-        couleur = 0
-        for compteur in range (0, self.obstaclesList.__len__()):
-            currentObstacle = self.obstaclesList[(compteur)]
-            cv2.rectangle(img, (currentObstacle.positionX - self.SAFE_MARGIN, currentObstacle.positionY - self.SAFE_MARGIN), (currentObstacle.positionX + self.SAFE_MARGIN, currentObstacle.positionY + self.SAFE_MARGIN),
-                      (0, 255, 0), -1, 1)
-            self.nodesList.sort(key=lambda node: node.positionX)
-        for compteur in range (0, self.nodesList.__len__()):
 
-            currentNode = self.nodesList[(compteur)]
-            departPoint = (currentNode.positionX, currentNode.positionY)
-            connectedNode = currentNode.getConnectedNodesList()
-            for compteurConnected in range(0, connectedNode.__len__()):
-                finalNode = connectedNode[(compteurConnected)]
-                finalPoint = (finalNode.positionX, finalNode.positionY)
-                cv2.line(img, departPoint, finalPoint,
-                      (255, 0, 0), 2, 1)
-        cv2.imshow('image', img)
-        while (1):
-            esc = cv2.waitKey(1)
-            if esc == 27: #escape pressed
-                break
-        cv2.destroyAllWindows
-listObs = []
-#listObs.append(Obstacle((180,200)))
-#listObs.append(Obstacle((220,300)))
-#listObs.append(Obstacle((240,100)))
-#listObs.append(Obstacle((280,220)))
-#listObs.append(Obstacle((340,400)))
-#listObs.append(Obstacle((330,100)))
-
-#listObs.append(Obstacle((215,400)))
-
-#listObs.append(Obstacle((700,350)))
-#listObs.append(Obstacle((190,500)))
-#listObs.append(Obstacle((200,300)))
-listObs.append(Obstacle((200,520)))
-listObs.append(Obstacle((220,450)))
-listObs.append(Obstacle((203,380)))
-listObs.append(Obstacle((207,300)))
-listObs.append(Obstacle((210,200)))
-bob = GraphGenerator (listObs)
-bob.generateGraph()
