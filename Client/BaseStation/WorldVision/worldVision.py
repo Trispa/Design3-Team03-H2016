@@ -9,7 +9,7 @@ class worldVision:
         self.camera = cv2.VideoCapture(2)
 
 
-    def saveImage(self):
+    def getCurrentImage(self):
 
         ret, frame = self.camera.read()
         geometricalImage = WorldImage(frame)
@@ -18,12 +18,6 @@ class worldVision:
 
         worldImage = geometricalImage.drawMapOnImage()
 
-
-        cnt = cv2.imencode('.png',worldImage)[1]
-        b64 = base64.encodestring(cnt)
-        #
-        # c = os.path.dirname(__file__)
-
-        return b64
+        return worldImage
 
 

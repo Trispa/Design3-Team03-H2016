@@ -7,34 +7,21 @@ import cv2
 
 if __name__ == '__main__':
 
-    camera = cv2.VideoCapture(0)
-    #worldVision = worldVision()
+    #cap = cv2.VideoCapture(2)
 
     while(True):
         #ret, frame = cap.read()
-        #frame = cv2.imread('Images/Test6.jpg')
+        frame = cv2.imread('Photo/3105/table 5/jour/rideau ouvert/Picture 22.jpg')
 
-
-        ret, frame = camera.read()
         geometricalImage = WorldImage(frame)
         geometricalImage.setMap()
+        geometricalImage.defineShapesColor()
         geometricalImage.addLabels()
-
         worldImage = geometricalImage.drawMapOnImage()
 
+        cv2.imshow('frame',frame)
+        geometricalImage = WorldImage(frame)
 
-        # geometricalImage = WorldImage(frame)
-        # geometricalImage.setMap()
-        # geometricalImage.defineShapesColor()
-        # geometricalImage.addLabels()
-        # worldImage = geometricalImage.drawMapOnImage()
-
-        # geometricalImage = WorldImage(frame)
-        # geometricalImage.setMap()
-        # geometricalImage.addLabels()
-        # worldImage = geometricalImage.drawMapOnImage()
-
-
-    #cap.release()
-    cv2.destroyAllWindows()
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+             break
 

@@ -1,6 +1,7 @@
 import base64
 import json
 import sys
+import cv2
 import threading
 import os
 
@@ -37,8 +38,10 @@ def startRound():
 
 def sendImage():
     print("asking for new images")
-    image = world.saveImage()
-    socketIO.emit('sendImage', image)
+    image = world.getCurrentImage()
+    convertedImage = cv2.imencode('.png',image)[1]
+    base64ConvertedImage = base64.encodestring(convertedImage)
+    socketIO.emit('sendImage', base64ConvertedImage)
 
 def setInterval(function, seconds):
     def func_wrapper():
@@ -49,7 +52,6 @@ def setInterval(function, seconds):
     return timer
 
 setInterval(sendImage, 5)
-socketIO.on('needNewInfo', sendImage)
 socketIO.on('needNewCoordinates', sendNextCoordinates)
 socketIO.on('startSignal', startRound)
 
