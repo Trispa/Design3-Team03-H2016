@@ -15,21 +15,30 @@ class Map:
         newContourCenterOfMassX, newContourCenterOfMassY = newPossibleshape.findCenterOfMass()
         for shapeAlreadyFound in self.__shapes:
             oldContourCenterOfMassX, oldContourCenterOfMassY = shapeAlreadyFound.findCenterOfMass()
-            if(abs(newContourCenterOfMassX - oldContourCenterOfMassX) < 10 and abs(newContourCenterOfMassY - oldContourCenterOfMassY) < 10):
+            if(abs(newContourCenterOfMassX - oldContourCenterOfMassX) < 15 and abs(newContourCenterOfMassY - oldContourCenterOfMassY) < 15):
                 return shapeAlreadyFound
         return None
 
     def addShape(self, shapeToAdd):
-        similarShape = self.findSimilarShape(shapeToAdd)
-        if similarShape != None:
-            if similarShape.getArea() < shapeToAdd.getArea():
-                self.__shapes.remove(similarShape)
+        if abs(shapeToAdd.getArea() - self.getAverageShapeSize()) < 300 or len(self.__shapes) < 3:
+            similarShape = self.findSimilarShape(shapeToAdd)
+            if similarShape != None:
+                if similarShape.getArea() < shapeToAdd.getArea():
+                    self.__shapes.remove(similarShape)
+                    self.__shapes.append(shapeToAdd)
+            if similarShape == None:
                 self.__shapes.append(shapeToAdd)
-        if similarShape == None:
-            self.__shapes.append(shapeToAdd)
 
     def getShapesList(self):
         return self.__shapes
+
+    def getAverageShapeSize(self):
+        averageSize = 0
+        if len(self.__shapes) > 0:
+            for shape in self.__shapes:
+                averageSize += shape.getArea()
+            averageSize = averageSize/len(self.__shapes)
+        return averageSize
 
     def getContourList(self):
         contourList = []
@@ -61,7 +70,9 @@ class Map:
                 minX = corner[0]
             if(corner[1] < minY):
                 minY = corner[1]
-        self.limit = Square("limit", np.array([[[minX,minY + 5],[minX,maxY - 5],[maxX, maxY - 5],[maxX,minY + 5]]], dtype=np.int32))
+        newFoundLimit = Square("limit", np.array([[[minX,minY + 5]],[[minX,maxY - 5]],[[maxX, maxY - 5]],[[maxX,minY + 5]]], dtype=np.int32))
+        if newFoundLimit.getArea() < self.limit.getArea() or len(self.limit.getContour()[0]) == 1:
+            self.limit = newFoundLimit
 
     def setShapesColor(self, mapImage):
         for shape in self.__shapes:
@@ -70,35 +81,7 @@ class Map:
     def getGreenSquare(self):
         return self.greenSquare
 
-    def setGreenSquare(self):
-        biggestShape = Shape("Small shape", np.array([[[1,1],[1,2],[2, 2]]], dtype=np.int32))
-        for shape in self.__shapes:
-            if shape.getArea() > biggestShape.getArea():
-                biggestShape = shape
-
-        if biggestShape.getCornerCount() == 4:
-            cornerList = []
-            minX = 1000
-            maxX = 0
-            minY = 1000
-            maxY = 0
-            for corner in biggestShape.getContour()[0]:
-                cornerList.append((corner.item(0), corner.item(1)))
-            for corner in cornerList:
-                if(corner[0] > maxX):
-                    maxX = corner[0]
-                if(corner[1] > maxY):
-                    maxY = corner[1]
-                if(corner[0] < minX):
-                    minX = corner[0]
-                if(corner[1] < minY):
-                    minY = corner[1]
-            self.greenSquare = Square("greenSquare", np.array([[[minX,minY],[minX,maxY],[maxX, maxY],[maxX,minY]]], dtype=np.int32))
-            self.__shapes.remove(biggestShape)
-
-    #TODO
     def deleteOutsiderShapes(self):
-
         shapesToDelete = []
         for shape in self.__shapes:
             if shape.isOutside(self.limit):
@@ -106,10 +89,5 @@ class Map:
 
         for shape in shapesToDelete:
             self.__shapes.remove(shape)
-
-
-    #TODO
-    def refactorWithKnowValue(self):
-        pass
 
 

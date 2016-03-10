@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import mapBuilder as MB
 import map
+import copy
 
 class WorldImage:
 
@@ -14,10 +15,9 @@ class WorldImage:
     def setImage(self, mapImage):
         self.__mapImage = mapImage
 
-    def setMap(self):
-        self.__map = self.__myMapBuilder.buildMapWithAllFilter(self.__mapImage)
-        self.__map.setGreenSquare()
-        self.__map.deleteOutsiderShapes()
+    def setMap(self, mapImage):
+        self.__map = self.__myMapBuilder.buildMapWithAllFilter(mapImage, self.__map)
+
 
     def defineShapesColor(self):
         self.__map.setShapesColor(self.__mapImage)
@@ -25,7 +25,7 @@ class WorldImage:
     def getMap(self):
         return self.__map
 
-    def addLabels(self):
+    def addLabels(self, frame):
         font = cv2.FONT_HERSHEY_SIMPLEX
         scale = 0.4
         thickness = 1
@@ -36,12 +36,11 @@ class WorldImage:
             textHeight = size[1]
             x,y,w,h = shape.getBoundingRectangle()
             point = (x + ((w - textWidth) / 2), y + ((h + textHeight) / 2))
-            cv2.putText(self.__mapImage, shape.getName()+ " " + shape.myColor.colorName, point, font, scale, (0,0,0), thickness, 8)
+            cv2.putText(frame, shape.getName()+ " " + shape.myColor.colorName, point, font, scale, (0,0,0), thickness, 8)
 
-    def drawMapOnImage(self):
-        limit = self.__map.getMapLimit().getContour()
-        cv2.drawContours( self.__mapImage, self.__map.getContourList(), -1, (0, 255, 0), 3 )
-        cv2.drawContours( self.__mapImage, limit, -1, (0, 255, 0), 3 )
-        cv2.drawContours( self.__mapImage, self.__map.getGreenSquare().getContour(), -1, (0, 255, 0), 3 )
+    def drawMapOnImage(self, frame):
+        limit = np.array([self.__map.getMapLimit().getContour()])
+        cv2.drawContours( frame, self.__map.getContourList(), -1, (0, 255, 0), 3 )
+        cv2.drawContours( frame, limit, -1, (0, 255, 0), 3 )
 
-        return self.__mapImage
+        return frame
