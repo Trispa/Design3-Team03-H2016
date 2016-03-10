@@ -13,7 +13,7 @@ class EndNodeGenerator:
     def generateEndNode(self, currentObstacle, topRightCorner, bottomRightCorner, collisionBottomRightCorner, collisionUpperRightCorner, compteur):
         if (collisionBottomRightCorner.positionY != self.MAP_SIZE_Y and collisionUpperRightCorner.positionY != 0):
             endNode = self.__twoCollision(collisionBottomRightCorner, collisionUpperRightCorner, topRightCorner,
-                                          bottomRightCorner)
+                                          bottomRightCorner, currentObstacle)
 
         elif (collisionBottomRightCorner.positionY != self.MAP_SIZE_Y ^ collisionUpperRightCorner.positionY != 0):
             endNode = self.__onlyOneCollision(bottomRightCorner, collisionBottomRightCorner, collisionUpperRightCorner,
@@ -38,11 +38,12 @@ class EndNodeGenerator:
         return endNode
 
 
-    def __twoCollision(self, collisionBottomRightCorner, collisionUpperRightCorner, topRightCorner, bottomRightCorner):
+    def __twoCollision(self, collisionBottomRightCorner, collisionUpperRightCorner, topRightCorner, bottomRightCorner, currentObstacle):
+        print "two bitch"
         cornerTL = (topRightCorner[0], collisionUpperRightCorner.positionY + self.SAFE_MARGIN)
         cornerBL = (bottomRightCorner[0], collisionBottomRightCorner.positionY - self.SAFE_MARGIN)
 
-        if (collisionBottomRightCorner.positionX < collisionUpperRightCorner.positionX):
+        if (collisionBottomRightCorner.positionX < collisionUpperRightCorner.positionX) and collisionBottomRightCorner.positionX != currentObstacle.positionX:
             collisionUpperLeftCornerTemp, collisionUpperRightCornerTemp, collisionBottomLeftCornerTemP, collisionBottomRightCornerTemp = self.collisionDetector.detectStackedObstacleXAxis(
                 collisionBottomRightCorner)
 
