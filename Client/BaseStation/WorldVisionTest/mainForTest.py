@@ -23,7 +23,7 @@ if __name__ == '__main__':
         ret, frame = camera.read()
         #frame = cv2.imread('Images/Test1.jpg')
 
-        frame = cv2.imread('Photos/3105/table 5/jour/rideau ferme/Picture 1.jpg')
+        frame = cv2.imread('Photos/3105/table 5/jour/rideau ferme/Picture 2.jpg')
         geometricalImage = WorldImage(frame)
         geometricalImage.setMap(frame)
         geometricalImage.addLabels(frame)
