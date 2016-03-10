@@ -1,23 +1,23 @@
 from worldImage import WorldImage
 import os
+import base64
 import cv2
 
 class worldVision:
 
     def __init__(self):
-        self.camera = cv2.VideoCapture(1)
+        self.camera = cv2.VideoCapture(2)
 
 
-    def saveImage(self):
+    def getCurrentImage(self):
 
         ret, frame = self.camera.read()
-
         geometricalImage = WorldImage(frame)
-
         geometricalImage.setMap()
         geometricalImage.addLabels()
 
         worldImage = geometricalImage.drawMapOnImage()
-        c = os.path.dirname(__file__)
-        picturePath = os.path.join(c, "..", "..", "..", "Shared", "worldImage.jpg")
-        cv2.imwrite( picturePath, worldImage )
+
+        return worldImage
+
+

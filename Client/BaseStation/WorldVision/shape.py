@@ -41,12 +41,16 @@ class Shape:
         return True
 
     def getContour(self):
+        if len(self.contour[0]) < 1:
+            return np.array([[[]]], dtype=np.int32)
         return self.contour
 
     def getColorName(self):
         return "colorName"
 
     def getArea(self):
+        if len(self.contour) < 3:
+            return 0
         return cv2.contourArea(self.contour)
 
     def getBoundingRectangle(self):
