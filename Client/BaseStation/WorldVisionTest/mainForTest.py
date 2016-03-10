@@ -8,25 +8,26 @@ import cv2
 if __name__ == '__main__':
 
 
-    camera = cv2.VideoCapture(1)
-    camera.set(3, 720)
-    camera.set(4, 720)
+    #camera = cv2.VideoCapture(1)
+    #camera.set(3, 720)
+    #camera.set(4, 720)
     #ret, frame = camera.read()
-    frame = cv2.imread('Photos/3105/table 5/jour/rideau ouvert/Picture 22.jpg')
-    geometricalImage = WorldImage(frame)
+
     #worldVision = worldVision()
+
+
+
 
     while(True):
         #ret, frame = camera.read()
         #frame = cv2.imread('Images/Test6.jpg')
 
+        frame = cv2.imread('Photos/3105/table 5/jour/rideau ferme/Picture 1.jpg')
+        geometricalImage = WorldImage(frame)
         geometricalImage.setMap(frame)
         geometricalImage.addLabels(frame)
-
         worldImage = geometricalImage.drawMapOnImage(frame)
         cv2.imshow("Monde", worldImage)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
         # geometricalImage = WorldImage(frame)
         # geometricalImage.setMap()
         # geometricalImage.defineShapesColor()
@@ -38,6 +39,7 @@ if __name__ == '__main__':
         # geometricalImage.addLabels()
         # worldImage = geometricalImage.drawMapOnImage()
 
-
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
     #cap.release()
     cv2.destroyAllWindows()
