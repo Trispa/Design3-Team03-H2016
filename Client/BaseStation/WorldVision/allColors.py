@@ -19,7 +19,7 @@ class Color:
         return False
 
     def isInSaturationRange(self, saturation):
-        if saturation > self.lower[1] and saturation < self.higher[1]:
+        if saturation >= self.lower[1] and saturation <= self.higher[1]:
             return True
         return False
 
@@ -63,5 +63,10 @@ class Red(Color):
 
         self.lower = np.array([150,lowerSaturation,lowerValue])
         self.higher = np.array([179,higherSaturation,higherValue])
+
+    def isInHueRange(self, hue):
+        if (hue >= self.lower[0] and hue <= self.higher[0]) or hue >= 0 and hue <= 8:
+            return True
+        return False
 
 
