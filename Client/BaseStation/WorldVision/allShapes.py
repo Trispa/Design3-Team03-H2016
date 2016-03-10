@@ -7,6 +7,23 @@ class Square(Shape):
 
     def __init__(self, geometricName, contour):
         Shape.__init__(self, geometricName, contour)
+        cornerList = []
+        self.minX = 1000
+        self.maxX = 0
+        self.minY = 1000
+        self.maxY = 0
+        contourCopy = contour[0]
+        for corner in contourCopy:
+            cornerList.append((corner.item(0), corner.item(1)))
+        for corner in cornerList:
+            if(corner[0] > self.maxX):
+                self.maxX = corner[0]
+            if(corner[1] > self.maxY):
+                self.maxY = corner[1]
+            if(corner[0] < self.minX):
+                self.minX = corner[0]
+            if(corner[1] < self.minY):
+                self.minY = corner[1]
 
     def __angleCos(self, p0, p1, p2):
         d1, d2 = (p0-p1).astype('float'), (p2-p1).astype('float')
@@ -18,6 +35,12 @@ class Square(Shape):
         max_cos = np.max([self.__angleCos( cntCopy[i], cntCopy[(i+1) % 4], cntCopy[(i+2) % 4] ) for i in xrange(4)])
         if max_cos < 0.1:
             return True
+
+    def getMaxCorner(self):
+        return self.maxX, self.maxY
+
+    def getMinCorner(self):
+        return self.minX, self.minY
 
 class Triangle(Shape):
 
@@ -49,7 +72,7 @@ class Triangle(Shape):
         maxAngle = totalAngleInPolygone + 15
         minAngle = totalAngleInPolygone - 15
         for angle in angleList:
-            if angle > maxAngle or minAngle < 45:
+            if angle > maxAngle or angle < minAngle:
                 return False
 
         return True

@@ -1,3 +1,1 @@
-cd ..
-py -m Client.BaseStation.BaseClient.py
-
+py ../Client/BaseStation/BaseClient.py
