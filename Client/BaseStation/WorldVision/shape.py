@@ -1,19 +1,20 @@
 import cv2
 import numpy as np
-from color import Color
+from ColorFactory import ColorFactory
 
 class Shape:
-
+    colorFactory = ColorFactory()
     colors = []
-    colors.append(Color(np.uint8([[[0,255,0]]]), "Green"))
-    colors.append(Color(np.uint8([[[255,0,0]]]), "Blue"))
-    colors.append(Color(np.uint8([[[150,179,255]]]), "Red"))
-    colors.append(Color(np.uint8([[[0,255,255]]]), "Yellow"))
+    colors.append(colorFactory.constructColor(np.uint8([[[0,255,0]]]), "Green"))
+    colors.append(colorFactory.constructColor(np.uint8([[[255,0,0]]]), "Blue"))
+    colors.append(colorFactory.constructColor(np.uint8([[[150,179,255]]]), "Red"))
+    colors.append(colorFactory.constructColor(np.uint8([[[0,255,255]]]), "Yellow"))
+    colors.append(colorFactory.constructColor(np.uint8([[[0,0,0]]]), "Black"))
 
     def __init__(self, geometricName, contour):
         self.contour = contour
         self.geometricName = geometricName
-        self.myColor = Color(np.uint8([[[0,255,255]]]), "Not defined")
+        self.myColor = self.colorFactory.constructColor(np.uint8([[[0,255,255]]]), "Not defined")
 
 
     def __eq__(self, other):

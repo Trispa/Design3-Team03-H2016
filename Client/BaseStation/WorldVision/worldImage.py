@@ -36,7 +36,7 @@ class WorldImage:
             textHeight = size[1]
             x,y,w,h = shape.getBoundingRectangle()
             point = (x + ((w - textWidth) / 2), y + ((h + textHeight) / 2))
-            cv2.putText(frame, shape.getName()+ " " + shape.myColor.colorName, point, font, scale, (0,0,0), thickness, 8)
+            cv2.putText(frame, shape.getName()+ " " + shape.myColor.colorName, point, font, scale, (255,255,255), thickness, 8)
 
     def drawMapOnImage(self, frame):
         limit = np.array([self.__map.getMapLimit().getContour()])

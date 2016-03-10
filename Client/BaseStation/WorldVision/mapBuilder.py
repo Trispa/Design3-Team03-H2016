@@ -5,8 +5,6 @@ import copy
 from shape import Shape
 from allShapes import Square, Triangle
 
-from color import Color
-
 class MapBuilder:
 
     def __init__(self):
