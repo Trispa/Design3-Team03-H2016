@@ -62,21 +62,7 @@ class MapBuilder:
                         if len(contour) == 4:
                             map.setMapLimit(contour)
 
-        if (len(map.getMapLimit().getContour()[0]) == 4):
-            map.deleteOutsiderShapes()
+        #if (len(map.getMapLimit().getContour()) == 4):
+            #map.deleteOutsiderShapes()
         map.setShapesColor(mapImage)
         return map
-
-    def buildByColorClosing(self, mapImage):
-
-        for color in self.colors:
-            hsvImage = cv2.cvtColor(mapImage,cv2.COLOR_BGR2HSV)
-            coloredImage = cv2.inRange(hsvImage,color.lower,color.higher)
-
-            kernel = np.ones((5,5),np.uint8)
-            closing = cv2.morphologyEx(coloredImage, cv2.MORPH_CLOSE, kernel)
-
-            contours, hierarchy = cv2.findContours(closing, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-            self.filterFoundContours(contours)
-
-        return self.__map
