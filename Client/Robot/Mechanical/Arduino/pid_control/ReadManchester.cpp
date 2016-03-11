@@ -66,6 +66,7 @@ void   ReadManchester::getMaschesterBits()
       }
       if(indice > 128){
         this->_chaineCopie = bits;
+        Serial.println(this->_chaineCopie);
         indice = 0;
         enableInterrupt(false); 
         this->disableManchester();

@@ -75,28 +75,28 @@ void CommandReceiver::dispatchCommand() {
     		break;
 
 
-	case 4: // ReadMAnchesterBits
-        rm->enableManchester();
-       
-        break;
-
- 	case 5:// j'ai changé le 4 en 5 car le 4 appartenais déjà  au ReadManchester
-    		for(int i = 0; i<4; i++)
-    		{
-      			dm[i].driveMoteur(0,0);
-    		}
-  case 6: // callback MAnchester
-        if(callbackRequested == 1){
-           sendCallback(rm->getChaineCopie());
-        }
-        break;
-
-	default: //for test purposes
-		if(callbackRequested == 1) {
-			sendCallback(parameters[0]);
-		}
-		break;
-	}    
+  	case 4: // ReadMAnchesterBits
+          rm->enableManchester();
+         
+          break;
+  
+   	case 5:// j'ai changé le 4 en 5 car le 4 appartenais déjà  au ReadManchester
+      		for(int i = 0; i<4; i++)
+      		{
+        			dm[i].driveMoteur(0,0);
+      		}
+    case 6: // callback MAnchester
+          if(callbackRequested == 1){
+             sendCallback(rm->getChaineCopie());
+          }
+          break;
+  
+  	default: //for test purposes
+  		if(callbackRequested == 1) {
+  			sendCallback(parameters[0]);
+  		}
+  		break;
+  	}    
 }
 
 void CommandReceiver::sendCallback(long callbackData) {

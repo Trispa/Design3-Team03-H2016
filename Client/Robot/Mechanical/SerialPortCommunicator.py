@@ -3,6 +3,7 @@ from time import sleep
 import struct
 import binascii
 import re
+import MoteurRoue
 
 class SerialPortCommunicator:
     COMMAND_INDICATOR = "C"
@@ -29,7 +30,7 @@ class SerialPortCommunicator:
     #     CCW = 1
 
 #Pololu : /dev/serial/by-id/pci-Pololu_Corporation_Pololu_Micro_Maestro_6-Servo_Controller_00021864-if0
-    def __init__(self, bitrateArduino = 9600, arduinoPort = "/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A7007dag-if00-port0"):
+    def __init__(self, bitrateArduino = 115200, arduinoPort = "/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A7007dag-if00-port0"):
         self.arduino = serial.Serial(arduinoPort, bitrateArduino, timeout = 1)
         #self.polulu = serial.Serial(poluluPort, bitratePolulu, timeout = 1)
         sleep(1)
@@ -96,13 +97,11 @@ class SerialPortCommunicator:
                 chaine_impaire += chaine[indice]
 
         if(chaine_paire.find(patern) != -1):
-            #chaine_paire = chaine_paire.replace(patern, '')
-            print("dans la chaine paire")
             return chaine_paire
         else:
             if(chaine_impaire.find(patern) != -1):
                 #chaine_impaire = re.sub(patern,"", chaine_impaire)
-                print("dans la chaine impaire")
+
                 return chaine_impaire
         return -2
 
@@ -111,9 +110,11 @@ class SerialPortCommunicator:
         trouve = 0
         indice = 0
         self.readManchesterCode()
-        sleep(1)
+        sleep(2)
         bits = self.getManchesterCode()
         chaine = self.manchester_decode(bits)
+        if(chaine == -2):
+            return -2
 
         c = ''
         data = ""
@@ -143,16 +144,30 @@ class SerialPortCommunicator:
 
     def getAsciiManchester(self):
         data = self.getCodebits()
-        if(data == -1):
-            print ("la chaine recu est vide ")
+        if(data == -2):
+             return -2
         else:
             return self.letter_from_bits(data)
-        return -2
+
     #################################### END MANCHESTER ################################
 
 if __name__ == "__main__":
     spc = SerialPortCommunicator()
+    mr = MoteurRoue.MoteurRoue()
+
+    mr.avanceVector(0,10)
+    sleep(1)
+    mr.avanceVector(0,-10)
+    sleep(1)
+
+
     #maChaine = spc.getManchesterCode()
     #print(maChaine)
     #print(spc.getCodebits())
-    print("ASCII :" + spc.getAsciiManchester())
+    chaine = spc.getAsciiManchester()
+    if( chaine == -2):
+        print("ERREUR !")
+    else:
+         print("ASCII :" + chaine)
+
+    mr.avanceVector(0,-10)
