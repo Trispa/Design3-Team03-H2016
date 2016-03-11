@@ -8,7 +8,8 @@ import numpy as np
 class Pathfinder:
     def __init__(self, map):
         self.mapAdaptator = MapAdaptator(map)
-        self.graphGenerator = GraphGenerator(self.mapAdaptator.getObstaclesList())
+        obstaclesList, mapSizeX, mapSizeY = self.mapAdaptator.getMapInfo()
+        self.graphGenerator = GraphGenerator(obstaclesList, mapSizeX, mapSizeY)
         self.graph = self.graphGenerator.generateGraph()
         self.pathsList = []
 

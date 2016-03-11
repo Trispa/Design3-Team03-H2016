@@ -9,11 +9,11 @@ from Client.BaseStation.Logic.Pathfinding.Graph.Graph import Graph
 
 
 class GraphGenerator:
-    MAP_SIZE_X = 1000
-    MAP_SIZE_Y = 600
     SAFE_MARGIN = 30
 
-    def __init__(self, obstaclesList):
+    def __init__(self, obstaclesList, mapSizeX, mapSizeY):
+        self.MAP_SIZE_X = mapSizeX
+        self.MAP_SIZE_Y = mapSizeY
         self.collisionDetector = CollisionDetector(self.MAP_SIZE_X, self.MAP_SIZE_Y, self.SAFE_MARGIN, obstaclesList)
         self.endNodeGenerator = EndNodeGenerator(self.MAP_SIZE_X, self.MAP_SIZE_Y, self.SAFE_MARGIN, obstaclesList, self.collisionDetector)
         self.obstaclesList = obstaclesList
