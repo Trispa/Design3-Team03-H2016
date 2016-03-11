@@ -6,11 +6,20 @@ import cv2
 
 def printPosition(event,x,y,flags,param):
     if event == cv2.EVENT_LBUTTONDBLCLK:
-        print(x, y)
+        resultFile = open(resultFileName, 'a')
+        resultFile.write("("+str(x)+","+str(y)+")")
+        resultFile.close()
 
-frame = cv2.imread('Frames/Picture 7.jpg')
+pictureNumber = 13
+resultFileName = 'Results/Picture ' + str(pictureNumber) + '.txt'
+frameFileName = 'Frames/Picture ' + str(pictureNumber) + '.jpg'
+resultFile = open(resultFileName, 'w')
+resultFile.write("CenterOfMass:")
+resultFile.close()
+frame = cv2.imread(frameFileName)
 cv2.namedWindow('image')
 cv2.setMouseCallback('image',printPosition)
+
 
 while(True):
     cv2.imshow('image',frame)
