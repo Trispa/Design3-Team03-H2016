@@ -25,32 +25,31 @@ class EndNodeGenerator:
         return endNode
 
     def __noCollision(self, compteur, currentObstacle):
-        cornerTL = (currentObstacle.positionX + self.SAFE_MARGIN, 0)
-        cornerBL = (currentObstacle.positionX + self.SAFE_MARGIN, self.MAP_SIZE_Y)
+        safeZoneCornerTopLeft = (currentObstacle.positionX + self.SAFE_MARGIN, 0)
+        safeZoneCornerBotLeft = (currentObstacle.positionX + self.SAFE_MARGIN, self.MAP_SIZE_Y)
         if (compteur == self.obstaclesList.__len__() - 1):
-            cornerTR = (self.MAP_SIZE_X, 0)
-            endNode = Node(SafeZone(cornerTL, cornerTR, cornerBL).getCenterOfSafeZone())
+            safeZoneCornerTopRight = (self.MAP_SIZE_X, 0)
+            endNode = Node(SafeZone(safeZoneCornerTopLeft, safeZoneCornerTopRight, safeZoneCornerBotLeft).getCenterOfSafeZone())
         else:
-            cornerTR = (self.obstaclesList[compteur + 1].positionX - self.SAFE_MARGIN, 0)
-            endNode = Node(SafeZone(cornerTL, cornerTR, cornerBL).getCenterOfSafeZone())
+            safeZoneCornerTopRight = (self.obstaclesList[compteur + 1].positionX - self.SAFE_MARGIN, 0)
+            endNode = Node(SafeZone(safeZoneCornerTopLeft, safeZoneCornerTopRight, safeZoneCornerBotLeft).getCenterOfSafeZone())
             self.obstaclesList[compteur+1].setStartingNode(endNode)
 
         return endNode
 
 
     def __twoCollision(self, collisionBottomRightCorner, collisionUpperRightCorner, topRightCorner, bottomRightCorner, currentObstacle):
-        print "two bitch"
-        cornerTL = (topRightCorner[0], collisionUpperRightCorner.positionY + self.SAFE_MARGIN)
-        cornerBL = (bottomRightCorner[0], collisionBottomRightCorner.positionY - self.SAFE_MARGIN)
+        safeZoneCornerTopLeft = (topRightCorner[0], collisionUpperRightCorner.positionY + self.SAFE_MARGIN)
+        safeZoneCornerBotLeft = (bottomRightCorner[0], collisionBottomRightCorner.positionY - self.SAFE_MARGIN)
 
         if (collisionBottomRightCorner.positionX < collisionUpperRightCorner.positionX) and collisionBottomRightCorner.positionX != currentObstacle.positionX:
             collisionUpperLeftCornerTemp, collisionUpperRightCornerTemp, collisionBottomLeftCornerTemP, collisionBottomRightCornerTemp = self.collisionDetector.detectStackedObstacleXAxis(
                 collisionBottomRightCorner)
 
             if collisionUpperRightCornerTemp != collisionUpperRightCorner:
-                cornerTR = (collisionUpperRightCornerTemp.positionX - self.SAFE_MARGIN,
+                safeZoneCornerTopRight = (collisionUpperRightCornerTemp.positionX - self.SAFE_MARGIN,
                             collisionUpperRightCorner.positionY + self.SAFE_MARGIN)
-                endNode = Node(SafeZone(cornerTL, cornerTR, cornerBL).getCenterOfSafeZone())
+                endNode = Node(SafeZone(safeZoneCornerTopLeft, safeZoneCornerTopRight, safeZoneCornerBotLeft).getCenterOfSafeZone())
                 collisionUpperRightCornerTemp.setStartingNode(endNode)
 
             else:
@@ -62,9 +61,9 @@ class EndNodeGenerator:
                 collisionUpperRightCorner)
 
             if collisionBottomRightCornerTemp != collisionBottomRightCorner:
-                cornerTR = (collisionBottomRightCornerTemp.positionX - self.SAFE_MARGIN,
+                safeZoneCornerTopRight = (collisionBottomRightCornerTemp.positionX - self.SAFE_MARGIN,
                             collisionUpperRightCorner.positionY + self.SAFE_MARGIN)
-                endNode = Node(SafeZone(cornerTL, cornerTR, cornerBL).getCenterOfSafeZone())
+                endNode = Node(SafeZone(safeZoneCornerTopLeft, safeZoneCornerTopRight, safeZoneCornerBotLeft).getCenterOfSafeZone())
                 collisionBottomRightCornerTemp.setStartingNode(endNode)
 
             else:
@@ -75,16 +74,16 @@ class EndNodeGenerator:
 
     def __onlyOneCollision(self, bottomRightCorner, collisionBottomRightCorner, collisionUpperRightCorner,
                            topRightCorner):
-        cornerTL = (topRightCorner[0], collisionUpperRightCorner.positionY + self.SAFE_MARGIN)
-        cornerBL = (bottomRightCorner[0], collisionBottomRightCorner.positionY - self.SAFE_MARGIN)
+        safeZoneCornerTopLeft = (topRightCorner[0], collisionUpperRightCorner.positionY + self.SAFE_MARGIN)
+        safeZoneCornerBotLeft = (bottomRightCorner[0], collisionBottomRightCorner.positionY - self.SAFE_MARGIN)
         if collisionBottomRightCorner.positionY != self.MAP_SIZE_Y:
             collisionUpperLeftCornerTemp, collisionUpperRightCornerTemp, collisionBottomLeftCornerTemP, collisionBottomRightCornerTemp = self.collisionDetector.detectStackedObstacleXAxis(
                 collisionBottomRightCorner)
 
             if collisionUpperRightCornerTemp.positionY != 0:
-                cornerTR = (collisionUpperRightCornerTemp.positionX - self.SAFE_MARGIN,
+                safeZoneCornerTopRight = (collisionUpperRightCornerTemp.positionX - self.SAFE_MARGIN,
                             collisionUpperRightCorner.positionY + self.SAFE_MARGIN)
-                endNode = Node(SafeZone(cornerTL, cornerTR, cornerBL).getCenterOfSafeZone())
+                endNode = Node(SafeZone(safeZoneCornerTopLeft, safeZoneCornerTopRight, safeZoneCornerBotLeft).getCenterOfSafeZone())
                 collisionUpperRightCornerTemp.setStartingNode(endNode)
 
             else:
@@ -96,9 +95,9 @@ class EndNodeGenerator:
                 collisionUpperRightCorner)
 
             if collisionBottomRightCornerTemp.positionY != self.MAP_SIZE_Y:
-                cornerTR = (collisionBottomRightCornerTemp.positionX - self.SAFE_MARGIN,
+                safeZoneCornerTopRight = (collisionBottomRightCornerTemp.positionX - self.SAFE_MARGIN,
                             collisionUpperRightCorner.positionY + self.SAFE_MARGIN)
-                endNode = Node(SafeZone(cornerTL, cornerTR, cornerBL).getCenterOfSafeZone())
+                endNode = Node(SafeZone(safeZoneCornerTopLeft, safeZoneCornerTopRight, safeZoneCornerBotLeft).getCenterOfSafeZone())
                 collisionBottomRightCornerTemp.setStartingNode(endNode)
 
             else:

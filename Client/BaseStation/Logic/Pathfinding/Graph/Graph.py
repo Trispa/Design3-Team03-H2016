@@ -1,9 +1,9 @@
 from Client.BaseStation.Logic.Pathfinding.Graph.Node import Node
 import numpy as np
 class Graph:
-    def __init__(self, obstaclesList):
+    def __init__(self):
         self.nodesList = []
-        self.obstaclesList = obstaclesList
+
 
 
     def connectTwoNodes(self, firstNode, secondNode):

@@ -32,8 +32,10 @@ class Pathfinder:
 
                     goodPath = currentPath
         goodPath.append(Node(pointToMoveTo))
-        #return goodPath
+
         self.__displayPathfinder(goodPath, positionRobot)
+        return goodPath
+
 
     def printPath(self, goodPath):
         for compteur in range(0, goodPath.__len__()):
@@ -59,8 +61,8 @@ class Pathfinder:
         img = np.zeros((600, 1000, 3), np.uint8)
         cv2.namedWindow('image')
         couleur = 0
-        for compteur in range (0, self.graph.obstaclesList.__len__()):
-            currentObstacle = self.graph.obstaclesList[(compteur)]
+        for compteur in range (0, self.graphGenerator.obstaclesList.__len__()):
+            currentObstacle = self.graphGenerator.obstaclesList[(compteur)]
             cv2.rectangle(img, (currentObstacle.positionX - self.graphGenerator.SAFE_MARGIN, currentObstacle.positionY - self.graphGenerator.SAFE_MARGIN), (currentObstacle.positionX + self.graphGenerator.SAFE_MARGIN, currentObstacle.positionY + self.graphGenerator.SAFE_MARGIN),
                       (0, 255, 0), -1, 1)
             self.graph.nodesList.sort(key=lambda node: node.positionX)
@@ -98,10 +100,11 @@ listObs = []
 #listObs.append(Obstacle((180,200)))
 #listObs.append(Obstacle((220,300)))
 listObs.append(Obstacle((230,100)))
-#listObs.append(Obstacle((230,420)))
+listObs.append(Obstacle((245,250)))
+listObs.append(Obstacle((230,420)))
 
-#listObs.append(Obstacle((340,400)))
-#listObs.append(Obstacle((320,300)))
+listObs.append(Obstacle((340,400)))
+listObs.append(Obstacle((320,300)))
 #listObs.append(Obstacle((265,150)))
 #listObs.append(Obstacle((215,400)))
 
