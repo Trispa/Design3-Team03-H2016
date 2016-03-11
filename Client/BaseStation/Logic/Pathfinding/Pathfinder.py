@@ -34,8 +34,8 @@ class Pathfinder:
 
                     goodPath = currentPath
         goodPath.append(Node(pointToMoveTo))
-
-        #self.__displayPathfinder(goodPath, positionRobot)
+        print("find path")
+        self.__displayPathfinder(goodPath, positionRobot)
         return goodPath
 
 

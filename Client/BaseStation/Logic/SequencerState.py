@@ -23,11 +23,10 @@ class SendingBotToChargingStationState():
                            "orientation": "0"},
                        }
 
-
         if(self.obstacleIndex == self.path.__len__() - 1):
             sequencer.setState(SendingBotToTreasureState())
             coordinates["index"] = "-1"
-
+        print(coordinates)
         return (coordinates)
 
 class SendingBotToTreasureState():
