@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
-from ColorFactory import ColorFactory
+
+from Client.BaseStation.WorldVision.Factories.ColorFactory import ColorFactory
+
 
 class Shape:
     colorFactory = ColorFactory()
