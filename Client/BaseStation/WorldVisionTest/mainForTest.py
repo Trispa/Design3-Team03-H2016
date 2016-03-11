@@ -7,10 +7,12 @@ import cv2
 
 if __name__ == '__main__':
 
-    #camera = cv2.VideoCapture(1)
-    #camera.set(3, 720)
-    #camera.set(4, 720)
-    #ret, frame = camera.read()
+
+    camera = cv2.VideoCapture(1)
+    camera.set(3, 720)
+    camera.set(4, 720)
+    ret, frame = camera.read()
+
     #frame = cv2.imread('Photos/3105/table 5/jour/rideau ouvert/Picture 22.jpg')
     #frame = cv2.imread('Images/Test6.jpg')
     #geometricalImage = WorldImage(frame)
