@@ -21,16 +21,13 @@ socketIO = SocketIO(config['url'], int(config['port']))
 
 def sendNextCoordinates(*args):
     print("Sending next coordinates")
-
     socketIO.emit("sendNextCoordinates",dispatcher.handleCurrentSequencerState(args[0]["index"]))
 
 def startRound():
     botState = {"positionX":"0",
                 "positionY":"0",
                 "orientation":"0"}
-    print("sending start signal robot")
     dispatcher.initialiseWorldData()
-    print("finish initializing world")
     socketIO.emit("startSignalRobot",botState)
 
 def sendImage():

@@ -10,8 +10,6 @@ class Sequencer :
         self.setState(SequencerState.SendingBotToChargingStationState())
 
     def handleCurrentState(self, obstacleListIndex):
-        value = self.state.handle(self, obstacleListIndex)
-        print value
-        return value
+        return self.state.handle(self, obstacleListIndex)
 
 

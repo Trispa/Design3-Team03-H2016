@@ -12,11 +12,8 @@ class BaseStationDispatcher():
         return self.sequencer.handleCurrentState(obstacleListIndex)
 
     def initialiseWorldData(self):
-        print("get map")
         map = self.world.getCurrentMap()
-        print("set pathfinder")
         self.pathfinder = Pathfinder(map)
-        print("set sequencer")
         self.sequencer = seq(self.pathfinder)
 
     def getCurrentWorldImage(self):
