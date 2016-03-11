@@ -1,4 +1,4 @@
-from allColors import *
+from Client.BaseStation.WorldVision.allColors import *
 
 class ColorFactory():
 
