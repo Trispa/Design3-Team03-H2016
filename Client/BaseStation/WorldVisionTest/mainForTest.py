@@ -8,10 +8,10 @@ import cv2
 if __name__ == '__main__':
 
 
-    camera = cv2.VideoCapture(1)
-    camera.set(3, 720)
-    camera.set(4, 720)
-    ret, frame = camera.read()
+    #camera = cv2.VideoCapture(1)
+    #camera.set(3, 720)
+    #camera.set(4, 720)
+    #ret, frame = camera.read()
 
     #frame = cv2.imread('Photos/3105/table 5/jour/rideau ouvert/Picture 22.jpg')
     #frame = cv2.imread('Images/Test6.jpg')
@@ -20,11 +20,12 @@ if __name__ == '__main__':
 
     while(True):
         #ret, frame = camera.read()
-        frame = cv2.imread('Images/Test4.jpg')
+        frame = cv2.imread('Photos/3105/table 5/jour/rideau ferme/Picture 2.jpg')
         geometricalImage = WorldImage(frame)
         geometricalImage.setMap(frame)
         geometricalImage.addLabels(frame)
         worldImage = geometricalImage.drawMapOnImage(frame)
+        print(geometricalImage.getMap().robot.findCenterOfMass())
         cv2.imshow("Monde", worldImage)
         # geometricalImage = WorldImage(frame)
         # geometricalImage.setMap()
