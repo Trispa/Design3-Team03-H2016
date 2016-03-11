@@ -1,10 +1,10 @@
-from WorldVision.worldVision import worldVision
-from Logic.Sequencer import Sequencer as seq
-from Logic.Pathfinding.Pathfinder import Pathfinder
+from Client.BaseStation.WorldVision.worldVision import worldVision
+from Client.BaseStation.Logic.Sequencer import Sequencer as seq
+from Client.BaseStation.Logic.Pathfinding.Pathfinder import Pathfinder
 import cv2
 import base64
 
-class BaseClient():
+class BaseStationDispatcher():
     def __init__(self):
         self.world = worldVision()
 
