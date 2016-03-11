@@ -1,5 +1,5 @@
 .idea/*
-*/mainForTest.py
+Client/BaseStation/WorldVisionTest/mainForTest.py
 
 # Unit test / coverage reports
 htmlcov/
