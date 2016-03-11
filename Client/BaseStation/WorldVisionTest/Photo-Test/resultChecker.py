@@ -1,0 +1,3 @@
+
+class resultChecker:
+    pass
