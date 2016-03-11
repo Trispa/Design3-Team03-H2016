@@ -46,9 +46,9 @@ class Black(Color):
     def __init__(self, bgrColor, colorName):
         Color.__init__(self, bgrColor, colorName)
         lowerValue = 0
-        higherValue = 50
+        higherValue = 40
         lowerSaturation = 0
-        higherSaturation = 50
+        higherSaturation = 130
         self.lower = np.array([0,lowerSaturation,lowerValue])
         self.higher = np.array([179,higherSaturation,higherValue])
 
