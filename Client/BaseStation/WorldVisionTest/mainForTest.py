@@ -7,7 +7,7 @@ import cv2
 
 if __name__ == '__main__':
 
-    camera = cv2.VideoCapture(1)
+    camera = cv2.VideoCapture(2)
     camera.set(3, 720)
     camera.set(4, 720)
     ret, frame = camera.read()
