@@ -21,4 +21,7 @@ class worldVision:
 
         return worldImage
 
+    def getCurrentMap(self):
+        return self.mapImage.getMap()
+
 
