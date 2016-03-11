@@ -97,7 +97,7 @@ class Map:
     def filterRobot(self):
         shapes = self.__shapes
         for shape in shapes:
-            if(shape.myColor.colorName == "Black"):
+            if(shape.myColor.colorName == "Black" and isinstance(shape, Square)):
                 self.__shapes.remove(shape)
                 self.robot = shape
 
