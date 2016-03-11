@@ -1,59 +1,23 @@
-import base64
-import json
-import sys
-import cv2
-import threading
-import os
-
 from WorldVision.worldVision import worldVision
-
-sys.path.insert(1, "/Logic")
-sys.path.append("/../../Shared")
-
 from Logic.Sequencer import Sequencer as seq
+from Logic.Pathfinding.Pathfinder import Pathfinder
+import cv2
+import base64
 
-sequencer = seq()
+class BaseClient():
+    def __init__(self):
+        self.world = worldVision()
 
-from socketIO_client import SocketIO
+    def handleCurrentSequencerState(self, obstacleListIndex):
+        self.sequencer.handleCurrentState(obstacleListIndex)
 
-c = os.path.dirname(__file__)
-configPath = os.path.join(c, "..", "..", "Shared", "config.json")
-world = worldVision()
+    def initialiseWorldData(self):
+        map = self.world.getCurrentMap()
+        self.pathfinder = Pathfinder(map)
+        self.sequencer = seq(self.pathfinder)
 
-with open(configPath) as json_data_file:
-    config = json.load(json_data_file)
-
-socketIO = SocketIO(config['url'], int(config['port']))
-
-def sendNextCoordinates(*args):
-    print("Sending next coordinates")
-    socketIO.emit("sendNextCoordinates", sequencer.handleCurrentState(args[0]["index"]))
-
-def startRound():
-    botState = {"positionX":"0",
-                "positionY":"0",
-                "orientation":"0"}
-    print("sending start signal robot")
-    socketIO.emit("startSignalRobot",botState)
-
-def sendImage():
-    print("asking for new images")
-    image = world.getCurrentImage()
-    convertedImage = cv2.imencode('.png',image)[1]
-    base64ConvertedImage = base64.encodestring(convertedImage)
-    socketIO.emit('sendImage', base64ConvertedImage)
-
-def setInterval(function, seconds):
-    def func_wrapper():
-        setInterval(function, seconds)
-        function()
-    timer = threading.Timer(seconds, func_wrapper)
-    timer.start()
-    return timer
-
-setInterval(sendImage, 5)
-socketIO.on('needNewCoordinates', sendNextCoordinates)
-socketIO.on('startSignal', startRound)
-
-socketIO.wait()
-
+    def getCurrentWorldImage(self):
+        image = self.world.getCurrentImage()
+        convertedImage = cv2.imencode('.png',image)[1]
+        base64ConvertedImage = base64.encodestring(convertedImage)
+        return base64ConvertedImage
