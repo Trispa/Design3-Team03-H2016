@@ -1,23 +1,26 @@
 import cv2
 import numpy as np
-from color import Color
+from ColorFactory import ColorFactory
 
 class Shape:
-
+    colorFactory = ColorFactory()
     colors = []
-    colors.append(Color(np.uint8([[[0,255,0]]]), "Green"))
-    colors.append(Color(np.uint8([[[255,0,0]]]), "Blue"))
-    colors.append(Color(np.uint8([[[150,179,255]]]), "Red"))
-    colors.append(Color(np.uint8([[[0,255,255]]]), "Yellow"))
+    colors.append(colorFactory.constructColor(np.uint8([[[0,255,0]]]), "Green"))
+    colors.append(colorFactory.constructColor(np.uint8([[[255,0,0]]]), "Blue"))
+    colors.append(colorFactory.constructColor(np.uint8([[[150,179,255]]]), "Red"))
+    colors.append(colorFactory.constructColor(np.uint8([[[0,255,255]]]), "Yellow"))
+    colors.append(colorFactory.constructColor(np.uint8([[[0,0,0]]]), "Black"))
 
     def __init__(self, geometricName, contour):
         self.contour = contour
         self.geometricName = geometricName
+        self.myColor = self.colorFactory.constructColor(np.uint8([[[0,255,255]]]), "Not defined")
+
 
     def __eq__(self, other):
         if other == None:
             return False
-        return cv2.contourArea(self.contour) == cv2.contourArea(other.contour)
+        return self.contour[0].item(0) == other.contour[0].item(0)
 
     def findCenterOfMass(self):
         moment = cv2.moments(self.contour)
@@ -39,9 +42,16 @@ class Shape:
         return True
 
     def getContour(self):
+        if len(self.contour) < 2:
+            return []
         return self.contour
 
+    def getColorName(self):
+        return "colorName"
+
     def getArea(self):
+        if len(self.contour) < 3:
+            return 0
         return cv2.contourArea(self.contour)
 
     def getBoundingRectangle(self):
@@ -49,6 +59,20 @@ class Shape:
 
     def getName(self):
         return self.geometricName
+
+    def getColor(self):
+        return self.myColor
+
+    def getCornerCount(self):
+        return len(self.contour)
+
+    def isOutside(self, limit):
+        limitMaxX, limitMaxY = limit.getMaxCorner()
+        limitMinX, limitMinY = limit.getMinCorner()
+        for corner in self.contour:
+            if corner.item(1) < limitMinY or corner.item(1) > limitMaxY:
+                return True
+        return False
 
     def asSimilarCenterOfMass(self, otherShape):
         myCenterOfMassX, myCenterOfMassY = self.findCenterOfMass()
@@ -58,9 +82,6 @@ class Shape:
 
         return False
 
-    def angle_cos(p0, p1, p2):
-        d1, d2 = (p0-p1).astype('float'), (p2-p1).astype('float')
-        return abs( np.dot(d1, d2) / np.sqrt( np.dot(d1, d1)*np.dot(d2, d2) ) )
 
     def setColor(self, mapImage):
         xCoordinate, yCoordinate, width, height = self.getBoundingRectangle()
@@ -68,5 +89,15 @@ class Shape:
         xEnd = xCoordinate + width
         yStart = yCoordinate
         yEnd = yCoordinate + height
+        cropped = None
         cropped = mapImage[yStart:yEnd, xStart:xEnd]
+        centerX = cropped.shape[0] / 2
+        centerY = cropped.shape[1] / 2
+        bgrShapeColor = np.uint8([[[cropped[centerX][centerY][0],cropped[centerX][centerY][1],cropped[centerX][centerY][2]]]])
+        hsvShapeColor = cv2.cvtColor(bgrShapeColor,cv2.COLOR_BGR2HSV)
+        for color in self.colors:
+            if color.isInSameColorRange(hsvShapeColor):
+                self.myColor = color
+
+
 

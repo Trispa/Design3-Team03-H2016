@@ -12,6 +12,7 @@ class MoteurRoue:
     def stopAllMotors(self):
         self.spc.stopAllMotor()
 
+
     # def rotation(self, direction, speed):
     #     self.beforeChangeDirection()
     #     if(direction == "CW"):
@@ -31,9 +32,10 @@ class MoteurRoue:
         else:
             direction = "CW"
         self.beforeChangeDirection()
-        if(direction == "CW"):
+        if(direction == 'CW'):
             for i in range(1, NB_MOTEUR):
                 self.spc.driveMoteur(i, speed, CW)
+                # time.sleep(0.01)
         elif(direction == "CCW"):
             for i in range(1, NB_MOTEUR):
                 self.spc.driveMoteur(i, speed, CCW)

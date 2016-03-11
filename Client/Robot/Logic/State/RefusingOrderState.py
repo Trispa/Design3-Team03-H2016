@@ -3,5 +3,4 @@ class RefusingOrderState():
         self.sendingSignal = "sendRefusingOrderSignal"
 
     def handle(self, orderReceiver, coordinates):
-        #TODO Implementer une facon de stopper le robot
         pass

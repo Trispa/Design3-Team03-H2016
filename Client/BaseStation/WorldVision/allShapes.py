@@ -7,6 +7,23 @@ class Square(Shape):
 
     def __init__(self, geometricName, contour):
         Shape.__init__(self, geometricName, contour)
+        cornerList = []
+        self.minX = 1000
+        self.maxX = 0
+        self.minY = 1000
+        self.maxY = 0
+        contourCopy = contour[0]
+        for corner in contourCopy:
+            cornerList.append((corner.item(0), corner.item(1)))
+        for corner in cornerList:
+            if(corner[0] > self.maxX):
+                self.maxX = corner[0]
+            if(corner[1] > self.maxY):
+                self.maxY = corner[1]
+            if(corner[0] < self.minX):
+                self.minX = corner[0]
+            if(corner[1] < self.minY):
+                self.minY = corner[1]
 
     def __angleCos(self, p0, p1, p2):
         d1, d2 = (p0-p1).astype('float'), (p2-p1).astype('float')
@@ -19,12 +36,18 @@ class Square(Shape):
         if max_cos < 0.1:
             return True
 
+    def getMaxCorner(self):
+        return self.maxX, self.maxY
+
+    def getMinCorner(self):
+        return self.minX, self.minY
+
 class Triangle(Shape):
 
     def __init__(self, geometricName, contour):
         Shape.__init__(self, geometricName, contour)
 
-    def __angle(self, vector1, vector2):
+    def __getAngle(self, vector1, vector2):
         dot = vector1[0]*vector2[0] + vector1[1]*vector2[1]
         x_modulus = np.sqrt((vector1[0]*vector1[0]) + (vector1[1]*vector1[1]))
         y_modulus = np.sqrt((vector2[0]*vector2[0]) + (vector2[1]*vector2[1]))
@@ -36,25 +59,25 @@ class Triangle(Shape):
     def checkAngleValue(self):
         vectorList = []
         for point in range(0, len(self.contour) - 1):
-            vectorList.append(self.getVector(np.array([self.contour[point], self.contour[point + 1]]).tolist()))
+            vectorList.append(self.__getVector(np.array([self.contour[point], self.contour[point + 1]]).tolist()))
 
-        vectorList.append(self.getVector(np.array([self.contour[2], self.contour[0]]).tolist()))
+        vectorList.append(self.__getVector(np.array([self.contour[2], self.contour[0]]).tolist()))
 
         angleList = []
-        angleList.append(self.__angle(vectorList[2], vectorList[0]))
+        angleList.append(self.__getAngle(vectorList[2], vectorList[0]))
         for vector in range(0, len(vectorList) - 1):
-            angleList.append(self.__angle(vectorList[vector], vectorList[vector + 1]))
+            angleList.append(self.__getAngle(vectorList[vector], vectorList[vector + 1]))
 
         totalAngleInPolygone = ((len(self.contour) - 2) * 180)/len(self.contour)
         maxAngle = totalAngleInPolygone + 15
         minAngle = totalAngleInPolygone - 15
         for angle in angleList:
-            if angle > maxAngle or minAngle < 45:
+            if angle > maxAngle or angle < minAngle:
                 return False
 
         return True
 
-    def getVector(self, specialArray):
+    def __getVector(self, specialArray):
         newArray = [specialArray[1][0][0] - specialArray[0][0][0], specialArray[1][0][1] - specialArray[0][0][1]]
         return newArray
 

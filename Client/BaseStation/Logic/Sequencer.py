@@ -1,4 +1,4 @@
-from State import SendingBotToChargingStationState
+import SequencerState
 
 
 class Sequencer :
@@ -6,9 +6,10 @@ class Sequencer :
         self.state = newState
 
     def __init__(self) :
-        self.setState(SendingBotToChargingStationState.SendingBotToChargingStationState())
+        self.setState(SequencerState.SendingBotToChargingStationState())
 
-    def handleCurrentState(self):
-        return self.state.handle(self)
+
+    def handleCurrentState(self, obstacleListIndex):
+        return self.state.handle(self, obstacleListIndex)
 
 

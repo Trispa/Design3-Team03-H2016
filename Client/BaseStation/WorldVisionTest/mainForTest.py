@@ -1,27 +1,41 @@
 from Client.BaseStation.WorldVision.worldImage import WorldImage
 import os
+import base64
+from Client.BaseStation.WorldVision.worldVision import worldVision
 import cv2
 
 
 if __name__ == '__main__':
 
-    cap = cv2.VideoCapture(1)
+    camera = cv2.VideoCapture(1)
+    camera.set(3, 720)
+    camera.set(4, 720)
+    ret, frame = camera.read()
+    #frame = cv2.imread('Photos/3105/table 5/jour/rideau ouvert/Picture 22.jpg')
+    #frame = cv2.imread('Images/Test6.jpg')
+    geometricalImage = WorldImage(frame)
+    #worldVision = worldVision()
 
     while(True):
-        #ret, frame = cap.read()
-        frame = cv2.imread('Images/Test2.jpg')
+        ret, frame = camera.read()
+        #frame = cv2.imread('Images/Test1.jpg')
 
-        mapImage = WorldImage(frame)
-        mapImage.setMap()
-        worldImage = mapImage.drawMapOnImage()
+        geometricalImage.setMap(frame)
+        geometricalImage.addLabels(frame)
+        worldImage = geometricalImage.drawMapOnImage(frame)
+        cv2.imshow("Monde", worldImage)
+        # geometricalImage = WorldImage(frame)
+        # geometricalImage.setMap()
+        # geometricalImage.defineShapesColor()
+        # geometricalImage.addLabels()
+        # worldImage = geometricalImage.drawMapOnImage()
 
-        c = os.path.dirname(__file__)
-        picturePath = os.path.join(c, "..", "..", "..", "Shared", "worldImage.jpg")
-        cv2.imwrite( picturePath, worldImage)
-        cv2.imshow('frame',worldImage)
+        # geometricalImage = WorldImage(frame)
+        # geometricalImage.setMap()
+        # geometricalImage.addLabels()
+        # worldImage = geometricalImage.drawMapOnImage()
+
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-
-    cap.release()
+    #cap.release()
     cv2.destroyAllWindows()
-
