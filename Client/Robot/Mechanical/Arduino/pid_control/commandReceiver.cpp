@@ -8,7 +8,7 @@
 #define MilimetersToTicks 7.69
 #define endingLEDPin 13
 
- char  machaine[128];
+char* machaine;
 
 CommandReceiver::CommandReceiver()
 {
@@ -77,10 +77,7 @@ void CommandReceiver::dispatchCommand() {
 
 	case 4: // ReadMAnchesterBits
         rm->enableManchester();
-        machaine = rm->getMaschesterBits();
-        if(callbackRequested == 1){
-               sendCallback('e');
-          } 
+       
         break;
 
  	case 5:// j'ai changé le 4 en 5 car le 4 appartenais déjà  au ReadManchester
@@ -88,6 +85,11 @@ void CommandReceiver::dispatchCommand() {
     		{
       			dm[i].driveMoteur(0,0);
     		}
+  case 6: // callback MAnchester
+        if(callbackRequested == 1){
+           sendCallback(rm->getChaineCopie());
+        }
+        break;
 
 	default: //for test purposes
 		if(callbackRequested == 1) {

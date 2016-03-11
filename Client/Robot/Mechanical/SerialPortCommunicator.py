@@ -15,8 +15,9 @@ class SerialPortCommunicator:
     LED_FUNCTION_ON = 1
     LED_FUNCTION_OFF = 2
     CHANGE_MOTEUR_SPEED = 3
-    GET_CODE_MANCHESTER = 4
+    READ_CODE_MANCHESTER = 4
     STOP_ALL_MOTEUR = 5
+    GET_CODE_MANCHESTER = 6
     CW = 0
     CCW = 1
 
@@ -76,8 +77,12 @@ class SerialPortCommunicator:
         self._sendCommand(self.STOP_ALL_MOTEUR, self.FALSE, self.ONE_SECOND_DELAY, 1)
 
     #################################### MANCHESTER ################################
+    def readManchesterCode(self):
+        self._sendCommand(self.READ_CODE_MANCHESTER,self.FALSE,self.ONE_SECOND_DELAY, 1)
+
+
     def getManchesterCode(self):
-       return  self._sendCommand(self.GET_CODE_MANCHESTER,self.TRUE,self.FIVE_SECOND_DELAY, 1)
+       return  self._sendCommand(self.GET_CODE_MANCHESTER,self.TRUE, self.ONE_SECOND_DELAY, 1)
 
     def manchester_decode(self, chaine):
         i = 0
@@ -105,6 +110,8 @@ class SerialPortCommunicator:
     def getCodebits(self):
         trouve = 0
         indice = 0
+        self.readManchesterCode()
+        sleep(1)
         bits = self.getManchesterCode()
         chaine = self.manchester_decode(bits)
 
@@ -145,7 +152,7 @@ class SerialPortCommunicator:
 
 if __name__ == "__main__":
     spc = SerialPortCommunicator()
-    maChaine = spc.getManchesterCode()
-    print(maChaine)
+    #maChaine = spc.getManchesterCode()
+    #print(maChaine)
     #print(spc.getCodebits())
-    #print("ASCII :" + spc.getAsciiManchester())
+    print("ASCII :" + spc.getAsciiManchester())

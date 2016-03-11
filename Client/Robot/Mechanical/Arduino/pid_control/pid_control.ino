@@ -31,7 +31,7 @@ PID listPID[4] = {PID(dv[1 - 1].getInput(), dv[1 - 1].getOutput(), dv[1 - 1].get
                   PID(dv[4 - 1].getInput(), dv[4 - 1].getOutput(), dv[4 - 1].getSetpoint(), kp, ki, kd, DIRECT)};
 
 
-ReadManchester rm = ReadManchester(2, true);
+ReadManchester rm = ReadManchester(2);
 CommandReceiver cmdRec = CommandReceiver(dv, &rm);
 
 void updateFreqEnco();
@@ -58,14 +58,9 @@ void loop()
 {
 
   cmdRec.process();  
-//     rm.enableManchester();
-//     chaine = rm.getMaschesterBits();
-//     if(chaine!='\0'){
-//      Serial.println(chaine);
-//      //rm.disableManchester();
-//     
-//     }
-     
+    
+  rm.getMaschesterBits();
+   
     for(int i = 0; i < NB_DRIVEMOTEUR; i++)
     {
         if(dv[i].isRunning() == 1)

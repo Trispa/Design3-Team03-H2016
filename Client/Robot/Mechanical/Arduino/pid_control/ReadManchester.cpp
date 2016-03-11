@@ -9,11 +9,11 @@
 
 /*********DEBUT********/
 volatile int val = 0;
-volatile unsigned long now = 0;
-volatile unsigned long timeToChange = 0;
-volatile unsigned long timebetweenNowToChange = 0;
+unsigned long now = 0;
+unsigned long timeToChange = 0;
+unsigned long timebetweenNowToChange = 0;
 char bits[128];
-char* chainecopie;
+char* chainecopie = '\0';
 int indice = 0;
 /*********** FIN******/
 
@@ -27,17 +27,18 @@ void ReadManchester::readBitInterrupt(){
 	bitAllowed = 1;
 	
 }
-ReadManchester::ReadManchester(int pinManchester, boolean allow)
-{
+ReadManchester::ReadManchester(int pinManchester){
 	
 	pinMode(pinManchester, INPUT);
 	this->_pinManchester = pinManchester;
-  this->_enableManchester = allow;
-	enableInterrupt(true);	
+  this->_enableManchester = true;
+	this->enableInterrupt(true);	
+  this->enableManchester();
+  
 }
 
 
-char*  ReadManchester::getMaschesterBits()
+void   ReadManchester::getMaschesterBits()
 {	
 	  if(this->_enableManchester){
   		if(bitAllowed){
@@ -64,10 +65,11 @@ char*  ReadManchester::getMaschesterBits()
         }
       }
       if(indice > 128){
-        chainecopie = bits;
+        this->_chaineCopie = bits;
         indice = 0;
         enableInterrupt(false); 
         this->disableManchester();
+       
         
       }
       timeToChange = now;
@@ -76,7 +78,12 @@ char*  ReadManchester::getMaschesterBits()
     }
  
 	 }
-	 return chainecopie;
+	 
+}
+
+char* ReadManchester::getChaineCopie(){
+  return this->_chaineCopie;
+  
 }
 
 void ReadManchester::enableInterrupt(boolean ansewer){
@@ -93,5 +100,6 @@ void ReadManchester::disableManchester(){
 }
 void ReadManchester::enableManchester(){
   this->_enableManchester = true;
+  this->enableInterrupt(true);
 }
 
