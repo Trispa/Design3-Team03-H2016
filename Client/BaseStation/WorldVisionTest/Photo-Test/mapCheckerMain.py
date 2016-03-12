@@ -6,4 +6,5 @@ if __name__ == '__main__':
         myResultChecker = ResultChecker(pictureNumber)
         print("Picture " + str(pictureNumber))
         myResultChecker.checkNumberOfShapesFound()
+        myResultChecker.checkIfLimitFound()
         print("\n")
