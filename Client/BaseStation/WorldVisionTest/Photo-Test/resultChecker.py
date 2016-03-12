@@ -36,7 +36,7 @@ class ResultChecker:
                 xPosition = ""
                 yPosition = ""
 
-    def checkNumberOfShapesNotFound(self):
+    def checkNumberOfShapesFound(self):
         print("Number of shapes found : " + str(len(self.geometricalImage.getMap().getContourList())))
         print("Number of shapes present : " + str(len(self.centersOfMass)))
 

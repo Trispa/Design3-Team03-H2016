@@ -20,7 +20,8 @@ class Map:
         return None
 
     def addShape(self, shapeToAdd):
-        if abs(shapeToAdd.getArea() - self.getAverageShapeSize()) < 300 or len(self.__shapes) < 3:
+        difference = shapeToAdd.getArea() - self.getAverageShapeSize()
+        if abs(shapeToAdd.getArea() - self.getAverageShapeSize()) < 1000 or len(self.__shapes) < 3:
             similarShape = self.findSimilarShape(shapeToAdd)
             if similarShape != None:
                 if similarShape.getArea() < shapeToAdd.getArea():
@@ -92,5 +93,12 @@ class Map:
 
         for shape in shapesToDelete:
             self.__shapes.remove(shape)
+
+    def deleteBiggestShape(self):
+        biggestShape = self.__shapes[0]
+        for shape in self.__shapes:
+            if biggestShape.getArea() < shape.getArea():
+                biggestShape = shape
+        self.__shapes.remove(biggestShape)
 
 
