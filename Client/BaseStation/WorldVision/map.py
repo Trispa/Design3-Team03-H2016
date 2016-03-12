@@ -29,6 +29,7 @@ class Map:
             if similarShape == None:
                 self.__shapes.append(shapeToAdd)
 
+
     def getShapesList(self):
         return self.__shapes
 
@@ -92,5 +93,12 @@ class Map:
 
         for shape in shapesToDelete:
             self.__shapes.remove(shape)
+
+    def filterRobot(self):
+        shapes = self.__shapes
+        for shape in shapes:
+            if(shape.myColor.colorName == "Black" and isinstance(shape, Square)):
+                self.__shapes.remove(shape)
+                self.robot = shape
 
 

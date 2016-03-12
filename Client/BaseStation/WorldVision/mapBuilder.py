@@ -47,4 +47,5 @@ class MapBuilder:
         #if (len(map.getMapLimit().getContour()) == 4):
             #map.deleteOutsiderShapes()
         map.setShapesColor(mapImage)
+        map.filterRobot()
         return map
