@@ -45,4 +45,5 @@ class MapBuilder:
                             map.setMapLimit(contour)
 
         map.setShapesColor(mapImage)
+        map.filterRobot()
         return map
