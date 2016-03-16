@@ -8,8 +8,9 @@ class BaseStationDispatcher():
     def __init__(self):
         self.world = worldVision()
 
-    def handleCurrentSequencerState(self, obstacleListIndex):
-        return self.sequencer.handleCurrentState(obstacleListIndex)
+    def handleCurrentSequencerState(self, obstacleListIndex, robotPosition):
+        map = self.world.getCurrentMap()
+        return self.sequencer.handleCurrentState(obstacleListIndex, map.robot.findCenterOfMass())
 
     def initialiseWorldData(self):
         map = self.world.getCurrentMap()
