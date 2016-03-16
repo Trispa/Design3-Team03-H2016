@@ -13,29 +13,19 @@ if __name__ == '__main__':
     camera.set(4, 720)
     ret, frame = camera.read()
 
-    #frame = cv2.imread('Photos/3105/table 5/jour/rideau ouvert/Picture 22.jpg')
+    #frame = cv2.imread('Photos/3105/table 5/jour/rideau ouvert/Picture 18.jpg')
     #frame = cv2.imread('Images/Test6.jpg')
     #geometricalImage = WorldImage(frame)
     #worldVision = worldVision()
 
     while(True):
         #ret, frame = camera.read()
-        frame = cv2.imread('Images/Test4.jpg')
+        frame = cv2.imread('Photo-Test/Frames/Picture 13.jpg')
         geometricalImage = WorldImage(frame)
         geometricalImage.setMap(frame)
         geometricalImage.addLabels(frame)
         worldImage = geometricalImage.drawMapOnImage(frame)
         cv2.imshow("Monde", worldImage)
-        # geometricalImage = WorldImage(frame)
-        # geometricalImage.setMap()
-        # geometricalImage.defineShapesColor()
-        # geometricalImage.addLabels()
-        # worldImage = geometricalImage.drawMapOnImage()
-
-        # geometricalImage = WorldImage(frame)
-        # geometricalImage.setMap()
-        # geometricalImage.addLabels()
-        # worldImage = geometricalImage.drawMapOnImage()
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break

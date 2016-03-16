@@ -20,7 +20,7 @@ class Map:
         return None
 
     def addShape(self, shapeToAdd):
-        if abs(shapeToAdd.getArea() - self.getAverageShapeSize()) < 300 or len(self.__shapes) < 3:
+        if abs(shapeToAdd.getArea() - self.getAverageShapeSize()) < 1000 or len(self.__shapes) < 3:
             similarShape = self.findSimilarShape(shapeToAdd)
             if similarShape != None:
                 if similarShape.getArea() < shapeToAdd.getArea():
