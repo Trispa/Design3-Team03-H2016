@@ -160,11 +160,8 @@ if __name__ == "__main__":
     mr.avanceVector(0,-10)
     sleep(1)
 
-
-    #maChaine = spc.getManchesterCode()
-    #print(maChaine)
-    #print(spc.getCodebits())
-    chaine = spc.getAsciiManchester()
+    ### Utilisation du code Manchester########
+    chaine = spc.getAsciiManchester()# le code ASCII est retourné dans le string chaine
     if( chaine == -2):
         print("ERREUR !")
     else:
