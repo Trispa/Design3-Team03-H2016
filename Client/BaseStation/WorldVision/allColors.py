@@ -36,7 +36,7 @@ class GenericColor(Color):
         lowerSaturation = 100
         higherSaturation = 255
         lowerValue = 38
-        higherValue = 202
+        higherValue = 255
 
         self.lower = np.array([self.hsvColor.item(0) - self.dHue,lowerSaturation,lowerValue])
         self.higher = np.array([self.hsvColor.item(0) + self.dHue,higherSaturation,higherValue])
@@ -46,9 +46,9 @@ class Black(Color):
     def __init__(self, bgrColor, colorName):
         Color.__init__(self, bgrColor, colorName)
         lowerValue = 0
-        higherValue = 40
+        higherValue = 80
         lowerSaturation = 0
-        higherSaturation = 130
+        higherSaturation = 255
         self.lower = np.array([0,lowerSaturation,lowerValue])
         self.higher = np.array([179,higherSaturation,higherValue])
 
