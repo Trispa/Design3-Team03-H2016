@@ -1,29 +1,19 @@
 import cv2
-import numpy as np
 import map
-import copy
-from shape import Shape
-from allShapes import Square, Triangle
+from Factories.ShapeFactory import ShapeFactory
 
 class MapBuilder:
 
     def __init__(self):
         self.__map = map.Map()
+        self.shapeFactory = ShapeFactory()
 
     def filterFoundContours(self, contours):
         for contour in contours:
             contour_len = cv2.arcLength(contour, True)
             contour = cv2.approxPolyDP(contour, 0.02*contour_len, True)
             if cv2.contourArea(contour) > 300 and cv2.isContourConvex(contour):
-                if len(contour) == 3:
-                    myShape = Triangle("Triangle", contour)
-                elif len(contour) == 4:
-                    myShape = Square("Square", contour)
-                elif len(contour) == 5:
-                    myShape = Shape("Pentagone", contour)
-                elif len(contour) > 5:
-                    myShape = Shape("Circle", contour)
-
+                myShape = self.shapeFactory.ConstructShape(contour)
                 if myShape.isEqualEdges() and myShape.checkAngleValue():
                     self.__map.addShape(myShape)
 
@@ -45,16 +35,8 @@ class MapBuilder:
                 for contour in contours:
                     contour_len = cv2.arcLength(contour, True)
                     contour = cv2.approxPolyDP(contour, 0.02*contour_len, True)
-                    if cv2.contourArea(contour) > 300 and cv2.isContourConvex(contour) and cv2.contourArea(contour) < 300000:
-                        if len(contour) == 3:
-                            myShape = Triangle("Triangle", contour)
-                        elif len(contour) == 4:
-                            myShape = Square("Square", contour)
-                        elif len(contour) == 5:
-                            myShape = Shape("Pentagone", contour)
-                        elif len(contour) > 5:
-                            myShape = Shape("Circle", contour)
-
+                    if cv2.contourArea(contour) > 300 and cv2.isContourConvex(contour) and cv2.contourArea(contour) < 30000:
+                        myShape = self.shapeFactory.ConstructShape(contour)
                         if myShape.isEqualEdges() and myShape.checkAngleValue():
                             map.addShape(myShape)
 
@@ -62,7 +44,6 @@ class MapBuilder:
                         if len(contour) == 4:
                             map.setMapLimit(contour)
 
-        #if (len(map.getMapLimit().getContour()) == 4):
-            #map.deleteOutsiderShapes()
         map.setShapesColor(mapImage)
+        map.filterRobot()
         return map
