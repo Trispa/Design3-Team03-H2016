@@ -1,14 +1,17 @@
 from Client.BaseStation.Logic.Pathfinding.Graph.GraphGenerator import GraphGenerator
 from Client.BaseStation.Logic.Pathfinding.Path import Path
 from Client.BaseStation.Logic.Pathfinding.MapAdaptator import MapAdaptator
+from Client.BaseStation.Logic.Pathfinding.Obstacle import Obstacle
 from Client.BaseStation.Logic.Pathfinding.Graph.Node import Node
 import cv2
 import numpy as np
 
 class Pathfinder:
-    def __init__(self, map):
-        self.mapAdaptator = MapAdaptator(map)
-        obstaclesList, mapSizeX, mapSizeY = self.mapAdaptator.getMapInfo()
+    def __init__(self, obstaclesList): # (self,map)
+        mapSizeX = 1000
+        mapSizeY = 600
+        #self.mapAdaptator = MapAdaptator(map)
+        #obstaclesList, mapSizeX, mapSizeY = self.mapAdaptator.getMapInfo()
         self.graphGenerator = GraphGenerator(obstaclesList, mapSizeX, mapSizeY)
         self.graph = self.graphGenerator.generateGraph()
         self.pathsList = []
@@ -34,6 +37,7 @@ class Pathfinder:
 
                     goodPath = currentPath
         goodPath.append(Node(pointToMoveTo))
+        self.__displayPathfinder(goodPath, positionRobot)
         return goodPath
 
 
@@ -94,8 +98,14 @@ class Pathfinder:
                 break
         cv2.destroyAllWindows
 
-
-
+obstacleList = []
+#obstacleList.append(Obstacle((390,425)))
+obstacleList.append(Obstacle((370,475)))
+obstacleList.append(Obstacle((400,450)))
+obstacleList.append(Obstacle((370,400)))
+obstacleList.append(Obstacle((390,300)))
+pathfinder = Pathfinder(obstacleList)
+pathfinder.findPath((200,200), (500,300))
 
 
 
