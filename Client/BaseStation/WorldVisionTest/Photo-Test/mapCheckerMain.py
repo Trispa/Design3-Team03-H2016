@@ -7,4 +7,5 @@ if __name__ == '__main__':
         print("Picture " + str(pictureNumber))
         myResultChecker.checkNumberOfShapesFound()
         myResultChecker.checkIfLimitFound()
+        myResultChecker.checkIfRobotFound()
         print("\n")

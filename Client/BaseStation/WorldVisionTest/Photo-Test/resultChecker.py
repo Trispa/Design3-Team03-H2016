@@ -37,12 +37,22 @@ class ResultChecker:
                 yPosition = ""
 
     def checkNumberOfShapesFound(self):
-        print("Number of shapes found : " + str(len(self.geometricalImage.getMap().getContourList())))
+        shapeFound = 0
+        for shape in self.geometricalImage.getMap().getShapesList():
+            shapeCenterOfMassX, shapeCenterOfMassY = shape.findCenterOfMass()
+            for centerOfMass in self.centersOfMass:
+                if abs(shapeCenterOfMassX - centerOfMass[0]) < 10 and abs(shapeCenterOfMassY - centerOfMass[1]) < 10:
+                    shapeFound += 1
+        print("Number of shapes found : " + str(shapeFound))
         print("Number of shapes present : " + str(len(self.centersOfMass)))
 
     def checkIfLimitFound(self):
-        if self.geometricalImage.getMap().getMapLimit().getArea() > 0:
-            print("Limit found")
+        if self.geometricalImage.getMap().getMapLimit().getArea() < 1:
+            print("Limit not found")
+
+    def checkIfRobotFound(self):
+        if self.geometricalImage.getMap().robot.getArea() < 1:
+            print("Robot not found")
 
 
 

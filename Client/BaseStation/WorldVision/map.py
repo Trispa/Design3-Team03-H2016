@@ -10,6 +10,7 @@ class Map:
         self.__shapes = []
         self.greenSquare = Square("greenSquare", np.array([[]], dtype=np.int32))
         self.limit = Square("limit", np.array([[]], dtype=np.int32))
+        self.robot = Square("robot", np.array([[]], dtype=np.int32))
 
     def findSimilarShape(self, newPossibleshape):
         newContourCenterOfMassX, newContourCenterOfMassY = newPossibleshape.findCenterOfMass()
@@ -53,6 +54,9 @@ class Map:
 
     def setShapes(self, shapes):
         self.__shapes = shapes
+
+    def deleteShape(self, shapeToDelete):
+        self.__shapes.remove(shapeToDelete)
 
     def setMapLimit(self, contour):
         cornerList = []
