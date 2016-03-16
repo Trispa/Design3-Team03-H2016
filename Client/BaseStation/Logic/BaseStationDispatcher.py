@@ -8,7 +8,7 @@ class BaseStationDispatcher():
     def __init__(self):
         self.world = worldVision()
 
-    def handleCurrentSequencerState(self, obstacleListIndex, robotPosition):
+    def handleCurrentSequencerState(self, obstacleListIndex):
         map = self.world.getCurrentMap()
         return self.sequencer.handleCurrentState(obstacleListIndex, map.robot.findCenterOfMass())
 
