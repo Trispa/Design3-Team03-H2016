@@ -19,7 +19,7 @@ if __name__ == '__main__':
 
     while(True):
         #ret, frame = camera.read()
-        frame = cv2.imread('Photo-Test/Frames/Picture 40.jpg')
+        frame = cv2.imread('Photo-Test/Frames/Picture 58.jpg')
         geometricalImage = WorldImage(frame)
 
         geometricalImage.setMap(frame)

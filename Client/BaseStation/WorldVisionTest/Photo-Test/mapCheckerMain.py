@@ -2,10 +2,17 @@ from resultChecker import ResultChecker
 
 
 if __name__ == '__main__':
-    for pictureNumber in range(7, 60):
+    totalFound = 0
+    totalOnImage = 0
+    for pictureNumber in range(1, 116):
         myResultChecker = ResultChecker(pictureNumber)
         print("Picture " + str(pictureNumber))
-        myResultChecker.checkNumberOfShapesFound()
+        found, onImage = myResultChecker.checkNumberOfShapesFound()
+        totalFound += found
+        totalOnImage += onImage
         myResultChecker.checkIfLimitFound()
         myResultChecker.checkIfRobotFound()
         print("\n")
+
+    ratio = float(float(totalFound) / float(totalOnImage))
+    print("Ratio : " + str(ratio))

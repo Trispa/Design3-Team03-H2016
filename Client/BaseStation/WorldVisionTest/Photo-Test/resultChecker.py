@@ -45,6 +45,7 @@ class ResultChecker:
                     shapeFound += 1
         print("Number of shapes found : " + str(shapeFound))
         print("Number of shapes present : " + str(len(self.centersOfMass)))
+        return shapeFound, len(self.centersOfMass)
 
     def checkIfLimitFound(self):
         if self.geometricalImage.getMap().getMapLimit().getArea() < 1:

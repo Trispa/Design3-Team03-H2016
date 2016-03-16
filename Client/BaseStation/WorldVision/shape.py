@@ -49,7 +49,7 @@ class Shape:
         return self.contour
 
     def getColorName(self):
-        return "colorName"
+        return self.myColor.getName()
 
     def getArea(self):
         if len(self.contour) < 3:
@@ -62,7 +62,7 @@ class Shape:
     def getName(self):
         return self.geometricName
 
-    def getColor(self):
+    def getColorName(self):
         return self.myColor
 
     def getCornerCount(self):

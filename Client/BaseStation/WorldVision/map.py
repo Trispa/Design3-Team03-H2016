@@ -21,7 +21,12 @@ class Map:
         return None
 
     def addShape(self, shapeToAdd):
-        if abs(shapeToAdd.getArea() - self.getAverageShapeSize()) < 1000 or len(self.__shapes) < 3:
+
+        x, y = shapeToAdd.findCenterOfMass()
+        if abs(x-262) < 30 or abs(y-482) < 30:
+            pass
+
+        if abs(shapeToAdd.getArea() - self.getAverageShapeSize()) < 1100 or len(self.__shapes) < 3:
             similarShape = self.findSimilarShape(shapeToAdd)
             if similarShape != None:
                 if similarShape.getArea() < shapeToAdd.getArea():
@@ -33,6 +38,11 @@ class Map:
 
     def getShapesList(self):
         return self.__shapes
+
+    def deleteBlackShapes(self):
+        for shape in self.__shapes:
+            if shape.getColorName() == "Black":
+                self.__shapes.remove(shape)
 
 
     def getAverageShapeSize(self):

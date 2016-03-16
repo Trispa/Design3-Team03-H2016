@@ -28,6 +28,9 @@ class Color:
             return True
         return False
 
+    def getName(self):
+        return self.colorName
+
 
 class GenericColor(Color):
     def __init__(self, bgrColor, colorName):
