@@ -62,7 +62,7 @@ class Shape:
     def getName(self):
         return self.geometricName
 
-    def getColorName(self):
+    def getColor(self):
         return self.myColor
 
     def getCornerCount(self):
