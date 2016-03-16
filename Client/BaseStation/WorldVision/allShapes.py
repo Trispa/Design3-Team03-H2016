@@ -8,10 +8,10 @@ class Square(Shape):
     def __init__(self, geometricName, contour):
         Shape.__init__(self, geometricName, contour)
         cornerList = []
-        self.minX = 1000
-        self.maxX = 0
-        self.minY = 1000
-        self.maxY = 0
+        self.minX = 0
+        self.maxX = 1000
+        self.minY = 0
+        self.maxY = 600
         contourCopy = contour[0]
         for corner in contourCopy:
             cornerList.append((corner.item(0), corner.item(1)))

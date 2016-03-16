@@ -1,25 +1,19 @@
-import base64
 import json
-import sys
-import cv2
-import threading
 import os
+import sys
+import threading
 
-from WorldVision.worldVision import worldVision
+from Client.BaseStation.Logic.BaseStationDispatcher import BaseStationDispatcher
 
 sys.path.insert(1, "/Logic")
 sys.path.append("/../../Shared")
 
-from Logic.Sequencer import Sequencer as seq
-
-sequencer = seq()
-
 from socketIO_client import SocketIO
+
+dispatcher = BaseStationDispatcher()
 
 c = os.path.dirname(__file__)
 configPath = os.path.join(c, "..", "..", "Shared", "config.json")
-world = worldVision()
-
 with open(configPath) as json_data_file:
     config = json.load(json_data_file)
 
@@ -27,21 +21,18 @@ socketIO = SocketIO(config['url'], int(config['port']))
 
 def sendNextCoordinates(*args):
     print("Sending next coordinates")
-    socketIO.emit("sendNextCoordinates", sequencer.handleCurrentState(args[0]["index"]))
+    socketIO.emit("sendNextCoordinates",dispatcher.handleCurrentSequencerState(args[0]["index"]))
 
 def startRound():
     botState = {"positionX":"0",
                 "positionY":"0",
                 "orientation":"0"}
-    print("sending start signal robot")
+    dispatcher.initialiseWorldData()
     socketIO.emit("startSignalRobot",botState)
 
 def sendImage():
     print("asking for new images")
-    image = world.getCurrentImage()
-    convertedImage = cv2.imencode('.png',image)[1]
-    base64ConvertedImage = base64.encodestring(convertedImage)
-    socketIO.emit('sendImage', base64ConvertedImage)
+    socketIO.emit('sendImage', dispatcher.getCurrentWorldImage())
 
 def setInterval(function, seconds):
     def func_wrapper():

@@ -1,10 +1,9 @@
 class SendingBotToChargingStationState():
-    def pathfinderCallMockup(self):
-        return [(0,0), (100,100), (150, 200), (200,200), (250,200), (250,300), (250,350)]
-
     def __init__(self):
         self.obstacleIndex = 0
-        self.path = self.pathfinderCallMockup()
+
+    def setPath(self, pathfinder):
+        self.path = pathfinder.findPath((0,0), (250,350))
 
     def handle(self, sequencer, obstacleListIndex):
         self.obstacleIndex = int(obstacleListIndex)
@@ -24,7 +23,6 @@ class SendingBotToChargingStationState():
                            "orientation": "0"},
                        }
 
-
         if(self.obstacleIndex == self.path.__len__() - 1):
             sequencer.setState(SendingBotToTreasureState())
             coordinates["index"] = "-1"
@@ -32,13 +30,11 @@ class SendingBotToChargingStationState():
         return (coordinates)
 
 class SendingBotToTreasureState():
-
-    def pathfinderCallMockup(self):
-        return [(0,0), (2,5)]
-
     def __init__(self):
         self.obstacleIndex = 0
-        self.path = self.pathfinderCallMockup()
+
+    def setPath(self, pathfinder):
+        self.path = pathfinder.findPath((0,0), (2,5))
 
     def handle(self, sequencer, obstacleListIndex):
         self.obstacleIndex = int(obstacleListIndex)
@@ -66,13 +62,11 @@ class SendingBotToTreasureState():
 
 
 class SendingBotToTargetState():
-
-    def pathfinderCallMockup(self):
-        return [(400,200), (500,200), (600,200), (700,150)]
-
     def __init__(self):
         self.obstacleIndex = 0
-        self.path = self.pathfinderCallMockup()
+
+    def setPath(self, pathfinder):
+        self.path = pathfinder.findPath((400,200), (700,150))
 
     def handle(self, sequencer, obstacleListIndex):
         self.obstacleIndex = int(obstacleListIndex)

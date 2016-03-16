@@ -34,6 +34,7 @@ class Map:
     def getShapesList(self):
         return self.__shapes
 
+
     def getAverageShapeSize(self):
         averageSize = 0
         if len(self.__shapes) > 0:

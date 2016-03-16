@@ -44,6 +44,7 @@ io.on('connection', function (client) {
     });
 
     client.on('startSignalRobot', function(data){
+        console.log("Start signal robot");
         io.emit('startSignalRobot', data);
     });
 
@@ -51,6 +52,7 @@ io.on('connection', function (client) {
         io.emit('needNewCoordinates', data);
     });
     client.on('sendNextCoordinates', function(data){
+        console.log(data);
         io.emit('sendNextCoordinates', data);
     });
 
