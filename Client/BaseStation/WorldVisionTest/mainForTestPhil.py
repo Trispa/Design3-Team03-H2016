@@ -18,8 +18,9 @@ if __name__ == '__main__':
     #worldVision = worldVision()
 
     while(True):
-        ret, frame = camera.read()
-        #frame = cv2.imread('Images/Test4.jpg')
+        #ret, frame = camera.read()
+        frame = cv2.imread('Photo-Test/Frames/Picture 58.jpg')
+        geometricalImage = WorldImage(frame)
 
         geometricalImage.setMap(frame)
         geometricalImage.addLabels(frame)
