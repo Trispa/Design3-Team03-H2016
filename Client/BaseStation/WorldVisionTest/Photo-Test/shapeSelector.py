@@ -10,19 +10,20 @@ def printPosition(event,x,y,flags,param):
         resultFile.write("("+str(x)+","+str(y)+")")
         resultFile.close()
 
-pictureNumber = 28
-resultFileName = 'Results/Picture ' + str(pictureNumber) + '.txt'
-frameFileName = 'Frames/Picture ' + str(pictureNumber) + '.jpg'
-resultFile = open(resultFileName, 'w')
-resultFile.write("CenterOfMass:")
-resultFile.close()
-frame = cv2.imread(frameFileName)
-cv2.namedWindow('image')
-cv2.setMouseCallback('image',printPosition)
+beginingPhoto = 64
+endPhoto = 115
 
-
-while(True):
+for i in range(beginingPhoto,endPhoto):
+    pictureNumber = i
+    resultFileName = 'Results/Picture ' + str(pictureNumber) + '.txt'
+    frameFileName = 'Frames/Picture ' + str(pictureNumber) + '.jpg'
+    resultFile = open(resultFileName, 'w')
+    resultFile.write("CenterOfMass:")
+    resultFile.close()
+    frame = cv2.imread(frameFileName)
+    cv2.namedWindow('image')
+    cv2.setMouseCallback('image',printPosition)
     cv2.imshow('image',frame)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+    cv2.waitKey(0)
+
 
