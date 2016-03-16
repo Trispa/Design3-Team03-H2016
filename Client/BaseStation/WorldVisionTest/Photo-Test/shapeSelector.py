@@ -10,7 +10,7 @@ def printPosition(event,x,y,flags,param):
         resultFile.write("("+str(x)+","+str(y)+")")
         resultFile.close()
 
-pictureNumber = 1
+pictureNumber = 28
 resultFileName = 'Results/Picture ' + str(pictureNumber) + '.txt'
 frameFileName = 'Frames/Picture ' + str(pictureNumber) + '.jpg'
 resultFile = open(resultFileName, 'w')
