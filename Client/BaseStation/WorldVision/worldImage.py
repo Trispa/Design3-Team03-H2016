@@ -44,8 +44,8 @@ class WorldImage:
         else:
             limit = []
 
-        if len(self.__map.robot.getContour()) > 0:
-            robot = [self.__map.robot.getContour()]
+        if len(self.__map.robot.square.getContour()) > 0:
+            robot = [self.__map.robot.square.getContour()]
         else:
             robot = []
 

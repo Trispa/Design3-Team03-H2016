@@ -35,9 +35,15 @@ class MapBuilder:
                 for contour in contours:
                     contour_len = cv2.arcLength(contour, True)
                     contour = cv2.approxPolyDP(contour, 0.02*contour_len, True)
+
                     if cv2.contourArea(contour) > 300 and cv2.isContourConvex(contour) and cv2.contourArea(contour) < 30000:
                         myShape = self.shapeFactory.ConstructShape(contour)
-                        if myShape.isEqualEdges() and myShape.checkAngleValue():
+                        myShape.setColor(mapImage)
+                        if(myShape.getColorName() == "Pink"):
+                            map.robot.circle = myShape
+                        elif(myShape.getColorName() == "Black" and (len(myShape.getContour()) == 4 or len(myShape.getContour()) == 5)):
+                            map.robot.square = myShape
+                        elif myShape.isEqualEdges() and myShape.checkAngleValue():
                             map.addShape(myShape)
 
                     if cv2.contourArea(contour) > 300000 and cv2.isContourConvex(contour):
@@ -45,6 +51,6 @@ class MapBuilder:
                             map.setMapLimit(contour)
 
         map.setShapesColor(mapImage)
-        map.filterRobot()
         map.deleteBlackShapes()
+        map.robot.setOrientation(mapImage)
         return map

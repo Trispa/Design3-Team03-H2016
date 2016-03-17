@@ -2,6 +2,7 @@ from Client.BaseStation.WorldVision.worldImage import WorldImage
 import os
 import base64
 from Client.BaseStation.WorldVision.worldVision import worldVision
+import numpy as np
 import cv2
 
 
@@ -47,23 +48,34 @@ if __name__ == '__main__':
     #frame = cv2.imread('Images/Test6.jpg')
     #geometricalImage = WorldImage(frame)
     #worldVision = worldVision()
-    phoposToVerified = ['177', '176', '175', '173','171',
-                        '164', '160', '145', '142', '141',
-                        '130', '118', '117','115', '114',
-                        '108', '105', '104', '103', '99',
-                        '92', '86', '84', '82', '79', '70',
-                        '69', '67', '64', '61', '59', '58',
-                        '57', '56', '51', '49', '48', '43',
-                        '41', '40', '39', '38', '34', '29',
-                        '28', '23', '22', '17', '5', '4', '2']
+    phoposToVerified = ['181']
     for photoNumber in phoposToVerified:
-        frame = cv2.imread('Photo-Test/Frames/Picture ' + photoNumber + '.jpg')
-        geometricalImage = WorldImage(frame)
-        geometricalImage.setMap(frame)
-        geometricalImage.addLabels(frame)
-        worldImage = geometricalImage.drawMapOnImage(frame)
-        #print(geometricalImage.getMap().robot.findCenterOfMass())
-        cv2.imshow('Picture ' + photoNumber, worldImage)
+        frame = cv2.imread('Photos/Picture ' + photoNumber + '.jpg')
+
+        x1, x2, y1, y2 = 941, 900 , 711, 659
+        # line equation y = f(X)
+        def line_eq(X):
+            m = (y2 - y1) / (x2 - x1)
+            return m * (X - x1) + y1
+
+        line = np.vectorize(line_eq)
+
+        x = np.arange(0, 1200)
+        y = line(x).astype(np.uint)
+
+        cv2.line(frame, (x[0], y[0]), (x[-1], y[-1]), (0,0,0))
+        cv2.imshow("foo",frame)
+        cv2.waitKey()
+
+
+
+
+        # geometricalImage = WorldImage(frame)
+        # geometricalImage.setMap(frame)
+        # geometricalImage.addLabels(frame)
+        # worldImage = geometricalImage.drawMapOnImage(frame)
+        # #print(geometricalImage.getMap().robot.findCenterOfMass())
+        # cv2.imshow('Picture ' + photoNumber, worldImage)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
              break
