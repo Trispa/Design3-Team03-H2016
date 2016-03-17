@@ -5,6 +5,7 @@ import time
 from Client.BaseStation.WorldVision.allColors import GenericColor
 from Client.Robot.Mechanical.CameraTower import CameraTower
 
+
 # Print seulement les 2 plus gros carre si plus grand que 100
 # Detecter une seul grosse forme par couleur
 class VisionRobot:
@@ -12,10 +13,16 @@ class VisionRobot:
     mask = 0
     video = cv2.VideoCapture(1)
     balayageHori = 0
+    LARGEUR_TRESOR_METRE = 2.5
+    FOCAL = 508
+
 
     # yellowUp = [30, 255, 255]
     # yellowDown = [0, 140, 140]
     # colorBoundaries = [(yellowDown, yellowDown)]
+
+
+
 
     def __init__(self):
 
@@ -24,6 +31,7 @@ class VisionRobot:
         self.tresor = None
         yellowDown = [0, 100, 100]
         yellowUp = [35, 255, 255]
+
         # yellow = colorFactory.constructColor(np.uint8([[[0,255,255]]]), "Yellow")
         redDown = [0, 0, 80]
         redUp = [85, 40, 255]
@@ -179,9 +187,14 @@ class VisionRobot:
         self.video.release()
         cv2.destroyAllWindows()
 
+    def DistanceAdjascentte(self, LargeurTresorEnPixel):
+        return self.FOCAL * self.LARGEUR_TRESOR_METRE / LargeurTresorEnPixel
+
 
 if __name__ == "__main__":
     vr = VisionRobot()
-    vr.goCamera()
+    #vr.goCamera()
+    print("distance")
+    print(vr.DistanceAdjascentte(34))
     # vr.detecColor()
     # vr.findContour()

@@ -44,8 +44,14 @@ class WorldImage:
         else:
             limit = []
 
+        if len(self.__map.robot.getContour()) > 0:
+            robot = [self.__map.robot.getContour()]
+        else:
+            robot = []
+
         contourList = self.__map.getContourList()
         cv2.drawContours( frame, self.__map.getContourList(), -1, (0, 255, 0), 3 )
         cv2.drawContours( frame, limit, -1, (0, 255, 0), 3 )
+        cv2.drawContours( frame, robot, -1, (0, 255, 0), 3 )
 
         return frame

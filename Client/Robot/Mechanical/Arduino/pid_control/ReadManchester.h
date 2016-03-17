@@ -13,20 +13,19 @@
 class ReadManchester
 {
 	public:
-		ReadManchester(int pinManchester, int pinClock);
-		char booleanToChar(boolean b);
-		char* getMaschesterBits();
-		void enableInterrupt(boolean  answer);
+		ReadManchester(int pinManchester);
+		void getMaschesterBits();
+		void enableInterrupt(boolean);
 		static void readBitInterrupt();
-		String getChaine();
-		
+    void disableManchester();
+    void enableManchester();
+    char* getChaineCopie();
 		
 		
 	private:
-		int _pinManchester;
-		int _pinClock;
-		
-		
+		int _pinManchester;	
+    boolean _enableManchester ;
+    char* _chaineCopie;
 };
 
 #endif
