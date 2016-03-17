@@ -1,12 +1,11 @@
 class SendingBotToChargingStationState():
-    def pathfinderCallMockup(self):
-        return [(0,0), (100,100), (150, 200), (200,200), (250,200), (250,300), (250,350)]
-
     def __init__(self):
         self.obstacleIndex = 0
-        self.path = self.pathfinderCallMockup()
 
-    def handle(self, sequencer, obstacleListIndex):
+    def setPath(self, pathfinder):
+        self.path = pathfinder.findPath((0,0), (250,350))
+
+    def handle(self, sequencer, obstacleListIndex, robotPosition):
         self.obstacleIndex = int(obstacleListIndex)
 
         print("sending bot to (" + str(self.path[int(obstacleListIndex)][0]) + "," +
@@ -19,11 +18,10 @@ class SendingBotToChargingStationState():
                            "positionX": str(self.path[int(obstacleListIndex)][0]),
                            "positionY": str(self.path[int(obstacleListIndex)][1])},
                        "positionFROM": {
-                           "positionX": "0",
-                           "positionY": "0",
+                           "positionX": robotPosition[0],
+                           "positionY": robotPosition[1],
                            "orientation": "0"},
                        }
-
 
         if(self.obstacleIndex == self.path.__len__() - 1):
             sequencer.setState(SendingBotToTreasureState())
@@ -32,15 +30,13 @@ class SendingBotToChargingStationState():
         return (coordinates)
 
 class SendingBotToTreasureState():
-
-    def pathfinderCallMockup(self):
-        return [(0,0), (2,5)]
-
     def __init__(self):
         self.obstacleIndex = 0
-        self.path = self.pathfinderCallMockup()
 
-    def handle(self, sequencer, obstacleListIndex):
+    def setPath(self, pathfinder):
+        self.path = pathfinder.findPath((0,0), (2,5))
+
+    def handle(self, sequencer, obstacleListIndex, robotPosition):
         self.obstacleIndex = int(obstacleListIndex)
 
         print("sending bot to (" + str(self.path[int(obstacleListIndex)][0]) + "," +
@@ -53,8 +49,8 @@ class SendingBotToTreasureState():
                            "positionX": str(self.path[int(obstacleListIndex)][0]),
                            "positionY": str(self.path[int(obstacleListIndex)][1])},
                        "positionFROM": {
-                           "positionX": "0",
-                           "positionY": "0",
+                           "positionX": robotPosition[0],
+                           "positionY": robotPosition[1],
                            "orientation": "0"},
                        }
 
@@ -66,15 +62,13 @@ class SendingBotToTreasureState():
 
 
 class SendingBotToTargetState():
-
-    def pathfinderCallMockup(self):
-        return [(400,200), (500,200), (600,200), (700,150)]
-
     def __init__(self):
         self.obstacleIndex = 0
-        self.path = self.pathfinderCallMockup()
 
-    def handle(self, sequencer, obstacleListIndex):
+    def setPath(self, pathfinder):
+        self.path = pathfinder.findPath((400,200), (700,150))
+
+    def handle(self, sequencer, obstacleListIndex, robotPosition):
         self.obstacleIndex = int(obstacleListIndex)
         print("sending bot to (" + str(self.path[int(obstacleListIndex)][0]) + "," +
               str(self.path[int(obstacleListIndex)][1]) + ")")
@@ -86,8 +80,8 @@ class SendingBotToTargetState():
                            "positionX": str(self.path[int(obstacleListIndex)][0]),
                            "positionY": str(self.path[int(obstacleListIndex)][1])},
                        "positionFROM": {
-                           "positionX": "0",
-                           "positionY": "0",
+                           "positionX": robotPosition[0],
+                           "positionY": robotPosition[1],
                            "orientation": "0"},
                        }
 
