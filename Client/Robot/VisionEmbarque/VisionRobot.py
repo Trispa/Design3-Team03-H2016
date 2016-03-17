@@ -2,7 +2,6 @@ import numpy as np
 import cv2
 from math import sqrt
 from Client.BaseStation.WorldVision.allColors import GenericColor
-from Client.BaseStation.WorldVision.ColorFactory import ColorFactory
 
 # Print seulement les 2 plus gros carre si plus grand que 100
 # Detecter une seul grosse forme par couleur
@@ -10,14 +9,19 @@ class VisionRobot:
     image = cv2.imread("image/ry1-2.jpg")
     mask = 0
     video = cv2.VideoCapture(1)
+    LARGEUR_TRESOR_METRE = 2.5
+    FOCAL = 508
 
     # yellowUp = [30, 255, 255]
     # yellowDown = [0, 140, 140]
     # colorBoundaries = [(yellowDown, yellowDown)]
 
+
+
+
     def __init__(self):
 
-        colorFactory = ColorFactory()
+
 
         yellowDown = [0, 85, 85]
         yellowUp = [50, 255, 255]
@@ -122,10 +126,15 @@ class VisionRobot:
                 break
         self.video.release()
         cv2.destroyAllWindows()
+    def DistanceAdjascentte(self, LargeurTresorEnPixel):
+
+        return self.FOCAL * self.LARGEUR_TRESOR_METRE / LargeurTresorEnPixel
 
 
 if __name__ == "__main__":
     vr = VisionRobot()
-    vr.goCamera()
+    #vr.goCamera()
+    print("distance")
+    print(vr.DistanceAdjascentte(34))
     # vr.detecColor()
     # vr.findContour()

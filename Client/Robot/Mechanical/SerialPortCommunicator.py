@@ -1,8 +1,6 @@
 import serial
 from time import sleep
 import struct
-import binascii
-import re
 import MoteurRoue
 
 class SerialPortCommunicator:
@@ -16,9 +14,7 @@ class SerialPortCommunicator:
     LED_FUNCTION_ON = 1
     LED_FUNCTION_OFF = 2
     CHANGE_MOTEUR_SPEED = 3
-    READ_CODE_MANCHESTER = 4
     STOP_ALL_MOTEUR = 5
-    GET_CODE_MANCHESTER = 6
     CW = 0
     CCW = 1
 
@@ -77,79 +73,6 @@ class SerialPortCommunicator:
     def stopAllMotor(self):
         self._sendCommand(self.STOP_ALL_MOTEUR, self.FALSE, self.ONE_SECOND_DELAY, 1)
 
-    #################################### MANCHESTER ################################
-    def readManchesterCode(self):
-        self._sendCommand(self.READ_CODE_MANCHESTER,self.FALSE,self.ONE_SECOND_DELAY, 1)
-
-
-    def getManchesterCode(self):
-       return  self._sendCommand(self.GET_CODE_MANCHESTER,self.TRUE, self.ONE_SECOND_DELAY, 1)
-
-    def manchester_decode(self, chaine):
-        i = 0
-        chaine_paire = ""
-        chaine_impaire = ""
-        patern = "111111110"
-        for  indice  in range(0, len(chaine)):
-            if((indice % 2) == 0):
-                chaine_paire += chaine[indice]
-            else :
-                chaine_impaire += chaine[indice]
-
-        if(chaine_paire.find(patern) != -1):
-            return chaine_paire
-        else:
-            if(chaine_impaire.find(patern) != -1):
-                #chaine_impaire = re.sub(patern,"", chaine_impaire)
-
-                return chaine_impaire
-        return -2
-
-
-    def getCodebits(self):
-        trouve = 0
-        indice = 0
-        self.readManchesterCode()
-        sleep(2)
-        bits = self.getManchesterCode()
-        chaine = self.manchester_decode(bits)
-        if(chaine == -2):
-            return -2
-
-        c = ''
-        data = ""
-        patern = "111111110"
-        if(chaine != ""):
-            while  (trouve == 0):
-                indice  = indice + 1
-                bitStop = chaine[indice: indice+16]
-                if(bitStop[:9] == patern):
-                    trouve == 1
-                    data = bitStop[9:]
-                    break
-        else:
-            return -1
-        print("chaine recu : "+chaine)
-        print("code  : " + data)
-        return data
-
-    def letter_from_bits(self,bits, encoding='utf-8', errors='surrogatepass'):
-        n = int(bits, 2)
-        return self.int2bytes(n).decode(encoding, errors)
-
-    def int2bytes(self, i):
-        hex_string = '%x' % i
-        n = len(hex_string)
-        return binascii.unhexlify(hex_string.zfill(n + (n & 1)))
-
-    def getAsciiManchester(self):
-        data = self.getCodebits()
-        if(data == -2):
-             return -2
-        else:
-            return self.letter_from_bits(data)
-
-    #################################### END MANCHESTER ################################
 
 if __name__ == "__main__":
     spc = SerialPortCommunicator()
@@ -159,12 +82,5 @@ if __name__ == "__main__":
     sleep(1)
     mr.avanceVector(0,-10)
     sleep(1)
-
-    ### Utilisation du code Manchester########
-    chaine = spc.getAsciiManchester()# le code ASCII est retourné dans le string chaine
-    if( chaine == -2):
-        print("ERREUR !")
-    else:
-         print("ASCII :" + chaine)
 
     mr.avanceVector(0,-10)
