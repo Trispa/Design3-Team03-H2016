@@ -29,18 +29,22 @@ class CameraTower:
     def moveCameraUp(self):
         self.degreeVerti += self.step
         self.moveCameraByAngle(0, self.degreeVerti)
+        return self.degreeVerti
 
     def moveCameraDown(self):
         self.degreeVerti -= self.step
         self.moveCameraByAngle(0, self.degreeVerti)
+        return self.degreeVerti
 
     def moveCameraLeft(self):
         self.degreeHori -= self.step
         self.moveCameraByAngle(1, self.degreeHori)
+        return self.degreeHori
 
     def moveCameraRight(self):
         self.degreeHori += self.step
         self.moveCameraByAngle(1, self.degreeHori)
+        return self.degreeHori
 
     def centerCamera(self):
         self.moveCameraByAngle(0, 112)

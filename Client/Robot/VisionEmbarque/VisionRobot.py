@@ -1,8 +1,9 @@
 import numpy as np
 import cv2
 from math import sqrt
+import time
 from Client.BaseStation.WorldVision.allColors import GenericColor
-from Client.BaseStation.WorldVision.ColorFactory import ColorFactory
+from Client.Robot.Mechanical.CameraTower import CameraTower
 
 # Print seulement les 2 plus gros carre si plus grand que 100
 # Detecter une seul grosse forme par couleur
@@ -10,6 +11,7 @@ class VisionRobot:
     image = cv2.imread("image/ry1-2.jpg")
     mask = 0
     video = cv2.VideoCapture(1)
+    balayageHori = 0
 
     # yellowUp = [30, 255, 255]
     # yellowDown = [0, 140, 140]
@@ -17,10 +19,11 @@ class VisionRobot:
 
     def __init__(self):
 
-        colorFactory = ColorFactory()
-
-        yellowDown = [0, 85, 85]
-        yellowUp = [50, 255, 255]
+        self.camera = CameraTower()
+        self.camera.step = 1
+        self.tresor = None
+        yellowDown = [0, 100, 100]
+        yellowUp = [35, 255, 255]
         # yellow = colorFactory.constructColor(np.uint8([[[0,255,255]]]), "Yellow")
         redDown = [0, 0, 80]
         redUp = [85, 40, 255]
@@ -52,32 +55,36 @@ class VisionRobot:
         dots = []
         if len(cnts):
 
-            # cntsMax = cnts[0]
-            # for c in cnts:
-            #     if cv2.contourArea(c) > cv2.contourArea(cntsMax):
-            #         cntsMax = c
+            cntsMax = cnts[0]
+            for c in cnts:
+                if cv2.contourArea(c) > cv2.contourArea(cntsMax):
+                    cntsMax = c
+
 
             # loop over the contours
 
-            for c in cnts:
+            # for c in cnts:
                 # draw the contour and show it
-                if cv2.contourArea(c) > 1:
-                    x,y,w,h = cv2.boundingRect(c)
-                    dots.append((x,y,w,h))
-                    # if max(w, h) > 100 and max(w, h) < 200:
+            if cv2.contourArea(cntsMax) > 200:
+                self.tresor = cntsMax
+                x,y,w,h = cv2.boundingRect(self.tresor)
+                dots.append((x,y,w,h))
+                # if max(w, h) > 100 and max(w, h) < 200:
 
-                    cv2.rectangle(self.image,(x,y),(x+w,y+h),(0,255,0),2)
-                    self.addLabels(c)
+                cv2.rectangle(self.image,(x,y),(x+w,y+h),(0,255,0),2)
+                self.addLabels(self.tresor)
+                self.moveCameraEmbarquee()
+                return max(x,y)
+            else:
+                self.tresor = None
 
-            distance = self.addLabelsLines(dots)
+            # distance = self.addLabelsLines(dots)
             # cv2.imshow("Image", self.image)
             # cv2.waitKey(0)
 
-            if distance:
-                print(distance)
-                return distance
-            else:
-                return 0
+            return 0
+
+
 
     def addLabelsLines(self, dots):
         if len(dots) > 1:
@@ -109,11 +116,60 @@ class VisionRobot:
         textHeight = size[1]
         x,y,w,h = cv2.boundingRect(c)
         point = (x, y - 5)
-        cv2.putText(self.image, str(max(w, h)) + " pixel, " + str(cv2.contourArea(c)) + " area", point, font, scale, (0,0,255), thickness, 8)
+        cv2.putText(self.image, "Position " + str(x) + " " + str(y) + " " + str(max(w, h)) + " pixel, " + str(cv2.contourArea(c)) + " area", point, font, scale, (0,0,255), thickness, 8)
+
+
+    def moveCameraEmbarquee(self):
+        x,y,w,h = cv2.boundingRect(self.tresor)
+        # print x, y, w ,h
+        # x = `w + x
+        # y = h + y
+        ih, iw, ic = self.image.shape
+        # print x, y, iw, ih
+        square = 20
+
+        xob = iw/2  - square
+        yob = ih/2 - square
+        print xob, yob
+
+        cv2.rectangle(self.image,(xob, yob),(xob + 2*square, yob - 2*square),(0,255,0),2)
+
+        if x <= (iw/2 - square):
+            self.camera.moveCameraLeft()
+        elif x >= (iw/2 + square):
+            self.camera.moveCameraRight()
+        if y <= (ih/2 - square):
+            self.camera.moveCameraUp()
+        elif y >= (ih/2 + square):
+            self.camera.moveCameraDown()
+
+    def balayageCamera(self):
+        if self.tresor == None:
+            if self.balayageHori == 0 and self.camera.degreeHori < 160:
+                self.camera.moveCameraRight()
+            else:
+                self.balayageHori = 1
+                self.camera.moveCameraByAngle(0, 90)
+
+            if self.balayageHori == 1 and self.camera.degreeHori > 55:
+                self.camera.moveCameraLeft()
+            else:
+                self.balayageHori = 0
+
+        else:
+            return True
+        return False
+
+
 
     def goCamera(self):
+        findSomething = False
+        self.camera.moveCameraByAngle(1, 0)
+        self.camera.moveCameraByAngle(0, 80)
         while(self.video.isOpened()):
             ret, self.image = self.video.read()
+            if not findSomething:
+                findSomething = self.balayageCamera()
             self.detecColor()
             self.findContour()
 
