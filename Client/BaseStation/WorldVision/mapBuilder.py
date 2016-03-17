@@ -46,4 +46,5 @@ class MapBuilder:
 
         map.setShapesColor(mapImage)
         map.filterRobot()
+        map.deleteBlackShapes()
         return map

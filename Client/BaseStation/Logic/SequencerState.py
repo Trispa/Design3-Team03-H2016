@@ -5,7 +5,7 @@ class SendingBotToChargingStationState():
     def setPath(self, pathfinder):
         self.path = pathfinder.findPath((0,0), (250,350))
 
-    def handle(self, sequencer, obstacleListIndex):
+    def handle(self, sequencer, obstacleListIndex, robotPosition):
         self.obstacleIndex = int(obstacleListIndex)
 
         print("sending bot to (" + str(self.path[int(obstacleListIndex)][0]) + "," +
@@ -18,8 +18,8 @@ class SendingBotToChargingStationState():
                            "positionX": str(self.path[int(obstacleListIndex)][0]),
                            "positionY": str(self.path[int(obstacleListIndex)][1])},
                        "positionFROM": {
-                           "positionX": "0",
-                           "positionY": "0",
+                           "positionX": robotPosition[0],
+                           "positionY": robotPosition[1],
                            "orientation": "0"},
                        }
 
@@ -36,7 +36,7 @@ class SendingBotToTreasureState():
     def setPath(self, pathfinder):
         self.path = pathfinder.findPath((0,0), (2,5))
 
-    def handle(self, sequencer, obstacleListIndex):
+    def handle(self, sequencer, obstacleListIndex, robotPosition):
         self.obstacleIndex = int(obstacleListIndex)
 
         print("sending bot to (" + str(self.path[int(obstacleListIndex)][0]) + "," +
@@ -49,8 +49,8 @@ class SendingBotToTreasureState():
                            "positionX": str(self.path[int(obstacleListIndex)][0]),
                            "positionY": str(self.path[int(obstacleListIndex)][1])},
                        "positionFROM": {
-                           "positionX": "0",
-                           "positionY": "0",
+                           "positionX": robotPosition[0],
+                           "positionY": robotPosition[1],
                            "orientation": "0"},
                        }
 
@@ -68,7 +68,7 @@ class SendingBotToTargetState():
     def setPath(self, pathfinder):
         self.path = pathfinder.findPath((400,200), (700,150))
 
-    def handle(self, sequencer, obstacleListIndex):
+    def handle(self, sequencer, obstacleListIndex, robotPosition):
         self.obstacleIndex = int(obstacleListIndex)
         print("sending bot to (" + str(self.path[int(obstacleListIndex)][0]) + "," +
               str(self.path[int(obstacleListIndex)][1]) + ")")
@@ -80,8 +80,8 @@ class SendingBotToTargetState():
                            "positionX": str(self.path[int(obstacleListIndex)][0]),
                            "positionY": str(self.path[int(obstacleListIndex)][1])},
                        "positionFROM": {
-                           "positionX": "0",
-                           "positionY": "0",
+                           "positionX": robotPosition[0],
+                           "positionY": robotPosition[1],
                            "orientation": "0"},
                        }
 

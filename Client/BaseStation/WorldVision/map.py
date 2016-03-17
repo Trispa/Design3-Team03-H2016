@@ -10,6 +10,7 @@ class Map:
         self.__shapes = []
         self.greenSquare = Square("greenSquare", np.array([[]], dtype=np.int32))
         self.limit = Square("limit", np.array([[]], dtype=np.int32))
+        self.robot = Square("robot", np.array([[]], dtype=np.int32))
 
     def findSimilarShape(self, newPossibleshape):
         newContourCenterOfMassX, newContourCenterOfMassY = newPossibleshape.findCenterOfMass()
@@ -20,7 +21,12 @@ class Map:
         return None
 
     def addShape(self, shapeToAdd):
-        if abs(shapeToAdd.getArea() - self.getAverageShapeSize()) < 1000 or len(self.__shapes) < 3:
+
+        x, y = shapeToAdd.findCenterOfMass()
+        if abs(x-262) < 30 or abs(y-482) < 30:
+            pass
+
+        if abs(shapeToAdd.getArea() - self.getAverageShapeSize()) < 1100 or len(self.__shapes) < 3:
             similarShape = self.findSimilarShape(shapeToAdd)
             if similarShape != None:
                 if similarShape.getArea() < shapeToAdd.getArea():
@@ -32,6 +38,11 @@ class Map:
 
     def getShapesList(self):
         return self.__shapes
+
+    def deleteBlackShapes(self):
+        for shape in self.__shapes:
+            if shape.getColorName() == "Black":
+                self.__shapes.remove(shape)
 
 
     def getAverageShapeSize(self):
@@ -54,6 +65,9 @@ class Map:
 
     def setShapes(self, shapes):
         self.__shapes = shapes
+
+    def deleteShape(self, shapeToDelete):
+        self.__shapes.remove(shapeToDelete)
 
     def setMapLimit(self, contour):
         cornerList = []
@@ -98,7 +112,7 @@ class Map:
     def filterRobot(self):
         shapes = self.__shapes
         for shape in shapes:
-            if(shape.myColor.colorName == "Black" and isinstance(shape, Square)):
+            if(shape.myColor.colorName == "Black" and (len(shape.getContour()) == 4 or len(shape.getContour()) == 5)):
                 self.__shapes.remove(shape)
                 self.robot = shape
 
