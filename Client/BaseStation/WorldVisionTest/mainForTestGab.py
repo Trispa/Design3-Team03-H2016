@@ -52,30 +52,30 @@ if __name__ == '__main__':
     for photoNumber in phoposToVerified:
         frame = cv2.imread('Photos/Picture ' + photoNumber + '.jpg')
 
-        x1, x2, y1, y2 = 941, 900 , 711, 659
-        # line equation y = f(X)
-        def line_eq(X):
-            m = (y2 - y1) / (x2 - x1)
-            return m * (X - x1) + y1
-
-        line = np.vectorize(line_eq)
-
-        x = np.arange(0, 1200)
-        y = line(x).astype(np.uint)
-
-        cv2.line(frame, (x[0], y[0]), (x[-1], y[-1]), (0,0,0))
-        cv2.imshow("foo",frame)
-        cv2.waitKey()
-
-
+        # x1, x2, y1, y2 = 941, 900 , 711, 659
+        # # line equation y = f(X)
+        # def line_eq(X):
+        #     m = (y2 - y1) / (x2 - x1)
+        #     return m * (X - x1) + y1
+        #
+        # line = np.vectorize(line_eq)
+        #
+        # x = np.arange(0, 1200)
+        # y = line(x).astype(np.uint)
+        #
+        # cv2.line(frame, (x[0], y[0]), (x[-1], y[-1]), (0,0,0))
+        # cv2.imshow("foo",frame)
+        # cv2.waitKey()
 
 
-        # geometricalImage = WorldImage(frame)
-        # geometricalImage.setMap(frame)
-        # geometricalImage.addLabels(frame)
-        # worldImage = geometricalImage.drawMapOnImage(frame)
-        # #print(geometricalImage.getMap().robot.findCenterOfMass())
-        # cv2.imshow('Picture ' + photoNumber, worldImage)
+
+
+        geometricalImage = WorldImage(frame)
+        geometricalImage.setMap(frame)
+        geometricalImage.addLabels(frame)
+        worldImage = geometricalImage.drawMapOnImage(frame)
+        #print(geometricalImage.getMap().robot.findCenterOfMass())
+        cv2.imshow('Picture ' + photoNumber, worldImage)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
              break
