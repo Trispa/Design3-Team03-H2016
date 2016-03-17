@@ -1,6 +1,9 @@
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 var socket = require('socket.io');
 var express = require('express');
 var http = require('http');
+var https = require('https');
+var request = require('request');
 var obj = require("../Shared/config.json");
 var url=obj.url;
 var port=obj.port;
@@ -14,6 +17,7 @@ var io = socket.listen(server);
 var allClients = [];
 var botClientStatus = "Not connected";
 var robot;
+var manchesterUrl = 'https://132.203.14.228/';
 
 io.on('connection', function (client) {
     allClients.push(socket);
@@ -63,6 +67,12 @@ io.on('connection', function (client) {
 
     client.on('sendRefusingOrderSignal', function(){
         io.emit('sendRefusingOrderSignal');
+    });
+
+    client.on('sendManchesterCode', function(data){
+        request(manchesterUrl+'?code='+data, function(error, response, body) {
+            console.log(body);
+        });
     });
 });
 
