@@ -26,11 +26,10 @@ class MoteurRoue:
     def rotation(self, degree):
         speed = 0.05
         timeToSleep = 0.035 * degree + 0.075
-        direction = ""
+        direction = "CCW"
         if degree <= 0:
-            direction = "CCW"
-        else:
             direction = "CW"
+
         self.beforeChangeDirection()
         if(direction == 'CW'):
             for i in range(1, NB_MOTEUR):
@@ -41,10 +40,11 @@ class MoteurRoue:
                 self.spc.driveMoteur(i, speed, CCW)
         time.sleep(timeToSleep)
         self.stopAllMotors()
+        return timeToSleep
 
     def beforeChangeDirection(self):
         self.stopAllMotors()
-        time.sleep(0.2)
+        time.sleep(1)
 
 #Distance en centimetre
     def avanceVector(self, x, y):
@@ -80,15 +80,15 @@ class MoteurRoue:
 
     def demo3(self):
         self.avanceVector(0, 66)
-        time.sleep(0.5)
-        self.avanceVector(-66, 0)
-        time.sleep(0.5)
+        # time.sleep(0.5)
+        # self.avanceVector(-66, 0)
+        # time.sleep(0.5)
         self.avanceVector(0, -66)
-        time.sleep(0.5)
+        # time.sleep(0.5)
         self.avanceVector(66, 0)
-        time.sleep(0.5)
+        # time.sleep(0.5)
         self.avanceVector(-50, -50)
-        time.sleep(0.5)
+        # time.sleep(0.5)
         self.avanceVector(50, 50)
 
     def demoR(self):
@@ -106,7 +106,7 @@ if __name__ == '__main__':
     mr = MoteurRoue()
     mr.stopAllMotors()
     time.sleep(0.1)
-    mr.demoR()
+    mr.demo3()
     # mr.avanceVector(0,60)
     # time.sleep(1)
     # mr.avanceVector(0,-120)
