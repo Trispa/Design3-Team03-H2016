@@ -1,10 +1,10 @@
 import numpy as np
 import cv2
-from math import sqrt
+from math import sqrt, cos, sin, radians
 import time
 from Client.BaseStation.WorldVision.allColors import GenericColor
 from Client.Robot.Mechanical.CameraTower import CameraTower
-
+import math
 
 # Print seulement les 2 plus gros carre si plus grand que 100
 # Detecter une seul grosse forme par couleur
@@ -15,14 +15,7 @@ class VisionRobot:
     balayageHori = 0
     LARGEUR_TRESOR_METRE = 2.5
     FOCAL = 508
-
-
-    # yellowUp = [30, 255, 255]
-    # yellowDown = [0, 140, 140]
-    # colorBoundaries = [(yellowDown, yellowDown)]
-
-
-
+    largeurTresorPixel = 0
 
     def __init__(self):
 
@@ -39,11 +32,6 @@ class VisionRobot:
         # self.color = [(yellow.lower, yellow.higher), (redDown, redUp)]
         self.color = [(yellowDown, yellowUp)]
 
-        # Camera world
-        # self.yellowDown = [10, 90, 90]
-        # self.yellowUp = [45, 255, 255]
-
-
     def detecColor(self):
         self.mask = 0
         for(lower, upper) in self.color:
@@ -51,11 +39,6 @@ class VisionRobot:
             upper = np.array(upper, dtype="uint8")
 
             self.mask = self.mask + cv2.inRange(self.image, lower, upper)
-
-        # output = cv2.bitwise_and(self.image, self.image, mask=self.mask)
-        # cv2.imshow("Image", np.hstack([self.image, output]))
-        # cv2.imshow("mask", self.mask)
-        # cv2.waitKey(0)
 
     def findContour(self):
 
@@ -68,11 +51,6 @@ class VisionRobot:
                 if cv2.contourArea(c) > cv2.contourArea(cntsMax):
                     cntsMax = c
 
-
-            # loop over the contours
-
-            # for c in cnts:
-                # draw the contour and show it
             if cv2.contourArea(cntsMax) > 200:
                 self.tresor = cntsMax
                 x,y,w,h = cv2.boundingRect(self.tresor)
@@ -82,14 +60,11 @@ class VisionRobot:
                 cv2.rectangle(self.image,(x,y),(x+w,y+h),(0,255,0),2)
                 self.addLabels(self.tresor)
                 self.moveCameraEmbarquee()
-                return max(x,y)
+
+                self.largeurTresorPixel = max(w,h)
+                return self.largeurTresorPixel
             else:
                 self.tresor = None
-
-            # distance = self.addLabelsLines(dots)
-            # cv2.imshow("Image", self.image)
-            # cv2.waitKey(0)
-
             return 0
 
 
@@ -129,16 +104,13 @@ class VisionRobot:
 
     def moveCameraEmbarquee(self):
         x,y,w,h = cv2.boundingRect(self.tresor)
-        # print x, y, w ,h
-        # x = `w + x
-        # y = h + y
         ih, iw, ic = self.image.shape
         # print x, y, iw, ih
         square = 20
 
         xob = iw/2  - square
         yob = ih/2 - square
-        print xob, yob
+        # print xob, yob
 
         cv2.rectangle(self.image,(xob, yob),(xob + 2*square, yob - 2*square),(0,255,0),2)
 
@@ -169,6 +141,17 @@ class VisionRobot:
         return False
 
 
+    def distanceAdjascente(self):
+            if self.largeurTresorPixel <= 0:
+                return 0
+            return self.FOCAL * self.LARGEUR_TRESOR_METRE / self.largeurTresorPixel
+
+    def distanceFromCamera(self):
+        distanceY = self.distanceAdjascente() * cos(radians(123 - self.camera.degreeHori) + math.pi/2)
+        distanceX = self.distanceAdjascente() * sin(radians(self.camera.degreeVerti - 64))
+        # print 123 - self.camera.degreeHori, self.camera.degreeVerti, self.distanceAdjascente()
+
+        return (distanceX, distanceY)
 
     def goCamera(self):
         findSomething = False
@@ -180,6 +163,7 @@ class VisionRobot:
                 findSomething = self.balayageCamera()
             self.detecColor()
             self.findContour()
+            print self.distanceFromCamera()
 
             cv2.imshow("Image", self.image)
             if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -187,14 +171,13 @@ class VisionRobot:
         self.video.release()
         cv2.destroyAllWindows()
 
-    def DistanceAdjascentte(self, LargeurTresorEnPixel):
-        return self.FOCAL * self.LARGEUR_TRESOR_METRE / LargeurTresorEnPixel
+
 
 
 if __name__ == "__main__":
     vr = VisionRobot()
-    #vr.goCamera()
-    print("distance")
-    print(vr.DistanceAdjascentte(34))
+    vr.goCamera()
+    # print("distance")
+    # print(vr.DistanceAdjascentte(34))
     # vr.detecColor()
     # vr.findContour()
