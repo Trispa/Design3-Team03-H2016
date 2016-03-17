@@ -4,7 +4,7 @@ from resultChecker import ResultChecker
 if __name__ == '__main__':
     totalFound = 0
     totalOnImage = 0
-    for pictureNumber in range(1, 116):
+    for pictureNumber in range(1, 179):
         myResultChecker = ResultChecker(pictureNumber)
         print("Picture " + str(pictureNumber))
         found, onImage = myResultChecker.checkNumberOfShapesFound()
