@@ -43,8 +43,9 @@ class ResultChecker:
             for centerOfMass in self.centersOfMass:
                 if abs(shapeCenterOfMassX - centerOfMass[0]) < 10 and abs(shapeCenterOfMassY - centerOfMass[1]) < 10:
                     shapeFound += 1
-        print("Number of shapes found : " + str(shapeFound))
-        print("Number of shapes present : " + str(len(self.centersOfMass)))
+        if shapeFound != len(self.centersOfMass):
+            print("Number of shapes found : " + str(shapeFound))
+            print("Number of shapes present : " + str(len(self.centersOfMass)))
         return shapeFound, len(self.centersOfMass)
 
     def checkIfLimitFound(self):
