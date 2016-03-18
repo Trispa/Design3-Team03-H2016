@@ -52,5 +52,4 @@ class MapBuilder:
 
         map.setShapesColor(mapImage)
         map.deleteBlackShapes()
-        map.robot.setOrientation(mapImage)
         return map

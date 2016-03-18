@@ -71,7 +71,7 @@ if __name__ == '__main__':
 
 
         geometricalImage = WorldImage(frame)
-        geometricalImage.setMap(frame)
+        geometricalImage.buildMap(frame)
         geometricalImage.addLabels(frame)
         worldImage = geometricalImage.drawMapOnImage(frame)
         #print(geometricalImage.getMap().robot.findCenterOfMass())

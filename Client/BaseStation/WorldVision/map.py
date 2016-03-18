@@ -11,7 +11,7 @@ class Map:
         self.__shapes = []
         self.greenSquare = Square("greenSquare", np.array([[]], dtype=np.int32))
         self.limit = Square("limit", np.array([[]], dtype=np.int32))
-        self.robot = Robot(Square("robot", np.array([[]], dtype=np.int32)))
+        self.robot = Robot(Square("robot", np.array([[]], dtype=np.int32)), Shape("orientation", np.array([[]], dtype=np.int32)))
 
     def findSimilarShape(self, newPossibleshape):
         newContourCenterOfMassX, newContourCenterOfMassY = newPossibleshape.findCenterOfMass()
@@ -115,7 +115,7 @@ class Map:
         for shape in shapes:
             if(shape.myColor.colorName == "Black" and (len(shape.getContour()) == 4 or len(shape.getContour()) == 5)):
                 self.__shapes.remove(shape)
-                self.robot = shape
+                self.robot.square = shape
 
 
 
