@@ -48,7 +48,7 @@ if __name__ == '__main__':
     #frame = cv2.imread('Images/Test6.jpg')
     #geometricalImage = WorldImage(frame)
     #worldVision = worldVision()
-    phoposToVerified = ['181']
+    phoposToVerified = ['185']
     for photoNumber in phoposToVerified:
         frame = cv2.imread('Photos/Picture ' + photoNumber + '.jpg')
 

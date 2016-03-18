@@ -9,17 +9,17 @@ class Robot():
     def setOrientation(self):
         origin = self.circle.findCenterOfMass()
         end = self.square.findCenterOfMass()
-        x = end[0] - origin[0]
-        y = end[0] - origin[1]
+        x = float(end[0] - origin[0])
+        y = float(end[1] - origin[1])
 
         angle = abs(math.degrees(math.atan(y/x)))
-        if(x >= 0 and y >= 0):
+        if(x >= 0 and y < 0):
             angle = 360 - angle
-        elif(x>=0 and y <0):
+        elif(x>=0 and y >= 0):
             angle = angle
-        elif(x < 0 and y >= 0):
-            angle = angle + 180
         elif(x < 0 and y < 0):
+            angle = angle + 180
+        elif(x < 0 and y >= 0):
             angle = 180 - angle
 
         self.orientation = angle

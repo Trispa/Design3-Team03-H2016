@@ -46,12 +46,20 @@ class WorldImage:
 
         if len(self.__map.robot.square.getContour()) > 0:
             robot = [self.__map.robot.square.getContour()]
+            orientation = [self.__map.robot.circle.getContour()]
         else:
             robot = []
+            orientation = []
 
         contourList = self.__map.getContourList()
         cv2.drawContours( frame, self.__map.getContourList(), -1, (0, 255, 0), 3 )
         cv2.drawContours( frame, limit, -1, (0, 255, 0), 3 )
+        cv2.drawContours( frame, orientation, -1, (0, 255, 0), 3 )
         cv2.drawContours( frame, robot, -1, (0, 255, 0), 3 )
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        scale = 0.4
+        thickness = 1
+        cv2.putText(frame, str(self.__map.robot.orientation), self.__map.robot.square.findCenterOfMass(), font, scale, (255,255,255), thickness, 8)
+
 
         return frame
