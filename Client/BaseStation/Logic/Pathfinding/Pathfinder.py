@@ -7,11 +7,11 @@ import cv2
 import numpy as np
 
 class Pathfinder:
-    def __init__(self, obstaclesList): # (self,map)
-        mapSizeX = 1000
-        mapSizeY = 600
-        #self.mapAdaptator = MapAdaptator(map)
-        #obstaclesList, mapSizeX, mapSizeY = self.mapAdaptator.getMapInfo()
+    def __init__(self,map): # (self, obstaclesList)
+        #mapSizeX = 1000
+        #mapSizeY = 600
+        self.mapAdaptator = MapAdaptator(map)
+        obstaclesList, mapSizeX, mapSizeY = self.mapAdaptator.getMapInfo()
         self.graphGenerator = GraphGenerator(obstaclesList, mapSizeX, mapSizeY)
         self.graph = self.graphGenerator.generateGraph()
         self.pathsList = []
@@ -114,16 +114,16 @@ class Pathfinder:
                 break
         cv2.destroyAllWindows
 
-obstacleList = []
-obstacleList.append(Obstacle((40,425)))
-obstacleList.append(Obstacle((370,40)))
-obstacleList.append(Obstacle((950,450)))
-obstacleList.append(Obstacle((360,440)))
-obstacleList.append(Obstacle((390,570)))
-obstacleList.append(Obstacle((380,420)))
-obstacleList.append(Obstacle((395,390)))
-pathfinder = Pathfinder(obstacleList)
-pathfinder.findPath((200,200), (500,300))
+#obstacleList = []
+#obstacleList.append(Obstacle((40,425)))
+#obstacleList.append(Obstacle((370,40)))
+#obstacleList.append(Obstacle((950,450)))
+#obstacleList.append(Obstacle((360,440)))
+#obstacleList.append(Obstacle((390,570)))
+#obstacleList.append(Obstacle((380,420)))
+#obstacleList.append(Obstacle((395,390)))
+#pathfinder = Pathfinder(obstacleList)
+#pathfinder.findPath((200,200), (500,300))
 
 
 
