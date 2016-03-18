@@ -40,6 +40,10 @@ function start(){
     startTimer();
 }
 
+function sendManchesterCall(){
+    socket.emit("sendManchesterCode", "A")
+}
+
 var currentTimer;
 
 function startTimer(){
