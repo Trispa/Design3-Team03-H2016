@@ -7,6 +7,7 @@ class MapAdaptator:
     def getMapInfo(self):
         minCorner = (self.map.limit.getMinCorner())
         maxCorner = (self.map.limit.getMaxCorner())
+        print(minCorner, maxCorner)
         mapSizeX = maxCorner[0] - minCorner[0]
         mapSizeY = maxCorner[1] - minCorner[1]
         obstaclesList = []

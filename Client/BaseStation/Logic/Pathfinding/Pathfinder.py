@@ -48,7 +48,7 @@ class Pathfinder:
 
     def __polishPath(self, path):
         print path.__len__()
-        compteursToBeRemoved = []
+        nodesToBeRemoved = []
         for compteur in range(0, path.__len__()):
             print compteur, "wtf"
             if path[compteur].isASafeNode == True:
@@ -56,11 +56,11 @@ class Pathfinder:
                     previousNode = path[compteur-1]
                     nextNode = path[compteur+1]
                     if previousNode.positionY != nextNode.positionY:
-                        compteursToBeRemoved.append(compteur)
+                        nodesToBeRemoved.append(path[compteur])
                 except IndexError:
-                    compteursToBeRemoved.append(compteur)
-        for compteur in range(0, compteursToBeRemoved.__len__()):
-            path.__delitem__(compteur)
+                    nodesToBeRemoved.append(compteur)
+        for compteur in range(0, nodesToBeRemoved.__len__()):
+            path.remove(nodesToBeRemoved[compteur])
 
     def __findAllPaths(self, path, endingPathNode):
         lastNode = path[path.__len__()-1]

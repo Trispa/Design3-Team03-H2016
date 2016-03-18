@@ -15,7 +15,7 @@ class BaseStationDispatcher():
     def initialiseWorldData(self):
         map = self.world.getCurrentMap()
         self.pathfinder = Pathfinder(map)
-        self.sequencer = seq(self.pathfinder)
+        self.sequencer = seq(self.pathfinder, map.robot.findCenterOfMass())
 
     def getCurrentWorldImage(self):
         image = self.world.getCurrentImage()
