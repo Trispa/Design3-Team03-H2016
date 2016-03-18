@@ -17,7 +17,7 @@ class WorldImage:
 
     def buildMap(self, mapImage):
         self.__map = self.__myMapBuilder.buildMapWithAllFilter(mapImage, self.__map)
-        self.__map.robot.setOrientation(mapImage)
+        self.__map.robot.setOrientation()
 
     def defineShapesColor(self):
         self.__map.setShapesColor(self.__mapImage)
