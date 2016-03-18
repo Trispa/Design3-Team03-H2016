@@ -31,12 +31,12 @@ class Pathfinder:
             currentPath = self.pathsList[compteur]
 
             if currentPath[currentPath.__len__()-1] == endingPathNode:
-
                 currentPath = self.pathsList[compteur]
-                if currentPath.totalDistance < goodPath.totalDistance:
 
+                if currentPath.totalDistance < goodPath.totalDistance:
                     goodPath = currentPath
         goodPath.append(Node(pointToMoveTo))
+        self.__polishPath(goodPath)
         self.__displayPathfinder(goodPath, positionRobot)
         return goodPath
 
@@ -45,6 +45,22 @@ class Pathfinder:
         for compteur in range(0, goodPath.__len__()):
             print "path:", goodPath[compteur].positionX, goodPath[compteur].positionY
         print goodPath.totalDistance
+
+    def __polishPath(self, path):
+        print path.__len__()
+        compteursToBeRemoved = []
+        for compteur in range(0, path.__len__()):
+            print compteur, "wtf"
+            if path[compteur].isASafeNode == True:
+                try:
+                    previousNode = path[compteur-1]
+                    nextNode = path[compteur+1]
+                    if previousNode.positionY != nextNode.positionY:
+                        compteursToBeRemoved.append(compteur)
+                except IndexError:
+                    compteursToBeRemoved.append(compteur)
+        for compteur in range(0, compteursToBeRemoved.__len__()):
+            path.__delitem__(compteur)
 
     def __findAllPaths(self, path, endingPathNode):
         lastNode = path[path.__len__()-1]
@@ -99,11 +115,13 @@ class Pathfinder:
         cv2.destroyAllWindows
 
 obstacleList = []
-#obstacleList.append(Obstacle((390,425)))
-obstacleList.append(Obstacle((370,475)))
-obstacleList.append(Obstacle((400,450)))
-obstacleList.append(Obstacle((370,400)))
-obstacleList.append(Obstacle((390,300)))
+obstacleList.append(Obstacle((40,425)))
+obstacleList.append(Obstacle((370,40)))
+obstacleList.append(Obstacle((950,450)))
+obstacleList.append(Obstacle((360,440)))
+obstacleList.append(Obstacle((390,570)))
+obstacleList.append(Obstacle((380,420)))
+obstacleList.append(Obstacle((395,390)))
 pathfinder = Pathfinder(obstacleList)
 pathfinder.findPath((200,200), (500,300))
 

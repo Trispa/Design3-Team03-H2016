@@ -1,5 +1,6 @@
 class Node:
     def __init__(self, position):
+        self.isASafeNode = False
         self.positionX = position.__getitem__(0)
         self.positionY = position.__getitem__(1)
         self.connectedNodes = []

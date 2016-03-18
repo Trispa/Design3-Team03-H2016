@@ -34,8 +34,14 @@ class Path:
                     isOpen = True
         return isOpen
 
+    def remove(self, node):
+        self.nodeList.remove(node)
+
     def __len__(self):
         return self.nodeList.__len__()
 
     def __getitem__(self, item):
         return self.nodeList[item]
+
+    def __delitem__(self, key):
+        self.nodeList.__delitem__(key)

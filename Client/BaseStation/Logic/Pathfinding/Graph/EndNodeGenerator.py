@@ -34,7 +34,7 @@ class EndNodeGenerator:
             safeZoneCornerTopRight = (self.obstaclesList[compteur + 1].positionX - self.SAFE_MARGIN, 0)
             endNode = Node(SafeZone(safeZoneCornerTopLeft, safeZoneCornerTopRight, safeZoneCornerBotLeft).getCenterOfSafeZone())
             self.obstaclesList[compteur+1].setStartingNode(endNode)
-
+        endNode.isASafeNode = True
         return endNode
 
 
@@ -51,10 +51,12 @@ class EndNodeGenerator:
                             collisionUpperRightCorner.positionY + self.SAFE_MARGIN)
                 endNode = Node(SafeZone(safeZoneCornerTopLeft, safeZoneCornerTopRight, safeZoneCornerBotLeft).getCenterOfSafeZone())
                 collisionUpperRightCornerTemp.setStartingNode(endNode)
+                endNode.isASafeNode = True
 
             else:
                 endNode = (Node((collisionBottomRightCorner.positionX + self.SAFE_MARGIN,
                                  (collisionBottomRightCorner.positionY + collisionUpperRightCorner.positionY) / 2)))
+                endNode.isASafeNode = True #notSure
 
         else:
             collisionUpperLeftCornerTemp, collisionUpperRightCornerTemp, collisionBottomLeftCornerTemp, collisionBottomRightCornerTemp = self.collisionDetector.detectStackedObstacleXAxis(
@@ -65,10 +67,12 @@ class EndNodeGenerator:
                             collisionUpperRightCorner.positionY + self.SAFE_MARGIN)
                 endNode = Node(SafeZone(safeZoneCornerTopLeft, safeZoneCornerTopRight, safeZoneCornerBotLeft).getCenterOfSafeZone())
                 collisionBottomRightCornerTemp.setStartingNode(endNode)
+                endNode.isASafeNode = True
 
             else:
                 endNode = (Node((collisionUpperRightCorner.positionX + self.SAFE_MARGIN,
                                  (collisionBottomRightCorner.positionY + collisionUpperRightCorner.positionY) / 2)))
+                endNode.isASafeNode = True #notSure
         return endNode
 
 
@@ -85,10 +89,12 @@ class EndNodeGenerator:
                             collisionUpperRightCorner.positionY + self.SAFE_MARGIN)
                 endNode = Node(SafeZone(safeZoneCornerTopLeft, safeZoneCornerTopRight, safeZoneCornerBotLeft).getCenterOfSafeZone())
                 collisionUpperRightCornerTemp.setStartingNode(endNode)
+                endNode.isASafeNode = True
 
             else:
                 endNode = (Node((collisionBottomRightCorner.positionX + self.SAFE_MARGIN,
                                  (collisionBottomRightCorner.positionY + collisionUpperRightCorner.positionY) / 2)))
+                endNode.isASafeNode = True #notSure
 
         else:
             collisionUpperLeftCornerTemp, collisionUpperRightCornerTemp, collisionBottomLeftCornerTemp, collisionBottomRightCornerTemp = self.collisionDetector.detectStackedObstacleXAxis(
@@ -98,10 +104,12 @@ class EndNodeGenerator:
                 safeZoneCornerTopRight = (collisionBottomRightCornerTemp.positionX - self.SAFE_MARGIN,
                             collisionUpperRightCorner.positionY + self.SAFE_MARGIN)
                 endNode = Node(SafeZone(safeZoneCornerTopLeft, safeZoneCornerTopRight, safeZoneCornerBotLeft).getCenterOfSafeZone())
+                endNode.isASafeNode = True
                 collisionBottomRightCornerTemp.setStartingNode(endNode)
 
             else:
                 endNode = (Node((collisionUpperRightCorner.positionX + self.SAFE_MARGIN,
                                  (collisionBottomRightCorner.positionY + collisionUpperRightCorner.positionY) / 2)))
+                endNode.isASafeNode = True #notSure
         return endNode
 
