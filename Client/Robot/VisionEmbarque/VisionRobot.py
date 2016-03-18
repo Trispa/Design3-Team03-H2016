@@ -1,7 +1,10 @@
 import numpy as np
 import cv2
-from math import sqrt
+from math import sqrt, cos, sin, radians
+import time
 from Client.BaseStation.WorldVision.allColors import GenericColor
+from Client.Robot.Mechanical.CameraTower import CameraTower
+import math
 
 # Print seulement les 2 plus gros carre si plus grand que 100
 # Detecter une seul grosse forme par couleur
@@ -9,33 +12,25 @@ class VisionRobot:
     image = cv2.imread("image/ry1-2.jpg")
     mask = 0
     video = cv2.VideoCapture(1)
+    balayageHori = 0
     LARGEUR_TRESOR_METRE = 2.5
     FOCAL = 508
-
-    # yellowUp = [30, 255, 255]
-    # yellowDown = [0, 140, 140]
-    # colorBoundaries = [(yellowDown, yellowDown)]
-
-
-
+    largeurTresorPixel = 0
 
     def __init__(self):
 
+        self.camera = CameraTower()
+        self.camera.step = 1
+        self.tresor = None
+        yellowDown = [0, 100, 100]
+        yellowUp = [35, 255, 255]
 
-
-        yellowDown = [0, 85, 85]
-        yellowUp = [50, 255, 255]
         # yellow = colorFactory.constructColor(np.uint8([[[0,255,255]]]), "Yellow")
         redDown = [0, 0, 80]
         redUp = [85, 40, 255]
 
         # self.color = [(yellow.lower, yellow.higher), (redDown, redUp)]
         self.color = [(yellowDown, yellowUp)]
-
-        # Camera world
-        # self.yellowDown = [10, 90, 90]
-        # self.yellowUp = [45, 255, 255]
-
 
     def detecColor(self):
         self.mask = 0
@@ -45,43 +40,34 @@ class VisionRobot:
 
             self.mask = self.mask + cv2.inRange(self.image, lower, upper)
 
-        # output = cv2.bitwise_and(self.image, self.image, mask=self.mask)
-        # cv2.imshow("Image", np.hstack([self.image, output]))
-        # cv2.imshow("mask", self.mask)
-        # cv2.waitKey(0)
-
     def findContour(self):
 
         (cnts, _) = cv2.findContours(self.mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_TC89_L1)
         dots = []
         if len(cnts):
 
-            # cntsMax = cnts[0]
-            # for c in cnts:
-            #     if cv2.contourArea(c) > cv2.contourArea(cntsMax):
-            #         cntsMax = c
-
-            # loop over the contours
-
+            cntsMax = cnts[0]
             for c in cnts:
-                # draw the contour and show it
-                if cv2.contourArea(c) > 1:
-                    x,y,w,h = cv2.boundingRect(c)
-                    dots.append((x,y,w,h))
-                    # if max(w, h) > 100 and max(w, h) < 200:
+                if cv2.contourArea(c) > cv2.contourArea(cntsMax):
+                    cntsMax = c
 
-                    cv2.rectangle(self.image,(x,y),(x+w,y+h),(0,255,0),2)
-                    self.addLabels(c)
+            if cv2.contourArea(cntsMax) > 200:
+                self.tresor = cntsMax
+                x,y,w,h = cv2.boundingRect(self.tresor)
+                dots.append((x,y,w,h))
+                # if max(w, h) > 100 and max(w, h) < 200:
 
-            distance = self.addLabelsLines(dots)
-            # cv2.imshow("Image", self.image)
-            # cv2.waitKey(0)
+                cv2.rectangle(self.image,(x,y),(x+w,y+h),(0,255,0),2)
+                self.addLabels(self.tresor)
+                self.moveCameraEmbarquee()
 
-            if distance:
-                print(distance)
-                return distance
+                self.largeurTresorPixel = max(w,h)
+                return self.largeurTresorPixel
             else:
-                return 0
+                self.tresor = None
+            return 0
+
+
 
     def addLabelsLines(self, dots):
         if len(dots) > 1:
@@ -113,28 +99,85 @@ class VisionRobot:
         textHeight = size[1]
         x,y,w,h = cv2.boundingRect(c)
         point = (x, y - 5)
-        cv2.putText(self.image, str(max(w, h)) + " pixel, " + str(cv2.contourArea(c)) + " area", point, font, scale, (0,0,255), thickness, 8)
+        cv2.putText(self.image, "Position " + str(x) + " " + str(y) + " " + str(max(w, h)) + " pixel, " + str(cv2.contourArea(c)) + " area", point, font, scale, (0,0,255), thickness, 8)
+
+
+    def moveCameraEmbarquee(self):
+        x,y,w,h = cv2.boundingRect(self.tresor)
+        ih, iw, ic = self.image.shape
+        # print x, y, iw, ih
+        square = 20
+
+        xob = iw/2  - square
+        yob = ih/2 - square
+        # print xob, yob
+
+        cv2.rectangle(self.image,(xob, yob),(xob + 2*square, yob - 2*square),(0,255,0),2)
+
+        if x <= (iw/2 - square):
+            self.camera.moveCameraLeft()
+        elif x >= (iw/2 + square):
+            self.camera.moveCameraRight()
+        if y <= (ih/2 - square):
+            self.camera.moveCameraUp()
+        elif y >= (ih/2 + square):
+            self.camera.moveCameraDown()
+
+    def balayageCamera(self):
+        if self.tresor == None:
+            if self.balayageHori == 0 and self.camera.degreeHori < 160:
+                self.camera.moveCameraRight()
+            else:
+                self.balayageHori = 1
+                self.camera.moveCameraByAngle(0, 90)
+
+            if self.balayageHori == 1 and self.camera.degreeHori > 55:
+                self.camera.moveCameraLeft()
+            else:
+                self.balayageHori = 0
+
+        else:
+            return True
+        return False
+
+
+    def distanceAdjascente(self):
+            if self.largeurTresorPixel <= 0:
+                return 0
+            return self.FOCAL * self.LARGEUR_TRESOR_METRE / self.largeurTresorPixel
+
+    def distanceFromCamera(self):
+        distanceY = self.distanceAdjascente() * cos(radians(123 - self.camera.degreeHori) + math.pi/2)
+        distanceX = self.distanceAdjascente() * sin(radians(self.camera.degreeVerti - 64))
+        # print 123 - self.camera.degreeHori, self.camera.degreeVerti, self.distanceAdjascente()
+
+        return (distanceX, distanceY)
 
     def goCamera(self):
+        findSomething = False
+        self.camera.moveCameraByAngle(1, 0)
+        self.camera.moveCameraByAngle(0, 80)
         while(self.video.isOpened()):
             ret, self.image = self.video.read()
+            if not findSomething:
+                findSomething = self.balayageCamera()
             self.detecColor()
             self.findContour()
+            print self.distanceFromCamera()
 
             cv2.imshow("Image", self.image)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
         self.video.release()
         cv2.destroyAllWindows()
-    def DistanceAdjascentte(self, LargeurTresorEnPixel):
 
-        return self.FOCAL * self.LARGEUR_TRESOR_METRE / LargeurTresorEnPixel
+
 
 
 if __name__ == "__main__":
     vr = VisionRobot()
-    #vr.goCamera()
-    print("distance")
-    print(vr.DistanceAdjascentte(34))
+    vr.goCamera()
+    # print("distance")
+    # print(vr.DistanceAdjascentte(34))
     # vr.detecColor()
     # vr.findContour()
