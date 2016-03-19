@@ -8,22 +8,24 @@ class Square(Shape):
     def __init__(self, geometricName, contour):
         Shape.__init__(self, geometricName, contour)
         cornerList = []
-        self.minX = 0
-        self.maxX = 1000
-        self.minY = 0
-        self.maxY = 600
-        contourCopy = contour[0]
-        for corner in contourCopy:
-            cornerList.append((corner.item(0), corner.item(1)))
-        for corner in cornerList:
-            if(corner[0] > self.maxX):
-                self.maxX = corner[0]
-            if(corner[1] > self.maxY):
-                self.maxY = corner[1]
-            if(corner[0] < self.minX):
-                self.minX = corner[0]
-            if(corner[1] < self.minY):
-                self.minY = corner[1]
+        self.minX = 1000
+        self.maxX = 0
+        self.minY = 1000
+        self.maxY = 0
+        copy2 = contour
+        contourCopy = contour
+        if len(contourCopy) > 1:
+            for corner in contourCopy:
+                cornerList.append((corner.item(0), corner.item(1)))
+            for corner in cornerList:
+                if(corner[0] > self.maxX):
+                    self.maxX = corner[0]
+                if(corner[1] > self.maxY):
+                    self.maxY = corner[1]
+                if(corner[0] < self.minX):
+                    self.minX = corner[0]
+                if(corner[1] < self.minY):
+                    self.minY = corner[1]
 
     def __angleCos(self, p0, p1, p2):
         d1, d2 = (p0-p1).astype('float'), (p2-p1).astype('float')

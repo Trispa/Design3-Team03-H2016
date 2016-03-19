@@ -43,8 +43,9 @@ class ResultChecker:
             for centerOfMass in self.centersOfMass:
                 if abs(shapeCenterOfMassX - centerOfMass[0]) < 10 and abs(shapeCenterOfMassY - centerOfMass[1]) < 10:
                     shapeFound += 1
-        if shapeFound != len(self.centersOfMass):
-            print("Number of shapes found : " + str(shapeFound))
+        if shapeFound != len(self.centersOfMass) or len(self.geometricalImage.getMap().getShapesList()) != len(self.centersOfMass):
+            print("Number of shapes found : " + str(len(self.geometricalImage.getMap().getShapesList())))
+            print("Number of real shapes found : " + str(shapeFound))
             print("Number of shapes present : " + str(len(self.centersOfMass)))
         return shapeFound, len(self.centersOfMass)
 
