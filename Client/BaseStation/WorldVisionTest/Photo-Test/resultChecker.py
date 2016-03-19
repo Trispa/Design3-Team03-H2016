@@ -9,7 +9,7 @@ class ResultChecker:
         frameFileName = 'Frames/Picture ' + str(pictureNumber) + '.jpg'
         image = cv2.imread(frameFileName)
         self.geometricalImage = WorldImage(image)
-        self.geometricalImage.setMap(image)
+        self.geometricalImage.buildMap(image)
         resultFile = open(resultFileName, 'r')
         centerOfMassLine = resultFile.readline()
         centerOfMassLine = centerOfMassLine[13:]

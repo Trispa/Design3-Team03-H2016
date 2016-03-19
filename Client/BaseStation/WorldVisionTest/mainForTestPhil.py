@@ -22,7 +22,7 @@ if __name__ == '__main__':
         frame = cv2.imread('Photo-Test/Frames/Picture 106.jpg')
         geometricalImage = WorldImage(frame)
 
-        geometricalImage.setMap(frame)
+        geometricalImage.buildMap(frame)
         geometricalImage.addLabels(frame)
         worldImage = geometricalImage.drawMapOnImage(frame)
         cv2.imshow("Monde", worldImage)

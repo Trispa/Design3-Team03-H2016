@@ -7,13 +7,6 @@ from Factories.ColorFactory import ColorFactory
 
 class MapBuilder:
 
-    colorFactory = ColorFactory()
-    colors = []
-    colors.append(colorFactory.constructColor(np.uint8([[[0,255,0]]]), "Green"))
-    colors.append(colorFactory.constructColor(np.uint8([[[255,0,0]]]), "Blue"))
-    colors.append(colorFactory.constructColor(np.uint8([[[150,179,255]]]), "Red"))
-    colors.append(colorFactory.constructColor(np.uint8([[[0,255,255]]]), "Yellow"))
-
     def __init__(self):
         self.__map = map.Map()
         self.shapeFactory = ShapeFactory()
@@ -46,9 +39,15 @@ class MapBuilder:
                     contour_len = cv2.arcLength(contour, True)
                     lessPreciseContour = cv2.approxPolyDP(contour, 0.05*contour_len, True)
                     contour = cv2.approxPolyDP(contour, 0.02*contour_len, True)
+
                     if cv2.contourArea(contour) > 300 and cv2.isContourConvex(contour) and cv2.contourArea(contour) < 30000:
                         myShape = self.shapeFactory.ConstructShape(contour)
-                        if myShape.isEqualEdges() and myShape.checkAngleValue():
+                        myShape.setColor(mapImage)
+                        if(myShape.getColorName() == "Pink"):
+                            map.robot.circle = myShape
+                        elif(myShape.getColorName() == "Black" and (len(myShape.getContour()) == 4 or len(myShape.getContour()) == 5)):
+                            map.robot.square = myShape
+                        elif myShape.isEqualEdges() and myShape.checkAngleValue():
                             map.addShape(myShape)
 
                     if cv2.contourArea(contour) > 300000 and cv2.isContourConvex(contour):
