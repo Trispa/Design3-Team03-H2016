@@ -9,7 +9,6 @@ class Map:
 
     def __init__(self):
         self.__shapes = []
-        self.greenSquare = Square("greenSquare", np.array([[]], dtype=np.int32))
         self.limit = Square("limit", np.array([[]], dtype=np.int32))
         self.robot = Robot(Square("robot", np.array([[]], dtype=np.int32)), Shape("orientation", np.array([[]], dtype=np.int32)))
 
@@ -53,6 +52,7 @@ class Map:
                 averageSize += shape.getArea()
             averageSize = averageSize/len(self.__shapes)
         return averageSize
+
 
     def getContourList(self):
         contourList = []
