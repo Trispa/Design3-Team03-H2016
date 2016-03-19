@@ -28,3 +28,72 @@ class CollisionDetector:
                         if currentObstacle.positionY < collisionBottomRightCorner.positionY:
                             collisionBottomRightCorner = currentObstacle
         return collisionUpperLeftCorner, collisionUpperRightCorner, collisionBottomLeftCorner, collisionBottomRightCorner
+
+
+
+    def hasFrontalInnerCollision(self, obstacle):
+        for compteur in range(0, self.obstaclesList.__len__()):
+            currentObstacle = self.obstaclesList[compteur]
+            if currentObstacle != obstacle:
+                if currentObstacle.positionY <= obstacle.positionY + 2*self.SAFE_MARGIN and currentObstacle.positionY >= obstacle.positionY - 2*self.SAFE_MARGIN:
+                    if currentObstacle.positionX <= obstacle.positionX and currentObstacle.positionX >= obstacle.positionX - 2*self.SAFE_MARGIN:
+                        return True
+        return False
+
+
+    def hasEndInnerCollision(self, obstacle):
+        for compteur in range(0, self.obstaclesList.__len__()):
+            currentObstacle = self.obstaclesList[compteur]
+            if currentObstacle != obstacle:
+                if currentObstacle.positionY <= obstacle.positionY + 2*self.SAFE_MARGIN and currentObstacle.positionY >= obstacle.positionY - 2*self.SAFE_MARGIN:
+                    if currentObstacle.positionX >= obstacle.positionX and currentObstacle.positionX <= obstacle.positionX + 2*self.SAFE_MARGIN:
+                        return True
+        return False
+
+
+    def hasUpperInnerCollision(self, obstacle):
+        obstacleCollision = []
+        result = False
+        for compteur in range(0, self.obstaclesList.__len__()):
+            currentObstacle = self.obstaclesList[compteur]
+            if currentObstacle != obstacle:
+                if currentObstacle.positionX <= obstacle.positionX + 2*self.SAFE_MARGIN and currentObstacle.positionX >= obstacle.positionX - 2*self.SAFE_MARGIN:
+                    if currentObstacle.positionY < obstacle.positionY and currentObstacle.positionY >= obstacle.positionY - 2*self.SAFE_MARGIN:
+                        result = True
+                        obstacleCollision.append(currentObstacle)
+        return result, obstacleCollision
+
+
+    def hasLowerInnerCollision(self, obstacle):
+        obstacleCollision = []
+        result = False
+        for compteur in range(0, self.obstaclesList.__len__()):
+            currentObstacle = self.obstaclesList[compteur]
+            if currentObstacle != obstacle:
+                if currentObstacle.positionX <= obstacle.positionX + 2*self.SAFE_MARGIN and currentObstacle.positionX >= obstacle.positionX - 2*self.SAFE_MARGIN:
+                    if currentObstacle.positionY > obstacle.positionY and currentObstacle.positionY <= obstacle.positionY + 2*self.SAFE_MARGIN:
+                        result = True
+                        obstacleCollision.append(currentObstacle)
+        return result, obstacleCollision
+
+    def isCollidingWithWallLower(self, obstacle):
+        if obstacle.positionY >= self.MAP_SIZE_Y - 2*self.SAFE_MARGIN:
+            return True
+        return False
+
+    def isCollidingWithWallUpper(self, obstacle):
+        if obstacle.positionY <= 0 + 2*self.SAFE_MARGIN:
+            return True
+        return False
+
+
+    def isCollidingWithWallFront(self, obstacle):
+        if obstacle.positionX <= 0 + 2*self.SAFE_MARGIN:
+            return True
+        return False
+
+
+    def isCollidingWithWallBack(self, obstacle):
+        if obstacle.positionX >= self.MAP_SIZE_X - 2*self.SAFE_MARGIN:
+            return True
+        return False

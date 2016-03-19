@@ -5,14 +5,16 @@ class Path:
         self.nodeList = []
         self.totalDistance = 0
 
-    def append(self, point):
-        if self.nodeList.__len__() > 1:
-            lastNode = self.nodeList[self.nodeList.__len__() - 1]
-            distance = np.sqrt(np.power((lastNode.positionX - point[0]),2)+np.power((lastNode.positionY - point[1]),2))
+    def append(self, node):
+            self.nodeList.append(node)
+
+    def ajustDistance(self):
+        self.totalDistance = 0
+        for compteur in range(1, self.nodeList.__len__()):
+            lastNode = self.nodeList[compteur - 1]
+            currentNode = self.nodeList[compteur]
+            distance = np.sqrt(np.power((lastNode.positionX - currentNode[0]),2)+np.power((lastNode.positionY - currentNode[1]),2))
             self.totalDistance += distance
-            self.nodeList.append(point)
-        else :
-            self.nodeList.append(point)
 
     def clone(self):
         newPath = Path()
@@ -26,7 +28,7 @@ class Path:
 
     def isOpen(self):
         isOpen = False
-        lastNode = self.nodeList[self.nodeList.__len__() - 1]
+        lastNode = self.nodeList[-1]
         for compteur in range(0, lastNode.connectedNodes.__len__()):
             if isOpen == False:
                 connectedNode = lastNode.connectedNodes[compteur]
@@ -43,5 +45,3 @@ class Path:
     def __getitem__(self, item):
         return self.nodeList[item]
 
-    def __delitem__(self, key):
-        self.nodeList.__delitem__(key)

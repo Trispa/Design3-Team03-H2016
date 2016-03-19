@@ -10,27 +10,28 @@ from Client.BaseStation.Logic.Pathfinding.Graph.Graph import Graph
 
 
 class GraphGenerator:
-    SAFE_MARGIN = 30
+    SAFE_MARGIN = 60
 
     def __init__(self, obstaclesList, mapSizeX, mapSizeY):
         self.MAP_SIZE_X = mapSizeX
         self.MAP_SIZE_Y = mapSizeY
+        self.graph = Graph(obstaclesList, self.SAFE_MARGIN)
         self.collisionDetector = CollisionDetector(self.MAP_SIZE_X, self.MAP_SIZE_Y, self.SAFE_MARGIN, obstaclesList)
         self.endNodeGenerator = EndNodeGenerator(self.MAP_SIZE_X, self.MAP_SIZE_Y, self.SAFE_MARGIN, obstaclesList,
-                                                 self.collisionDetector)
+                                                 self.collisionDetector, self.graph)
         self.obstaclesList = obstaclesList
-        self.graph = Graph()
+
         self.obstaclesList.sort(key=lambda obstacle: obstacle.positionX)
 
 
     def generateGraph(self):
         firstObstacle = self.obstaclesList[0]
-        self.__defaultStart(firstObstacle)
+        if self.collisionDetector.isCollidingWithWallFront(firstObstacle) == False:
+            self.__defaultStart(firstObstacle)
 
         for compteur in range(0, self.obstaclesList.__len__()):
             currentObstacle = self.obstaclesList[(compteur)]
             startingNode = currentObstacle.startingNode
-            print currentObstacle.positionX, currentObstacle.positionY, "compteur:", compteur
             if compteur < self.obstaclesList.__len__() - 1:
                 nextObstacle = self.obstaclesList[compteur + 1]
                 if nextObstacle.startingNode.positionX == 0:
@@ -53,59 +54,62 @@ class GraphGenerator:
                 (currentOstacleBottomRightCorner[1] + collisionBottomRightCorner.positionY - self.SAFE_MARGIN) / 2))
             endNode = self.endNodeGenerator.generateEndNode(currentObstacle, currentOstacleTopRightCorner, currentOstacleBottomRightCorner,
                                                             collisionBottomRightCorner, collisionUpperRightCorner, compteur)
-            if self.__isCollidingWithWallFront(currentObstacle) == False:
+            if self.collisionDetector.isCollidingWithWallFront(currentObstacle) == False:
                 self.__generateFrontPath(borderNodeLeftBottom, borderNodeLeftTop, currentObstacle, startingNode)
 
-            if self.__isCollidingWithWallUpper(currentObstacle) == False:
+            if self.collisionDetector.isCollidingWithWallUpper(currentObstacle) == False:
                 self.__generateTopPath(collisionUpperLeftCorner, collisionUpperRightCorner,
                                    currentObstacle, borderNodeLeftTop, currentOstacleTopLeftCorner, borderNodeRightTop)
 
-            if self.__isCollidingWithWallLower(currentObstacle) == False:
+            if self.collisionDetector.isCollidingWithWallLower(currentObstacle) == False:
                 self.__generateBottomPath(collisionBottomLeftCorner, collisionBottomRightCorner, currentObstacle,
                                      borderNodeLeftBottom, currentOstacleBottomLeftCorner, borderNodeRightBottom)
 
-            if self.__isCollidingWithWallBack(currentObstacle) == False:
+            if self.collisionDetector.isCollidingWithWallBack(currentObstacle) == False:
                 self.__generateEndPath(borderNodeRightBottom, borderNodeRightTop, currentObstacle, endNode)
 
         return self.graph
 
+
     def __generateEndPath(self, borderNodeRightBottom, borderNodeRightTop, currentObstacle, endNode):
-        if self.__hasEndInnerCollision(currentObstacle) == False:
-            if self.__isCollidingWithWallUpper(currentObstacle) == False:
+        if self.collisionDetector.hasEndInnerCollision(currentObstacle) == False:
+            if self.collisionDetector.isCollidingWithWallUpper(currentObstacle) == False:
                 self.graph.connectTwoNodes(borderNodeRightTop, endNode)
 
-            if self.__isCollidingWithWallLower(currentObstacle) == False:
+            if self.collisionDetector.isCollidingWithWallLower(currentObstacle) == False:
                 self.graph.connectTwoNodes(borderNodeRightBottom, endNode)
         else:
-            result, collidingObstacle = self.__hasLowerInnerCollision(currentObstacle)
+            result, collidingObstacle = self.collisionDetector.hasLowerInnerCollision(currentObstacle)
             if result == False or collidingObstacle[-1].positionX < currentObstacle.positionX:
-                if self.__isCollidingWithWallLower(currentObstacle) == False:
+                if self.collisionDetector.isCollidingWithWallLower(currentObstacle) == False:
                     self.graph.connectTwoNodes(borderNodeRightBottom, endNode)
 
-            result, collidingObstacle = self.__hasUpperInnerCollision(currentObstacle)
+            result, collidingObstacle = self.collisionDetector.hasUpperInnerCollision(currentObstacle)
             if result == False or collidingObstacle[-1].positionX < currentObstacle.positionX:
-                if self.__isCollidingWithWallUpper(currentObstacle):
+                if self.collisionDetector.isCollidingWithWallUpper(currentObstacle) == False:
                     self.graph.connectTwoNodes(borderNodeRightTop, endNode)
 
+
     def __generateFrontPath(self, borderNodeLeftBottom, borderNodeLeftTop, currentObstacle, startingNode):
-        if self.__hasFrontalInnerCollision(currentObstacle) == False:
-            if self.__isCollidingWithWallLower(currentObstacle) == False:
+        if self.collisionDetector.hasFrontalInnerCollision(currentObstacle) == False:
+            if self.collisionDetector.isCollidingWithWallLower(currentObstacle) == False:
                 self.graph.connectTwoNodes(startingNode, borderNodeLeftBottom)
 
-            if self.__isCollidingWithWallUpper(currentObstacle) == False:
+            if self.collisionDetector.isCollidingWithWallUpper(currentObstacle) == False:
                 self.graph.connectTwoNodes(startingNode, borderNodeLeftTop)
 
         else:
-            result, collidingObstacle = self.__hasUpperInnerCollision(currentObstacle)
+            result, collidingObstacle = self.collisionDetector.hasUpperInnerCollision(currentObstacle)
 
             if result == False or collidingObstacle[0].positionX > currentObstacle.positionX:
-                if self.__isCollidingWithWallUpper(currentObstacle) == False:
+                if self.collisionDetector.isCollidingWithWallUpper(currentObstacle) == False:
                     self.graph.connectTwoNodes(startingNode, borderNodeLeftTop)
 
-            result, collidingObstacle = self.__hasLowerInnerCollision(currentObstacle)
+            result, collidingObstacle = self.collisionDetector.hasLowerInnerCollision(currentObstacle)
             if result == False or collidingObstacle[0].positionX > currentObstacle.positionX:
-                if self.__isCollidingWithWallLower(currentObstacle) == False:
+                if self.collisionDetector.isCollidingWithWallLower(currentObstacle) == False:
                     self.graph.connectTwoNodes(startingNode, borderNodeLeftBottom)
+
 
     def __generateBottomPath(self, collisionBottomLeftCorner, collisionBottomRightCorner, currentObstacle,
                              borderNodeLeftBottom,
@@ -119,25 +123,34 @@ class GraphGenerator:
 
             collisionUpperLeftCornerTemp, collisionUpperRightCornerTemp, collisionBottomLeftCornerTemp, collisionBottomRightCornerTemp = self.collisionDetector.detectStackedObstacleXAxis(
                 goodRightCollision)
-        result, collidingObstacle = self.__hasLowerInnerCollision(currentObstacle)
+        result, collidingObstacle = self.collisionDetector.hasLowerInnerCollision(currentObstacle)
         if collisionBottomLeftCorner.positionY == self.MAP_SIZE_Y and collisionBottomRightCorner.positionY == self.MAP_SIZE_Y:
-            self.graph.connectTwoNodes(borderNodeLeftBottom, borderNodeRightBottom)
+            safeZoneCornerBotLeft = (bottomLeftCorner[0], collisionBottomLeftCorner.positionY - self.SAFE_MARGIN)
+            safeZoneCornerTopRight = (borderNodeRightBottom.positionX, bottomLeftCorner[1])
+            safeZoneCornerTopLeft = (bottomLeftCorner[0], bottomLeftCorner[1])
+            tempNode = self.graph.generateSafeZone(safeZoneCornerBotLeft, safeZoneCornerTopLeft, safeZoneCornerTopRight)
+            self.graph.connectTwoNodes(borderNodeLeftBottom, tempNode)
+            self.graph.connectTwoNodes(borderNodeRightBottom, tempNode)
 
         elif (
                 collisionBottomLeftCorner.positionY != self.MAP_SIZE_Y and collisionBottomRightCorner.positionY == self.MAP_SIZE_Y) or goodRightCollision.positionY >= collisionBottomLeftCorner.positionY or collidingObstacle.__contains__(collisionBottomLeftCorner):
             if result == False:
-                print currentObstacle.positionX, currentObstacle.positionY, "botafett"
                 tempNode = Node((collisionBottomLeftCorner.positionX + self.SAFE_MARGIN, borderNodeLeftBottom.positionY))
-                self.graph.connectTwoNodes(borderNodeLeftBottom, tempNode)
+
+                safeZoneCornerBotLeft = (borderNodeLeftBottom[0], collisionBottomLeftCorner.positionY - self.SAFE_MARGIN)
+                safeZoneCornerTopRight = (tempNode.positionX, bottomLeftCorner[1])
+                safeZoneCornerTopLeft = (bottomLeftCorner[0], bottomLeftCorner[1])
+                safeNode = self.graph.generateSafeZone(safeZoneCornerBotLeft, safeZoneCornerTopLeft, safeZoneCornerTopRight)
+
+                self.graph.connectTwoNodes(borderNodeLeftBottom, safeNode)
+                self.graph.connectTwoNodes(safeNode, tempNode)
 
         else:
 
             safeZoneCornerBotLeft = (bottomLeftCorner[0], collisionBottomLeftCorner.positionY - self.SAFE_MARGIN)
             safeZoneCornerTopRight = (goodRightCollision.positionX - self.SAFE_MARGIN, bottomLeftCorner[1])
             safeZoneCornerTopLeft = (bottomLeftCorner[0], bottomLeftCorner[1])
-            tempNode = Node(
-                SafeZone(safeZoneCornerTopLeft, safeZoneCornerTopRight, safeZoneCornerBotLeft).getCenterOfSafeZone())
-            tempNode.isASafeNode = True
+            tempNode = self.graph.generateSafeZone(safeZoneCornerBotLeft, safeZoneCornerTopLeft, safeZoneCornerTopRight)
             goodRightCollision.setStartingNode(tempNode)
             self.graph.connectTwoNodes(borderNodeLeftBottom, tempNode)
 
@@ -153,106 +166,42 @@ class GraphGenerator:
 
             collisionUpperLeftCornerTemp, collisionUpperRightCornerTemp, collisionBottomLeftCornerTemp, collisionBottomRightCornerTemp = self.collisionDetector.detectStackedObstacleXAxis(
                 goodRightCollision)
-        result, collidingObstacle = self.__hasUpperInnerCollision(currentObstacle)
-        print goodRightCollision, goodRightCollision.positionX, goodRightCollision.positionY
-        print collisionUpperLeftCorner, collisionUpperLeftCorner.positionX, collisionUpperLeftCorner.positionY
+        result, collidingObstacle = self.collisionDetector.hasUpperInnerCollision(currentObstacle)
         if collisionUpperLeftCorner.positionY == 0 and collisionUpperRightCorner.positionY == 0:
-            self.graph.connectTwoNodes(borderNodeLeftTop, borderNodeRightTop)
+            safeZoneCornerTopLeft = (topLeftCorner[0], collisionUpperLeftCorner.positionY + self.SAFE_MARGIN)
+            safeZoneCornerTopRight = (borderNodeRightTop.positionX, collisionUpperLeftCorner.positionY + self.SAFE_MARGIN)
+            safeZoneCornerBotLeft = (topLeftCorner[0], topLeftCorner[1])
+            tempNode = self.graph.generateSafeZone(safeZoneCornerBotLeft, safeZoneCornerTopLeft, safeZoneCornerTopRight)
+            self.graph.connectTwoNodes(borderNodeLeftTop, tempNode)
+            self.graph.connectTwoNodes(borderNodeRightTop, tempNode)
 
         elif (
                 collisionUpperLeftCorner.positionY != 0 and collisionUpperRightCorner.positionY == 0) or (goodRightCollision.positionY <= collisionUpperLeftCorner.positionY) or (collidingObstacle.__contains__(collisionUpperLeftCorner)):
             if result == False:
-                print collidingObstacle.__contains__(collisionUpperLeftCorner)
-                print collisionUpperLeftCorner
                 tempNode = Node((collisionUpperLeftCorner.positionX + self.SAFE_MARGIN, borderNodeLeftTop.positionY))
-                self.graph.connectTwoNodes(borderNodeLeftTop, tempNode)
+
+                safeZoneCornerBotLeft = (borderNodeLeftTop[0], topLeftCorner[1])
+                safeZoneCornerTopRight = (tempNode.positionX, collisionUpperLeftCorner.positionY + self.SAFE_MARGIN)
+                safeZoneCornerTopLeft = (borderNodeLeftTop[0], collisionUpperLeftCorner.positionY + self.SAFE_MARGIN)
+                safeNode = self.graph.generateSafeZone(safeZoneCornerBotLeft, safeZoneCornerTopLeft, safeZoneCornerTopRight)
+
+                self.graph.connectTwoNodes(borderNodeLeftTop, safeNode)
+                self.graph.connectTwoNodes(safeNode, tempNode)
 
         else:
-            print currentObstacle.positionX, currentObstacle.positionY, "topafett2"
             safeZoneCornerTopLeft = (topLeftCorner[0], collisionUpperLeftCorner.positionY + self.SAFE_MARGIN)
             safeZoneCornerTopRight = (
             goodRightCollision.positionX - self.SAFE_MARGIN, collisionUpperLeftCorner.positionY + self.SAFE_MARGIN)
             safeZoneCornerBotLeft = (topLeftCorner[0], topLeftCorner[1])
-            tempNode = Node(
-                SafeZone(safeZoneCornerTopLeft, safeZoneCornerTopRight, safeZoneCornerBotLeft).getCenterOfSafeZone())
-            tempNode.isASafeNode = True
+            tempNode = self.graph.generateSafeZone(safeZoneCornerBotLeft, safeZoneCornerTopLeft, safeZoneCornerTopRight)
             goodRightCollision.setStartingNode(tempNode)
             self.graph.connectTwoNodes(borderNodeLeftTop, tempNode)
 
-
-    def __hasFrontalInnerCollision(self, obstacle):
-        for compteur in range(0, self.obstaclesList.__len__()):
-            currentObstacle = self.obstaclesList[compteur]
-            if currentObstacle != obstacle:
-                if currentObstacle.positionY <= obstacle.positionY + 2*self.SAFE_MARGIN and currentObstacle.positionY >= obstacle.positionY - 2*self.SAFE_MARGIN:
-                    if currentObstacle.positionX <= obstacle.positionX and currentObstacle.positionX >= obstacle.positionX - 2*self.SAFE_MARGIN:
-                        return True
-        return False
-
-
-    def __hasEndInnerCollision(self, obstacle):
-        for compteur in range(0, self.obstaclesList.__len__()):
-            currentObstacle = self.obstaclesList[compteur]
-            if currentObstacle != obstacle:
-                if currentObstacle.positionY <= obstacle.positionY + 2*self.SAFE_MARGIN and currentObstacle.positionY >= obstacle.positionY - 2*self.SAFE_MARGIN:
-                    if currentObstacle.positionX >= obstacle.positionX and currentObstacle.positionX <= obstacle.positionX + 2*self.SAFE_MARGIN:
-                        return True
-        return False
-
-
-    def __hasUpperInnerCollision(self, obstacle):
-        obstacleCollision = []
-        result = False
-        for compteur in range(0, self.obstaclesList.__len__()):
-            currentObstacle = self.obstaclesList[compteur]
-            if currentObstacle != obstacle:
-                if currentObstacle.positionX <= obstacle.positionX + 2*self.SAFE_MARGIN and currentObstacle.positionX >= obstacle.positionX - 2*self.SAFE_MARGIN:
-                    if currentObstacle.positionY < obstacle.positionY and currentObstacle.positionY >= obstacle.positionY - 2*self.SAFE_MARGIN:
-                        result = True
-                        obstacleCollision.append(currentObstacle)
-        return result, obstacleCollision
-
-
-    def __hasLowerInnerCollision(self, obstacle):
-        obstacleCollision = []
-        result = False
-        for compteur in range(0, self.obstaclesList.__len__()):
-            currentObstacle = self.obstaclesList[compteur]
-            if currentObstacle != obstacle:
-                if currentObstacle.positionX <= obstacle.positionX + 2*self.SAFE_MARGIN and currentObstacle.positionX >= obstacle.positionX - 2*self.SAFE_MARGIN:
-                    if currentObstacle.positionY > obstacle.positionY and currentObstacle.positionY <= obstacle.positionY + 2*self.SAFE_MARGIN:
-                        result = True
-                        obstacleCollision.append(currentObstacle)
-        return result, obstacleCollision
-
-    def __isCollidingWithWallLower(self, obstacle):
-        if obstacle.positionY >= self.MAP_SIZE_Y - 2*self.SAFE_MARGIN:
-            return True
-        return False
-
-    def __isCollidingWithWallUpper(self, obstacle):
-        if obstacle.positionY <= 0 + 2*self.SAFE_MARGIN:
-            return True
-        return False
-
-
-    def __isCollidingWithWallFront(self, obstacle):
-        if obstacle.positionX <= 0 + 2*self.SAFE_MARGIN:
-            return True
-        return False
-
-
-    def __isCollidingWithWallBack(self, obstacle):
-        if obstacle.positionX >= self.MAP_SIZE_X - 2*self.SAFE_MARGIN:
-            return True
-        return False
-
+   
 
     def __defaultStart(self, firstObstacle):
         safeZoneCornerTopLeft = (0, 0)
         safeZoneCornerBotLeft = (0, self.MAP_SIZE_Y)
         safeZoneCornerTopRight = (firstObstacle.positionX - self.SAFE_MARGIN, safeZoneCornerTopLeft[1])
-        startingNode = Node(
-            SafeZone(safeZoneCornerTopLeft, safeZoneCornerTopRight, safeZoneCornerBotLeft).getCenterOfSafeZone())
-        startingNode.isASafeNode = True
+        startingNode = self.graph.generateSafeZone(safeZoneCornerBotLeft, safeZoneCornerTopLeft, safeZoneCornerTopRight)
         firstObstacle.setStartingNode(startingNode)

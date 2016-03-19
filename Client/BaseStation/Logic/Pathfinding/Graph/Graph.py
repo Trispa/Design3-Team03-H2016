@@ -1,9 +1,13 @@
 from Client.BaseStation.Logic.Pathfinding.Graph.Node import Node
+from Client.BaseStation.Logic.Pathfinding.Graph.SafeZone import SafeZone
 import numpy as np
-class Graph:
-    def __init__(self):
-        self.nodesList = []
 
+class Graph:
+    def __init__(self, obstaclesList, safeMargin):
+        self.SAFE_MARGIN = safeMargin
+        self.nodesList = []
+        self.obstaclesList =  obstaclesList
+        self.safeZonesList = []
 
 
     def connectTwoNodes(self, firstNode, secondNode):
@@ -11,15 +15,13 @@ class Graph:
         firstNode.addConnectedNode(secondNode)
         secondNode.addConnectedNode(firstNode)
 
-    def findClosestNodeTo(self, point):
-        distance = 9999
+    def findGoodSafeNodeToGo(self, point):
         nodeToBeReturned = Node((0,0))
-        for compteur in range(0, self.nodesList.__len__()):
-            currentNode = self.nodesList[compteur]
-            distanceNode = np.sqrt(np.power((currentNode.positionX - point[0]),2)+np.power((currentNode.positionY - point[1]),2))
-            if distanceNode < distance:
-                distance = distanceNode
-                nodeToBeReturned = currentNode
+        for compteur in range(0, self.safeZonesList.__len__()):
+            currentZone = self.safeZonesList[compteur]
+            if point[0] >= currentZone.cornerTopLeft[0] and point[0] <= currentZone.cornerBottomRight[0]:
+                if point[1] >= currentZone.cornerTopLeft[1] and point[1] <= currentZone.cornerBottomRight[1]:
+                    nodeToBeReturned = currentZone.centerNode
         return nodeToBeReturned
 
 
@@ -40,5 +42,12 @@ class Graph:
             self.nodesList.append(secondNode)
         return firstNode, secondNode
 
+    def generateSafeZone(self, safeZoneCornerBotLeft, safeZoneCornerTopLeft, safeZoneCornerTopRight):
+        safeZone = SafeZone(safeZoneCornerTopLeft, safeZoneCornerTopRight, safeZoneCornerBotLeft)
+        tempNode = safeZone.getCenterNodeOfSafeZone()
+        self.safeZonesList.append(safeZone)
+        tempNode.isASafeNode = True
+        return tempNode
+
     def __len__(self):
-        return self.nodeList.__len__()
+        return self.nodesList.__len__()
