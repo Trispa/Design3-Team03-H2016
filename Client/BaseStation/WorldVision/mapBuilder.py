@@ -1,6 +1,7 @@
 import cv2
 import map
 import numpy as np
+from colorContainer import ColorContainer
 from Factories.ShapeFactory import ShapeFactory
 from Factories.ColorFactory import ColorFactory
 
@@ -69,7 +70,7 @@ class MapBuilder:
 
     def buildByColorClosing(self, mapImage, map):
 
-        for color in self.colors:
+        for color in ColorContainer.colors:
             hsvImage = cv2.cvtColor(mapImage,cv2.COLOR_BGR2HSV)
             coloredImage = cv2.inRange(hsvImage,color.lower,color.higher)
 
@@ -90,7 +91,7 @@ class MapBuilder:
 
     def buildByColorOpening(self, mapImage, map):
 
-        for color in self.colors:
+        for color in ColorContainer.colors:
             hsvImage = cv2.cvtColor(mapImage,cv2.COLOR_BGR2HSV)
             coloredImage = cv2.inRange(hsvImage,color.lower,color.higher)
 

@@ -12,7 +12,6 @@ class Square(Shape):
         self.maxX = 0
         self.minY = 1000
         self.maxY = 0
-        copy2 = contour
         contourCopy = contour
         if len(contourCopy) > 1:
             for corner in contourCopy:
@@ -26,6 +25,11 @@ class Square(Shape):
                     self.minX = corner[0]
                 if(corner[1] < self.minY):
                     self.minY = corner[1]
+        else:
+            self.minX = 0
+            self.maxX = 1600
+            self.minY = 0
+            self.maxY = 1600
 
     def __angleCos(self, p0, p1, p2):
         d1, d2 = (p0-p1).astype('float'), (p2-p1).astype('float')

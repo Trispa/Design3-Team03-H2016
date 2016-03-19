@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from colorContainer import ColorContainer
 
 from Client.BaseStation.WorldVision.Factories.ColorFactory import ColorFactory
 
@@ -97,7 +98,7 @@ class Shape:
         centerY = cropped.shape[1] / 2
         bgrShapeColor = np.uint8([[[cropped[centerX][centerY][0],cropped[centerX][centerY][1],cropped[centerX][centerY][2]]]])
         hsvShapeColor = cv2.cvtColor(bgrShapeColor,cv2.COLOR_BGR2HSV)
-        for color in self.colors:
+        for color in ColorContainer.colors:
             if color.isInSameColorRange(hsvShapeColor):
                 self.myColor = color
 
