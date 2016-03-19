@@ -15,9 +15,9 @@ class WorldImage:
     def setImage(self, mapImage):
         self.__mapImage = mapImage
 
-    def setMap(self, mapImage):
+    def buildMap(self, mapImage):
         self.__map = self.__myMapBuilder.buildMapWithAllFilter(mapImage, self.__map)
-
+        self.__map.robot.setOrientation()
 
     def defineShapesColor(self):
         self.__map.setShapesColor(self.__mapImage)
@@ -44,14 +44,22 @@ class WorldImage:
         else:
             limit = []
 
-        if len(self.__map.robot.getContour()) > 0:
-            robot = [self.__map.robot.getContour()]
+        if len(self.__map.robot.square.getContour()) > 0:
+            robot = [self.__map.robot.square.getContour()]
+            orientation = [self.__map.robot.circle.getContour()]
         else:
             robot = []
+            orientation = []
 
         contourList = self.__map.getContourList()
         cv2.drawContours( frame, self.__map.getContourList(), -1, (0, 255, 0), 3 )
         cv2.drawContours( frame, limit, -1, (0, 255, 0), 3 )
+        cv2.drawContours( frame, orientation, -1, (0, 255, 0), 3 )
         cv2.drawContours( frame, robot, -1, (0, 255, 0), 3 )
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        scale = 0.4
+        thickness = 1
+        cv2.putText(frame, str(self.__map.robot.orientation), self.__map.robot.square.findCenterOfMass(), font, scale, (255,255,255), thickness, 8)
+
 
         return frame

@@ -15,7 +15,7 @@ class worldVision:
     def getCurrentImage(self):
 
         ret, frame = self.camera.read()
-        self.mapImage.setMap(frame)
+        self.mapImage.buildMap(frame)
         self.mapImage.addLabels(frame)
         worldImage = self.mapImage.drawMapOnImage(frame)
 
