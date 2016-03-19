@@ -50,6 +50,5 @@ class MapBuilder:
                         if len(contour) == 4:
                             map.setMapLimit(contour)
 
-        map.setShapesColor(mapImage)
         map.deleteBlackShapes()
         return map
