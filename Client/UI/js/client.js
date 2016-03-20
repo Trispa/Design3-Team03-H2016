@@ -64,9 +64,9 @@ function runTimer(){
             $("#minute-left").text(nextMinutes);
         }
         nextSeconds = 59;
-    }else{
-        $("#seconds-left").text(nextSeconds);
     }
+    $("#seconds-left").text(nextSeconds);
+
 }
 
 function stopTimer(){
