@@ -1,17 +1,11 @@
 import cv2
 import numpy as np
+from colorContainer import ColorContainer
 
 from Client.BaseStation.WorldVision.Factories.ColorFactory import ColorFactory
 
 
 class Shape:
-    colorFactory = ColorFactory()
-    colors = []
-    colors.append(colorFactory.constructColor(np.uint8([[[0,255,0]]]), "Green"))
-    colors.append(colorFactory.constructColor(np.uint8([[[255,0,0]]]), "Blue"))
-    colors.append(colorFactory.constructColor(np.uint8([[[150,179,255]]]), "Red"))
-    colors.append(colorFactory.constructColor(np.uint8([[[0,255,255]]]), "Yellow"))
-    colors.append(colorFactory.constructColor(np.uint8([[[0,0,0]]]), "Black"))
 
     def __init__(self, geometricName, contour):
         self.contour = contour
@@ -97,7 +91,7 @@ class Shape:
         centerY = cropped.shape[1] / 2
         bgrShapeColor = np.uint8([[[cropped[centerX][centerY][0],cropped[centerX][centerY][1],cropped[centerX][centerY][2]]]])
         hsvShapeColor = cv2.cvtColor(bgrShapeColor,cv2.COLOR_BGR2HSV)
-        for color in self.colors:
+        for color in ColorContainer.colors:
             if color.isInSameColorRange(hsvShapeColor):
                 self.myColor = color
 

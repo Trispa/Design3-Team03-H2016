@@ -10,7 +10,7 @@ def printPosition(event,x,y,flags,param):
         resultFile.write("("+str(x)+","+str(y)+")")
         resultFile.close()
 
-beginingPhoto = 116
+beginingPhoto = 177
 endPhoto = 178
 
 for i in range(beginingPhoto,endPhoto+1):

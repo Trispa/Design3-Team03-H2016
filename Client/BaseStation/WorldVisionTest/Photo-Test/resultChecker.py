@@ -9,7 +9,7 @@ class ResultChecker:
         frameFileName = 'Frames/Picture ' + str(pictureNumber) + '.jpg'
         image = cv2.imread(frameFileName)
         self.geometricalImage = WorldImage(image)
-        self.geometricalImage.setMap(image)
+        self.geometricalImage.buildMap(image)
         resultFile = open(resultFileName, 'r')
         centerOfMassLine = resultFile.readline()
         centerOfMassLine = centerOfMassLine[13:]
@@ -43,8 +43,10 @@ class ResultChecker:
             for centerOfMass in self.centersOfMass:
                 if abs(shapeCenterOfMassX - centerOfMass[0]) < 10 and abs(shapeCenterOfMassY - centerOfMass[1]) < 10:
                     shapeFound += 1
-        print("Number of shapes found : " + str(shapeFound))
-        print("Number of shapes present : " + str(len(self.centersOfMass)))
+        if shapeFound != len(self.centersOfMass) or len(self.geometricalImage.getMap().getShapesList()) != len(self.centersOfMass):
+            print("Number of shapes found : " + str(len(self.geometricalImage.getMap().getShapesList())))
+            print("Number of real shapes found : " + str(shapeFound))
+            print("Number of shapes present : " + str(len(self.centersOfMass)))
         return shapeFound, len(self.centersOfMass)
 
     def checkIfLimitFound(self):

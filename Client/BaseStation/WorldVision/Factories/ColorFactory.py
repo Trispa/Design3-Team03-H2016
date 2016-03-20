@@ -7,5 +7,7 @@ class ColorFactory():
             return Red(bgrColor, colorName)
         elif colorName=="Black":
             return Black(bgrColor, colorName)
+        elif colorName == "Pink":
+            return Pink(bgrColor, colorName)
         else:
             return GenericColor(bgrColor, colorName)
