@@ -1,4 +1,5 @@
 from Client.BaseStation.Logic.Pathfinding.Obstacle import Obstacle
+
 class CollisionDetector:
     def __init__(self, mapSizeX, mapSizeY, safeMargin, obstacleList):
         self.MAP_SIZE_X = mapSizeX
@@ -6,29 +7,35 @@ class CollisionDetector:
         self.SAFE_MARGIN = safeMargin
         self.obstaclesList = obstacleList
 
-    def detectStackedObstacleXAxis(self, verifiedObstacle):
+
+    def detectCloserObstacleForEachCornerXAxis(self, verifiedObstacle):
         collisionUpperLeftCorner = Obstacle((verifiedObstacle.positionX, 0))
         collisionUpperRightCorner = Obstacle((verifiedObstacle.positionX, 0))
         collisionBottomLeftCorner = Obstacle((verifiedObstacle.positionX, self.MAP_SIZE_Y))
         collisionBottomRightCorner = Obstacle((verifiedObstacle.positionX, self.MAP_SIZE_Y))
+
         for compteur in range(0, self.obstaclesList.__len__()):
             currentObstacle = self.obstaclesList[compteur]
             if currentObstacle != verifiedObstacle:
                 if (verifiedObstacle.positionX - 2*self.SAFE_MARGIN <= currentObstacle.positionX and verifiedObstacle.positionX + 2*self.SAFE_MARGIN >= currentObstacle.positionX):
+
                     if currentObstacle.positionX <= verifiedObstacle.positionX and currentObstacle.positionY < verifiedObstacle.positionY:
                         if currentObstacle.positionY > collisionUpperLeftCorner.positionY:
                             collisionUpperLeftCorner = currentObstacle
+
                     if currentObstacle.positionX >= verifiedObstacle.positionX and currentObstacle.positionY < verifiedObstacle.positionY:
                         if currentObstacle.positionY > collisionUpperRightCorner.positionY:
                             collisionUpperRightCorner = currentObstacle
+
                     if currentObstacle.positionX <= verifiedObstacle.positionX and currentObstacle.positionY > verifiedObstacle.positionY:
                         if currentObstacle.positionY < collisionBottomLeftCorner.positionY:
                             collisionBottomLeftCorner = currentObstacle
+
                     if currentObstacle.positionX >= verifiedObstacle.positionX and currentObstacle.positionY > verifiedObstacle.positionY:
                         if currentObstacle.positionY < collisionBottomRightCorner.positionY:
                             collisionBottomRightCorner = currentObstacle
-        return collisionUpperLeftCorner, collisionUpperRightCorner, collisionBottomLeftCorner, collisionBottomRightCorner
 
+        return collisionUpperLeftCorner, collisionUpperRightCorner, collisionBottomLeftCorner, collisionBottomRightCorner
 
 
     def hasFrontalInnerCollision(self, obstacle):
@@ -76,10 +83,12 @@ class CollisionDetector:
                         obstacleCollision.append(currentObstacle)
         return result, obstacleCollision
 
+
     def isCollidingWithWallLower(self, obstacle):
         if obstacle.positionY >= self.MAP_SIZE_Y - 2*self.SAFE_MARGIN:
             return True
         return False
+
 
     def isCollidingWithWallUpper(self, obstacle):
         if obstacle.positionY <= 0 + 2*self.SAFE_MARGIN:

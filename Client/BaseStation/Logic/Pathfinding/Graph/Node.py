@@ -13,8 +13,4 @@ class Node:
     def getConnectedNodesList(self):
         return self.connectedNodes
 
-    def __getitem__(self, item):
-        if item == 0:
-            return self.positionX
-        else:
-            return self.positionY
+

@@ -1,24 +1,20 @@
 from Client.BaseStation.Logic.Pathfinding.Graph.GraphGenerator import GraphGenerator
 from Client.BaseStation.Logic.Pathfinding.Path import Path
 from Client.BaseStation.Logic.Pathfinding.MapAdaptator import MapAdaptator
-from Client.BaseStation.Logic.Pathfinding.Obstacle import Obstacle
 from Client.BaseStation.Logic.Pathfinding.Graph.Node import Node
-from Client.BaseStation.Logic.Pathfinding.LineInterceptionCalculator import LineInterceptionCalculator
+from Client.BaseStation.Logic.Pathfinding.LineOfSightCalculator import LineOfSightCalculator
 import cv2
 import numpy as np
 
 class Pathfinder:
-    def __init__(self, obstaclesList): # (self,map)
-        mapSizeX = 1000
-        mapSizeY = 600
-        #self.mapAdaptator = MapAdaptator(map)
-        #obstaclesList, mapSizeX, mapSizeY = self.mapAdaptator.getMapInfo()
+    def __init__(self, map):
+        self.mapAdaptator = MapAdaptator(map)
+        obstaclesList, mapSizeX, mapSizeY = self.mapAdaptator.getMapInfo()
         self.graphGenerator = GraphGenerator(obstaclesList, mapSizeX, mapSizeY)
         self.graph = self.graphGenerator.generateGraph()
-        self.lineInterceptionCalculator = LineInterceptionCalculator()
+        self.lineOfSightCalculator = LineOfSightCalculator(self.graph)
         self.pathsList = []
         self.goodPaths = []
-
 
 
     def findPath(self, positionRobot, pointToMoveTo):
@@ -30,15 +26,15 @@ class Pathfinder:
         path.append(startingPathNode)
         self.pathsList.append(path)
         self.__findAllPaths(path, endingPathNode)
+
         goodPath = Path()
         goodPath.totalDistance = 99999
-
         for compteur in range(0, self.goodPaths.__len__()):
             currentPath = self.goodPaths[compteur]
             currentPath.append(Node(pointToMoveTo))
 
         self.__polishGoodPaths()
-        self.__tryStraightLine()
+        self.lineOfSightCalculator.tryStraightLine(self.goodPaths)
 
         for compteur in range(0, self.goodPaths.__len__()):
             currentPath= self.goodPaths[compteur]
@@ -50,110 +46,44 @@ class Pathfinder:
         return goodPath
 
 
-    def __tryStraightLine(self):
-        for compteurPath in range(0, self.goodPaths.__len__()):
-            currentPath = self.goodPaths[compteurPath]
-            nodesToBeRemoved = []
-            compteurNode = 0
-            self.printPath(currentPath)
-            while compteurNode < currentPath.__len__():
-                currentNode = currentPath[compteurNode]
-                compteurFinalNode = currentPath.__len__()-1
-                lineOfSight = False
-                while compteurFinalNode > compteurNode+1:
-                    finalNode = currentPath[compteurFinalNode]
-                    if lineOfSight == False:
-                        topResult = True
-                        botResult = True
-                        leftResult = True
-                        rightResult = True
-                        for compteurObstacle in range(0, self.graph.obstaclesList.__len__()-1):
-                            currentObstacle = self.graph.obstaclesList[compteurObstacle]
-                            pointB1 = (currentObstacle.positionX-self.graph.SAFE_MARGIN, currentObstacle.positionY-self.graph.SAFE_MARGIN)
-                            pointB2 = (currentObstacle.positionX+self.graph.SAFE_MARGIN, currentObstacle.positionY-self.graph.SAFE_MARGIN)
-
-                            pointA1 = (currentNode.positionX, currentNode.positionY)
-                            pointA2 = (finalNode.positionX, finalNode.positionY)
-                            intersection = self.lineInterceptionCalculator.findInterception(pointA1, pointA2, pointB1, pointB2)
-
-                            if intersection != False:
-                                if (intersection[0] < pointB2[0] and intersection[0] > pointB1[0]) and (intersection[0] < pointA2[0] and intersection[0] > pointA1[0]):
-                                    topResult = False
-
-                            pointB1 = (currentObstacle.positionX-self.graph.SAFE_MARGIN, currentObstacle.positionY+self.graph.SAFE_MARGIN)
-                            pointB2 = (currentObstacle.positionX+self.graph.SAFE_MARGIN, currentObstacle.positionY+self.graph.SAFE_MARGIN)
-                            intersection = self.lineInterceptionCalculator.findInterception(pointA1, pointA2, pointB1, pointB2)
-                            if intersection != False:
-                                if (intersection[0] < pointB2[0] and intersection[0] > pointB1[0]) and (intersection[0] < pointA2[0] and intersection[0] > pointA1[0]):
-                                    botResult = False
-
-                            pointB1 = (currentObstacle.positionX-self.graph.SAFE_MARGIN, currentObstacle.positionY-self.graph.SAFE_MARGIN)
-                            pointB2 = (currentObstacle.positionX-self.graph.SAFE_MARGIN, currentObstacle.positionY+self.graph.SAFE_MARGIN)
-                            intersection = self.lineInterceptionCalculator.findInterception(pointA1, pointA2, pointB1, pointB2)
-                            if intersection != False:
-                                if (intersection[1] < pointB2[1] and intersection[1] > pointB1[1]) and (intersection[1] < pointA2[1] and intersection[1] > pointA1[1]):
-                                    leftResult = False
-
-                            pointB1 = (currentObstacle.positionX+self.graph.SAFE_MARGIN, currentObstacle.positionY-self.graph.SAFE_MARGIN)
-                            pointB2 = (currentObstacle.positionX+self.graph.SAFE_MARGIN, currentObstacle.positionY+self.graph.SAFE_MARGIN)
-                            intersection = self.lineInterceptionCalculator.findInterception(pointA1, pointA2, pointB1, pointB2)
-                            if intersection != False:
-                                if (intersection[1] < pointB2[1] and intersection[1] > pointB1[1]) and (intersection[1] < pointA2[1] and intersection[1] > pointA1[1]):
-                                    rightResult = False
-
-                        if topResult == True and botResult == True and leftResult == True and rightResult == True:
-                            lineOfSight = True
-
-                            for compteurRemoved in range(compteurNode+1, compteurFinalNode):
-                                nodesToBeRemoved.append(currentPath[compteurRemoved])
-                            compteurNode = compteurFinalNode -1
-                    compteurFinalNode += -1
-                compteurNode += 1
-
-            for compteurToBeRemoved in range(0, nodesToBeRemoved.__len__()):
-                currentPath.remove(nodesToBeRemoved[compteurToBeRemoved])
-
-
-
-
-
-
-    def printPath(self, goodPath):
-        for compteur in range(0, goodPath.__len__()):
-            print "path:", goodPath[compteur].positionX, goodPath[compteur].positionY
-        print goodPath.totalDistance
-
     def __polishGoodPaths(self):
         for compteur in range(0,self.goodPaths.__len__()):
             path = self.goodPaths[compteur]
             nodesToBeRemoved = []
-            for compteur in range(0, path.__len__()):
+
+            for compteur in range(1, path.__len__()):
                 if path[compteur].isASafeNode == True:
-                    try:
-                        previousNode = path[compteur-1]
-                        nextNode = path[compteur+1]
-                        if previousNode.positionX != nextNode.positionX:
-                            nodesToBeRemoved.append(path[compteur])
-                    except IndexError:
+                    previousNode = path[compteur-1]
+                    nextNode = path[compteur+1]
+
+                    if previousNode.positionX != nextNode.positionX:
                         nodesToBeRemoved.append(path[compteur])
+
             for compteur in range(0, nodesToBeRemoved.__len__()):
                 path.remove(nodesToBeRemoved[compteur])
+
 
     def __findAllPaths(self, path, endingPathNode):
         lastNode = path[-1]
         if lastNode != endingPathNode and path.isOpen() == True:
             for compteur in range(0, lastNode.connectedNodes.__len__()):
-
                 if (path.contains(lastNode.connectedNodes[compteur]) == False):
-
                     newPath = path.clone()
                     newPath.append(lastNode.connectedNodes[compteur])
                     self.pathsList.append(newPath)
                     self.__findAllPaths(newPath, endingPathNode)
             self.pathsList.remove(path)
+
         elif lastNode == endingPathNode:
             self.goodPaths.append(path)
 
+    #methode pour afficher le path dans console, pas importante
+    def printPath(self, goodPath):
+        for compteur in range(0, goodPath.__len__()):
+            print "path:", goodPath[compteur].positionX, goodPath[compteur].positionY
+        print goodPath.totalDistance
+
+    #methode pour display les shits du pathfinding, pas importante non plus
     def __displayPathfinder(self, goodPath, positionRobot):
         img = np.zeros((600, 1000, 3), np.uint8)
         cv2.namedWindow('image')
@@ -193,17 +123,6 @@ class Pathfinder:
             if esc == 27: #escape pressed
                 break
         cv2.destroyAllWindows
-
-obstacleList = []
-obstacleList.append(Obstacle((40,425)))
-obstacleList.append(Obstacle((370,200)))
-obstacleList.append(Obstacle((950,450)))
-#obstacleList.append(Obstacle((360,440)))
-#obstacleList.append(Obstacle((390,550)))
-obstacleList.append(Obstacle((420,420)))
-obstacleList.append(Obstacle((395,390)))
-pathfinder = Pathfinder(obstacleList)
-pathfinder.findPath((200,400), (520,300))
 
 
 

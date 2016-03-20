@@ -13,7 +13,7 @@ class Path:
         for compteur in range(1, self.nodeList.__len__()):
             lastNode = self.nodeList[compteur - 1]
             currentNode = self.nodeList[compteur]
-            distance = np.sqrt(np.power((lastNode.positionX - currentNode[0]),2)+np.power((lastNode.positionY - currentNode[1]),2))
+            distance = np.sqrt(((lastNode.positionX - currentNode.positionX)**2)+((lastNode.positionY - currentNode.positionY)**2))
             self.totalDistance += distance
 
     def clone(self):

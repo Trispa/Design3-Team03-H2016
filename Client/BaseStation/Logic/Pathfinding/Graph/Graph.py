@@ -1,6 +1,5 @@
 from Client.BaseStation.Logic.Pathfinding.Graph.Node import Node
 from Client.BaseStation.Logic.Pathfinding.Graph.SafeZone import SafeZone
-import numpy as np
 
 class Graph:
     def __init__(self, obstaclesList, safeMargin):
@@ -14,6 +13,7 @@ class Graph:
         firstNode, secondNode = self.__areNodesPresentInNodesList(firstNode, secondNode)
         firstNode.addConnectedNode(secondNode)
         secondNode.addConnectedNode(firstNode)
+
 
     def findGoodSafeNodeToGo(self, point):
         nodeToBeReturned = Node((0,0))
@@ -42,12 +42,14 @@ class Graph:
             self.nodesList.append(secondNode)
         return firstNode, secondNode
 
+
     def generateSafeZone(self, safeZoneCornerBotLeft, safeZoneCornerTopLeft, safeZoneCornerTopRight):
         safeZone = SafeZone(safeZoneCornerTopLeft, safeZoneCornerTopRight, safeZoneCornerBotLeft)
         tempNode = safeZone.getCenterNodeOfSafeZone()
         self.safeZonesList.append(safeZone)
         tempNode.isASafeNode = True
         return tempNode
+
 
     def __len__(self):
         return self.nodesList.__len__()
