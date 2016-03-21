@@ -10,7 +10,8 @@ class Shape:
     def __init__(self, geometricName, contour):
         self.contour = contour
         self.geometricName = geometricName
-        self.myColor = self.colorFactory.constructColor(np.uint8([[[0,255,255]]]), "Not defined")
+        colorFactory = ColorFactory()
+        self.myColor = colorFactory.constructColor(np.uint8([[[0,255,255]]]), "Not defined")
 
 
     def __eq__(self, other):
