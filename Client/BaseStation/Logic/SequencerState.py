@@ -12,7 +12,8 @@ class SendingBotToChargingStationState():
               str(self.path[int(obstacleListIndex)][1]) + ")")
 
         coordinates = {"type": "charging station",
-                       "end":"no",
+                       "endOfPhase":"no",
+                       "endOfCycle":"no",
                        "index": str(self.obstacleIndex),
                        "positionTO": {
                            "positionX": str(self.path[int(obstacleListIndex)][0]),
@@ -26,6 +27,7 @@ class SendingBotToChargingStationState():
         if(self.obstacleIndex == self.path.__len__() - 1):
             sequencer.setState(SendingBotToTreasureState(), (self.path[int(obstacleListIndex)][0],self.path[int(obstacleListIndex)][1]))
             coordinates["index"] = "-1"
+            coordinates["endOfPhase"] = "yes"
 
         return (coordinates)
 
@@ -43,7 +45,8 @@ class SendingBotToTreasureState():
               str(self.path[int(obstacleListIndex)][1]) + ")")
 
         coordinates = {"type": "treasure",
-                       "end":"no",
+                       "endOfPhase":"no",
+                       "endOfCycle":"no",
                        "index": str(self.obstacleIndex),
                        "positionTO": {
                            "positionX": str(self.path[int(obstacleListIndex)][0]),
@@ -57,6 +60,7 @@ class SendingBotToTreasureState():
         if(self.obstacleIndex == self.path.__len__() - 1):
             sequencer.setState(SendingBotToTargetState(), (self.path[int(obstacleListIndex)][0],self.path[int(obstacleListIndex)][1]))
             coordinates["index"] = "-1"
+            coordinates["endOfPhase"] = "yes"
 
         return (coordinates)
 
@@ -74,7 +78,8 @@ class SendingBotToTargetState():
               str(self.path[int(obstacleListIndex)][1]) + ")")
 
         coordinates = {"type": "target",
-                       "end":"no",
+                       "endOfPhase":"no",
+                       "endOfCycle":"no",
                        "index": str(self.obstacleIndex),
                        "positionTO": {
                            "positionX": str(self.path[int(obstacleListIndex)][0]),
@@ -88,7 +93,8 @@ class SendingBotToTargetState():
         if(self.obstacleIndex == self.path.__len__() - 1):
             sequencer.setState(SendingBotToChargingStationState(), (self.path[int(obstacleListIndex)][0],self.path[int(obstacleListIndex)][1]))
             coordinates["index"] = "-1"
-            coordinates["end"] = "yes"
+            coordinates["endOfPhase"] = "yes"
+            coordinates["endOfCycle"] = "yes"
 
         return (coordinates)
 
@@ -106,7 +112,8 @@ class SendingBotToChargingStationStateOnly():
               str(self.path[int(obstacleListIndex)][1]) + ")")
 
         coordinates = {"type": "charging station",
-                       "end":"no",
+                       "endOfPhase":"no",
+                       "endOfCycle":"no",
                        "index": str(self.obstacleIndex),
                        "positionTO": {
                            "positionX": str(self.path[int(obstacleListIndex)][0]),
@@ -120,7 +127,8 @@ class SendingBotToChargingStationStateOnly():
         if(self.obstacleIndex == self.path.__len__() - 1):
             sequencer.setState(SendingBotToChargingStationState(), (self.path[int(obstacleListIndex)][0],self.path[int(obstacleListIndex)][1]))
             coordinates["index"] = "-1"
-            coordinates["end"] = "yes"
+            coordinates["endOfPhase"] = "yes"
+            coordinates["endOfCycle"] = "yes"
 
         return (coordinates)
 
@@ -138,7 +146,8 @@ class SendingBotToTreasureStateOnly():
               str(self.path[int(obstacleListIndex)][1]) + ")")
 
         coordinates = {"type": "treasure",
-                       "end":"no",
+                       "endOfPhase":"no",
+                       "endOfCycle":"no",
                        "index": str(self.obstacleIndex),
                        "positionTO": {
                            "positionX": str(self.path[int(obstacleListIndex)][0]),
@@ -152,6 +161,7 @@ class SendingBotToTreasureStateOnly():
         if(self.obstacleIndex == self.path.__len__() - 1):
             sequencer.setState(SendingBotToChargingStationState(), (self.path[int(obstacleListIndex)][0],self.path[int(obstacleListIndex)][1]))
             coordinates["index"] = "-1"
-            coordinates["end"] = "yes"
+            coordinates["endOfPhase"] = "yes"
+            coordinates["endOfCycle"] = "yes"
 
         return (coordinates)

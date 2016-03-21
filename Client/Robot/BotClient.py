@@ -1,6 +1,6 @@
 import json
 from socketIO_client import SocketIO
-from Logic.OrderReceiver import OrderReceiver
+from Logic.BotDispatcher import BotDispatcher
 from Logic.WheelManager import WheelManager
 from Logic.RobotMock import RobotMock
 from Mechanical.MoteurRoue import MoteurRoue
@@ -12,8 +12,8 @@ configPath = os.path.join(c, "..", "..", "Shared", "config.json")
 with open(configPath) as json_data_file:
     config = json.load(json_data_file)
 socketIO = SocketIO(config['url'], int(config['port']))
-#orderReceiver = OrderReceiver(RobotMock())
-orderReceiver = OrderReceiver(RobotMock(), WheelManager(MoteurRoue()))
+orderReceiver = BotDispatcher(RobotMock())
+#orderReceiver = BotDispatcher(RobotMock(), WheelManager(MoteurRoue()))
 
 def needNewCoordinates(*args):
     print("heading toward next coordinates")
