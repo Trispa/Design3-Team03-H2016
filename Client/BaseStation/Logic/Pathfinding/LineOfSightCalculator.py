@@ -58,8 +58,7 @@ class LineOfSightCalculator:
         currentObstacle.positionX + self.graph.SAFE_MARGIN, currentObstacle.positionY + self.graph.SAFE_MARGIN)
         intersection = self.lineInterceptionCalculator.findInterception(pointA1, pointA2, pointB1, pointB2)
         if intersection != False:
-            if (intersection[1] < pointB2[1] and intersection[1] > pointB1[1]) and (
-                    intersection[1] < pointA2[1] and intersection[1] > pointA1[1]):
+            if self.__isInYRange(intersection, pointA1, pointA2, pointB1, pointB2):
                 rightResult = False
         return rightResult
 
@@ -71,8 +70,7 @@ class LineOfSightCalculator:
         currentObstacle.positionX - self.graph.SAFE_MARGIN, currentObstacle.positionY + self.graph.SAFE_MARGIN)
         intersection = self.lineInterceptionCalculator.findInterception(pointA1, pointA2, pointB1, pointB2)
         if intersection != False:
-            if (intersection[1] < pointB2[1] and intersection[1] > pointB1[1]) and (
-                    intersection[1] < pointA2[1] and intersection[1] > pointA1[1]):
+            if self.__isInYRange(intersection, pointA1, pointA2, pointB1, pointB2):
                 leftResult = False
         return leftResult
 
@@ -84,8 +82,7 @@ class LineOfSightCalculator:
         currentObstacle.positionX + self.graph.SAFE_MARGIN, currentObstacle.positionY + self.graph.SAFE_MARGIN)
         intersection = self.lineInterceptionCalculator.findInterception(pointA1, pointA2, pointB1, pointB2)
         if intersection != False:
-            if (intersection[0] < pointB2[0] and intersection[0] > pointB1[0]) and (
-                    intersection[0] < pointA2[0] and intersection[0] > pointA1[0]):
+            if self.__isInXRange(intersection, pointA1, pointA2, pointB1, pointB2):
                 botResult = False
         return botResult
 
@@ -95,7 +92,17 @@ class LineOfSightCalculator:
         pointB2 = (currentObstacle.positionX + self.graph.SAFE_MARGIN, currentObstacle.positionY - self.graph.SAFE_MARGIN)
         intersection = self.lineInterceptionCalculator.findInterception(pointA1, pointA2, pointB1, pointB2)
         if intersection != False:
-            if (intersection[0] < pointB2[0] and intersection[0] > pointB1[0]) and (
-                    intersection[0] < pointA2[0] and intersection[0] > pointA1[0]):
+            if self.__isInXRange(intersection, pointA1, pointA2, pointB1, pointB2):
                 topResult = False
         return topResult
+
+
+    def __isInXRange(self,intersection, pointA1, pointA2, pointB1, pointB2):
+        return (intersection[0] < pointB2[0] and intersection[0] > pointB1[0]) and (
+                    intersection[0] < pointA2[0] and intersection[0] > pointA1[0])
+
+
+    def __isInYRange(self,intersection, pointA1, pointA2, pointB1, pointB2):
+        return (intersection[1] < pointB2[1] and intersection[1] > pointB1[1]) and (
+                    intersection[1] < pointA2[1] and intersection[1] > pointA1[1])
+
