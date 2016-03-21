@@ -5,6 +5,7 @@ import time
 from Client.BaseStation.WorldVision.allColors import GenericColor
 from Client.Robot.Mechanical.CameraTower import CameraTower
 import math
+from Client.Robot.Mechanical.MoteurRoue import MoteurRoue
 
 # Print seulement les 2 plus gros carre si plus grand que 100
 # Detecter une seul grosse forme par couleur
@@ -19,6 +20,7 @@ class VisionRobot:
 
     def __init__(self):
 
+        self.robot = MoteurRoue()
         self.camera = CameraTower()
         self.camera.step = 1
         self.tresor = None
@@ -59,7 +61,6 @@ class VisionRobot:
 
                 cv2.rectangle(self.image,(x,y),(x+w,y+h),(0,255,0),2)
                 self.addLabels(self.tresor)
-                self.moveCameraEmbarquee()
 
                 self.largeurTresorPixel = max(w,h)
                 return self.largeurTresorPixel
@@ -103,25 +104,35 @@ class VisionRobot:
 
 
     def moveCameraEmbarquee(self):
-        x,y,w,h = cv2.boundingRect(self.tresor)
-        ih, iw, ic = self.image.shape
-        # print x, y, iw, ih
-        square = 20
+        centerX = False
+        centerY = False
+        if self.tresor != None:
 
-        xob = iw/2  - square
-        yob = ih/2 - square
-        # print xob, yob
+            x,y,w,h = cv2.boundingRect(self.tresor)
+            ih, iw, ic = self.image.shape
+            # print x, y, iw, ih
+            square = 20
 
-        cv2.rectangle(self.image,(xob, yob),(xob + 2*square, yob - 2*square),(0,255,0),2)
+            xob = iw/2  - square
+            yob = ih/2 - square
+            # print xob, yob
 
-        if x <= (iw/2 - square):
-            self.camera.moveCameraLeft()
-        elif x >= (iw/2 + square):
-            self.camera.moveCameraRight()
-        if y <= (ih/2 - square):
-            self.camera.moveCameraUp()
-        elif y >= (ih/2 + square):
-            self.camera.moveCameraDown()
+            cv2.rectangle(self.image,(xob, yob),(xob + 2*square, yob - 2*square),(0,255,0),2)
+
+            if x <= (iw/2 - square):
+                self.camera.moveCameraLeft()
+            elif x >= (iw/2 + square):
+                self.camera.moveCameraRight()
+            else:
+                centerX = True
+            if y <= (ih/2 - square):
+                self.camera.moveCameraUp()
+            elif y >= (ih/2 + square):
+                self.camera.moveCameraDown()
+            else:
+                centerY = True
+
+        return centerX and centerY
 
     def balayageCamera(self):
         if self.tresor == None:
@@ -155,6 +166,7 @@ class VisionRobot:
 
     def goCamera(self):
         findSomething = False
+        center = False
         self.camera.moveCameraByAngle(1, 0)
         self.camera.moveCameraByAngle(0, 80)
         while(self.video.isOpened()):
@@ -163,7 +175,12 @@ class VisionRobot:
                 findSomething = self.balayageCamera()
             self.detecColor()
             self.findContour()
-            print self.distanceFromCamera()
+            center = self.moveCameraEmbarquee()
+            dis = self.distanceFromCamera()
+            print dis
+
+            if not self.robot.isRunning and center:
+                self.approcheDuRobot(self.distanceFromCamera())
 
             cv2.imshow("Image", self.image)
             if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -171,11 +188,17 @@ class VisionRobot:
         self.video.release()
         cv2.destroyAllWindows()
 
+    def approcheDuRobot(self, distanceDuTresor):
+        if abs(distanceDuTresor[0]) > 1:
+            self.robot.avanceVector(distanceDuTresor[0], 0)
 
+        elif abs(distanceDuTresor[1]) > 1:
+            self.robot.avanceVector(0, distanceDuTresor[1])
 
 
 if __name__ == "__main__":
     vr = VisionRobot()
+
     vr.goCamera()
     # print("distance")
     # print(vr.DistanceAdjascentte(34))

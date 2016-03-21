@@ -17,11 +17,11 @@ class CameraTower:
             if angle > 135:
                 angle = 135
             self.degreeVerti = self.angleLimit(angle)
-            print("Verticale : " + str(self.degreeVerti))
+            # print("Verticale : " + str(self.degreeVerti))
             self.m.setTarget(direction, self.getPWMfromAngle(angle))
         elif direction == 1:
             self.degreeHori = self.angleLimit(angle)
-            print("Horizaontal : " + str(self.degreeHori))
+            # print("Horizaontal : " + str(self.degreeHori))
             self.m.setTarget(direction, self.getPWMfromAngle(angle))
         else:
             return -1

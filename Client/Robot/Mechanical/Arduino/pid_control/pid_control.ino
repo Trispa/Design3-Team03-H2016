@@ -17,8 +17,6 @@ long listNbTicks[4] = {0, 0, 0, 0};
 unsigned long listEndCounting[4] = {0,0,0,0};
 unsigned long listStartCounting[4] = {0,0,0,0};
 bool timeToCompute = false;
-unsigned long freq = 0;
-unsigned long graphTime = 0;
 unsigned int ar = 0;
 unsigned long diffTime = 0;
 char* chaine;
@@ -68,6 +66,12 @@ void loop()
           updateFreqEnco();
           listPID[i].Compute();
           dv[i].asservissement();
+        }
+        else
+        {
+          listEndCounting[i] = 0;
+          listStartCounting[i] = 0;
+          listNbTicks[i] = 0;
         }
     }
 

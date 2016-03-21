@@ -1,5 +1,6 @@
 import time
 import SerialPortCommunicator
+from threading import Timer,Thread,Event
 
 NB_MOTEUR = 5
 CW = 0
@@ -8,27 +9,26 @@ MAX_SPEED = 0.15
 class MoteurRoue:
     def __init__(self):
         self.spc = SerialPortCommunicator.SerialPortCommunicator()
+        self.thread = None
+        self.isRunning = False
 
     def stopAllMotors(self):
         self.spc.stopAllMotor()
 
-
-    # def rotation(self, direction, speed):
-    #     self.beforeChangeDirection()
-    #     if(direction == "CW"):
-    #         for i in range(1, NB_MOTEUR):
-    #             self.spc.driveMoteur(i, speed, CW)
-    #             # time.sleep(0.01)
-    #     elif(direction == "CCW"):
-    #         for i in range(1, NB_MOTEUR):
-    #             self.spc.driveMoteur(i, speed, CCW)
+    def stopAllMotorsInterrupt(self):
+        self.spc.stopAllMotor()
+        self.isRunning = False
+        self.thread.cancel()
 
     def rotation(self, degree):
+        while self.isRunning:
+            pass
+        self.isRunning = True
         speed = 0.05
-        timeToSleep = 0.035 * degree + 0.075
-        direction = "CCW"
+        timeToSleep = 0.035 * abs(degree) + 0.075
+        direction = "CW"
         if degree <= 0:
-            direction = "CW"
+            direction = "CCW"
 
         self.beforeChangeDirection()
         if(direction == 'CW'):
@@ -38,16 +38,24 @@ class MoteurRoue:
         elif(direction == "CCW"):
             for i in range(1, NB_MOTEUR):
                 self.spc.driveMoteur(i, speed, CCW)
-        time.sleep(timeToSleep)
-        self.stopAllMotors()
+        # time.sleep(timeToSleep)
+        # self.stopAllMotors()
+        self.debutDeLInterruption(timeToSleep)
         return timeToSleep
 
     def beforeChangeDirection(self):
         self.stopAllMotors()
         time.sleep(1)
 
+    def debutDeLInterruption(self, t):
+        self.thread = Timer(t, self.stopAllMotorsInterrupt)
+        self.thread.start()
+
 #Distance en centimetre
     def avanceVector(self, x, y):
+        while self.isRunning:
+            pass
+        self.isRunning = True
         self.beforeChangeDirection()
         xSpeed = MAX_SPEED
         ySpeed = MAX_SPEED
@@ -73,10 +81,16 @@ class MoteurRoue:
             self.spc.driveMoteur(1, ySpeed, CW)
             self.spc.driveMoteur(4, ySpeed, CCW)
 
-        time.sleep(timeToTravel)
-        self.stopAllMotors()
-
+        self.debutDeLInterruption(timeToTravel)
+        # time.sleep(timeToTravel)
+        # self.stopAllMotors()
         return timeToTravel
+
+
+
+    def isRunning(self):
+        return self.isRunning
+
 
     def demo3(self):
         self.avanceVector(0, 66)
@@ -106,13 +120,19 @@ if __name__ == '__main__':
     mr = MoteurRoue()
     mr.stopAllMotors()
     time.sleep(0.1)
-    mr.demo3()
-    # mr.avanceVector(0,60)
+    # mr.demo3()
+    mr.rotation(38.66)
     # time.sleep(1)
-    # mr.avanceVector(0,-120)
+    mr.avanceVector(64.03,0)
     # time.sleep(1)
-    # mr.avanceVector(0,60)
-    # print(mr.spc.getAsciiManchester())
+    mr.avanceVector(-64.03,0)
+    # time.sleep(1)
+    mr.rotation(-38.66)
+    # time.sleep(1)
+    # mr.avanceVector(0,-30)
+    # time.sleep(1)
+    # mr.avanceVector(0,30)
+    # mr.rotation(360)
 
 
 
