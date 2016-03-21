@@ -11,6 +11,11 @@ class OrderReceiver():
         self.wheelManager = wheelManager
         self.setState(ExecutingOrderState.ExecutingOrderState())
 
+    def initializeRobot(self, positionX, positionY, orientation):
+        self.robot.positionX = positionX
+        self.robot.positionY = positionY
+        self.robot.orientation = orientation
+
     def handleCurrentState(self, coordinates):
         print(coordinates)
         print("Bot going to " + coordinates["type"] +
@@ -20,6 +25,7 @@ class OrderReceiver():
 
         botPosition= (int(coordinates["positionFROM"]["positionX"]),int(coordinates["positionFROM"]["positionY"]))
         orientation = int(coordinates["positionFROM"]["orientation"])
+
         referentialConverter = ReferentialConverter(botPosition,orientation)
         pointConverted = referentialConverter.convertWorldToRobot((int(coordinates["positionTO"]["positionX"]), int(coordinates["positionTO"]["positionY"])))
         #pointConverted = (int(coordinates[0]["position"]["positionX"]), int(coordinates[0]["position"]["positionY"]))

@@ -26,11 +26,11 @@ def sendNextCoordinates(*args):
 def startRound():
     botPosition, botOrientation = dispatcher.initialiseWorldData()
 
-    print("Bot is at : " + botPosition)
-    print("Bot is orienting towards :" + botOrientation + "degrees")
+    print("Bot is at : (" + str(botPosition[0]) + "," + str(botPosition[1]) + ")")
+    print("Bot is orienting towards :" + str(botOrientation) + "degrees")
 
-    botState = {"positionX": botPosition(0),
-            "positionY": botPosition(1),
+    botState = {"positionX": botPosition[0],
+            "positionY": botPosition[1],
             "orientation": botOrientation}
     socketIO.emit("startSignalRobot",botState)
 
@@ -39,11 +39,15 @@ def sendImage():
     socketIO.emit('sendImage', dispatcher.getCurrentWorldImage())
 
 def sendToChargingStation():
+    dispatcher.initialiseWorldData()
     dispatcher.sendToChargingStation()
+    startRound()
     socketIO.emit("sendNextCoordinates",dispatcher.handleCurrentSequencerState(0))
 
 def sendToTreasure():
+    dispatcher.initialiseWorldData()
     dispatcher.sendToTreasure()
+    startRound()
     socketIO.emit("sendNextCoordinates",dispatcher.handleCurrentSequencerState(0))
 
 

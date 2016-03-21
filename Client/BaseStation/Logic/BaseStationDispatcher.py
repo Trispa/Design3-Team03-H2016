@@ -11,12 +11,12 @@ class BaseStationDispatcher():
 
     def handleCurrentSequencerState(self, obstacleListIndex):
         map = self.world.getCurrentMap()
-        return self.sequencer.handleCurrentState(obstacleListIndex, map.robot.findCenterOfMass())
+        return self.sequencer.handleCurrentState(obstacleListIndex, map.robot.square.findCenterOfMass(), map.robot.orientation)
 
     def initialiseWorldData(self):
         map = self.world.getCurrentMap()
         self.pathfinder = Pathfinder(map)
-        self.sequencer = seq(self.pathfinder)
+        self.sequencer = seq(self.pathfinder, map.robot.square.findCenterOfMass())
         return map.robot.square.findCenterOfMass(), map.robot.orientation
 
     def getCurrentWorldImage(self):
@@ -26,7 +26,11 @@ class BaseStationDispatcher():
         return base64ConvertedImage
 
     def sendToChargingStation(self):
-        self.sequencer.setState(SendingBotToChargingStationStateOnly)
+        map = self.world.getCurrentMap()
+        robotPosition = map.robot.square.findCenterOfMass()
+        self.sequencer.setState(SendingBotToChargingStationStateOnly(), robotPosition)
 
     def sendToTreasure(self):
-        self.sequencer.setState(SendingBotToTreasureStateOnly)
+        map = self.world.getCurrentMap()
+        robotPosition = map.robot.square.findCenterOfMass()
+        self.sequencer.setState(SendingBotToTreasureStateOnly(), robotPosition)

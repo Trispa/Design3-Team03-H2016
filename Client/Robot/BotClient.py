@@ -25,6 +25,7 @@ def needNewCoordinates(*args):
 def startRound(*args):
     print("start round")
     orderReceiver.acceptOrders()
+    orderReceiver.initializeRobot(int(args[0]["positionX"]), int(args[0]["positionY"]), int(args[0]["orientation"]))
     socketIO.emit(orderReceiver.state.sendingSignal, {"index": "0"})
 
 def endRound():

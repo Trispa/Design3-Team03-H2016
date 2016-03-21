@@ -49,10 +49,10 @@ if __name__ == '__main__':
     #geometricalImage = WorldImage(frame)
     #worldVision = worldVision()
     phoposToVerified = []
-    for x in range(181, 213):
+    for x in range(215, 216):
         phoposToVerified.append(str(x))
     for photoNumber in phoposToVerified:
-        frame = cv2.imread('Photos/Picture ' + photoNumber + '.jpg')
+        #frame = cv2.imread('Photos/Picture ' + photoNumber + '.jpg')
 
         # x1, x2, y1, y2 = 941, 900 , 711, 659
         # # line equation y = f(X)
@@ -72,12 +72,14 @@ if __name__ == '__main__':
 
 
 
-        geometricalImage = WorldImage(frame)
-        geometricalImage.buildMap(frame)
-        geometricalImage.addLabels(frame)
-        worldImage = geometricalImage.drawMapOnImage(frame)
+        #geometricalImage = WorldImage(frame)
+        #geometricalImage.buildMap(frame)
+        #geometricalImage.addLabels(frame)
+        worldV = worldVision()
+        map = worldV.getCurrentImage()
+        #worldImage = geometricalImage.drawMapOnImage(frame)
         #print(geometricalImage.getMap().robot.findCenterOfMass())
-        cv2.imshow('Picture ' + photoNumber, worldImage)
+        cv2.imshow('Picture ' + photoNumber, map)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
              break
