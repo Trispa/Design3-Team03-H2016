@@ -1,5 +1,7 @@
 from unittest import TestCase
-from Client.Robot.Logic.SpeedCalculator import SpeedCalculator
+
+from Client.Robot.Logic.Deplacement.SpeedCalculator import SpeedCalculator
+
 
 class SpeedCalculatorTest(TestCase):
     A_POINT = (145,256)
