@@ -27,9 +27,9 @@ class Square(Shape):
                     self.minY = corner[1]
         else:
             self.minX = 0
-            self.maxX = 1200
+            self.maxX = 960
             self.minY = 0
-            self.maxY = 1200
+            self.maxY = 720
 
     def __angleCos(self, p0, p1, p2):
         d1, d2 = (p0-p1).astype('float'), (p2-p1).astype('float')

@@ -9,7 +9,7 @@ class Sequencer :
         self.pathfinder = pathfinder
         self.setState(SequencerState.SendingBotToChargingStationState(), robotPosition)
 
-    def handleCurrentState(self, obstacleListIndex, robotPosition):
-        return self.state.handle(self, obstacleListIndex, robotPosition)
+    def handleCurrentState(self, obstacleListIndex, robotPosition, robotOrientation):
+        return self.state.handle(self, obstacleListIndex, robotPosition, robotOrientation)
 
 

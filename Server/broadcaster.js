@@ -74,6 +74,14 @@ io.on('connection', function (client) {
             console.log(body);
         });
     });
+
+    client.on('sendToChargingStation', function(){
+        io.emit('sendToChargingStation');
+    });
+
+    client.on('sendToTreasure', function(){
+        io.emit('sendToTreasure');
+    });
 });
 
 server.listen(port, url);

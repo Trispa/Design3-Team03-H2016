@@ -69,7 +69,7 @@ class MapBuilder:
 
     def buildByColorClosing(self, mapImage, map):
 
-        for color in ColorContainer.colors:
+        for color in ColorContainer.islandColors:
             hsvImage = cv2.cvtColor(mapImage,cv2.COLOR_BGR2HSV)
             coloredImage = cv2.inRange(hsvImage,color.lower,color.higher)
 
@@ -90,7 +90,7 @@ class MapBuilder:
 
     def buildByColorOpening(self, mapImage, map):
 
-        for color in ColorContainer.colors:
+        for color in ColorContainer.islandColors:
             hsvImage = cv2.cvtColor(mapImage,cv2.COLOR_BGR2HSV)
             coloredImage = cv2.inRange(hsvImage,color.lower,color.higher)
 

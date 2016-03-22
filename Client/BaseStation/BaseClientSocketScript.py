@@ -3,7 +3,7 @@ import os
 import sys
 import threading
 
-from Client.BaseStation.Logic.BaseStationDispatcher import BaseStationDispatcher
+from Logic.BaseStationDispatcher import BaseStationDispatcher
 
 sys.path.insert(1, "/Logic")
 sys.path.append("/../../Shared")
@@ -24,15 +24,32 @@ def sendNextCoordinates(*args):
     socketIO.emit("sendNextCoordinates",dispatcher.handleCurrentSequencerState(args[0]["index"]))
 
 def startRound():
-    botState = {"positionX":"0",
-                "positionY":"0",
-                "orientation":"0"}
-    dispatcher.initialiseWorldData()
+    botPosition, botOrientation = dispatcher.initialiseWorldData()
+
+    print("Bot is at : (" + str(botPosition[0]) + "," + str(botPosition[1]) + ")")
+    print("Bot is orienting towards :" + str(botOrientation) + "degrees")
+
+    botState = {"positionX": botPosition[0],
+            "positionY": botPosition[1],
+            "orientation": botOrientation}
     socketIO.emit("startSignalRobot",botState)
 
 def sendImage():
     print("asking for new images")
     socketIO.emit('sendImage', dispatcher.getCurrentWorldImage())
+
+def sendToChargingStation():
+    dispatcher.initialiseWorldData()
+    dispatcher.sendToChargingStation()
+    startRound()
+    socketIO.emit("sendNextCoordinates",dispatcher.handleCurrentSequencerState(0))
+
+def sendToTreasure():
+    dispatcher.initialiseWorldData()
+    dispatcher.sendToTreasure()
+    startRound()
+    socketIO.emit("sendNextCoordinates",dispatcher.handleCurrentSequencerState(0))
+
 
 def setInterval(function, seconds):
     def func_wrapper():
@@ -45,6 +62,8 @@ def setInterval(function, seconds):
 setInterval(sendImage, 5)
 socketIO.on('needNewCoordinates', sendNextCoordinates)
 socketIO.on('startSignal', startRound)
+socketIO.on('sendToChargingStation', sendToChargingStation)
+socketIO.on('sendToTreasure', sendToTreasure)
 
 socketIO.wait()
 
