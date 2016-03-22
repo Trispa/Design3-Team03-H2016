@@ -8,8 +8,9 @@
 #include "ReadManchester.h"
 
 /*********DEBUT********/
-volatile int val = 0;
-unsigned long now = 0;
+volatile int oldVal = 0;
+volatile int newVal = 0;
+volatile unsigned long now = 0;
 unsigned long timeToChange = 0;
 unsigned long timebetweenNowToChange = 0;
 char bits[128];
@@ -23,16 +24,18 @@ volatile unsigned int data ;
 
 //int volatile trouve = 0;
 void ReadManchester::readBitInterrupt(){
+  
   now = micros();
 	bitAllowed = 1;
+  
+  
 	
 }
 ReadManchester::ReadManchester(int pinManchester){
 	
 	pinMode(pinManchester, INPUT);
 	this->_pinManchester = pinManchester;
-  this->_enableManchester = true;
-	this->enableInterrupt(true);	
+ 	this->enableInterrupt(true);	
   this->enableManchester();
   
 }
@@ -42,40 +45,42 @@ void   ReadManchester::getMaschesterBits()
 {	
 	  if(this->_enableManchester){
   		if(bitAllowed){
-      //Serial.pri ntln(now, DEC);
-      val = digitalRead(_pinManchester);
+      //Serial.println(now);
+      delayMicroseconds(14);
+      newVal = digitalRead(_pinManchester);
+      digitalWrite(13, newVal);
+      
       timebetweenNowToChange = now - timeToChange;
-      //Serial.println(timebetweenNowToChange);
-      if(val == 0){
-        if(timebetweenNowToChange > 150 && timebetweenNowToChange < 250){
+      //Serial.println(timebetweenNowToChange, DEC);
+      if(oldVal == HIGH){
+        if(timebetweenNowToChange > 40 && timebetweenNowToChange < 80 ){ // on vise envirion 44{
           bits[indice++]= '1';
-          bits[indice++]= '0';
-        }
-        else{
-          bits[indice++]= '0';
-        }
-      }
-      if(val== 1){
-       if(timebetweenNowToChange > 150 && timebetweenNowToChange < 250){
-          bits[indice++]= '0';
+        }else if (timebetweenNowToChange > 150 && timebetweenNowToChange < 175){ //on vise environ 112
+          bits[indice++]= '1';
           bits[indice++]= '1';
         }
-        else{
-           bits[indice++]= '1';
-        }
+      }else if (oldVal == LOW){
+          if (timebetweenNowToChange > 100 && timebetweenNowToChange < 140){ //on vise environ 148
+               bits[indice++]= '0';
+          }else if (timebetweenNowToChange > 200 && timebetweenNowToChange < 250){ //on vise environ 212
+               bits[indice++]= '0';
+               bits[indice++]= '0';
+          }
+          
       }
+      
       if(indice > 128){
         this->_chaineCopie = bits;
-        Serial.println(this->_chaineCopie);
         indice = 0;
-        enableInterrupt(false); 
+        this->enableInterrupt(false); 
         this->disableManchester();
-       
+     
         
       }
+     
       timeToChange = now;
+      oldVal = newVal;
       bitAllowed = 0;
-      
     }
  
 	 }
