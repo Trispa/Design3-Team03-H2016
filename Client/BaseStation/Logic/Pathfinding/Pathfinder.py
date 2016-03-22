@@ -21,14 +21,11 @@ class Pathfinder:
 
 
     def findPath(self, positionRobot, pointToMoveTo):
-        positionRobotConverted = (positionRobot[0] - self.minCorner[0], positionRobot[1] - self.minCorner[1])
-        positionToMoveTo = (pointToMoveTo[0] - self.minCorner[0], pointToMoveTo[1] - self.minCorner[1])
-
-        startingPathNode = self.graph.findGoodSafeNodeToGo(positionRobotConverted)
-        endingPathNode = self.graph.findGoodSafeNodeToGo(positionToMoveTo)
+        startingPathNode = self.graph.findGoodSafeNodeToGo(positionRobot)
+        endingPathNode = self.graph.findGoodSafeNodeToGo(pointToMoveTo)
 
         path = Path()
-        path.append(Node(positionRobotConverted))
+        path.append(Node(positionRobot))
         path.append(startingPathNode)
         self.pathsList.append(path)
         self.__findAllPaths(path, endingPathNode)
@@ -37,7 +34,7 @@ class Pathfinder:
         goodPath.totalDistance = 99999
         for compteur in range(0, self.goodPaths.__len__()):
             currentPath = self.goodPaths[compteur]
-            currentPath.append(Node(positionToMoveTo))
+            currentPath.append(Node(pointToMoveTo))
 
         self.__polishGoodPaths()
         self.lineOfSightCalculator.tryStraightLine(self.goodPaths)
@@ -49,7 +46,7 @@ class Pathfinder:
                     goodPath = currentPath
         self.printPath(goodPath)
         self.theGoodPath = goodPath
-        self.__displayPathfinder(goodPath, positionRobotConverted)
+        self.__displayPathfinder(goodPath, positionRobot)
         return goodPath
 
 
