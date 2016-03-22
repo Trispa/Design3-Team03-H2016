@@ -1,8 +1,11 @@
 from unittest import TestCase
+
 from mock import MagicMock
-from Client.Robot.Logic.WheelManager import WheelManager
-from mock import patch
 from mock import call
+from mock import patch
+
+from Client.Robot.Logic.Deplacement.WheelManager import WheelManager
+
 
 class WheelManagerTest(TestCase):
     AN_ANGLE = 90

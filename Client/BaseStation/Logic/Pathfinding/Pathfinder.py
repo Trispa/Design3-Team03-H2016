@@ -2,6 +2,7 @@ from Client.BaseStation.Logic.Pathfinding.Graph.GraphGenerator import GraphGener
 from Client.BaseStation.Logic.Pathfinding.Path import Path
 from Client.BaseStation.Logic.Pathfinding.MapAdaptator import MapAdaptator
 from Client.BaseStation.Logic.Pathfinding.Graph.Node import Node
+from Client.BaseStation.Logic.Pathfinding.LineOfSightCalculator import LineOfSightCalculator
 import cv2
 import numpy as np
 
@@ -11,52 +12,78 @@ class Pathfinder:
         obstaclesList, mapSizeX, mapSizeY = self.mapAdaptator.getMapInfo()
         self.graphGenerator = GraphGenerator(obstaclesList, mapSizeX, mapSizeY)
         self.graph = self.graphGenerator.generateGraph()
+        self.lineOfSightCalculator = LineOfSightCalculator(self.graph)
         self.pathsList = []
-
+        self.goodPaths = []
 
 
     def findPath(self, positionRobot, pointToMoveTo):
-        startingPathNode = self.graph.findClosestNodeTo(positionRobot)
-        endingPathNode = self.graph.findClosestNodeTo(pointToMoveTo)
+        startingPathNode = self.graph.findGoodSafeNodeToGo(positionRobot)
+        endingPathNode = self.graph.findGoodSafeNodeToGo(pointToMoveTo)
+
         path = Path()
+        path.append(Node(positionRobot))
         path.append(startingPathNode)
         self.pathsList.append(path)
         self.__findAllPaths(path, endingPathNode)
+
         goodPath = Path()
         goodPath.totalDistance = 99999
-        for compteur in range(0, self.pathsList.__len__()):
-            currentPath = self.pathsList[compteur]
+        for compteur in range(0, self.goodPaths.__len__()):
+            currentPath = self.goodPaths[compteur]
+            currentPath.append(Node(pointToMoveTo))
 
-            if currentPath[currentPath.__len__()-1] == endingPathNode:
+        self.__polishGoodPaths()
+        self.lineOfSightCalculator.tryStraightLine(self.goodPaths)
 
-                currentPath = self.pathsList[compteur]
-                if currentPath.totalDistance < goodPath.totalDistance:
-
+        for compteur in range(0, self.goodPaths.__len__()):
+            currentPath= self.goodPaths[compteur]
+            currentPath.ajustDistance()
+            if currentPath.totalDistance < goodPath.totalDistance:
                     goodPath = currentPath
-        goodPath.append(Node(pointToMoveTo))
+        self.printPath(goodPath)
+        self.__displayPathfinder(goodPath, positionRobot)
         return goodPath
 
 
-    def printPath(self, goodPath):
-        for compteur in range(0, goodPath.__len__()):
-            print "path:", goodPath[compteur].positionX, goodPath[compteur].positionY
-        print goodPath.totalDistance
+    def __polishGoodPaths(self):
+        for compteur in range(0,self.goodPaths.__len__()):
+            path = self.goodPaths[compteur]
+            nodesToBeRemoved = []
+
+            for compteur in range(1, path.__len__()):
+                if path[compteur].isASafeNode == True:
+                    previousNode = path[compteur-1]
+                    nextNode = path[compteur+1]
+
+                    if previousNode.positionX != nextNode.positionX:
+                        nodesToBeRemoved.append(path[compteur])
+
+            for compteur in range(0, nodesToBeRemoved.__len__()):
+                path.remove(nodesToBeRemoved[compteur])
+
 
     def __findAllPaths(self, path, endingPathNode):
-        lastNode = path[path.__len__()-1]
-
+        lastNode = path[-1]
         if lastNode != endingPathNode and path.isOpen() == True:
-
             for compteur in range(0, lastNode.connectedNodes.__len__()):
-
                 if (path.contains(lastNode.connectedNodes[compteur]) == False):
-
                     newPath = path.clone()
                     newPath.append(lastNode.connectedNodes[compteur])
                     self.pathsList.append(newPath)
                     self.__findAllPaths(newPath, endingPathNode)
             self.pathsList.remove(path)
 
+        elif lastNode == endingPathNode:
+            self.goodPaths.append(path)
+
+    #methode pour afficher le path dans console, pas importante
+    def printPath(self, goodPath):
+        for compteur in range(0, goodPath.__len__()):
+            print "path:", goodPath[compteur].positionX, goodPath[compteur].positionY
+        print goodPath.totalDistance
+
+    #methode pour display les shits du pathfinding, pas importante non plus
     def __displayPathfinder(self, goodPath, positionRobot):
         img = np.zeros((600, 1000, 3), np.uint8)
         cv2.namedWindow('image')
@@ -66,15 +93,14 @@ class Pathfinder:
                       (0, 255, 0), -1, 1)
             self.graph.nodesList.sort(key=lambda node: node.positionX)
         for compteur in range (0, self.graph.nodesList.__len__()):
-
             currentNode = self.graph.nodesList[(compteur)]
             departPoint = (currentNode.positionX, currentNode.positionY)
             connectedNode = currentNode.getConnectedNodesList()
-
+            #print "GRAPh", currentNode.positionX, currentNode.positionY
             for compteurConnected in range(0, connectedNode.__len__()):
                 finalNode = connectedNode[(compteurConnected)]
                 finalPoint = (finalNode.positionX, finalNode.positionY)
-
+                #print "     Connected", finalNode.positionX, finalNode.positionY
                 cv2.line(img, departPoint, finalPoint,
                       (255, 0, 0), 2, 1)
 
@@ -86,16 +112,17 @@ class Pathfinder:
             endLine =  (goodPath[compteur].positionX,goodPath[compteur].positionY)
             cv2.line(img, startLine, endLine,
                       (0, 0, 255), 2, 1)
-
+            
+        for compteur in range (0, self.graph.safeZonesList.__len__()):
+            currentZone = self.graph.safeZonesList[compteur]
+            cv2.rectangle(img, currentZone.cornerTopLeft, currentZone.cornerBottomRight,
+                      (0, 150, 150), 2, 1)
         cv2.imshow('image', img)
         while (1):
             esc = cv2.waitKey(1)
             if esc == 27: #escape pressed
                 break
         cv2.destroyAllWindows
-
-
-
 
 
 
