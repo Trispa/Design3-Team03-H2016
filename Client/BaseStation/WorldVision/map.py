@@ -71,7 +71,7 @@ class Map:
 
     def setMapLimit(self, contour):
         cornerList = []
-        minX = 1000
+        minX = 0
         maxX = 0
         minY = 1000
         maxY = 0
@@ -82,8 +82,6 @@ class Map:
                 maxX = corner[0]
             if(corner[1] > maxY):
                 maxY = corner[1]
-            if(corner[0] < minX):
-                minX = corner[0]
             if(corner[1] < minY):
                 minY = corner[1]
         newFoundLimit = Square("limit", np.array([[[minX,minY + 5]],[[minX,maxY - 5]],[[maxX, maxY - 5]],[[maxX,minY + 5]]], dtype=np.int32))
