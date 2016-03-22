@@ -1,21 +1,20 @@
-import time
-from SpeedCalculator import SpeedCalculator
-import sys
+from Client.Robot.Logic.Deplacement.SpeedCalculator import SpeedCalculator
+from Client.Robot.Logic.Deplacement.PixelToCentimeterConverter import PixelToCentimeterConverter
 
 
 class WheelManager:
     def __init__(self, moteurRoue):
         #envoyer une valeur pour identifier le channel de chaque roue
-
+        self.pixelToCentimeterConverter = PixelToCentimeterConverter()
         self.moteurRoue = moteurRoue
         self.speedCalculator = SpeedCalculator()
         self.isMoving = False
 
 
     def moveTo(self, pointToMoveTo):
-
+            pointConverted = self.pixelToCentimeterConverter.convertPixelToCentimeter(pointToMoveTo)
             self.isMoving = True
-            timeToTravel = self.moteurRoue.avanceVector(pointToMoveTo[0],pointToMoveTo[1])
+            timeToTravel = self.moteurRoue.avanceVector(pointConverted[0],pointConverted[1])
             self.isMoving = False
 
 

@@ -55,18 +55,23 @@ function runTimer(){
     var minutes = parseInt($("#minute-left").text());
     var nextSeconds = seconds - 1;
     var nextMinutes = minutes - 1;
+    var isOver = false;
     if(seconds == 0){
         if(minutes == 0){
             stopTimer();
             socket.emit("sendEndSignal");
             $("#buttonGo").prop("disabled",true);
+            isOver = true;
         }else{
             $("#minute-left").text(nextMinutes);
         }
         nextSeconds = 59;
-    }else{
+    }
+    if(!isOver){
         $("#seconds-left").text(nextSeconds);
     }
+
+
 }
 
 function stopTimer(){
@@ -75,6 +80,15 @@ function stopTimer(){
 
 function reset(){
     $("#buttonGo").prop("disabled",false);
-    $("#seconds-left").text("15");
-    $("#minute-left").text("0");
+    $("#seconds-left").text("0");
+    $("#minute-left").text("10");
+}
+
+function sendBotToChargingStationOnly(){
+    socket.emit("sendToChargingStation");
+}
+
+
+function sendToTreasure(){
+    socket.emit("sendToTreasure");
 }

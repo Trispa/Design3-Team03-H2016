@@ -1,1 +1,2 @@
-py ../Client/BaseStation/BaseClient.py
+cd ..
+py -m Client.BaseStation.BaseClientSocketScript.py

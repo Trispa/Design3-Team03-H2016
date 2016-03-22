@@ -1,4 +1,4 @@
-import ReferentialConverter
+import Client.Robot.Logic.ReferentialConverter
 
 class SpeedCalculator:
     VITESSE = 20 #constante vitesse angulaire, to be updated

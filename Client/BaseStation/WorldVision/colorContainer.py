@@ -17,7 +17,6 @@ class ColorContainer():
     colors.append(colorFactory.constructColor(np.uint8([[[150,179,255]]]), "Red"))
     colors.append(colorFactory.constructColor(np.uint8([[[0,255,255]]]), "Yellow"))
 
-
     def getAllColors(self):
         return self.colors
 

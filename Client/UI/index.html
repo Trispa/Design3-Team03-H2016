@@ -18,6 +18,9 @@
         <div class="col-md-10 col-md-offset-1" id="map-section">
             <img id="path">
             <!--<video id="video" autoplay></video>-->
+            <button id="buttonCharge" class="col-md-3 col-sm-12 col-xs-12 btn-lg btn-primary" onclick="sendBotToChargingStationOnly()">Send bot to charging station (only)</button>
+            <button id="buttonTreasure" class="col-md-3 col-sm-12 col-xs-12 btn-lg btn-primary" onclick="sendToTreasure()">Send bot to grab treasure (only)</button>
+            <!--<button id="buttonTarget" class="col-md-3 col-sm-12 col-xs-12 btn-lg btn-primary" onclick="sendManchesterCall()">Ask for a target</button>-->
         </div>
 
     </div>
@@ -28,7 +31,7 @@
             <div class="col-md-6 col-sm-3 col-xs-3" id="time-left">
                 <span id="minute-left">10</span>
                 <span>:</span>
-                <span id="seconds-left">15</span>
+                <span id="seconds-left">0</span>
             </div>
             <div class="col-md-6 col-sm-3 col-xs-3">Statut :</div>
             <div class="col-md-6 col-sm-3 col-xs-3" id="botStatus">N/A</div>

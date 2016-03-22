@@ -1,15 +1,20 @@
-from State import ExecutingOrderState
+from State import FollowingPathState
 from State import RefusingOrderState
 from ReferentialConverter import ReferentialConverter
 
-class OrderReceiver():
+class BotDispatcher():
     def setState(self, newState) :
         self.state = newState
 
     def __init__(self, robot, wheelManager):
         self.robot = robot
         self.wheelManager = wheelManager
-        self.setState(ExecutingOrderState.ExecutingOrderState())
+        self.setState(FollowingPathState.FollowingPathState())
+
+    def initializeRobot(self, positionX, positionY, orientation):
+        self.robot.positionX = positionX
+        self.robot.positionY = positionY
+        self.robot.orientation = orientation
 
     def handleCurrentState(self, coordinates):
         print(coordinates)
@@ -20,16 +25,18 @@ class OrderReceiver():
 
         botPosition= (int(coordinates["positionFROM"]["positionX"]),int(coordinates["positionFROM"]["positionY"]))
         orientation = int(coordinates["positionFROM"]["orientation"])
+
         referentialConverter = ReferentialConverter(botPosition,orientation)
         pointConverted = referentialConverter.convertWorldToRobot((int(coordinates["positionTO"]["positionX"]), int(coordinates["positionTO"]["positionY"])))
         #pointConverted = (int(coordinates[0]["position"]["positionX"]), int(coordinates[0]["position"]["positionY"]))
-        self.state.handle(self, pointConverted)
 
-        if(coordinates["end"] == "yes"):
-            self.setState(RefusingOrderState.RefusingOrderState())
+        coordinates["positionTO"]["positionX"] = pointConverted[0]
+        coordinates["positionTO"]["positionY"] = pointConverted[1]
+
+        self.state.handle(self, coordinates)
 
     def refuseOrders(self):
         self.setState(RefusingOrderState.RefusingOrderState())
 
     def acceptOrders(self):
-        self.setState(ExecutingOrderState.ExecutingOrderState())
+        self.setState(FollowingPathState.FollowingPathState())

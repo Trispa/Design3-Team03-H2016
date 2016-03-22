@@ -17,6 +17,7 @@ class worldVision:
 
         ret, frame = self.camera.read()
         frame = cv2.resize(frame, (960, 720))
+
         self.mapImage.buildMap(frame)
         self.mapImage.addLabels(frame)
         worldImage = self.mapImage.drawMapOnImage(frame)

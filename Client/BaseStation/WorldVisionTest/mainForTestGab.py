@@ -46,23 +46,27 @@ if __name__ == '__main__':
     #frame = cv2.imread('Images/Test6.jpg')
     #geometricalImage = WorldImage(frame)
     #worldVision = worldVision()
-    # phoposToVerified = []
-    # for x in range(181, 213):
-    #     phoposToVerified.append(str(x))
-    # for photoNumber in phoposToVerified:
-    #     frame = cv2.imread('Photos/Picture ' + photoNumber + '.jpg')
-    #
-    #     geometricalImage = WorldImage(frame)
-    #     geometricalImage.buildMap(frame)
-    #     geometricalImage.addLabels(frame)
-    #     worldImage = geometricalImage.drawMapOnImage(frame)
-    #     #print(geometricalImage.getMap().robot.findCenterOfMass())
-    #     cv2.imshow('Picture ' + photoNumber, worldImage)
-    #
-    #     if cv2.waitKey(1) & 0xFF == ord('q'):
-    #          break
-    #
-    # cv2.waitKey(0)
+
+    phoposToVerified = []
+    for x in range(198, 213):
+        frame = cv2.imread('Photo-Test/Frames/Picture ' + str(x) + '.jpg')
+
+        # x1, x2, y1, y2 = 941, 900 , 711, 659
+        # # line equation y = f(X)
+        # def line_eq(X):
+        #     m = (y2 - y1) / (x2 - x1)
+        #     return m * (X - x1) + y1
+        #
+        # line = np.vectorize(line_eq)
+        #
+        # x = np.arange(0, 1200)
+        # y = line(x).astype(np.uint)
+        #
+        # cv2.line(frame, (x[0], y[0]), (x[-1], y[-1]), (0,0,0))
+        # cv2.imshow("foo",frame)
+        # cv2.waitKey()
+
+
 
     while(True):
         ret, frame = camera.read()
@@ -71,14 +75,13 @@ if __name__ == '__main__':
         geometricalImage = WorldImage(frame)
         geometricalImage.buildMap(frame)
         geometricalImage.addLabels(frame)
+        # worldV = worldVision()
+        # map = worldV.getCurrentImage()
         worldImage = geometricalImage.drawMapOnImage(frame)
         #print(geometricalImage.getMap().robot.findCenterOfMass())
-        cv2.imshow("Monde", worldImage)
-        # geometricalImage = WorldImage(frame)
-        # geometricalImage.setMap()
-        # geometricalImage.defineShapesColor()
-        # geometricalImage.addLabels()
-        # worldImage = geometricalImage.drawMapOnImage()
+
+        cv2.imshow('Picture ' + str(x), worldImage)
+
 
         # geometricalImage = WorldImage(frame)
         # geometricalImage.setMap()
