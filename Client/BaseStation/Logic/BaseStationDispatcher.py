@@ -8,6 +8,7 @@ import base64
 class BaseStationDispatcher():
     def __init__(self):
         self.world = worldVision()
+        self.pathfinder = None
 
     def handleCurrentSequencerState(self, obstacleListIndex):
         map = self.world.getCurrentMap()
@@ -21,6 +22,8 @@ class BaseStationDispatcher():
 
     def getCurrentWorldImage(self):
         image = self.world.getCurrentImage()
+        if(self.pathfinder != None):
+            self.pathfinder.drawPath(image)
         convertedImage = cv2.imencode('.png',image)[1]
         base64ConvertedImage = base64.encodestring(convertedImage)
         return base64ConvertedImage
