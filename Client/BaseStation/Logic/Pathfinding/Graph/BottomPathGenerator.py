@@ -38,7 +38,7 @@ class BottomPathGenerator:
 
     def __collisionIsOnTheLeftSide(self, borderNodeLeftBottom, bottomLeftCorner, collisionBottomLeftCorner):
         tempNode = Node((collisionBottomLeftCorner.positionX + self.SAFE_MARGIN, borderNodeLeftBottom.positionY))
-        safeZoneCornerBotLeft = (borderNodeLeftBottom[0], collisionBottomLeftCorner.positionY - self.SAFE_MARGIN)
+        safeZoneCornerBotLeft = (borderNodeLeftBottom.positionX, collisionBottomLeftCorner.positionY - self.SAFE_MARGIN)
         safeZoneCornerTopRight = (tempNode.positionX, bottomLeftCorner[1])
         safeZoneCornerTopLeft = (bottomLeftCorner[0], bottomLeftCorner[1])
         safeNode = self.graph.generateSafeZone(safeZoneCornerBotLeft, safeZoneCornerTopLeft, safeZoneCornerTopRight)
