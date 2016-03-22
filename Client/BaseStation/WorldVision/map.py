@@ -16,15 +16,14 @@ class Map:
         newContourCenterOfMassX, newContourCenterOfMassY = newPossibleshape.findCenterOfMass()
         for shapeAlreadyFound in self.__shapes:
             oldContourCenterOfMassX, oldContourCenterOfMassY = shapeAlreadyFound.findCenterOfMass()
-            if(abs(newContourCenterOfMassX - oldContourCenterOfMassX) < 15 and abs(newContourCenterOfMassY - oldContourCenterOfMassY) < 15):
+            if(abs(newContourCenterOfMassX - oldContourCenterOfMassX) < 20 and abs(newContourCenterOfMassY - oldContourCenterOfMassY) < 20):
                 return shapeAlreadyFound
         return None
 
     def addShape(self, shapeToAdd):
-
-        x, y = shapeToAdd.findCenterOfMass()
-        if abs(x-262) < 30 or abs(y-482) < 30:
-            pass
+        shapeToAddArea = shapeToAdd.getArea()
+        avg = self.getAverageShapeSize()
+        difference = abs(shapeToAdd.getArea() - self.getAverageShapeSize())
 
         if abs(shapeToAdd.getArea() - self.getAverageShapeSize()) < 1100 or len(self.__shapes) < 3:
             similarShape = self.findSimilarShape(shapeToAdd)

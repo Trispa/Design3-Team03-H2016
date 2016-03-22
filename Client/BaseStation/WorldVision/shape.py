@@ -20,10 +20,13 @@ class Shape:
         return self.contour[0].item(0) == other.contour[0].item(0)
 
     def findCenterOfMass(self):
-        moment = cv2.moments(self.contour)
-        centerOfMassX = int(moment['m10']/moment['m00'])
-        centerOfMassY = int(moment['m01']/moment['m00'])
-        return centerOfMassX, centerOfMassY
+        if len(self.contour) > 2:
+            moment = cv2.moments(self.contour)
+            centerOfMassX = int(moment['m10']/moment['m00'])
+            centerOfMassY = int(moment['m01']/moment['m00'])
+            return centerOfMassX, centerOfMassY
+        else:
+            return 0, 0
 
     def isEqualEdges(self):
         arbitraryEdge = np.array([self.contour[0], self.contour[1]])

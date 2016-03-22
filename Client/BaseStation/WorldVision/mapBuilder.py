@@ -40,7 +40,7 @@ class MapBuilder:
                     lessPreciseContour = cv2.approxPolyDP(contour, 0.05*contour_len, True)
                     contour = cv2.approxPolyDP(contour, 0.02*contour_len, True)
 
-                    if cv2.contourArea(contour) > 300 and cv2.isContourConvex(contour) and cv2.contourArea(contour) < 30000:
+                    if cv2.contourArea(contour) > 900 and cv2.isContourConvex(contour) and cv2.contourArea(contour) < 30000:
                         myShape = self.shapeFactory.ConstructShape(contour)
                         myShape.setColor(mapImage)
                         if(myShape.getColorName() == "Pink"):
@@ -63,13 +63,12 @@ class MapBuilder:
         map.setShapesColor(mapImage)
         map.filterRobot()
         map.deleteBlackShapes()
-        map.deleteOutsiderShapes()
 
         return map
 
     def buildByColorClosing(self, mapImage, map):
 
-        for color in ColorContainer.colors:
+        for color in ColorContainer.islandColors:
             hsvImage = cv2.cvtColor(mapImage,cv2.COLOR_BGR2HSV)
             coloredImage = cv2.inRange(hsvImage,color.lower,color.higher)
 
@@ -90,7 +89,7 @@ class MapBuilder:
 
     def buildByColorOpening(self, mapImage, map):
 
-        for color in ColorContainer.colors:
+        for color in ColorContainer.islandColors:
             hsvImage = cv2.cvtColor(mapImage,cv2.COLOR_BGR2HSV)
             coloredImage = cv2.inRange(hsvImage,color.lower,color.higher)
 

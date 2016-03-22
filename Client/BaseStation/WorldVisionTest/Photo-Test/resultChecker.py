@@ -54,7 +54,7 @@ class ResultChecker:
             print("Limit not found")
 
     def checkIfRobotFound(self):
-        if self.geometricalImage.getMap().robot.getArea() < 1:
+        if self.geometricalImage.getMap().robot.square.getArea() < 1:
             print("Robot not found")
 
 
