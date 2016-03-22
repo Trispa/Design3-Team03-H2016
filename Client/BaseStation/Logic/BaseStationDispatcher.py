@@ -1,6 +1,7 @@
 from Client.BaseStation.WorldVision.worldVision import worldVision
 from Client.BaseStation.Logic.Sequencer import Sequencer as seq
 from Client.BaseStation.Logic.Pathfinding.Pathfinder import Pathfinder
+from MapCoordinatesAjuster import MapCoordinatesAjuster
 from SequencerState import *
 import cv2
 import base64
@@ -12,7 +13,9 @@ class BaseStationDispatcher():
 
     def handleCurrentSequencerState(self, obstacleListIndex):
         map = self.world.getCurrentMap()
-        return self.sequencer.handleCurrentState(obstacleListIndex, map.robot.square.findCenterOfMass(), map.robot.orientation)
+        mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
+        convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.square.findCenterOfMass())
+        return self.sequencer.handleCurrentState(obstacleListIndex, convertedPoint , map.robot.orientation)
 
     def initialiseWorldData(self):
         map = self.world.getCurrentMap()

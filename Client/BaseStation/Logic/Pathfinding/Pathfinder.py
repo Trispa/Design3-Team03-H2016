@@ -16,6 +16,7 @@ class Pathfinder:
         self.lineOfSightCalculator = LineOfSightCalculator(self.graph)
         self.pathsList = []
         self.goodPaths = []
+        self.indice = 0
         self.theGoodPath = Path()
 
 
@@ -101,7 +102,7 @@ class Pathfinder:
     #methode pour display les shits du pathfinding, pas importante non plus
     def __displayPathfinder(self, goodPath, positionRobot):
         img = np.zeros((600, 1000, 3), np.uint8)
-        cv2.namedWindow('image')
+
         for compteur in range (0, self.graphGenerator.obstaclesList.__len__()):
             currentObstacle = self.graphGenerator.obstaclesList[(compteur)]
             cv2.rectangle(img, (currentObstacle.positionX - self.graphGenerator.SAFE_MARGIN, currentObstacle.positionY - self.graphGenerator.SAFE_MARGIN), (currentObstacle.positionX + self.graphGenerator.SAFE_MARGIN, currentObstacle.positionY + self.graphGenerator.SAFE_MARGIN),
@@ -132,12 +133,8 @@ class Pathfinder:
             currentZone = self.graph.safeZonesList[compteur]
             cv2.rectangle(img, currentZone.cornerTopLeft, currentZone.cornerBottomRight,
                       (0, 150, 150), 2, 1)
-        cv2.imshow('image', img)
-        while (1):
-            esc = cv2.waitKey(1)
-            if esc == 27: #escape pressed
-                break
-        cv2.destroyAllWindows
+        cv2.imwrite('Pathfinder/Log/image' + str(self.indice), img)
+        self.indice += 1
 
 
 
