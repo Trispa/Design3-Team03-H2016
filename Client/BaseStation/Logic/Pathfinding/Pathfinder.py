@@ -21,6 +21,7 @@ class Pathfinder:
 
 
     def findPath(self, positionRobot, pointToMoveTo):
+        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
         startingPathNode = self.graph.findGoodSafeNodeToGo(positionRobot)
         endingPathNode = self.graph.findGoodSafeNodeToGo(pointToMoveTo)
 
@@ -31,6 +32,7 @@ class Pathfinder:
         self.__findAllPaths(path, endingPathNode)
 
         goodPath = Path()
+        goodPath.append(Node((0,0)))
         goodPath.totalDistance = 99999
         for compteur in range(0, self.goodPaths.__len__()):
             currentPath = self.goodPaths[compteur]
@@ -46,7 +48,7 @@ class Pathfinder:
                     goodPath = currentPath
         self.printPath(goodPath)
         self.theGoodPath = goodPath
-        self.__displayPathfinder(goodPath, positionRobot)
+        #self.__displayPathfinder(goodPath, positionRobot)
         return goodPath
 
 
@@ -130,8 +132,8 @@ class Pathfinder:
             currentZone = self.graph.safeZonesList[compteur]
             cv2.rectangle(img, currentZone.cornerTopLeft, currentZone.cornerBottomRight,
                       (0, 150, 150), 2, 1)
-        cv2.imwrite('Pathfinder/Log/image' + str(self.indice), img)
-        self.indice += 1
+        cv2.imwrite('image' + str(self.indice) + '.jpg', img)
+        self.indice = self.indice + 1
 
 
 

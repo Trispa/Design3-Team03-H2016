@@ -1,15 +1,15 @@
 import SequencerState
 
 class Sequencer :
-    def setState(self, newState, robotPosition) :
+    def setState(self, newState) :
         self.state = newState
-        self.state.setPath(self.pathfinder, robotPosition)
 
-    def __init__(self, pathfinder, robotPosition) :
+    def __init__(self, pathfinder) :
         self.pathfinder = pathfinder
-        self.setState(SequencerState.SendingBotToChargingStationState(), robotPosition)
+        self.setState(SequencerState.SendingBotToChargingStationState())
 
-    def handleCurrentState(self, obstacleListIndex, robotPosition, robotOrientation):
-        return self.state.handle(self, obstacleListIndex, robotPosition, robotOrientation)
+    def handleCurrentState(self, nodeListIndex, robotPosition, robotOrientation):
+        self.state.setPath(self.pathfinder, robotPosition)
+        return self.state.handle(self, nodeListIndex, robotPosition, robotOrientation)
 
 

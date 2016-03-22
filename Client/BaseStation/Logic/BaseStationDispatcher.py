@@ -11,16 +11,16 @@ class BaseStationDispatcher():
         self.world = worldVision()
         self.pathfinder = None
 
-    def handleCurrentSequencerState(self, obstacleListIndex):
+    def handleCurrentSequencerState(self, nodeListIndex):
         map = self.world.getCurrentMap()
         mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
         convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.square.findCenterOfMass())
-        return self.sequencer.handleCurrentState(obstacleListIndex, convertedPoint , map.robot.orientation)
+        return self.sequencer.handleCurrentState(nodeListIndex, convertedPoint , map.robot.orientation)
 
     def initialiseWorldData(self):
         map = self.world.getCurrentMap()
         self.pathfinder = Pathfinder(map)
-        self.sequencer = seq(self.pathfinder, map.robot.square.findCenterOfMass())
+        self.sequencer = seq(self.pathfinder)
         return map.robot.square.findCenterOfMass(), map.robot.orientation
 
     def getCurrentWorldImage(self):
