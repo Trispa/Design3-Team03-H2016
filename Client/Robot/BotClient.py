@@ -1,10 +1,12 @@
 import json
+import os
+
 from socketIO_client import SocketIO
+
+from Client.Robot.Logic.Deplacement.WheelManager import WheelManager
 from Logic.OrderReceiver import OrderReceiver
-from Logic.WheelManager import WheelManager
 from Logic.RobotMock import RobotMock
 from Mechanical.MoteurRoue import MoteurRoue
-import os
 
 c = os.path.dirname(__file__)
 configPath = os.path.join(c, "..", "..", "Shared", "config.json")
