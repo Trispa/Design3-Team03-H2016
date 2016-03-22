@@ -9,12 +9,14 @@ import numpy as np
 class Pathfinder:
     def __init__(self, map):
         self.mapAdaptator = MapAdaptator(map)
-        obstaclesList, mapSizeX, mapSizeY = self.mapAdaptator.getMapInfo()
+        obstaclesList, mapSizeX, mapSizeY, minCorner = self.mapAdaptator.getMapInfo()
+        self.minCorner = minCorner
         self.graphGenerator = GraphGenerator(obstaclesList, mapSizeX, mapSizeY)
         self.graph = self.graphGenerator.generateGraph()
         self.lineOfSightCalculator = LineOfSightCalculator(self.graph)
         self.pathsList = []
         self.goodPaths = []
+        self.theGoodPath = Path()
 
 
     def findPath(self, positionRobot, pointToMoveTo):
@@ -43,6 +45,7 @@ class Pathfinder:
                     goodPath = currentPath
         self.printPath(goodPath)
         self.__displayPathfinder(goodPath, positionRobot)
+        self.theGoodPath = goodPath
         return goodPath
 
 
@@ -76,6 +79,15 @@ class Pathfinder:
 
         elif lastNode == endingPathNode:
             self.goodPaths.append(path)
+
+
+    def drawPath(self, img):
+        for compteur in range (1, self.theGoodPath.__len__()):
+            startLine = (self.theGoodPath[compteur-1].positionX + self.minCorner[0], self.theGoodPath[compteur-1].positionY + self.minCorner[1])
+            endLine =  (self.theGoodPath[compteur].positionX + self.minCorner[0], self.theGoodPath[compteur].positionY + self.minCorner[1])
+            cv2.line(img, startLine, endLine,
+                      (0, 0, 255), 2, 1)
+
 
     #methode pour afficher le path dans console, pas importante
     def printPath(self, goodPath):
