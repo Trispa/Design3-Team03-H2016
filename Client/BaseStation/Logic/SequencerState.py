@@ -2,8 +2,8 @@ class SendingBotToChargingStationState():
     def __init__(self):
         self.obstacleIndex = 0
 
-    def setPath(self, pathfinder):
-        self.path = pathfinder.findPath((0,0), (250,350))
+    def setPath(self, pathfinder, robotPosition):
+        self.path = pathfinder.findPath(robotPosition, (250,350))
 
     def handle(self, sequencer, obstacleListIndex, robotPosition):
         self.obstacleIndex = int(obstacleListIndex)
@@ -33,8 +33,8 @@ class SendingBotToTreasureState():
     def __init__(self):
         self.obstacleIndex = 0
 
-    def setPath(self, pathfinder):
-        self.path = pathfinder.findPath((0,0), (2,5))
+    def setPath(self, pathfinder, robotPosition):
+        self.path = pathfinder.findPath(robotPosition, (2,5))
 
     def handle(self, sequencer, obstacleListIndex, robotPosition):
         self.obstacleIndex = int(obstacleListIndex)
@@ -65,8 +65,8 @@ class SendingBotToTargetState():
     def __init__(self):
         self.obstacleIndex = 0
 
-    def setPath(self, pathfinder):
-        self.path = pathfinder.findPath((400,200), (700,150))
+    def setPath(self, pathfinder, robotPosition):
+        self.path = pathfinder.findPath(robotPosition, (700,150))
 
     def handle(self, sequencer, obstacleListIndex, robotPosition):
         self.obstacleIndex = int(obstacleListIndex)
