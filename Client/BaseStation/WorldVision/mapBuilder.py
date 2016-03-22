@@ -31,13 +31,19 @@ class MapBuilder:
 
                     if cv2.contourArea(contour) > self.MIN_SHAPE_SIZE and cv2.isContourConvex(contour) and cv2.contourArea(contour) < 30000:
                         myShape = self.shapeFactory.ConstructShape(contour)
-                        myShape.setColor(mapImage)
-                        if(myShape.getColorName() == "Pink"):
-                            map.robot.circle = myShape
-                        elif(myShape.getColorName() == "Black" and (len(myShape.getContour()) == 4 or len(myShape.getContour()) == 5)):
+                        if(myShape.getColorName() == "Black" and (len(myShape.getContour()) == 4 or len(myShape.getContour()) == 5)):
                             map.robot.square = myShape
                         elif myShape.isEqualEdges() and myShape.checkAngleValue():
                             map.addShape(myShape)
+
+                    if cv2.contourArea(contour) > 100 and cv2.isContourConvex(contour) and cv2.contourArea(contour) < 400:
+                        myShape = self.shapeFactory.ConstructShape(contour)
+                        myShape.setColor(mapImage)
+                        #map.addShape(myShape)
+
+                        if(myShape.getColorName() == "Purple" and myShape.getName() == "Circle"):
+                            map.robot.circle = myShape
+
 
                     if cv2.contourArea(contour) > self.LIMIT_SIZE and cv2.isContourConvex(contour):
                         if len(contour) == 4:

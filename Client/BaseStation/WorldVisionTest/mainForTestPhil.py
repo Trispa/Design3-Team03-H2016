@@ -8,12 +8,12 @@ import cv2
 
 if __name__ == '__main__':
 
-    camera = cv2.VideoCapture(0)
+    camera = cv2.VideoCapture(1)
     camera.set(3, 3264)
     camera.set(4, 2448)
     ret, frame = camera.read()
 
-    frame = cv2.imread('Photo-Test/Frames/Picture 177.jpg')
+    #frame = cv2.imread('Photo-Test/Frames/Picture 177.jpg')
     geometricalImage = WorldImage(frame)
 
     while(True):
