@@ -12,37 +12,17 @@ class Map:
         self.limit = Square("limit", np.array([[]], dtype=np.int32))
         self.robot = Robot(Square("robot", np.array([[]], dtype=np.int32)), Shape("orientation", np.array([[]], dtype=np.int32)))
 
-    def findSimilarShape(self, newPossibleshape):
-        newContourCenterOfMassX, newContourCenterOfMassY = newPossibleshape.findCenterOfMass()
-        for shapeAlreadyFound in self.__shapes:
-            oldContourCenterOfMassX, oldContourCenterOfMassY = shapeAlreadyFound.findCenterOfMass()
-            if(abs(newContourCenterOfMassX - oldContourCenterOfMassX) < 20 and abs(newContourCenterOfMassY - oldContourCenterOfMassY) < 20):
-                return shapeAlreadyFound
-        return None
-
-    def addShape(self, shapeToAdd):
-        shapeToAddArea = shapeToAdd.getArea()
-        avg = self.getAverageShapeSize()
-        difference = abs(shapeToAdd.getArea() - self.getAverageShapeSize())
-
-        if abs(shapeToAdd.getArea() - self.getAverageShapeSize()) < 1100 or len(self.__shapes) < 3:
-            similarShape = self.findSimilarShape(shapeToAdd)
-            if similarShape != None:
-                if similarShape.getArea() < shapeToAdd.getArea():
-                    self.__shapes.remove(similarShape)
-                    self.__shapes.append(shapeToAdd)
-            if similarShape == None:
-                self.__shapes.append(shapeToAdd)
-
-
     def getShapesList(self):
         return self.__shapes
 
-    def deleteBlackShapes(self):
+    def getContourList(self):
+        contourList = []
         for shape in self.__shapes:
-            if shape.getColorName() == "Black":
-                self.__shapes.remove(shape)
+            contourList.append(shape.getContour())
+        return contourList
 
+    def getMapLimit(self):
+        return self.limit
 
     def getAverageShapeSize(self):
         averageSize = 0
@@ -52,22 +32,11 @@ class Map:
             averageSize = averageSize/len(self.__shapes)
         return averageSize
 
-
-    def getContourList(self):
-        contourList = []
-        for shape in self.__shapes:
-            contourList.append(shape.getContour())
-
-        return contourList
-
-    def getMapLimit(self):
-        return self.limit
+    def getGreenSquare(self):
+        return self.greenSquare
 
     def setShapes(self, shapes):
         self.__shapes = shapes
-
-    def deleteShape(self, shapeToDelete):
-        self.__shapes.remove(shapeToDelete)
 
     def setMapLimit(self, contour):
         cornerList = []
@@ -95,8 +64,35 @@ class Map:
         for shape in self.__shapes:
             shape.setColor(copy.copy(mapImage))
 
-    def getGreenSquare(self):
-        return self.greenSquare
+    def findSimilarShape(self, newPossibleshape):
+        newContourCenterOfMassX, newContourCenterOfMassY = newPossibleshape.findCenterOfMass()
+        for shapeAlreadyFound in self.__shapes:
+            oldContourCenterOfMassX, oldContourCenterOfMassY = shapeAlreadyFound.findCenterOfMass()
+            if(abs(newContourCenterOfMassX - oldContourCenterOfMassX) < 20 and abs(newContourCenterOfMassY - oldContourCenterOfMassY) < 20):
+                return shapeAlreadyFound
+        return None
+
+    def addShape(self, shapeToAdd):
+        shapeToAddArea = shapeToAdd.getArea()
+        avg = self.getAverageShapeSize()
+        difference = abs(shapeToAdd.getArea() - self.getAverageShapeSize())
+
+        if abs(shapeToAdd.getArea() - self.getAverageShapeSize()) < 1100 or len(self.__shapes) < 3:
+            similarShape = self.findSimilarShape(shapeToAdd)
+            if similarShape != None:
+                if similarShape.getArea() < shapeToAdd.getArea():
+                    self.__shapes.remove(similarShape)
+                    self.__shapes.append(shapeToAdd)
+            if similarShape == None:
+                self.__shapes.append(shapeToAdd)
+
+    def deleteBlackShapes(self):
+        for shape in self.__shapes:
+            if shape.getColorName() == "Black":
+                self.__shapes.remove(shape)
+
+    def deleteShape(self, shapeToDelete):
+        self.__shapes.remove(shapeToDelete)
 
     def deleteOutsiderShapes(self):
         shapesToDelete = []

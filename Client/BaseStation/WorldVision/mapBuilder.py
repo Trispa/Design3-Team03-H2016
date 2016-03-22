@@ -3,7 +3,6 @@ import map
 import numpy as np
 from colorContainer import ColorContainer
 from Factories.ShapeFactory import ShapeFactory
-from Factories.ColorFactory import ColorFactory
 
 class MapBuilder:
 
@@ -39,7 +38,6 @@ class MapBuilder:
                     if cv2.contourArea(contour) > 100 and cv2.isContourConvex(contour) and cv2.contourArea(contour) < 400:
                         myShape = self.shapeFactory.ConstructShape(contour)
                         myShape.setColor(mapImage)
-                        #map.addShape(myShape)
 
                         if(myShape.getColorName() == "Purple" and myShape.getName() == "Circle"):
                             map.robot.circle = myShape
