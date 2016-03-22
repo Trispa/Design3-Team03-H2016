@@ -10,19 +10,8 @@ class MapBuilder:
     def __init__(self):
         self.__map = map.Map()
         self.shapeFactory = ShapeFactory()
-
-    def filterFoundContours(self, contours):
-        for contour in contours:
-            contour_len = cv2.arcLength(contour, True)
-            contour = cv2.approxPolyDP(contour, 0.02*contour_len, True)
-            if cv2.contourArea(contour) > 300 and cv2.isContourConvex(contour):
-                myShape = self.shapeFactory.ConstructShape(contour)
-                if myShape.isEqualEdges() and myShape.checkAngleValue():
-                    self.__map.addShape(myShape)
-
-            if cv2.contourArea(contour) > 300000 and cv2.isContourConvex(contour):
-                if len(contour) == 4:
-                    self.__map.setMapLimit(contour)
+        self.MIN_SHAPE_SIZE = 900
+        self.LIMIT_SIZE = 300000
 
 
     def buildMapWithAllFilter(self, mapImage, map):
@@ -40,7 +29,7 @@ class MapBuilder:
                     lessPreciseContour = cv2.approxPolyDP(contour, 0.05*contour_len, True)
                     contour = cv2.approxPolyDP(contour, 0.02*contour_len, True)
 
-                    if cv2.contourArea(contour) > 900 and cv2.isContourConvex(contour) and cv2.contourArea(contour) < 30000:
+                    if cv2.contourArea(contour) > self.MIN_SHAPE_SIZE and cv2.isContourConvex(contour) and cv2.contourArea(contour) < 30000:
                         myShape = self.shapeFactory.ConstructShape(contour)
                         myShape.setColor(mapImage)
                         if(myShape.getColorName() == "Pink"):
@@ -50,11 +39,11 @@ class MapBuilder:
                         elif myShape.isEqualEdges() and myShape.checkAngleValue():
                             map.addShape(myShape)
 
-                    if cv2.contourArea(contour) > 300000 and cv2.isContourConvex(contour):
+                    if cv2.contourArea(contour) > self.LIMIT_SIZE and cv2.isContourConvex(contour):
                         if len(contour) == 4:
                             map.setMapLimit(contour)
 
-                    if cv2.contourArea(lessPreciseContour) > 300000 and cv2.isContourConvex(lessPreciseContour):
+                    if cv2.contourArea(lessPreciseContour) > self.LIMIT_SIZE and cv2.isContourConvex(lessPreciseContour):
                         if len(lessPreciseContour) == 4:
                             map.setMapLimit(lessPreciseContour)
 
@@ -79,7 +68,7 @@ class MapBuilder:
             for contour in contours:
                 cnt_len = cv2.arcLength(contour, True)
                 contour = cv2.approxPolyDP(contour, 0.02*cnt_len, True)
-                if cv2.isContourConvex(contour) and cv2.contourArea(contour) > 100:
+                if cv2.isContourConvex(contour) and cv2.contourArea(contour) > self.MIN_SHAPE_SIZE:
                     myShape = self.shapeFactory.ConstructShape(contour)
 
                     if myShape.isEqualEdges() and myShape.checkAngleValue():
@@ -100,7 +89,7 @@ class MapBuilder:
             for contour in contours:
                 cnt_len = cv2.arcLength(contour, True)
                 contour = cv2.approxPolyDP(contour, 0.02*cnt_len, True)
-                if cv2.isContourConvex(contour) and cv2.contourArea(contour) > 300:
+                if cv2.isContourConvex(contour) and cv2.contourArea(contour) > self.MIN_SHAPE_SIZE:
                     myShape = self.shapeFactory.ConstructShape(contour)
 
                     if myShape.isEqualEdges() and myShape.checkAngleValue():
