@@ -21,14 +21,15 @@ class MoteurRoue:
         self.thread.cancel()
 
     def rotation(self, degree):
-        while self.isRunning:
-            pass
+        # while self.isRunning:
+        #     pass
         self.isRunning = True
         speed = 0.05
         timeToSleep = 0.035 * abs(degree) + 0.075
         direction = "CW"
         if degree <= 0:
             direction = "CCW"
+
 
         self.beforeChangeDirection()
         if(direction == 'CW'):
@@ -38,14 +39,15 @@ class MoteurRoue:
         elif(direction == "CCW"):
             for i in range(1, NB_MOTEUR):
                 self.spc.driveMoteur(i, speed, CCW)
-        # time.sleep(timeToSleep)
-        # self.stopAllMotors()
-        self.debutDeLInterruption(timeToSleep)
+        time.sleep(timeToSleep)
+        self.stopAllMotors()
+        # self.debutDeLInterruption(timeToSleep)
         return timeToSleep
+
 
     def beforeChangeDirection(self):
         self.stopAllMotors()
-        time.sleep(1)
+        time.sleep(0.2)
 
     def debutDeLInterruption(self, t):
         self.thread = Timer(t, self.stopAllMotorsInterrupt)
@@ -53,8 +55,8 @@ class MoteurRoue:
 
 #Distance en centimetre
     def avanceVector(self, x, y):
-        while self.isRunning:
-            pass
+        # while self.isRunning:
+        #     pass
         self.isRunning = True
         self.beforeChangeDirection()
         xSpeed = MAX_SPEED
@@ -81,9 +83,9 @@ class MoteurRoue:
             self.spc.driveMoteur(1, ySpeed, CW)
             self.spc.driveMoteur(4, ySpeed, CCW)
 
-        self.debutDeLInterruption(timeToTravel)
-        # time.sleep(timeToTravel)
-        # self.stopAllMotors()
+        # self.debutDeLInterruption(timeToTravel)
+        time.sleep(timeToTravel)
+        self.stopAllMotors()
         return timeToTravel
 
 
@@ -94,15 +96,15 @@ class MoteurRoue:
 
     def demo3(self):
         self.avanceVector(0, 66)
-        # time.sleep(0.5)
-        # self.avanceVector(-66, 0)
-        # time.sleep(0.5)
+        time.sleep(0.5)
+        self.avanceVector(-66, 0)
+        time.sleep(0.5)
         self.avanceVector(0, -66)
-        # time.sleep(0.5)
+        time.sleep(0.5)
         self.avanceVector(66, 0)
-        # time.sleep(0.5)
+        time.sleep(0.5)
         self.avanceVector(-50, -50)
-        # time.sleep(0.5)
+        time.sleep(0.5)
         self.avanceVector(50, 50)
 
     def demoR(self):
@@ -120,19 +122,7 @@ if __name__ == '__main__':
     mr = MoteurRoue()
     mr.stopAllMotors()
     time.sleep(0.1)
-    # mr.demo3()
-    mr.rotation(38.66)
-    # time.sleep(1)
-    mr.avanceVector(64.03,0)
-    # time.sleep(1)
-    mr.avanceVector(-64.03,0)
-    # time.sleep(1)
-    mr.rotation(-38.66)
-    # time.sleep(1)
-    # mr.avanceVector(0,-30)
-    # time.sleep(1)
-    # mr.avanceVector(0,30)
-    # mr.rotation(360)
+
 
 
 

@@ -7,100 +7,67 @@
 #include "Arduino.h"
 #include "ReadManchester.h"
 
-/*********DEBUT********/
-volatile int val = 0;
-unsigned long now = 0;
-unsigned long timeToChange = 0;
-unsigned long timebetweenNowToChange = 0;
-char bits[128];
-char* chainecopie = '\0';
-int indice = 0;
-/*********** FIN******/
-
 volatile unsigned int bitAllowed = 0;
-//volatile unsigned int  indice = 0;
+volatile unsigned int  indice = 0;
 volatile unsigned int data ; 
+char chaine[64];
+char* chainecopie = '\0';
 
-//int volatile trouve = 0;
+int volatile trouve = 0;
 void ReadManchester::readBitInterrupt(){
-  now = micros();
 	bitAllowed = 1;
+	//delayMicroseconds(50);
 	
 }
-ReadManchester::ReadManchester(int pinManchester){
+ReadManchester::ReadManchester(int pinManchester, int pinClock)
+{
 	
 	pinMode(pinManchester, INPUT);
-	this->_pinManchester = pinManchester;
-  this->_enableManchester = true;
-	this->enableInterrupt(true);	
-  this->enableManchester();
-  
+	pinMode(pinClock, INPUT);
+	_pinManchester = pinManchester;
+	_pinClock = pinClock;
+	enableInterrupt(true);	
+}
+
+char ReadManchester::booleanToChar(boolean b)
+{
+	
+	return (b)?'1':'0';
 }
 
 
-void   ReadManchester::getMaschesterBits()
+char*  ReadManchester::getMaschesterBits()
 {	
-	  if(this->_enableManchester){
-  		if(bitAllowed){
-      //Serial.pri ntln(now, DEC);
-      val = digitalRead(_pinManchester);
-      timebetweenNowToChange = now - timeToChange;
-      //Serial.println(timebetweenNowToChange);
-      if(val == 0){
-        if(timebetweenNowToChange > 150 && timebetweenNowToChange < 250){
-          bits[indice++]= '1';
-          bits[indice++]= '0';
-        }
-        else{
-          bits[indice++]= '0';
-        }
-      }
-      if(val== 1){
-       if(timebetweenNowToChange > 150 && timebetweenNowToChange < 250){
-          bits[indice++]= '0';
-          bits[indice++]= '1';
-        }
-        else{
-           bits[indice++]= '1';
-        }
-      }
-      if(indice > 128){
-        this->_chaineCopie = bits;
-        Serial.println(this->_chaineCopie);
-        indice = 0;
-        enableInterrupt(false); 
-        this->disableManchester();
-       
-        
-      }
-      timeToChange = now;
-      bitAllowed = 0;
-      
-    }
- 
-	 }
-	 
-}
-
-char* ReadManchester::getChaineCopie(){
-  return this->_chaineCopie;
-  
+	
+		if(bitAllowed)
+		{     
+			data =  digitalRead(_pinManchester);
+			chaine[indice] = booleanToChar(data);
+			
+			indice++;
+			if(indice == 64)
+			  {
+				indice = 0 ;
+				chainecopie = chaine;
+				Serial.println(chaine);
+				enableInterrupt(false);	
+				
+					
+			  }
+			  
+			bitAllowed = 0;
+			
+		}
+	return chainecopie;	
 }
 
 void ReadManchester::enableInterrupt(boolean ansewer){
 		
 		if(ansewer)
-			attachInterrupt(digitalPinToInterrupt(_pinManchester), readBitInterrupt, CHANGE); 
+			attachInterrupt(digitalPinToInterrupt(_pinClock), readBitInterrupt, RISING); 
 		else
-			detachInterrupt(digitalPinToInterrupt(_pinManchester));
+			detachInterrupt(digitalPinToInterrupt(_pinClock));
 
 }
 
-void ReadManchester::disableManchester(){
-  this->_enableManchester = false;
-}
-void ReadManchester::enableManchester(){
-  this->_enableManchester = true;
-  this->enableInterrupt(true);
-}
 
