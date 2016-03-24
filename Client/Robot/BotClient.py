@@ -14,25 +14,25 @@ configPath = os.path.join(c, "..", "..", "Shared", "config.json")
 with open(configPath) as json_data_file:
     config = json.load(json_data_file)
 socketIO = SocketIO(config['url'], int(config['port']))
-
-#orderReceiver = BotDispatcher(RobotMock())
-botDispatcher = BotDispatcher(WheelManager(MoteurRoue()))
+orderReceiver = BotDispatcher(RobotMock())
+#orderReceiver = BotDispatcher(RobotMock(), WheelManager(MoteurRoue()))
 
 def needNewCoordinates(*args):
     print("heading toward next coordinates")
-    botDispatcher.handleCurrentState(args[0])
+    orderReceiver.handleCurrentState(args[0])
     whichObstacleNextIsNeeded = int(args[0]["index"]) + 1
-    print(botDispatcher.state.__class__)
-    socketIO.emit(botDispatcher.state.sendingSignal, {"index" : str(whichObstacleNextIsNeeded)})
+    print(orderReceiver.state.__class__)
+    socketIO.emit(orderReceiver.state.sendingSignal, {"index" : str(whichObstacleNextIsNeeded)})
 
 def startRound(*args):
     print("start round")
-    botDispatcher.acceptOrders()
-    socketIO.emit(botDispatcher.state.sendingSignal, {"index": "0"})
+    orderReceiver.acceptOrders()
+    orderReceiver.initializeRobot(int(args[0]["positionX"]), int(args[0]["positionY"]), int(args[0]["orientation"]))
+    socketIO.emit(orderReceiver.state.sendingSignal, {"index": "0"})
 
 def endRound():
     print("end round")
-    botDispatcher.refuseOrders()
+    orderReceiver.refuseOrders()
 
 socketIO.emit('sendBotClientStatus','Connected')
 socketIO.on('sendNextCoordinates', needNewCoordinates)
@@ -40,3 +40,7 @@ socketIO.on('startSignalRobot', startRound)
 socketIO.on('sendEndSignal', endRound)
 
 socketIO.wait()
+
+
+
+

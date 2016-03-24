@@ -25,7 +25,7 @@ class SendingBotToChargingStationState():
                        }
 
         if(self.obstacleIndex == self.path.__len__() - 1):
-            sequencer.setState(SendingBotToTreasureState(), (self.path[int(nodeListIndex)].positionX,self.path[int(nodeListIndex)].positionY))
+            sequencer.setState(SendingBotToTreasureState())
             coordinates["index"] = "-1"
             coordinates["endOfPhase"] = "yes"
 
@@ -58,7 +58,7 @@ class SendingBotToTreasureState():
                        }
 
         if(self.obstacleIndex == self.path.__len__() - 1):
-            sequencer.setState(SendingBotToTargetState(), (self.path[int(nodeListIndex)].positionX,self.path[int(nodeListIndex)].positionY))
+            sequencer.setState(SendingBotToTargetState() )
             coordinates["index"] = "-1"
             coordinates["endOfPhase"] = "yes"
 
@@ -91,7 +91,7 @@ class SendingBotToTargetState():
                        }
 
         if(self.obstacleIndex == self.path.__len__() - 1):
-            sequencer.setState(SendingBotToChargingStationState(), (self.path[int(nodeListIndex)].positionX,self.path[int(nodeListIndex)].positionY))
+            sequencer.setState(SendingBotToChargingStationState() )
             coordinates["index"] = "-1"
             coordinates["endOfPhase"] = "yes"
             coordinates["endOfCycle"] = "yes"
@@ -125,7 +125,7 @@ class SendingBotToChargingStationStateOnly():
                        }
 
         if(self.obstacleIndex == self.path.__len__() - 1):
-            sequencer.setState(SendingBotToChargingStationState(), (self.path[int(nodeListIndex)].positionX,self.path[int(nodeListIndex)].positionY))
+            sequencer.setState(SendingBotToChargingStationState() )
             coordinates["index"] = "-1"
             coordinates["endOfPhase"] = "yes"
             coordinates["endOfCycle"] = "yes"
@@ -159,7 +159,7 @@ class SendingBotToTreasureStateOnly():
                        }
 
         if(self.obstacleIndex == self.path.__len__() - 1):
-            sequencer.setState(SendingBotToChargingStationState(), (self.path[int(nodeListIndex)].positionX,self.path[int(nodeListIndex)].positionY))
+            sequencer.setState(SendingBotToChargingStationState() )
             coordinates["index"] = "-1"
             coordinates["endOfPhase"] = "yes"
             coordinates["endOfCycle"] = "yes"
