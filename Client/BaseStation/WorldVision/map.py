@@ -54,9 +54,7 @@ class Map:
             if(corner[1] < minY):
                 minY = corner[1]
         newFoundLimit = Square("limit", np.array([[[minX,minY + 5]],[[minX,maxY - 5]],[[maxX, maxY - 5]],[[maxX,minY + 5]]], dtype=np.int32))
-        newArea = newFoundLimit.getArea()
-        limitArea = self.limit.getArea()
-        limitLenght = len(self.limit.getContour())
+
         if newFoundLimit.getArea() < self.limit.getArea() or len(self.limit.getContour()) == 0:
             self.limit = newFoundLimit
 
@@ -65,6 +63,7 @@ class Map:
             shape.setColor(copy.copy(mapImage))
 
     def findSimilarShape(self, newPossibleshape):
+
         newContourCenterOfMassX, newContourCenterOfMassY = newPossibleshape.findCenterOfMass()
         for shapeAlreadyFound in self.__shapes:
             oldContourCenterOfMassX, oldContourCenterOfMassY = shapeAlreadyFound.findCenterOfMass()
@@ -73,14 +72,11 @@ class Map:
         return None
 
     def addShape(self, shapeToAdd):
-        shapeToAddArea = shapeToAdd.getArea()
-        avg = self.getAverageShapeSize()
-        difference = abs(shapeToAdd.getArea() - self.getAverageShapeSize())
 
         if abs(shapeToAdd.getArea() - self.getAverageShapeSize()) < 1100 or len(self.__shapes) < 3:
             similarShape = self.findSimilarShape(shapeToAdd)
             if similarShape != None:
-                if similarShape.getArea() < shapeToAdd.getArea():
+                if similarShape.getArea() < shapeToAdd.getArea() and similarShape.getName() == shapeToAdd.getName():
                     self.__shapes.remove(similarShape)
                     self.__shapes.append(shapeToAdd)
             if similarShape == None:

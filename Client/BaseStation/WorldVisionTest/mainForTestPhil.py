@@ -16,7 +16,7 @@ if __name__ == '__main__':
     while(True):
 
         ret, frame = camera.read()
-        frame = cv2.imread('Photo-Test/Frames/Picture 213.jpg')
+        frame = cv2.imread('Photo-Test/Frames/Picture 11.jpg')
         #frame = cv2.resize(frame, (960, 720))
         copyF = copy.copy(frame)
 
