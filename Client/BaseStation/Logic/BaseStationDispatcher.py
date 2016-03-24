@@ -20,7 +20,9 @@ class BaseStationDispatcher():
     def initialiseWorldData(self):
         map = self.world.getCurrentMap()
         self.pathfinder = Pathfinder(map)
-        self.sequencer = seq(self.pathfinder)
+        mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
+        convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.square.findCenterOfMass())
+        self.sequencer = seq(self.pathfinder, convertedPoint)
         return map.robot.square.findCenterOfMass(), map.robot.orientation
 
     def getCurrentWorldImage(self):
