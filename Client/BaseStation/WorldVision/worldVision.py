@@ -10,14 +10,14 @@ class worldVision:
         self.camera.set(3, 720)
         self.camera.set(4, 960)
         ret, frame = self.camera.read()
-        #frame = cv2.imread('WorldVisionTest/Photo-Test/Frames/Picture 215.jpg')
+        #frame = cv2.imread('WorldVisionTest/Photo-Test/Frames/Picture 212.jpg')
 
         self.mapImage = WorldImage(frame)
 
     def getCurrentImage(self):
 
         ret, frame = self.camera.read()
-        #frame = cv2.imread('WorldVisionTest/Photo-Test/Frames/Picture 215.jpg')
+        #frame = cv2.imread('WorldVisionTest/Photo-Test/Frames/Picture 212.jpg')
 
         self.mapImage.buildMap(frame)
         self.mapImage.addLabels(frame)
