@@ -9,15 +9,19 @@ import numpy as np
 class Pathfinder:
     def __init__(self, map):
         self.mapAdaptator = MapAdaptator(map)
-        obstaclesList, mapSizeX, mapSizeY = self.mapAdaptator.getMapInfo()
+        obstaclesList, mapSizeX, mapSizeY, minCorner = self.mapAdaptator.getMapInfo()
+        self.minCorner = minCorner
         self.graphGenerator = GraphGenerator(obstaclesList, mapSizeX, mapSizeY)
         self.graph = self.graphGenerator.generateGraph()
         self.lineOfSightCalculator = LineOfSightCalculator(self.graph)
         self.pathsList = []
         self.goodPaths = []
+        self.indice = 0
+        self.theGoodPath = Path()
 
 
     def findPath(self, positionRobot, pointToMoveTo):
+        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
         startingPathNode = self.graph.findGoodSafeNodeToGo(positionRobot)
         endingPathNode = self.graph.findGoodSafeNodeToGo(pointToMoveTo)
 
@@ -28,6 +32,7 @@ class Pathfinder:
         self.__findAllPaths(path, endingPathNode)
 
         goodPath = Path()
+        goodPath.append(Node((0,0)))
         goodPath.totalDistance = 99999
         for compteur in range(0, self.goodPaths.__len__()):
             currentPath = self.goodPaths[compteur]
@@ -42,7 +47,8 @@ class Pathfinder:
             if currentPath.totalDistance < goodPath.totalDistance:
                     goodPath = currentPath
         self.printPath(goodPath)
-        self.__displayPathfinder(goodPath, positionRobot)
+        self.theGoodPath = goodPath
+        #self.__displayPathfinder(goodPath, positionRobot)
         return goodPath
 
 
@@ -77,6 +83,15 @@ class Pathfinder:
         elif lastNode == endingPathNode:
             self.goodPaths.append(path)
 
+
+    def drawPath(self, img):
+        for compteur in range (1, self.theGoodPath.__len__()):
+            startLine = (self.theGoodPath[compteur-1].positionX + self.minCorner[0], self.theGoodPath[compteur-1].positionY + self.minCorner[1])
+            endLine =  (self.theGoodPath[compteur].positionX + self.minCorner[0], self.theGoodPath[compteur].positionY + self.minCorner[1])
+            cv2.line(img, startLine, endLine,
+                      (0, 0, 255), 2, 1)
+
+
     #methode pour afficher le path dans console, pas importante
     def printPath(self, goodPath):
         for compteur in range(0, goodPath.__len__()):
@@ -86,7 +101,7 @@ class Pathfinder:
     #methode pour display les shits du pathfinding, pas importante non plus
     def __displayPathfinder(self, goodPath, positionRobot):
         img = np.zeros((600, 1000, 3), np.uint8)
-        cv2.namedWindow('image')
+
         for compteur in range (0, self.graphGenerator.obstaclesList.__len__()):
             currentObstacle = self.graphGenerator.obstaclesList[(compteur)]
             cv2.rectangle(img, (currentObstacle.positionX - self.graphGenerator.SAFE_MARGIN, currentObstacle.positionY - self.graphGenerator.SAFE_MARGIN), (currentObstacle.positionX + self.graphGenerator.SAFE_MARGIN, currentObstacle.positionY + self.graphGenerator.SAFE_MARGIN),
@@ -117,12 +132,8 @@ class Pathfinder:
             currentZone = self.graph.safeZonesList[compteur]
             cv2.rectangle(img, currentZone.cornerTopLeft, currentZone.cornerBottomRight,
                       (0, 150, 150), 2, 1)
-        cv2.imshow('image', img)
-        while (1):
-            esc = cv2.waitKey(1)
-            if esc == 27: #escape pressed
-                break
-        cv2.destroyAllWindows
+        cv2.imwrite('image' + str(self.indice) + '.jpg', img)
+        self.indice = self.indice + 1
 
 
 
