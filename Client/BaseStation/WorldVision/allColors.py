@@ -58,12 +58,12 @@ class Black(Color):
 class Purple(Color):
     def __init__(self, bgrColor, colorName):
         Color.__init__(self, bgrColor, colorName)
-        lowerValue = 33
+        lowerValue = 75
         higherValue = 255
-        lowerSaturation = 33
+        lowerSaturation = 70
         higherSaturation = 255
-        self.lower = np.array([100,lowerSaturation,lowerValue])
-        self.higher = np.array([255,higherSaturation,higherValue])
+        self.lower = np.array([126,lowerSaturation,lowerValue])
+        self.higher = np.array([164,higherSaturation,higherValue])
 
 class Red(Color):
     def __init__(self, bgrColor, colorName):
