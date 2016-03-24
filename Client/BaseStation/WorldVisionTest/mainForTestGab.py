@@ -39,15 +39,14 @@ if __name__ == '__main__':
     #                     'Photos/3109/table3/Jour/rideau ouvert/Picture 5.jpg',
     #                     'Photos/3109/table3/Jour/rideau ouvert/Picture 6.jpg',
     #                     'Photos/3109/table3/Jour/rideau ouvert/Picture 7.jpg']
-    #camera = cv2.VideoCapture(1)
-    #camera.set(3, 720)
-    #camera.set(4, 720)
-    #ret, frame = camera.read()
-
+    camera = cv2.VideoCapture(1)
+    camera.set(3, 3264)
+    camera.set(4, 2448)
     #frame = cv2.imread('Photos/3105/table 5/jour/rideau ouvert/Picture 22.jpg')
     #frame = cv2.imread('Images/Test6.jpg')
     #geometricalImage = WorldImage(frame)
     #worldVision = worldVision()
+
     phoposToVerified = []
     for x in range(198, 213):
         frame = cv2.imread('Photo-Test/Frames/Picture ' + str(x) + '.jpg')
@@ -69,6 +68,9 @@ if __name__ == '__main__':
 
 
 
+    while(True):
+        ret, frame = camera.read()
+        #frame = cv2.imread('Photos/3105/table 5/Jour/rideau ferme/Picture 1.jpg')
 
         geometricalImage = WorldImage(frame)
         geometricalImage.buildMap(frame)
@@ -77,36 +79,17 @@ if __name__ == '__main__':
         # map = worldV.getCurrentImage()
         worldImage = geometricalImage.drawMapOnImage(frame)
         #print(geometricalImage.getMap().robot.findCenterOfMass())
+
         cv2.imshow('Picture ' + str(x), worldImage)
 
+
+        # geometricalImage = WorldImage(frame)
+        # geometricalImage.setMap()
+        # geometricalImage.addLabels()
+        # worldImage = geometricalImage.drawMapOnImage()
+
         if cv2.waitKey(1) & 0xFF == ord('q'):
-             break
-
-    cv2.waitKey(0)
-
-    # while(True):
-    #     #ret, frame = camera.read()
-    #     #frame = cv2.imread('Photos/3105/table 5/Jour/rideau ferme/Picture 1.jpg')
-    #
-    #     geometricalImage = WorldImage(frame)
-    #     geometricalImage.setMap(frame)
-    #     geometricalImage.addLabels(frame)
-    #     worldImage = geometricalImage.drawMapOnImage(frame)
-    #     #print(geometricalImage.getMap().robot.findCenterOfMass())
-    #     cv2.imshow("Monde", worldImage)
-    #     # geometricalImage = WorldImage(frame)
-    #     # geometricalImage.setMap()
-    #     # geometricalImage.defineShapesColor()
-    #     # geometricalImage.addLabels()
-    #     # worldImage = geometricalImage.drawMapOnImage()
-    #
-    #     # geometricalImage = WorldImage(frame)
-    #     # geometricalImage.setMap()
-    #     # geometricalImage.addLabels()
-    #     # worldImage = geometricalImage.drawMapOnImage()
-    #
-    #     if cv2.waitKey(1) & 0xFF == ord('q'):
-    #         break
+            break
     #cap.release()
 
 

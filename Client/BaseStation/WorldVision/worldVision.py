@@ -7,17 +7,17 @@ class worldVision:
 
     def __init__(self):
         self.camera = cv2.VideoCapture(1)
-        self.camera.set(3, 720)
-        self.camera.set(4, 960)
+        self.camera.set(3, 3264)
+        self.camera.set(4, 2448)
         ret, frame = self.camera.read()
-        #frame = cv2.imread('WorldVisionTest/Photo-Test/Frames/Picture 212.jpg')
-
+        frame = cv2.resize(frame, (960, 720))
         self.mapImage = WorldImage(frame)
 
     def getCurrentImage(self):
 
         ret, frame = self.camera.read()
-        #frame = cv2.imread('WorldVisionTest/Photo-Test/Frames/Picture 212.jpg')
+        frame = cv2.resize(frame, (960, 720))
+
 
         self.mapImage.buildMap(frame)
         self.mapImage.addLabels(frame)
