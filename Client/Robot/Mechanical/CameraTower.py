@@ -6,8 +6,8 @@ HORIZONTALE = 1
 class CameraTower:
     def __init__(self):
         self.m = maestro.Controller()
-        self.degreeHori = 121
-        self.degreeVerti = 112
+        self.degreeHori = 90
+        self.degreeVerti = 90
         self.step = 5
         self.moveCameraByAngle(0, self.degreeVerti)
         self.moveCameraByAngle(1, self.degreeHori)
@@ -64,7 +64,8 @@ class CameraTower:
             na = 174
         else:
             na = a
-        pwm = ((17.6 * na) - 573) * 4
+        # pwm = ((17.6 * na) - 573) * 4
+        pwm = ((11.567 * na) + 512) * 4
         return int(pwm)
 
     def demo(self):

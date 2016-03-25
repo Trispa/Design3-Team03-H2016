@@ -2,10 +2,11 @@ import numpy as np
 import cv2
 from math import sqrt, cos, sin, radians
 import time
-from Client.BaseStation.WorldVision.allColors import GenericColor
 from Client.Robot.Mechanical.CameraTower import CameraTower
 import math
 from Client.Robot.Mechanical.MoteurRoue import MoteurRoue
+from Client.BaseStation.WorldVision.Factories.ColorFactory import ColorFactory
+from Client.BaseStation.WorldVision.colorContainer import ColorContainer
 
 # Print seulement les 2 plus gros carre si plus grand que 100
 # Detecter une seul grosse forme par couleur
@@ -20,12 +21,12 @@ class VisionRobot:
 
     def __init__(self):
 
-        self.robot = MoteurRoue()
+        # self.robot = MoteurRoue()
         self.camera = CameraTower()
         self.camera.step = 1
         self.tresor = None
         yellowDown = [0, 100, 100]
-        yellowUp = [35, 255, 255]
+        yellowUp = [50, 255, 255]
 
         # yellow = colorFactory.constructColor(np.uint8([[[0,255,255]]]), "Yellow")
         redDown = [0, 0, 80]
@@ -35,12 +36,14 @@ class VisionRobot:
         self.color = [(yellowDown, yellowUp)]
 
     def detecColor(self):
-        self.mask = 0
-        for(lower, upper) in self.color:
-            lower = np.array(lower, dtype = "uint8")
-            upper = np.array(upper, dtype="uint8")
+        hsvImage = cv2.cvtColor(self.image,cv2.COLOR_BGR2HSV)
+        colorTresor = ColorContainer.yellowTresor
+        self.mask = cv2.inRange(hsvImage,colorTresor.lower,colorTresor.higher)
+        # for(lower, upper) in self.color:
+        #     lower = np.array(lower, dtype = "uint8")
+        #     upper = np.array(upper, dtype="uint8")
 
-            self.mask = self.mask + cv2.inRange(self.image, lower, upper)
+        # self.mask = self.mask + cv2.inRange(hsvImage, lower, upper)
 
     def findContour(self):
 
@@ -50,22 +53,22 @@ class VisionRobot:
 
             cntsMax = cnts[0]
             for c in cnts:
-                if cv2.contourArea(c) > cv2.contourArea(cntsMax):
-                    cntsMax = c
+                # if cv2.contourArea(c) > cv2.contourArea(cntsMax):
+                #     cntsMax = c
 
-            if cv2.contourArea(cntsMax) > 200:
-                self.tresor = cntsMax
-                x,y,w,h = cv2.boundingRect(self.tresor)
-                dots.append((x,y,w,h))
-                # if max(w, h) > 100 and max(w, h) < 200:
+                if cv2.contourArea(c) > 200:
+                    self.tresor = c
+                    x,y,w,h = cv2.boundingRect(self.tresor)
+                    dots.append((x,y,w,h))
+                    # if max(w, h) > 100 and max(w, h) < 200:
 
-                cv2.rectangle(self.image,(x,y),(x+w,y+h),(0,255,0),2)
-                self.addLabels(self.tresor)
+                    cv2.rectangle(self.image,(x,y),(x+w,y+h),(0,255,0),2)
+                    self.addLabels(self.tresor)
 
-                self.largeurTresorPixel = max(w,h)
-                return self.largeurTresorPixel
-            else:
-                self.tresor = None
+                    self.largeurTresorPixel = max(w,h)
+                    return self.largeurTresorPixel
+                else:
+                    self.tresor = None
             return 0
 
 
@@ -111,13 +114,15 @@ class VisionRobot:
             x,y,w,h = cv2.boundingRect(self.tresor)
             ih, iw, ic = self.image.shape
             # print x, y, iw, ih
-            square = 20
+            square = 30
 
-            xob = iw/2  - square
-            yob = ih/2 - square
+            xob = iw/2  - square/2
+            yob = ih/2 - square/2
             # print xob, yob
+            # print xob + square, yob +square
 
-            cv2.rectangle(self.image,(xob, yob),(xob + 2*square, yob - 2*square),(0,255,0),2)
+            cv2.rectangle(self.image,(xob, yob),(xob + square, yob + square),(0,0,255),2)
+            # cv2.rectangle(self.image,(x,y),(x+w,y+h),(0,255,0),2)
 
             if x <= (iw/2 - square):
                 self.camera.moveCameraLeft()
@@ -152,6 +157,32 @@ class VisionRobot:
         return False
 
 
+    def tresorIsCenterHonri(self):
+        centerX = False
+        if self.tresor != None:
+
+            x,y,w,h = cv2.boundingRect(self.tresor)
+            ih, iw, ic = self.image.shape
+            # print x, y, iw, ih
+            square = 10
+
+            xob = iw/2  - square/2
+            yob = ih/2 - square/2
+            # print xob, yob
+            # print xob + square, yob +square
+
+            cv2.rectangle(self.image,(xob, yob),(xob + square, yob + square),(0,0,255),2)
+            # cv2.rectangle(self.image,(x,y),(x+w,y+h),(0,255,0),2)
+
+            if x <= (iw/2 - square) or x >= (iw/2 + square):
+                pass
+            else:
+                centerX = True
+
+
+        return centerX
+
+
     def distanceAdjascente(self):
             if self.largeurTresorPixel <= 0:
                 return 0
@@ -164,23 +195,77 @@ class VisionRobot:
 
         return (distanceX, distanceY)
 
-    def goCamera(self):
+
+
+    def detectAndShowImage(self):
+        self.detecColor()
+        self.findContour()
+        cv2.imshow("Image", self.image)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            pass
+
+    def goDetectTresorAround(self):
         findSomething = False
         center = False
         self.camera.moveCameraByAngle(1, 0)
+        self.camera.moveCameraByAngle(0, 70)
+        while self.video.isOpened() and self.camera.degreeHori < 160:
+            while self.tresor == None:
+                ret, self.image = self.video.read()
+                self.detectAndShowImage()
+                self.camera.moveCameraRight()
+                # print "hello"
+
+
+            while not center:
+                ret, self.image = self.video.read()
+                self.detectAndShowImage()
+                center = self.tresorIsCenterHonri()
+                self.camera.moveCameraRight()
+                # print "hello2"
+
+            print self.camera.degreeHori
+            center = False
+            time.sleep(1)
+
+
+
+            cv2.imshow("Image", self.image)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+        self.video.release()
+        cv2.destroyAllWindows()
+
+    def goCamera(self):
+        findSomething = False
+        center = False
+
+        self.camera.moveCameraByAngle(1, 0)
         self.camera.moveCameraByAngle(0, 80)
         while(self.video.isOpened()):
-            ret, self.image = self.video.read()
-            if not findSomething:
+            # ret, self.image = self.video.read()
+            while not findSomething:
+                ret, self.image = self.video.read()
                 findSomething = self.balayageCamera()
-            self.detecColor()
-            self.findContour()
-            center = self.moveCameraEmbarquee()
-            dis = self.distanceFromCamera()
-            print dis
+                self.detectAndShowImage()
 
-            if not self.robot.isRunning and center:
-                self.approcheDuRobot(self.distanceFromCamera())
+            while not center:
+                for i in range(0,5):
+                    ret, self.image = self.video.read()
+                    center = self.moveCameraEmbarquee()
+                    self.detectAndShowImage()
+
+
+
+            # if not self.robot.isRunning:
+            if True:
+                dis = self.distanceFromCamera()
+                print dis
+                # self.approcheDuRobot(self.distanceFromCamera())
+                center = False
+                time.sleep(3)
+                ret, self.image = self.video.read()
+
 
             cv2.imshow("Image", self.image)
             if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -192,14 +277,15 @@ class VisionRobot:
         if abs(distanceDuTresor[0]) > 1:
             self.robot.avanceVector(distanceDuTresor[0], 0)
 
-        elif abs(distanceDuTresor[1]) > 1:
+        if abs(distanceDuTresor[1]) > 1:
             self.robot.avanceVector(0, distanceDuTresor[1])
 
 
 if __name__ == "__main__":
     vr = VisionRobot()
 
-    vr.goCamera()
+    # vr.goCamera()
+    vr.goDetectTresorAround()
     # print("distance")
     # print(vr.DistanceAdjascentte(34))
     # vr.detecColor()

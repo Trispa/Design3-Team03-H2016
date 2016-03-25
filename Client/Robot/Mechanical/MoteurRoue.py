@@ -14,6 +14,7 @@ class MoteurRoue:
 
     def stopAllMotors(self):
         self.spc.stopAllMotor()
+        self.isRunning = False
 
     def stopAllMotorsInterrupt(self):
         self.spc.stopAllMotor()
@@ -21,8 +22,8 @@ class MoteurRoue:
         self.thread.cancel()
 
     def rotation(self, degree):
-        # while self.isRunning:
-        #     pass
+        while self.isRunning:
+            pass
         self.isRunning = True
         speed = 0.05
         timeToSleep = 0.035 * abs(degree) + 0.075
@@ -39,8 +40,8 @@ class MoteurRoue:
         elif(direction == "CCW"):
             for i in range(1, NB_MOTEUR):
                 self.spc.driveMoteur(i, speed, CCW)
-        time.sleep(timeToSleep)
-        self.stopAllMotors()
+        # time.sleep(timeToSleep)
+        # self.stopAllMotors()
         # self.debutDeLInterruption(timeToSleep)
         return timeToSleep
 
@@ -55,8 +56,8 @@ class MoteurRoue:
 
 #Distance en centimetre
     def avanceVector(self, x, y):
-        # while self.isRunning:
-        #     pass
+        while self.isRunning:
+            pass
         self.isRunning = True
         self.beforeChangeDirection()
         xSpeed = MAX_SPEED
@@ -83,9 +84,9 @@ class MoteurRoue:
             self.spc.driveMoteur(1, ySpeed, CW)
             self.spc.driveMoteur(4, ySpeed, CCW)
 
-        # self.debutDeLInterruption(timeToTravel)
-        time.sleep(timeToTravel)
-        self.stopAllMotors()
+        self.debutDeLInterruption(timeToTravel)
+        # time.sleep(timeToTravel)
+        # self.stopAllMotors()
         return timeToTravel
 
 
