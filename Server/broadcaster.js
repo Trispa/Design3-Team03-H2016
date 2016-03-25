@@ -83,6 +83,10 @@ io.on('connection', function (client) {
     client.on('sendToTreasure', function(){
         io.emit('sendToTreasure');
     });
+
+    client.on('needPooling', function(){
+        setInterval(function(){ io.emit('verifyIfMoving')}, 1000);
+    })
 });
 
 server.listen(port, url);
