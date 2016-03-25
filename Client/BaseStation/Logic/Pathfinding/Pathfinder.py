@@ -39,7 +39,7 @@ class Pathfinder:
             currentPath.append(Node(pointToMoveTo))
 
         self.__polishGoodPaths()
-        self.lineOfSightCalculator.tryStraightLine(self.goodPaths)
+        #self.lineOfSightCalculator.tryStraightLine(self.goodPaths)
 
         for compteur in range(0, self.goodPaths.__len__()):
             currentPath= self.goodPaths[compteur]
@@ -88,7 +88,7 @@ class Pathfinder:
         for compteur in range (1, self.theGoodPath.__len__()):
             startLine = (self.theGoodPath[compteur-1].positionX + self.minCorner[0], self.theGoodPath[compteur-1].positionY + self.minCorner[1])
             endLine =  (self.theGoodPath[compteur].positionX + self.minCorner[0], self.theGoodPath[compteur].positionY + self.minCorner[1])
-            cv2.line(img, startLine, endLine,
+            cv2.line(img, (int(startLine[0]), int(startLine[1])), (int(endLine[0]), int(endLine[1])),
                       (0, 0, 255), 2, 1)
 
 

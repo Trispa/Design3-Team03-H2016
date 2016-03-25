@@ -21,32 +21,34 @@ with open(configPath) as json_data_file:
 socketIO = SocketIO(config['url'], int(config['port']))
 
 def verifyIfMoving(path):
+    print len(path)
     for index in range(0, len(path)):
-        x = path.__getitem__(index)[0]
-        y = path.__getitem__(index)[1]
-
-        botInfo = dispatcher.getCurrentWorldInformation()
-        botPositionX = botInfo["robotPosition"][0]
-        botPositionY = botInfo["robotPosition"][1]
-        while ((botPositionX > x + 10 or
-            botPositionX < x - 10) and
-               (botPositionY > y + 10 or
-            botPositionY < y - 10)):
+        x = path[index].positionX
+        y = path[index].positionY
+        if(index+1 != len(path)):
             botInfo = dispatcher.getCurrentWorldInformation()
             botPositionX = botInfo["robotPosition"][0]
             botPositionY = botInfo["robotPosition"][1]
-        botInfo = dispatcher.getCurrentWorldInformation()
-        jsonToSend = {"positionFROMx" : botInfo["robotPosition"][0],
-                      "positionFROMy" : botInfo["robotPosition"][1],
-                      "positionTOx" : path(index+1)[0],
-                      "positionTOy" : path(index+1)[1],
-                      "orientation":botInfo["orientation"]}
-        socketIO.emit("sendNextCoordinate", jsonToSend)
+            while ((botPositionX > x + 10 or
+                botPositionX < x - 10) and
+                   (botPositionY > y + 10 or
+                botPositionY < y - 10)):
+                botInfo = dispatcher.getCurrentWorldInformation()
+                botPositionX = botInfo["robotPosition"][0]
+                botPositionY = botInfo["robotPosition"][1]
+            botInfo = dispatcher.getCurrentWorldInformation()
+            jsonToSend = {"positionFROMx" : botInfo["robotPosition"][0],
+                          "positionFROMy" : botInfo["robotPosition"][1],
+                          "positionTOx" : path[index+1].positionX,
+                          "positionTOy" : path[index+1].positionY,
+                          "orientation":botInfo["robotOrientation"]}
+            socketIO.emit("sendNextCoordinates", jsonToSend)
 
 
 def sendNextCoordinates():
     path = dispatcher.handleCurrentSequencerState()
-    threading.Thread(target=verifyIfMoving, args=(path), name='thread_function').start()
+    verifyIfMoving(path)
+
 
 
 def startRound():
@@ -78,6 +80,7 @@ setInterval(sendInfo, 5)
 socketIO.on('needNewCoordinates', sendNextCoordinates)
 socketIO.on('startSignal', startRound)
 socketIO.on('sendManchesterInfo', setTarget)
+socketIO.on("verifyIfMoving", verifyIfMoving)
 
 socketIO.wait()
 

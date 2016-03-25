@@ -21,6 +21,7 @@ class BaseStationDispatcher():
         return self.path
 
 
+
     def initialiseWorldData(self):
         image, map = self.world.getCurrentImage()
         self.pathfinder = Pathfinder(map)
