@@ -44,14 +44,13 @@ class WorldImage:
         else:
             limit = []
 
-        if len(self.__map.robot.square.getContour()) > 0:
-            robot = [self.__map.robot.square.getContour()]
-            orientation = [self.__map.robot.circle.getContour()]
+        if len(self.__map.robot.blackCircle.getContour()) > 0:
+            robot = [self.__map.robot.blackCircle.getContour()]
         else:
             robot = []
 
-        if len(self.__map.robot.circle.getContour()) > 0:
-            orientation = [self.__map.robot.circle.getContour()]
+        if len(self.__map.robot.purpleCircle.getContour()) > 0:
+            orientation = [self.__map.robot.purpleCircle.getContour()]
         else:
             orientation = []
 
@@ -63,7 +62,7 @@ class WorldImage:
         font = cv2.FONT_HERSHEY_SIMPLEX
         scale = 0.4
         thickness = 1
-        cv2.putText(frame, str(self.__map.robot.orientation), self.__map.robot.square.findCenterOfMass(), font, scale, (255,255,255), thickness, 8)
+        cv2.putText(frame, str(self.__map.robot.orientation), self.__map.robot.blackCircle.findCenterOfMass(), font, scale, (255,255,255), thickness, 8)
 
 
         return frame
