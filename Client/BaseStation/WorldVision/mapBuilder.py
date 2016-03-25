@@ -28,19 +28,22 @@ class MapBuilder:
                     lessPreciseContour = cv2.approxPolyDP(contour, 0.05*contour_len, True)
                     contour = cv2.approxPolyDP(contour, 0.02*contour_len, True)
 
-                    if cv2.contourArea(contour) > self.MIN_SHAPE_SIZE and cv2.isContourConvex(contour) and cv2.contourArea(contour) < 30000:
+                    if cv2.contourArea(contour) > self.MIN_SHAPE_SIZE and cv2.isContourConvex(contour) and cv2.contourArea(contour) < 3000:
                         myShape = self.shapeFactory.ConstructShape(contour)
                         if(myShape.getColorName() == "Black" and (len(myShape.getContour()) == 4 or len(myShape.getContour()) == 5)):
                             map.robot.square = myShape
                         elif myShape.isEqualEdges() and myShape.checkAngleValue():
                             map.addShape(myShape)
 
-                    if cv2.contourArea(contour) > 100 and cv2.isContourConvex(contour) and cv2.contourArea(contour) < 400:
+                    if cv2.contourArea(contour) > 100 and cv2.isContourConvex(contour) and cv2.contourArea(contour) < 800:
                         myShape = self.shapeFactory.ConstructShape(contour)
                         myShape.setColor(mapImage)
 
                         if(myShape.getColorName() == "Purple" and myShape.getName() == "Circle"):
-                            map.robot.circle = myShape
+                            map.robot.purpleCircle = myShape
+
+                        if(myShape.getColorName() == "Black" and myShape.getName() == "Circle"):
+                            map.robot.blackCircle = myShape
 
 
                     if cv2.contourArea(contour) > self.LIMIT_SIZE and cv2.isContourConvex(contour):
