@@ -36,6 +36,8 @@ def verifyIfMoving(path):
                 botInfo = dispatcher.getCurrentWorldInformation()
                 botPositionX = botInfo["robotPosition"][0]
                 botPositionY = botInfo["robotPosition"][1]
+                print "not close enough"
+            print "close enough"
             botInfo = dispatcher.getCurrentWorldInformation()
             jsonToSend = {"positionFROMx" : botInfo["robotPosition"][0],
                           "positionFROMy" : botInfo["robotPosition"][1],
