@@ -15,6 +15,17 @@ socket.on("sendEndSignal", function() {
     stopTimer();
 });
 
+socket.on("sendManchesterInfo", function(manchesterInfo){
+    $("#asciiCharacter").text(manchesterInfo["decryptedCharacter"]);
+    if(manchesterInfo["target"]["forme"]){
+        $("#target").text(manchesterInfo["target"]["forme"]);
+    }
+    else if(manchesterInfo["target"]["couleur"]){
+            $("#target").text(manchesterInfo["target"]["couleur"]);
+
+    }
+});
+
 socket.on("sendRefusingOrderSignal", function(){
     if(!isTimerDone()){
         $("#buttonGo").prop("disabled",false);
