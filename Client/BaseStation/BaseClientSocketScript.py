@@ -34,9 +34,9 @@ def startRound():
             "orientation": botOrientation}
     socketIO.emit("startSignalRobot",botState)
 
-def sendImage():
+def sendInfo():
     print("asking for new informations")
-    socketIO.emit('sendImage', dispatcher.getCurrentWorldInformation())
+    socketIO.emit('sendInfo', dispatcher.getCurrentWorldInformation())
 
 def sendToChargingStation():
     dispatcher.initialiseWorldData()
@@ -62,7 +62,7 @@ def setInterval(function, seconds):
     timer.start()
     return timer
 
-setInterval(sendImage, 5)
+setInterval(sendInfo, 5)
 socketIO.on('needNewCoordinates', sendNextCoordinates)
 socketIO.on('startSignal', startRound)
 socketIO.on('sendToChargingStation', sendToChargingStation)

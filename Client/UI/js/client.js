@@ -4,7 +4,7 @@ socket.on("sendBotClientStatus", function(msg){
     console.log(msg);
     $("#botStatus").text(msg);
 });
-socket.on("sendImage", function(data){
+socket.on("sendInfo", function(data){
     var image = new Image();
     console.log(data);
     $("#path").attr("src",'data:image/jpg;base64,' + data["encodedImage"]);
