@@ -18,6 +18,7 @@ class WorldImage:
     def buildMap(self, mapImage):
         self.__map = self.__myMapBuilder.buildMapWithAllFilter(mapImage, self.__map)
         self.__map.robot.setOrientation()
+        self.__map.robot.setCenter()
 
     def defineShapesColor(self):
         self.__map.setShapesColor(self.__mapImage)
@@ -62,7 +63,9 @@ class WorldImage:
         font = cv2.FONT_HERSHEY_SIMPLEX
         scale = 0.4
         thickness = 1
-        cv2.putText(frame, str(self.__map.robot.orientation), self.__map.robot.blackCircle.findCenterOfMass(), font, scale, (255,255,255), thickness, 8)
+        cv2.putText(frame, str(self.__map.robot.center), (int(self.__map.robot.center[0]), int(self.__map.robot.center[1])), font, scale, (0,0,255), thickness, 8)
+
+        cv2.putText(frame, "{0:.2f}".format(self.__map.robot.orientation), self.__map.robot.blackCircle.findCenterOfMass(), font, scale, (255,255,255), thickness, 8)
 
 
         return frame

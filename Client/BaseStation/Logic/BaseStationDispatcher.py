@@ -23,7 +23,7 @@ class BaseStationDispatcher():
         mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
         convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.square.findCenterOfMass())
         self.sequencer = seq(self.pathfinder, convertedPoint)
-        return map.robot.square.findCenterOfMass(), map.robot.orientation
+        return map.robot.center, map.robot.orientation
 
     def getCurrentWorldImage(self):
         image = self.world.getCurrentImage()
@@ -35,10 +35,10 @@ class BaseStationDispatcher():
 
     def sendToChargingStation(self):
         map = self.world.getCurrentMap()
-        robotPosition = map.robot.square.findCenterOfMass()
+        robotPosition = map.robot.center
         self.sequencer.setState(SendingBotToChargingStationStateOnly(), robotPosition)
 
     def sendToTreasure(self):
         map = self.world.getCurrentMap()
-        robotPosition = map.robot.square.findCenterOfMass()
+        robotPosition = map.robot.center
         self.sequencer.setState(SendingBotToTreasureStateOnly(), robotPosition)
