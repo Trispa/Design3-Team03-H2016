@@ -34,9 +34,9 @@ def startRound():
             "orientation": botOrientation}
     socketIO.emit("startSignalRobot",botState)
 
-def sendImage():
-    print("asking for new images")
-    socketIO.emit('sendImage', dispatcher.getCurrentWorldImage())
+def sendInfo():
+    print("asking for new informations")
+    socketIO.emit('sendInfo', dispatcher.getCurrentWorldInformation())
 
 def sendToChargingStation():
     dispatcher.initialiseWorldData()
@@ -50,6 +50,9 @@ def sendToTreasure():
     startRound()
     socketIO.emit("sendNextCoordinates",dispatcher.handleCurrentSequencerState(0))
 
+def setTarget(manchesterInfo):
+    dispatcher.setTarget(manchesterInfo['target'])
+
 
 def setInterval(function, seconds):
     def func_wrapper():
@@ -59,11 +62,12 @@ def setInterval(function, seconds):
     timer.start()
     return timer
 
-setInterval(sendImage, 5)
+setInterval(sendInfo, 5)
 socketIO.on('needNewCoordinates', sendNextCoordinates)
 socketIO.on('startSignal', startRound)
 socketIO.on('sendToChargingStation', sendToChargingStation)
 socketIO.on('sendToTreasure', sendToTreasure)
+socketIO.on('sendManchesterInfo', setTarget)
 
 socketIO.wait()
 

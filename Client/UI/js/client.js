@@ -4,15 +4,28 @@ socket.on("sendBotClientStatus", function(msg){
     console.log(msg);
     $("#botStatus").text(msg);
 });
-socket.on("sendImage", function(encodedImage){
+socket.on("sendInfo", function(data){
     var image = new Image();
-    image.src = 'data:image/jpg;base64,' + encodedImage;
-    $("#path").attr("src",'data:image/jpg;base64,' + encodedImage);
+    console.log(data);
+    $("#path").attr("src",'data:image/jpg;base64,' + data["encodedImage"]);
+    $("#position").text(data["robotPosition"]);
+    $("#orientation").text(data["robotOrientation"]);
 });
 
 socket.on("sendEndSignal", function() {
     $("#buttonGo").prop("disabled", false);
     stopTimer();
+});
+
+socket.on("sendManchesterInfo", function(manchesterInfo){
+    $("#asciiCharacter").text(manchesterInfo["decryptedCharacter"]);
+    if(manchesterInfo["target"]["forme"]){
+        $("#target").text(manchesterInfo["target"]["forme"]);
+    }
+    else if(manchesterInfo["target"]["couleur"]){
+            $("#target").text(manchesterInfo["target"]["couleur"]);
+
+    }
 });
 
 socket.on("sendRefusingOrderSignal", function(){

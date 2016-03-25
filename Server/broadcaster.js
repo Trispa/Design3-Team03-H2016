@@ -39,8 +39,8 @@ io.on('connection', function (client) {
         allClients.splice(i, 1);
     });
 
-    client.on('sendImage', function(encodedString){
-        io.emit('sendImage', encodedString);
+    client.on('sendInfo', function(data){
+        io.emit('sendInfo', data);
     });
 
     client.on('startSignal', function(){
@@ -71,7 +71,8 @@ io.on('connection', function (client) {
 
     client.on('sendManchesterCode', function(data){
         request(manchesterUrl+'?code='+data, function(error, response, body) {
-            console.log(body);
+            manchesterInfo = {"decryptedCharacter":data, "target":JSON.parse(body)};
+            io.emit('sendManchesterInfo', manchesterInfo);
         });
     });
 

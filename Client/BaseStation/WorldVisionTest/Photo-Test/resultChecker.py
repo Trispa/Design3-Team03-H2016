@@ -10,6 +10,7 @@ class ResultChecker:
         image = cv2.imread(frameFileName)
         self.geometricalImage = WorldImage(image)
         self.geometricalImage.buildMap(image)
+        self.geometricalImage.updateRobotPosition(image)
         resultFile = open(resultFileName, 'r')
         centerOfMassLine = resultFile.readline()
         centerOfMassLine = centerOfMassLine[13:]
