@@ -61,7 +61,7 @@ class YellowTreasure(Color):
         lowerValue = 84
         higherValue = 200
         lowerSaturation = 170
-        higherSaturation = 255
+        higherSaturation = 220
         self.lower = np.array([28,lowerSaturation,lowerValue])
         self.higher = np.array([36,higherSaturation,higherValue])
 
