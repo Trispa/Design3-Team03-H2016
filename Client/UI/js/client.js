@@ -4,10 +4,12 @@ socket.on("sendBotClientStatus", function(msg){
     console.log(msg);
     $("#botStatus").text(msg);
 });
-socket.on("sendImage", function(encodedImage){
+socket.on("sendImage", function(data){
     var image = new Image();
-    image.src = 'data:image/jpg;base64,' + encodedImage;
-    $("#path").attr("src",'data:image/jpg;base64,' + encodedImage);
+    console.log(data);
+    $("#path").attr("src",'data:image/jpg;base64,' + data["encodedImage"]);
+    $("#position").text(data["robotPosition"]);
+    $("#orientation").text(data["robotOrientation"]);
 });
 
 socket.on("sendEndSignal", function() {

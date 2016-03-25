@@ -39,8 +39,8 @@ io.on('connection', function (client) {
         allClients.splice(i, 1);
     });
 
-    client.on('sendImage', function(encodedString){
-        io.emit('sendImage', encodedString);
+    client.on('sendImage', function(data){
+        io.emit('sendImage', data);
     });
 
     client.on('startSignal', function(){

@@ -35,8 +35,8 @@ def startRound():
     socketIO.emit("startSignalRobot",botState)
 
 def sendImage():
-    print("asking for new images")
-    socketIO.emit('sendImage', dispatcher.getCurrentWorldImage())
+    print("asking for new informations")
+    socketIO.emit('sendImage', dispatcher.getCurrentWorldInformation())
 
 def sendToChargingStation():
     dispatcher.initialiseWorldData()
