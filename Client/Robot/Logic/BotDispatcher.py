@@ -6,15 +6,9 @@ class BotDispatcher():
     def setState(self, newState) :
         self.state = newState
 
-    def __init__(self, robot, wheelManager):
-        self.robot = robot
+    def __init__(self, wheelManager):
         self.wheelManager = wheelManager
         self.setState(FollowingPathState.FollowingPathState())
-
-    def initializeRobot(self, positionX, positionY, orientation):
-        self.robot.positionX = positionX
-        self.robot.positionY = positionY
-        self.robot.orientation = orientation
 
     def handleCurrentState(self, coordinates):
         print(coordinates)

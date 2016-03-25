@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 from colorContainer import ColorContainer
-
 from Client.BaseStation.WorldVision.Factories.ColorFactory import ColorFactory
 
 
@@ -13,30 +12,10 @@ class Shape:
         colorFactory = ColorFactory()
         self.myColor = colorFactory.constructColor(np.uint8([[[0,255,255]]]), "Not defined")
 
-
     def __eq__(self, other):
         if other == None:
             return False
         return self.contour[0].item(0) == other.contour[0].item(0)
-
-    def findCenterOfMass(self):
-        moment = cv2.moments(self.contour)
-        centerOfMassX = int(moment['m10']/moment['m00'])
-        centerOfMassY = int(moment['m01']/moment['m00'])
-        return centerOfMassX, centerOfMassY
-
-    def isEqualEdges(self):
-        arbitraryEdge = np.array([self.contour[0], self.contour[1]])
-        arbitraryNormalLength = cv2.arcLength(arbitraryEdge, False)
-        for corner in range(1 , len(self.contour) - 1):
-            length = cv2.arcLength(np.array([self.contour[corner], self.contour[corner + 1]]), False)
-            if abs(length - arbitraryNormalLength) > 10:
-                return False
-
-        return True
-
-    def checkAngleValue(self):
-        return True
 
     def getContour(self):
         if len(self.contour) < 2:
@@ -63,6 +42,44 @@ class Shape:
     def getCornerCount(self):
         return len(self.contour)
 
+    def setColor(self, mapImage):
+        xCoordinate, yCoordinate, width, height = self.getBoundingRectangle()
+        xStart = xCoordinate
+        xEnd = xCoordinate + width
+        yStart = yCoordinate
+        yEnd = yCoordinate + height
+        cropped = None
+        cropped = mapImage[yStart:yEnd, xStart:xEnd]
+        centerX = cropped.shape[0] / 2
+        centerY = cropped.shape[1] / 2
+        bgrShapeColor = np.uint8([[[cropped[centerX][centerY][0],cropped[centerX][centerY][1],cropped[centerX][centerY][2]]]])
+        hsvShapeColor = cv2.cvtColor(bgrShapeColor,cv2.COLOR_BGR2HSV)
+        for color in ColorContainer.colors:
+            if color.isInSameColorRange(hsvShapeColor):
+                self.myColor = color
+
+    def findCenterOfMass(self):
+        if len(self.contour) > 2:
+            moment = cv2.moments(self.contour)
+            centerOfMassX = int(moment['m10']/moment['m00'])
+            centerOfMassY = int(moment['m01']/moment['m00'])
+            return centerOfMassX, centerOfMassY
+        else:
+            return 0, 0
+
+    def isEqualEdges(self):
+        arbitraryEdge = np.array([self.contour[0], self.contour[1]])
+        arbitraryNormalLength = cv2.arcLength(arbitraryEdge, False)
+        for corner in range(1 , len(self.contour) - 1):
+            length = cv2.arcLength(np.array([self.contour[corner], self.contour[corner + 1]]), False)
+            if abs(length - arbitraryNormalLength) > 10:
+                return False
+
+        return True
+
+    def checkAngleValue(self):
+        return True
+
     def isOutside(self, limit):
         limitMaxX, limitMaxY = limit.getMaxCorner()
         limitMinX, limitMinY = limit.getMinCorner()
@@ -80,21 +97,7 @@ class Shape:
         return False
 
 
-    def setColor(self, mapImage):
-        xCoordinate, yCoordinate, width, height = self.getBoundingRectangle()
-        xStart = xCoordinate
-        xEnd = xCoordinate + width
-        yStart = yCoordinate
-        yEnd = yCoordinate + height
-        cropped = None
-        cropped = mapImage[yStart:yEnd, xStart:xEnd]
-        centerX = cropped.shape[0] / 2
-        centerY = cropped.shape[1] / 2
-        bgrShapeColor = np.uint8([[[cropped[centerX][centerY][0],cropped[centerX][centerY][1],cropped[centerX][centerY][2]]]])
-        hsvShapeColor = cv2.cvtColor(bgrShapeColor,cv2.COLOR_BGR2HSV)
-        for color in ColorContainer.colors:
-            if color.isInSameColorRange(hsvShapeColor):
-                self.myColor = color
+
 
 
 

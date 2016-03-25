@@ -49,6 +49,10 @@ class WorldImage:
             orientation = [self.__map.robot.circle.getContour()]
         else:
             robot = []
+
+        if len(self.__map.robot.circle.getContour()) > 0:
+            orientation = [self.__map.robot.circle.getContour()]
+        else:
             orientation = []
 
         contourList = self.__map.getContourList()
