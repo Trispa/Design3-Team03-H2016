@@ -6,12 +6,10 @@ from Client.Robot.Mechanical.CameraTower import CameraTower
 import math
 from Client.Robot.Mechanical.MoteurRoue import MoteurRoue
 
-# Print seulement les 2 plus gros carre si plus grand que 100
-# Detecter une seul grosse forme par couleur
 class VisionRobot:
     image = cv2.imread("image/ry1-2.jpg")
     mask = 0
-    video = cv2.VideoCapture(0)
+    video = cv2.VideoCapture(1)
     balayageHori = 0
     LARGEUR_TRESOR_METRE = 2.5
     FOCAL = 508
@@ -245,7 +243,7 @@ class VisionRobot:
         center = False
 
         self.camera.moveCameraByAngle(1, 0)
-        self.camera.moveCameraByAngle(0, 80)
+        self.camera.moveCameraByAngle(0, 100)
         while(self.video.isOpened()):
             # ret, self.image = self.video.read()
             while not findSomething:
@@ -290,8 +288,3 @@ if __name__ == "__main__":
     vr = VisionRobot()
 
     vr.goCamera()
-    # vr.goDetectTresorAround()
-    # print("distance")
-    # print(vr.DistanceAdjascentte(34))
-    # vr.detecColor()
-    # vr.findContour()
