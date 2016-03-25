@@ -1,10 +1,7 @@
 import serial
-import binascii
-import re
 from time import sleep
 import struct
-from collections import Counter
-import MoteurRoue
+import binascii
 
 class SerialPortCommunicator:
     COMMAND_INDICATOR = "C"
@@ -12,14 +9,14 @@ class SerialPortCommunicator:
     TRUE = 1
     ONE_SECOND_DELAY = 1
     ONE_MINUTE_DELAY = 60
-    FIVE_SECOND_DELAY = 5
+
     LED_FUNCTION_ON = 1
     LED_FUNCTION_OFF = 2
     CHANGE_MOTEUR_SPEED = 3
+    GET_CODE_MANCHESTER = 4
     STOP_ALL_MOTEUR = 5
     CW = 0
     CCW = 1
-
 
 
     # def __init__(self, bitrateArduino = 9600, arduinoPort = "/dev/ttyUSB0"):
@@ -28,7 +25,7 @@ class SerialPortCommunicator:
     #     CCW = 1
 
 #Pololu : /dev/serial/by-id/pci-Pololu_Corporation_Pololu_Micro_Maestro_6-Servo_Controller_00021864-if0
-    def __init__(self, bitrateArduino = 115200, arduinoPort = "/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A7007dag-if00-port0"):
+    def __init__(self, bitrateArduino = 115200, arduinoPort = "/dev/serial/by-id/pci-FTDI_FT232R_USB_UART_A7007dag-if00-port0"):
         self.arduino = serial.Serial(arduinoPort, bitrateArduino, timeout = 1)
         #self.polulu = serial.Serial(poluluPort, bitratePolulu, timeout = 1)
         sleep(1)
@@ -77,11 +74,12 @@ class SerialPortCommunicator:
 
 if __name__ == "__main__":
     spc = SerialPortCommunicator()
+    letter = spc.getAsciiManchester()
+    if(letter ==-2):
+        print("Erreur")
+    else:
+        print("ASCII :" + letter)
+    spc.stopAllMotor()
 
-    print spc.getAsciiManchester()
+    print(spc.getAsciiManchester())
 
-    #chaine = spc.getAsciiManchester()
-    #if( chaine == -2):
-        #print("ERREUR !")
-    #else:
-         #print("ASCII :" + chaine)
