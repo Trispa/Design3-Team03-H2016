@@ -21,6 +21,7 @@ if __name__ == '__main__':
         copyF = copy.copy(frame)
 
         geometricalImage.buildMap(frame)
+        geometricalImage.updateRobotPosition(frame)
         geometricalImage.addLabels(frame)
         worldImage = geometricalImage.drawMapOnImage(frame)
         cv2.imshow("resized", frame)

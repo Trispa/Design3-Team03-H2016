@@ -74,6 +74,7 @@ if __name__ == '__main__':
         cv2.resize(frame, (960,720))
         geometricalImage = WorldImage(frame)
         geometricalImage.buildMap(frame)
+        geometricalImage.updateRobotPosition(frame)
         geometricalImage.addLabels(frame)
         # worldV = worldVision()
         # map = worldV.getCurrentImage()
