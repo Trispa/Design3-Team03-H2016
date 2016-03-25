@@ -1,6 +1,7 @@
 from Client.BaseStation.WorldVision.worldVision import worldVision
 from Client.BaseStation.Logic.Sequencer import Sequencer as seq
 from Client.BaseStation.Logic.Pathfinding.Pathfinder import Pathfinder
+from TargetFactory import TargetFactory
 from MapCoordinatesAjuster import MapCoordinatesAjuster
 from SequencerState import *
 import cv2
@@ -32,6 +33,11 @@ class BaseStationDispatcher():
         convertedImage = cv2.imencode('.png',image)[1]
         base64ConvertedImage = base64.encodestring(convertedImage)
         return base64ConvertedImage
+
+    def setTarget(self, jsonTarget):
+        targetFactory = TargetFactory()
+        target = targetFactory.constructTarget(jsonTarget)
+        self.world.setTarget(target)
 
     def sendToChargingStation(self):
         map = self.world.getCurrentMap()

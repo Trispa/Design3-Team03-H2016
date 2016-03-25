@@ -50,6 +50,9 @@ def sendToTreasure():
     startRound()
     socketIO.emit("sendNextCoordinates",dispatcher.handleCurrentSequencerState(0))
 
+def setTarget(manchesterInfo):
+    dispatcher.setTarget(manchesterInfo['target'])
+
 
 def setInterval(function, seconds):
     def func_wrapper():
@@ -64,6 +67,7 @@ socketIO.on('needNewCoordinates', sendNextCoordinates)
 socketIO.on('startSignal', startRound)
 socketIO.on('sendToChargingStation', sendToChargingStation)
 socketIO.on('sendToTreasure', sendToTreasure)
+socketIO.on('sendManchesterInfo', setTarget)
 
 socketIO.wait()
 

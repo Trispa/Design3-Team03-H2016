@@ -15,6 +15,9 @@ class WorldImage:
     def setImage(self, mapImage):
         self.__mapImage = mapImage
 
+    def setTarget(self, target):
+        self.__map.setTarget(target)
+
     def buildMap(self, mapImage):
         self.__map = self.__myMapBuilder.buildMapWithAllFilter(mapImage, self.__map)
 
@@ -65,9 +68,16 @@ class WorldImage:
         else:
             limit = []
 
+        if self.__map.target != None:
+            target = [self.__map.target.getContour()]
+        else:
+            target = []
+
         contourList = self.__map.getContourList()
         cv2.drawContours( frame, self.__map.getContourList(), -1, (0, 255, 0), 3 )
         cv2.drawContours( frame, limit, -1, (0, 255, 0), 3 )
+        cv2.drawContours( frame, target, -1, (255, 0, 0), 3 )
+
 
 
         return frame

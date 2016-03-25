@@ -10,7 +10,8 @@ class Map:
     def __init__(self):
         self.__shapes = []
         self.limit = Square("limit", np.array([[]], dtype=np.int32))
-        self.robot = Robot(Square("robot", np.array([[]], dtype=np.int32)), Shape("orientation", np.array([[]], dtype=np.int32)))
+        self.robot = Robot(Shape("robot", np.array([[]], dtype=np.int32)), Shape("orientation", np.array([[]], dtype=np.int32)))
+        self.target = None
 
     def getShapesList(self):
         return self.__shapes
@@ -104,6 +105,9 @@ class Map:
         for shape in shapes:
             if(shape.myColor.colorName == "Black" or shape.myColor.colorName == "Purple"):
                 self.__shapes.remove(shape)
+
+    def setTarget(self, target):
+        self.target =  target.getShape(self.__shapes)
 
 
 
