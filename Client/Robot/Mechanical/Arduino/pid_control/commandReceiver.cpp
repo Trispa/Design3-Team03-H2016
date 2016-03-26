@@ -88,6 +88,45 @@ void CommandReceiver::dispatchCommand() {
     		{
       			dm[i].driveMoteur(0,0);
     		}
+       break;
+
+	case 6:
+		if (parameters[0] == 0) //Axe des X
+		{
+			if(parameters[2] == 1) //Direction positive
+			{
+				dm[1].driveMoteur(parameters[1]/100.0, 0);
+				dm[2].driveMoteur(parameters[1]/100.0, 1);
+			}
+			else // Direction negative
+			{
+				dm[1].driveMoteur(parameters[1]/100.0, 1);
+				dm[2].driveMoteur(parameters[1]/100.0, 0);
+			}
+		}
+		else //Axe des Y
+		{
+			if(parameters[2] == 1) //Direction positive
+			{
+				dm[0].driveMoteur(parameters[1]/100.0, 1);
+				dm[3].driveMoteur(parameters[1]/100.0, 0);
+			}
+			else // Direction Negative
+			{
+				dm[0].driveMoteur(parameters[1]/100.0, 0);
+				dm[3].driveMoteur(parameters[1]/100.0, 1);
+			}
+			
+		}
+    break;
+
+	case 7:
+		for(int i = 0; i<4; i++)
+			{
+	  			dm[i].driveMoteur(parameters[0]/100.0, parameters[1]);
+			}
+      break;
+
 
 	default: //for test purposes
 		if(callbackRequested == 1) {
