@@ -6,8 +6,8 @@ HORIZONTALE = 1
 class CameraTower:
     def __init__(self):
         self.m = maestro.Controller()
-        self.degreeHori = 121
-        self.degreeVerti = 112
+        self.degreeHori = 100
+        self.degreeVerti = 80
         self.step = 5
         self.moveCameraByAngle(0, self.degreeVerti)
         self.moveCameraByAngle(1, self.degreeHori)

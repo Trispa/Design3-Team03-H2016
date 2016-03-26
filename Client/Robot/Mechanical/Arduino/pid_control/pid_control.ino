@@ -4,7 +4,7 @@
 #include "commandReceiver.h"
 
 double kp = 1.05;  //1.506897
-double ki = 5.25; //0.007
+double ki = 5.2; //0.007
 double kd = 0;
 
 //Constante avec bug serial.print dans DriveMoteur.cpp
@@ -75,6 +75,7 @@ void loop()
           listEndCounting[i] = 0;
           listStartCounting[i] = 0;
           listNbTicks[i] = 0;
+          listPID[i].Initialize();
         }
 
 //        else if(dv[i].isRunning() == -1)
