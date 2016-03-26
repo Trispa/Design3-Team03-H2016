@@ -29,10 +29,10 @@ def verifyIfMoving(path):
             botInfo = dispatcher.getCurrentWorldInformation()
             botPositionX = botInfo["robotPosition"][0]
             botPositionY = botInfo["robotPosition"][1]
-            while ((botPositionX > x + 15 or
-                botPositionX < x - 15) and
-                   (botPositionY > y + 15 or
-                botPositionY < y - 15)):
+            while ((botPositionX > x + 10 or
+                botPositionX < x - 10) and
+                   (botPositionY > y + 10 or
+                botPositionY < y - 10)):
                 botInfo = dispatcher.getCurrentWorldInformation()
                 botPositionX = botInfo["robotPosition"][0]
                 botPositionY = botInfo["robotPosition"][1]

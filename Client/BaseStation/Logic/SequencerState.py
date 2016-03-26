@@ -2,9 +2,7 @@ class SendingBotToChargingStationState():
     def handle(self, sequencer, robotPosition, pathfinder):
         chargingStationPosition = (100,100)
         sequencer.setState(SendingBotToTreasureState())
-        bob = pathfinder.findPath(robotPosition, chargingStationPosition)
-        return bob
-
+        return pathfinder.findPath(robotPosition, chargingStationPosition)
 
 class SendingBotToTreasureState():
     def handle(self, sequencer, robotPosition, pathfinder):
