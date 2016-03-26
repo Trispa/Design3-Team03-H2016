@@ -5,8 +5,8 @@ class ReferentialConverter:
         self.orientation = float(orientation%360)/180
         self.positionRobotInWorldX = positionRobot.__getitem__(0)
         self.positionRobotInWorldY = positionRobot.__getitem__(1)
-        self.rotationMatrix = numpy.array([[numpy.cos(self.orientation*numpy.pi), -numpy.sin(self.orientation*numpy.pi)],
-                                           [numpy.sin(self.orientation*numpy.pi), numpy.cos(self.orientation*numpy.pi)]])
+        self.rotationMatrix = numpy.array([[numpy.cos(self.orientation*numpy.pi), numpy.sin(self.orientation*numpy.pi)],
+                                           [-numpy.sin(self.orientation*numpy.pi), numpy.cos(self.orientation*numpy.pi)]])
 
 
     def convertWorldToRobot(self, pointToBeConverted):
