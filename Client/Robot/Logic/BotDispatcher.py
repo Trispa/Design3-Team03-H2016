@@ -12,8 +12,8 @@ class BotDispatcher():
     def handleCurrentState(self, coordinates):
         print(coordinates)
         print("Bot going to "
-      " : (" + coordinates["positionTOx"]+
-      " " + coordinates["positionTOy"] +
+      " : (" + str( coordinates["positionTOx"])+
+      " " + str( coordinates["positionTOy"]) +
       ")")
 
         botPosition= (int(coordinates["positionFROMx"]),int(coordinates["positionFROMy"]))
