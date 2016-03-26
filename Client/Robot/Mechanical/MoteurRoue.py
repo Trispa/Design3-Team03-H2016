@@ -4,7 +4,7 @@ import SerialPortCommunicator
 NB_MOTEUR = 5
 CW = 0
 CCW = 1
-MAX_SPEED = 0.15
+MAX_SPEED = 0.11
 class MoteurRoue:
     def __init__(self):
         self.spc = SerialPortCommunicator.SerialPortCommunicator()
