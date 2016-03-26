@@ -36,7 +36,9 @@ class BaseStationDispatcher():
             self.pathfinder.drawPath(image)
         convertedImage = cv2.imencode('.png',image)[1]
         base64ConvertedImage = base64.encodestring(convertedImage)
-        informationToSend = {"robotPosition":map.robot.center,
+        mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
+        convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.center)
+        informationToSend = {"robotPosition":convertedPoint,
                            "robotOrientation":map.robot.orientation,
                            "encodedImage":base64ConvertedImage}
         return informationToSend
