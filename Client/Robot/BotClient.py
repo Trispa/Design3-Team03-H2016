@@ -4,7 +4,6 @@ import os
 from socketIO_client import SocketIO
 
 from Client.Robot.Logic.Deplacement.WheelManager import WheelManager
-from Client.Robot.VisionEmbarque.VisionRobot import VisionRobot
 
 from Logic.BotDispatcher import BotDispatcher
 

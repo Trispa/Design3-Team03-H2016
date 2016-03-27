@@ -1,8 +1,12 @@
 from ReferentialConverter import ReferentialConverter
+from Client.Robot.VisionEmbarque.VisionRobot import VisionRobot
+from Client.Robot.Mechanical.CameraTower import CameraTower
+
 
 class BotDispatcher():
     def __init__(self, wheelManager):
         self.wheelManager = wheelManager
+        self.vision = VisionRobot(wheelManager, CameraTower())
 
     def followPath(self, coordinates):
         print(coordinates)
@@ -18,4 +22,4 @@ class BotDispatcher():
         self.wheelManager.moveTo(pointConverted)
 
     def alignToTreasure(self):
-        pass
+        self.vision.approcheVersTresor()

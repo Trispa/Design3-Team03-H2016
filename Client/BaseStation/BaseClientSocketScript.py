@@ -46,7 +46,7 @@ def verifyIfMoving(path):
                           "orientation":botInfo["robotOrientation"]}
             socketIO.emit("sendNextCoordinates", jsonToSend)
         else:
-            print("sendingNextCoordinates")
+            print("sendingAlignToTreasureCommand")
             socketIO.emit("alignToTreasure")
 
 
