@@ -1,16 +1,19 @@
 from Client.BaseStation.Logic.Pathfinding.Graph.GraphGenerator import GraphGenerator
 from Client.BaseStation.Logic.Pathfinding.Path import Path
 from Client.BaseStation.Logic.Pathfinding.MapAdaptator import MapAdaptator
+from Client.BaseStation.Logic.Pathfinding.Obstacle import Obstacle
 from Client.BaseStation.Logic.Pathfinding.Graph.Node import Node
 from Client.BaseStation.Logic.Pathfinding.LineOfSightCalculator import LineOfSightCalculator
 import cv2
 import numpy as np
 
 class Pathfinder:
-    def __init__(self, map):
-        self.mapAdaptator = MapAdaptator(map)
-        obstaclesList, mapSizeX, mapSizeY, minCorner = self.mapAdaptator.getMapInfo()
-        self.minCorner = minCorner
+    def __init__(self, obstaclesList):
+        #self.mapAdaptator = MapAdaptator(map)
+        #obstaclesList, mapSizeX, mapSizeY, minCorner = self.mapAdaptator.getMapInfo()
+        #self.minCorner = minCorner
+        mapSizeX = 1000
+        mapSizeY = 600
         self.graphGenerator = GraphGenerator(obstaclesList, mapSizeX, mapSizeY)
         self.graph = self.graphGenerator.generateGraph()
         self.lineOfSightCalculator = LineOfSightCalculator(self.graph)
@@ -48,7 +51,7 @@ class Pathfinder:
                     goodPath = currentPath
         self.printPath(goodPath)
         self.theGoodPath = goodPath
-        #self.__displayPathfinder(goodPath, positionRobot)
+        self.__displayPathfinder(goodPath, positionRobot)
         return goodPath
 
 
@@ -135,6 +138,10 @@ class Pathfinder:
         cv2.imwrite('image' + str(self.indice) + '.jpg', img)
         self.indice = self.indice + 1
 
-
-
+obs = []
+obs.append(Obstacle((200,100)))
+obs.append(Obstacle((240,85)))
+obs.append(Obstacle((270,400)))
+bob = Pathfinder(obs)
+bob.findPath((500,500), (100,100))
 
