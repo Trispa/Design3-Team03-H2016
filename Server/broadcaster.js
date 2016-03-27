@@ -52,8 +52,8 @@ io.on('connection', function (client) {
         io.emit('startSignalRobot', data);
     });
 
-    client.on('needNewCoordinates', function(data){
-        io.emit('needNewCoordinates', data);
+    client.on('needNewCoordinates', function(){
+        io.emit('needNewCoordinates');
     });
     client.on('sendNextCoordinates', function(data){
         console.log(data);
@@ -83,6 +83,10 @@ io.on('connection', function (client) {
     client.on('sendToTreasure', function(){
         io.emit('sendToTreasure');
     });
+
+    client.on('needPooling', function(){
+        setInterval(function(){ io.emit('verifyIfMoving')}, 1000);
+    })
 });
 
 server.listen(port, url);

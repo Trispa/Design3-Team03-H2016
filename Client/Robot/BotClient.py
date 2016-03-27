@@ -18,21 +18,16 @@ socketIO = SocketIO(config['url'], int(config['port']))
 #orderReceiver = BotDispatcher(RobotMock())
 botDispatcher = BotDispatcher(WheelManager(MoteurRoue()))
 
-def needNewCoordinates(*args):
+def needNewCoordinates(data):
     print("heading toward next coordinates")
-    botDispatcher.handleCurrentState(args[0])
-    whichObstacleNextIsNeeded = int(args[0]["index"]) + 1
-    print(botDispatcher.state.__class__)
-    socketIO.emit(botDispatcher.state.sendingSignal, {"index" : str(whichObstacleNextIsNeeded)})
+    botDispatcher.handleCurrentState(data)
 
 def startRound(*args):
     print("start round")
-    botDispatcher.acceptOrders()
-    socketIO.emit(botDispatcher.state.sendingSignal, {"index": "0"})
+    socketIO.emit("needNewCoordinates")
 
 def endRound():
     print("end round")
-    botDispatcher.refuseOrders()
 
 socketIO.emit('sendBotClientStatus','Connected')
 socketIO.on('sendNextCoordinates', needNewCoordinates)

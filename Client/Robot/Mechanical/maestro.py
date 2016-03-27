@@ -27,7 +27,9 @@ class Controller:
     # controllers ports 0 and 2 would be used.
     def __init__(self,port=0):
         # Open the command port
+        # ttyStr = "pci-Pololu_Corporation_Pololu_Micro_Maestro_6-Servo_Controller_00021864-if02" + "-port-0"
         ttyStr = '/dev/ttyACM' + str(port)
+        # print ttyStr
         self.usb = serial.Serial(ttyStr)
         # Command lead-in and device 12 are sent for each Pololu serial commands.
         self.PololuCmd = chr(0xaa) + chr(0xc)

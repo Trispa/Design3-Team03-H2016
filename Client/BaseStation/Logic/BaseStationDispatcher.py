@@ -11,18 +11,22 @@ class BaseStationDispatcher():
     def __init__(self):
         self.world = worldVision()
         self.pathfinder = None
+        self.path = None
 
-    def handleCurrentSequencerState(self, nodeListIndex):
+    def handleCurrentSequencerState(self):
         image, map = self.world.getCurrentImage()
         mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
-        convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.square.findCenterOfMass())
-        return self.sequencer.handleCurrentState(nodeListIndex, convertedPoint , map.robot.orientation)
+        convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.center)
+        self.path = self.sequencer.handleCurrentState(convertedPoint)
+        return self.path
+
+
 
     def initialiseWorldData(self):
         image, map = self.world.getCurrentImage()
         self.pathfinder = Pathfinder(map)
         mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
-        convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.square.findCenterOfMass())
+        convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.center)
         self.sequencer = seq(self.pathfinder, convertedPoint)
         return map.robot.center, map.robot.orientation
 
@@ -32,7 +36,9 @@ class BaseStationDispatcher():
             self.pathfinder.drawPath(image)
         convertedImage = cv2.imencode('.png',image)[1]
         base64ConvertedImage = base64.encodestring(convertedImage)
-        informationToSend = {"robotPosition":map.robot.center,
+        mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
+        convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.center)
+        informationToSend = {"robotPosition":convertedPoint,
                            "robotOrientation":map.robot.orientation,
                            "encodedImage":base64ConvertedImage}
         return informationToSend
@@ -41,13 +47,3 @@ class BaseStationDispatcher():
         targetFactory = TargetFactory()
         target = targetFactory.constructTarget(jsonTarget)
         self.world.setTarget(target)
-
-    def sendToChargingStation(self):
-        image, map = self.world.getCurrentImage()
-        robotPosition = map.robot.center
-        self.sequencer.setState(SendingBotToChargingStationStateOnly(), robotPosition)
-
-    def sendToTreasure(self):
-        image, map = self.world.getCurrentImage()
-        robotPosition = map.robot.center
-        self.sequencer.setState(SendingBotToTreasureStateOnly(), robotPosition)

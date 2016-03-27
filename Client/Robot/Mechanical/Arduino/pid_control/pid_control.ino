@@ -4,7 +4,7 @@
 #include "commandReceiver.h"
 
 double kp = 1.05;  //1.506897
-double ki = 5.25; //0.007
+double ki = 5.2; //0.007
 double kd = 0;
 
 //Constante avec bug serial.print dans DriveMoteur.cpp
@@ -16,8 +16,6 @@ long listNbTicks[4] = {0, 0, 0, 0};
 unsigned long listEndCounting[4] = {0,0,0,0};
 unsigned long listStartCounting[4] = {0,0,0,0};
 bool timeToCompute = false;
-unsigned long freq = 0;
-unsigned long graphTime = 0;
 unsigned int ar = 0;
 unsigned long diffTime = 0;
 
@@ -72,6 +70,14 @@ void loop()
           listPID[i].Compute();
           dv[i].asservissement();
         }
+        else
+        {
+          listEndCounting[i] = 0;
+          listStartCounting[i] = 0;
+          listNbTicks[i] = 0;
+          listPID[i].Initialize();
+        }
+
 //        else if(dv[i].isRunning() == -1)
 //        {
 //          listPID[i] = PID(dv[1 - 1].getInput(), dv[1 - 1].getOutput(), dv[1 - 1].getSetpoint(), kp, ki, kd, DIRECT);

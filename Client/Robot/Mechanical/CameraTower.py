@@ -6,8 +6,8 @@ HORIZONTALE = 1
 class CameraTower:
     def __init__(self):
         self.m = maestro.Controller()
-        self.degreeHori = 121
-        self.degreeVerti = 112
+        self.degreeHori = 100
+        self.degreeVerti = 80
         self.step = 5
         self.moveCameraByAngle(0, self.degreeVerti)
         self.moveCameraByAngle(1, self.degreeHori)
@@ -17,11 +17,11 @@ class CameraTower:
             if angle > 135:
                 angle = 135
             self.degreeVerti = self.angleLimit(angle)
-            print("Verticale : " + str(self.degreeVerti))
+            # print("Verticale : " + str(self.degreeVerti))
             self.m.setTarget(direction, self.getPWMfromAngle(angle))
         elif direction == 1:
             self.degreeHori = self.angleLimit(angle)
-            print("Horizaontal : " + str(self.degreeHori))
+            # print("Horizaontal : " + str(self.degreeHori))
             self.m.setTarget(direction, self.getPWMfromAngle(angle))
         else:
             return -1
