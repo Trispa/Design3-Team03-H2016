@@ -22,6 +22,10 @@ class ReferentialConverter:
     def adjustAngle(self, angle):
         self.orientation += angle
 
+    def setPositionTo(self, point):
+        self.positionRobotInWorldX = point[0]
+        self.positionRobotInWorldY = point[1]
+
 
     def __roundTo3Decimal(self, numberToberounded):
         return float("{0:.3f}".format(float(numberToberounded)))

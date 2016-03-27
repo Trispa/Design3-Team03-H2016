@@ -1,5 +1,6 @@
 import time
 import Client.Robot.Mechanical.SerialPortCommunicator
+from Client.Robot.Logic.ReferentialConverter import ReferentialConverter
 import numpy as np
 from Client.Robot.Logic.Deplacement.PixelToCentimeterConverter import PixelToCentimeterConverter
 
@@ -14,7 +15,7 @@ class WheelManager:
     POSITIVE_SPEED = 1
     NEGATIVE_SPEED = 0
     MAX_SPEED = 0.14
-    ROTATION_SPEED = 0,05
+    ROTATION_SPEED = 0.05
 
     def __init__(self):
         self.spc = Client.Robot.Mechanical.SerialPortCommunicator.SerialPortCommunicator()
@@ -23,8 +24,8 @@ class WheelManager:
         self.isMoving = False
 
     #Distance en pixel
-    def moveTo(self, pointToMoveTo):
-        pointAdjusted = self.__adjustOrientation(pointToMoveTo)
+    def moveTo(self, pointToMoveTo, referentialConverter):
+        pointAdjusted = self.__adjustOrientation(pointToMoveTo, referentialConverter)
         pointConverted = self.pixelToCentimeterConverter.convertPixelToCentimeter(pointAdjusted)
 
         pointX = pointConverted[0]
@@ -79,15 +80,14 @@ class WheelManager:
         return self.isMoving
 
 
-    def __adjustOrientation(self, pointToMove):
+    def __adjustOrientation(self, pointToMove, referentialConverter):
         degreeAngle = (np.arcsin((pointToMove[1]/pointToMove[0]))/np.pi)*180
         angleToRotate = degreeAngle%45
-        newAngle = degreeAngle + angleToRotate
+        referentialConverter2 = ReferentialConverter((0,0), angleToRotate)
         self.rotate(angleToRotate)
 
-        mouvementLenght = np.sqrt(pointToMove[0]**2 + pointToMove[1]**2)
-        pointAjusted = (mouvementLenght*np.cos(newAngle), mouvementLenght*np.sin(newAngle))
-        return pointAjusted
+        pointAdjusted = referentialConverter2.convertWorldToRobot(pointToMove)
+        return pointAdjusted
 
 
     def __resetMotors(self):

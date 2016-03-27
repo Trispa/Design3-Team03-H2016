@@ -19,7 +19,7 @@ class BotDispatcher():
         orientation = int(coordinates["orientation"])
         referentialConverter = ReferentialConverter(botPosition,orientation)
         pointConverted = referentialConverter.convertWorldToRobot((int(coordinates["positionTOx"]), int(coordinates["positionTOy"])))
-        self.wheelManager.moveTo(pointConverted)
+        self.wheelManager.moveTo(pointConverted, referentialConverter)
 
     def alignToTreasure(self):
         self.vision.approcheVersTresor()
