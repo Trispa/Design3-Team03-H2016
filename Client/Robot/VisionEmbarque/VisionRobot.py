@@ -20,11 +20,11 @@ class VisionRobot:
     FOCAL = 508
     largeurTresorPixel = 0
 
-    def __init__(self):
+    def __init__(self, moteurRoue, cameraTower):
 
-        self.robot = MoteurRoue()
+        self.robot = moteurRoue
         self.robot.MAX_SPEED = 0.03
-        self.camera = CameraTower()
+        self.camera = cameraTower
         self.camera.step = 1
         self.tresor = None
         yellowDown = [0, 100, 100]
@@ -209,7 +209,7 @@ class VisionRobot:
         return distancePixel
 
 
-    def goCamera(self):
+    def approcheVersTresor(self):
         findSomething = False
         center = False
         movingY = False
@@ -282,7 +282,7 @@ class VisionRobot:
 
             if moveYArriver and moveXArriver:
                 print "!!! ARRIVER !!!"
-                break
+                return True
 
             cv2.imshow("Image", self.image)
             if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -292,9 +292,11 @@ class VisionRobot:
 
 
 if __name__ == "__main__":
-    vr = VisionRobot()
+    mr = MoteurRoue()
+    ct = CameraTower()
+    vr = VisionRobot(mr, ct)
 
-    vr.goCamera()
+    vr.approcheVersTresor()
     # vr.goDetectTresorAround()
     # print("distance")
     # print(vr.DistanceAdjascentte(34))
