@@ -46,21 +46,21 @@ void   ReadManchester::getMaschesterBits()
 	  if(this->_enableManchester){
   		if(bitAllowed){
       //Serial.println(now);
-      delayMicroseconds(14);
+      //delayMicroseconds(13);
       newVal = digitalRead(_pinManchester);
-      digitalWrite(13, newVal);
+      //digitalWrite(13, newVal);
       
       timebetweenNowToChange = now - timeToChange;
       //Serial.println(timebetweenNowToChange, DEC);
       if(oldVal == HIGH){
-        if(timebetweenNowToChange > 40 && timebetweenNowToChange < 80 ){ // on vise envirion 44{
+        if(timebetweenNowToChange > 20 && timebetweenNowToChange < 80 ){ // on vise envirion 44{
           bits[indice++]= '1';
-        }else if (timebetweenNowToChange > 150 && timebetweenNowToChange < 175){ //on vise environ 112
+        }else if (timebetweenNowToChange > 130 && timebetweenNowToChange < 175){ //on vise environ 144
           bits[indice++]= '1';
           bits[indice++]= '1';
         }
       }else if (oldVal == LOW){
-          if (timebetweenNowToChange > 100 && timebetweenNowToChange < 140){ //on vise environ 148
+          if (timebetweenNowToChange > 90 && timebetweenNowToChange < 150){ //on vise environ 108
                bits[indice++]= '0';
           }else if (timebetweenNowToChange > 200 && timebetweenNowToChange < 250){ //on vise environ 212
                bits[indice++]= '0';

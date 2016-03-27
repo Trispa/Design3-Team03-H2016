@@ -106,7 +106,7 @@ class ManchesterCode():
             word_counts = Counter(self.ascii)
             top_tree = word_counts.most_common(1)
             b = [str(i[0]) for i in top_tree]
-            print top_tree
+            #print top_tree
             return  b[0]
         elif(self.error == -1):
             return self.CHAINE_VIDE_ERROR
