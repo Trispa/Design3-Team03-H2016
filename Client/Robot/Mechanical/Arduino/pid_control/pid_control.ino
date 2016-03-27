@@ -48,11 +48,6 @@ void updateFreqEnco();
 
 void setup() {
 
-  /****************MANCHESTER SETUP***********/
-  //pinMode(manchester_pin,INPUT);
-  //pinMode(clk_pin, OUTPUT);
-  /****************FIN************************/
-  pinMode(13, OUTPUT);
   Serial.begin(115200);
   attachInterrupt(digitalPinToInterrupt(dv[1 - 1].getPinEncoInterrup()), fctInterrupt1, RISING);
   attachInterrupt(digitalPinToInterrupt(dv[2 - 1].getPinEncoInterrup()), fctInterrupt2, RISING);
@@ -74,7 +69,6 @@ void loop()
 
   cmdRec.process();  
   rm.getMaschesterBits();
-  //readManchesterBit();
    
     for(int i = 0; i < NB_DRIVEMOTEUR; i++)
     {
@@ -105,28 +99,6 @@ void updateFreqEnco()
   
 }
 
-
-
-void readManchesterBit(){
-  
-  if(enableManchester){
-    //Serial.print("on est dans le if");
-    digitalWrite(clk_pin, HIGH);
-    delay(32);
-    //Serial.print("ici");
-    code_Manchester = (code_Manchester << 1) + (digitalRead(manchester_pin) == 0);
-    code_Manchester &= 0xFFFF;
-    //Serial.print("ici");
-    if((code_Manchester & 0xFF80) == 0xFF00){
-      //Serial.print("ici");
-      //Serial.print(code_Manchester, BIN);
-    }
-    digitalWrite(clk_pin, LOW);
-    delay(32);
-    
-  }
-  
-}
 
 void fctInterrupt1()
   {

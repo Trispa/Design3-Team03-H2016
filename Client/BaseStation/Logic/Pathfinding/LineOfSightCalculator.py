@@ -37,7 +37,7 @@ class LineOfSightCalculator:
         botResult = True
         leftResult = True
         rightResult = True
-        for compteurObstacle in range(0, self.graph.obstaclesList.__len__() - 1):
+        for compteurObstacle in range(0, self.graph.obstaclesList.__len__()):
             currentObstacle = self.graph.obstaclesList[compteurObstacle]
             pointA1 = (currentNode.positionX, currentNode.positionY)
             pointA2 = (finalNode.positionX, finalNode.positionY)
@@ -56,9 +56,11 @@ class LineOfSightCalculator:
         currentObstacle.positionX + self.graph.SAFE_MARGIN, currentObstacle.positionY - self.graph.SAFE_MARGIN)
         pointB2 = (
         currentObstacle.positionX + self.graph.SAFE_MARGIN, currentObstacle.positionY + self.graph.SAFE_MARGIN)
+        sortedAPoints = [pointA1, pointA2]
+        sortedAPoints.sort(key=lambda pointA: pointA[1])
         intersection = self.lineInterceptionCalculator.findInterception(pointA1, pointA2, pointB1, pointB2)
         if intersection != False:
-            if self.__isInYRange(intersection, pointA1, pointA2, pointB1, pointB2):
+            if self.__isInYRange(intersection, sortedAPoints[0], sortedAPoints[1], pointB1, pointB2):
                 rightResult = False
         return rightResult
 
@@ -68,9 +70,11 @@ class LineOfSightCalculator:
         currentObstacle.positionX - self.graph.SAFE_MARGIN, currentObstacle.positionY - self.graph.SAFE_MARGIN)
         pointB2 = (
         currentObstacle.positionX - self.graph.SAFE_MARGIN, currentObstacle.positionY + self.graph.SAFE_MARGIN)
+        sortedAPoints = [pointA1, pointA2]
+        sortedAPoints.sort(key=lambda pointA: pointA[1])
         intersection = self.lineInterceptionCalculator.findInterception(pointA1, pointA2, pointB1, pointB2)
         if intersection != False:
-            if self.__isInYRange(intersection, pointA1, pointA2, pointB1, pointB2):
+            if self.__isInYRange(intersection, sortedAPoints[0], sortedAPoints[1], pointB1, pointB2):
                 leftResult = False
         return leftResult
 
@@ -80,9 +84,11 @@ class LineOfSightCalculator:
         currentObstacle.positionX - self.graph.SAFE_MARGIN, currentObstacle.positionY + self.graph.SAFE_MARGIN)
         pointB2 = (
         currentObstacle.positionX + self.graph.SAFE_MARGIN, currentObstacle.positionY + self.graph.SAFE_MARGIN)
+        sortedAPoints = [pointA1, pointA2]
+        sortedAPoints.sort(key=lambda pointA: pointA[0])
         intersection = self.lineInterceptionCalculator.findInterception(pointA1, pointA2, pointB1, pointB2)
         if intersection != False:
-            if self.__isInXRange(intersection, pointA1, pointA2, pointB1, pointB2):
+            if self.__isInXRange(intersection, sortedAPoints[0], sortedAPoints[1], pointB1, pointB2):
                 botResult = False
         return botResult
 
@@ -91,8 +97,10 @@ class LineOfSightCalculator:
         pointB1 = (currentObstacle.positionX - self.graph.SAFE_MARGIN, currentObstacle.positionY - self.graph.SAFE_MARGIN)
         pointB2 = (currentObstacle.positionX + self.graph.SAFE_MARGIN, currentObstacle.positionY - self.graph.SAFE_MARGIN)
         intersection = self.lineInterceptionCalculator.findInterception(pointA1, pointA2, pointB1, pointB2)
+        sortedAPoints = [pointA1, pointA2]
+        sortedAPoints.sort(key=lambda pointA: pointA[0])
         if intersection != False:
-            if self.__isInXRange(intersection, pointA1, pointA2, pointB1, pointB2):
+            if self.__isInXRange(intersection, sortedAPoints[0], sortedAPoints[1], pointB1, pointB2):
                 topResult = False
         return topResult
 

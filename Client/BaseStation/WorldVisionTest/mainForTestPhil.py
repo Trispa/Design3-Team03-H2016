@@ -1,33 +1,33 @@
 from Client.BaseStation.WorldVision.worldImage import WorldImage
-import os
-import base64
+import copy
 from Client.BaseStation.WorldVision.worldVision import worldVision
 import cv2
 
 
 if __name__ == '__main__':
 
-    camera = cv2.VideoCapture(1)
-    camera.set(3, 720)
-    camera.set(4, 960)
-    ret, frame = camera.read()
+    camera = cv2.VideoCapture(0)
+    camera.set(3, 3264)
+    camera.set(4, 2448)
 
-    #frame = cv2.imread('Photos/3105/table 5/jour/rideau ouvert/Picture 18.jpg')
-    #frame = cv2.imread('Images/Test6.jpg')
+    frame = cv2.imread('Photo-Test/Frames/Picture 177.jpg')
     geometricalImage = WorldImage(frame)
-    #worldVision = worldVision()
 
     while(True):
-        #ret, frame = camera.read()
-        frame = cv2.imread('Photo-Test/Frames/Picture 106.jpg')
-        geometricalImage = WorldImage(frame)
+
+        ret, frame = camera.read()
+        #frame = cv2.imread('Photo-Test/Frames/Picture 220.jpg')
+        frame = cv2.resize(frame, (960, 720))
+        copyF = copy.copy(frame)
 
         geometricalImage.buildMap(frame)
+        geometricalImage.updateRobotPosition(frame)
         geometricalImage.addLabels(frame)
         worldImage = geometricalImage.drawMapOnImage(frame)
-        cv2.imshow("Monde", worldImage)
+        cv2.imshow("resized", frame)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
+            cv2.imwrite('test.jpg',copyF)
             break
-    #cap.release()
+    camera.release()
     cv2.destroyAllWindows()

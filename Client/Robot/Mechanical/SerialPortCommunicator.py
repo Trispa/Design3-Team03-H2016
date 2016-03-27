@@ -12,22 +12,33 @@ class SerialPortCommunicator:
 
     LED_FUNCTION_ON = 1
     LED_FUNCTION_OFF = 2
-    CHANGE_MOTEUR_SPEED = 3
-    GET_CODE_MANCHESTER = 4
+
+    CHANGE_SINGLE_MOTEUR_SPEED = 3
     STOP_ALL_MOTEUR = 5
+    CHANGE_SPEED_ROTATION = 7
+
     CW = 0
     CCW = 1
-
 
     # def __init__(self, bitrateArduino = 9600, arduinoPort = "/dev/ttyUSB0"):
     #     STOP_ALL_MOTEUR = 4
     #     CW = 0
     #     CCW = 1
 
+
     #/dev/serial/by-id/pci-FTDI_FT232R_USB_UART_A7007dag-if00-port0
 
     #Pololu : /dev/serial/by-id/pci-Pololu_Corporation_Pololu_Micro_Maestro_6-Servo_Controller_00021864-if0
+
+    #Mon Port
     def __init__(self, bitrateArduino = 115200, arduinoPort = "/dev/ttyACM0"):
+
+#Pololu : /dev/serial/by-id/pci-Pololu_Corporation_Pololu_Micro_Maestro_6-Servo_Controller_00021864-if0
+
+    #Ubuntu pci-FTDI...
+    #Fedora usb-FTDI...
+
+    #def __init__(self, bitrateArduino = 115200, arduinoPort = "/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A7007dag-if00-port0"):
         self.arduino = serial.Serial(arduinoPort, bitrateArduino, timeout = 1)
         #self.polulu = serial.Serial(poluluPort, bitratePolulu, timeout = 1)
         sleep(1)
@@ -69,19 +80,19 @@ class SerialPortCommunicator:
         self._sendCommand(self.LED_FUNCTION_OFF, self.FALSE, self.ONE_SECOND_DELAY, 1)
 
     def driveMoteur(self, noMoteur, speed, direction):
-        self._sendCommand(self.CHANGE_MOTEUR_SPEED, self.FALSE, self.ONE_SECOND_DELAY, noMoteur, speed*100, direction)
+        self._sendCommand(self.CHANGE_SINGLE_MOTEUR_SPEED, self.FALSE, self.ONE_SECOND_DELAY, noMoteur, speed * 100, direction)
 
     def stopAllMotor(self):
         self._sendCommand(self.STOP_ALL_MOTEUR, self.FALSE, self.ONE_SECOND_DELAY, 1)
 
+    def driveMoteurLine(self, axe, speed, positif):
+        self._sendCommand(self.CHANGE_SPEED_LINE, self.FALSE, self.ONE_SECOND_DELAY, axe, speed * 100, positif)
+        print "Send Line"
+
+    def driveMoteurRotation(self, speed, direction):
+        self._sendCommand(self.CHANGE_SPEED_ROTATION, self.FALSE, self.ONE_SECOND_DELAY, speed * 100, direction)
+        print "Send Rotation"
+
 if __name__ == "__main__":
     spc = SerialPortCommunicator()
-    letter = spc.getAsciiManchester()
-    if(letter ==-2):
-        print("Erreur")
-    else:
-        print("ASCII :" + letter)
-    spc.stopAllMotor()
-
-    print(spc.getAsciiManchester())
 

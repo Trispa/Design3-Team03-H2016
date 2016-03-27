@@ -1,8 +1,8 @@
+from Client.Robot.Logic.PositionAdjuster import *
 
-class ExecutingOrderState():
+class FollowingPathState():
     def __init__(self):
         self.sendingSignal = "needNewCoordinates"
 
     def handle(self, orderReceiver, coordinates):
-        orderReceiver.robot.moveTo(coordinates)
         orderReceiver.wheelManager.moveTo(coordinates)

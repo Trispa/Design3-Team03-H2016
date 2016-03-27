@@ -10,6 +10,7 @@ class ResultChecker:
         image = cv2.imread(frameFileName)
         self.geometricalImage = WorldImage(image)
         self.geometricalImage.buildMap(image)
+        self.geometricalImage.updateRobotPosition(image)
         resultFile = open(resultFileName, 'r')
         centerOfMassLine = resultFile.readline()
         centerOfMassLine = centerOfMassLine[13:]
@@ -54,7 +55,7 @@ class ResultChecker:
             print("Limit not found")
 
     def checkIfRobotFound(self):
-        if self.geometricalImage.getMap().robot.getArea() < 1:
+        if self.geometricalImage.getMap().robot.square.getArea() < 1:
             print("Robot not found")
 
 

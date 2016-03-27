@@ -16,5 +16,5 @@ class MapAdaptator:
             centerX, centerY = currentShape.findCenterOfMass()
             obstaclesList.append(Obstacle((centerX - minCorner[0],centerY - minCorner[1])))
 
-        return obstaclesList, mapSizeX, mapSizeY
+        return obstaclesList, mapSizeX, mapSizeY, minCorner
 

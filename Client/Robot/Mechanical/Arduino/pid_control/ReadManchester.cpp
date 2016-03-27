@@ -1,7 +1,7 @@
 /*
-	ReadManchester.h library for read manchester code from an encoder Manchester
-	Created by Erco Trispa Frebruary 10 2016
-	Released into the public domain
+  ReadManchester.h library for read manchester code from an encoder Manchester
+  Created by Erco Trispa Frebruary 10 2016
+  Released into the public domain
 */
 
 #include "Arduino.h"
@@ -26,25 +26,25 @@ volatile unsigned int data ;
 void ReadManchester::readBitInterrupt(){
   
   now = micros();
-	bitAllowed = 1;
+  bitAllowed = 1;
   
   
-	
+  
 }
 ReadManchester::ReadManchester(int pinManchester){
-	
-	pinMode(pinManchester, INPUT);
-	this->_pinManchester = pinManchester;
- 	this->enableInterrupt(true);	
+  
+  pinMode(pinManchester, INPUT);
+  this->_pinManchester = pinManchester;
+  this->enableInterrupt(true);  
   this->enableManchester();
   
 }
 
 
 void   ReadManchester::getMaschesterBits()
-{	
-	  if(this->_enableManchester){
-  		if(bitAllowed){
+{ 
+    if(this->_enableManchester){
+      if(bitAllowed){
       //Serial.println(now);
       //delayMicroseconds(13);
       newVal = digitalRead(_pinManchester);
@@ -83,8 +83,8 @@ void   ReadManchester::getMaschesterBits()
       bitAllowed = 0;
     }
  
-	 }
-	 
+   }
+   
 }
 
 char* ReadManchester::getChaineCopie(){
@@ -93,11 +93,11 @@ char* ReadManchester::getChaineCopie(){
 }
 
 void ReadManchester::enableInterrupt(boolean ansewer){
-		
-		if(ansewer)
-			attachInterrupt(digitalPinToInterrupt(_pinManchester), readBitInterrupt, CHANGE); 
-		else
-			detachInterrupt(digitalPinToInterrupt(_pinManchester));
+    
+    if(ansewer)
+      attachInterrupt(digitalPinToInterrupt(_pinManchester), readBitInterrupt, CHANGE); 
+    else
+      detachInterrupt(digitalPinToInterrupt(_pinManchester));
 
 }
 

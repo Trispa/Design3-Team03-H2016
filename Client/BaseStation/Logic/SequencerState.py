@@ -1,93 +1,17 @@
 class SendingBotToChargingStationState():
-    def __init__(self):
-        self.obstacleIndex = 0
-
-    def setPath(self, pathfinder, robotPosition):
-        self.path = pathfinder.findPath(robotPosition, (250,350))
-
-    def handle(self, sequencer, obstacleListIndex, robotPosition):
-        self.obstacleIndex = int(obstacleListIndex)
-
-        print("sending bot to (" + str(self.path[int(obstacleListIndex)][0]) + "," +
-              str(self.path[int(obstacleListIndex)][1]) + ")")
-
-        coordinates = {"type": "charging station",
-                       "end":"no",
-                       "index": str(self.obstacleIndex),
-                       "positionTO": {
-                           "positionX": str(self.path[int(obstacleListIndex)][0]),
-                           "positionY": str(self.path[int(obstacleListIndex)][1])},
-                       "positionFROM": {
-                           "positionX": robotPosition[0],
-                           "positionY": robotPosition[1],
-                           "orientation": "0"},
-                       }
-
-        if(self.obstacleIndex == self.path.__len__() - 1):
-            sequencer.setState(SendingBotToTreasureState())
-            coordinates["index"] = "-1"
-
-        return (coordinates)
+    def handle(self, sequencer, robotPosition, pathfinder):
+        chargingStationPosition = (100,100)
+        sequencer.setState(SendingBotToTreasureState())
+        return pathfinder.findPath(robotPosition, chargingStationPosition)
 
 class SendingBotToTreasureState():
-    def __init__(self):
-        self.obstacleIndex = 0
-
-    def setPath(self, pathfinder, robotPosition):
-        self.path = pathfinder.findPath(robotPosition, (2,5))
-
-    def handle(self, sequencer, obstacleListIndex, robotPosition):
-        self.obstacleIndex = int(obstacleListIndex)
-
-        print("sending bot to (" + str(self.path[int(obstacleListIndex)][0]) + "," +
-              str(self.path[int(obstacleListIndex)][1]) + ")")
-
-        coordinates = {"type": "treasure",
-                       "end":"no",
-                       "index": str(self.obstacleIndex),
-                       "positionTO": {
-                           "positionX": str(self.path[int(obstacleListIndex)][0]),
-                           "positionY": str(self.path[int(obstacleListIndex)][1])},
-                       "positionFROM": {
-                           "positionX": robotPosition[0],
-                           "positionY": robotPosition[1],
-                           "orientation": "0"},
-                       }
-
-        if(self.obstacleIndex == self.path.__len__() - 1):
-            sequencer.setState(SendingBotToTargetState())
-            coordinates["index"] = "-1"
-
-        return (coordinates)
+    def handle(self, sequencer, robotPosition, pathfinder):
+        sequencer.setState(SendingBotToTargetState())
+        return  pathfinder.findPath(robotPosition, (910,55))
 
 
 class SendingBotToTargetState():
-    def __init__(self):
-        self.obstacleIndex = 0
+    def handle(self, sequencer, robotPosition, pathfinder):
+        sequencer.setState(SendingBotToChargingStationState())
+        return pathfinder.findPath(robotPosition, (700,150))
 
-    def setPath(self, pathfinder, robotPosition):
-        self.path = pathfinder.findPath(robotPosition, (700,150))
-
-    def handle(self, sequencer, obstacleListIndex, robotPosition):
-        self.obstacleIndex = int(obstacleListIndex)
-        print("sending bot to (" + str(self.path[int(obstacleListIndex)][0]) + "," +
-              str(self.path[int(obstacleListIndex)][1]) + ")")
-
-        coordinates = {"type": "target",
-                       "end":"no",
-                       "index": str(self.obstacleIndex),
-                       "positionTO": {
-                           "positionX": str(self.path[int(obstacleListIndex)][0]),
-                           "positionY": str(self.path[int(obstacleListIndex)][1])},
-                       "positionFROM": {
-                           "positionX": robotPosition[0],
-                           "positionY": robotPosition[1],
-                           "orientation": "0"},
-                       }
-
-        if(self.obstacleIndex == self.path.__len__() - 1):
-            sequencer.setState(SendingBotToChargingStationState())
-            coordinates["index"] = "-1"
-            coordinates["end"] = "yes"
-
-        return (coordinates)
