@@ -61,8 +61,8 @@ class ManchesterCode():
             return -1
 
         (chaine, indexPatern) = self.manchester_decode(bits)
-        print(" chaine :", chaine)
-        print("indexpaterne: ", indexPatern)
+        #print(" chaine :", chaine)
+        #print("indexpaterne: ", indexPatern)
         if(chaine == -2):
             return -2
         data =  chaine[indexPatern + 9 : indexPatern + 16]
@@ -71,7 +71,7 @@ class ManchesterCode():
         #else:
             #data =  chaine[indexPatern + 9 : indexPatern + 16]
 
-        print data[:: -1]
+        #print data[:: -1]
         return data[:: -1]
 
 
@@ -107,7 +107,7 @@ class ManchesterCode():
             word_counts = Counter(self.ascii)
             top_tree = word_counts.most_common(1)
             b = [str(i[0]) for i in top_tree]
-            #print top_tree
+            print top_tree
             return  b[0]
         elif(self.error == -1):
             return self.CHAINE_VIDE_ERROR
