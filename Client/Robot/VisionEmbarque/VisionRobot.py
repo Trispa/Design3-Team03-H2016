@@ -1,11 +1,13 @@
-import numpy as np
-import cv2
-from math import sqrt, cos, sin, radians
-import time
-from Client.Robot.Mechanical.CameraTower import CameraTower
 import math
+from math import sqrt, cos, sin, radians
 from os import system
-from Client.Robot.Mechanical.WheelManager import MoteurRoue
+
+import cv2
+import numpy as np
+
+from Client.Robot.Logic.Deplacement.WheelManager import MoteurRoue
+from Client.Robot.Mechanical.CameraTower import CameraTower
+
 
 # Print seulement les 2 plus gros carre si plus grand que 100
 # Detecter une seul grosse forme par couleur
