@@ -17,10 +17,13 @@ class ReferentialConverter:
         matrixDeplacementRobot = self.rotationMatrix.dot(deplacementWorldMatrix)
         matrixDeplacementRobot.__setitem__(0,self.__roundTo3Decimal(matrixDeplacementRobot.__getitem__(0)))
         matrixDeplacementRobot.__setitem__(1,self.__roundTo3Decimal(matrixDeplacementRobot.__getitem__(1)))
-        return matrixDeplacementRobot
+        return (matrixDeplacementRobot[0][0], matrixDeplacementRobot[1][0])
 
     def adjustAngle(self, angle):
-        self.orientation += angle
+        self.orientation = float(angle%360)/180
+        self.rotationMatrix = numpy.array([[numpy.cos(self.orientation*numpy.pi), numpy.sin(self.orientation*numpy.pi)],
+                                           [-numpy.sin(self.orientation*numpy.pi), numpy.cos(self.orientation*numpy.pi)]])
+
 
     def setPositionTo(self, point):
         self.positionRobotInWorldX = point[0]

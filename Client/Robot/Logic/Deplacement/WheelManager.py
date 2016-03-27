@@ -14,7 +14,7 @@ class WheelManager:
     Y_AXIS = 1
     POSITIVE_SPEED = 1
     NEGATIVE_SPEED = 0
-    MAX_SPEED = 0.14
+    MAX_SPEED = 0.11
     ROTATION_SPEED = 0.05
 
     def __init__(self):
@@ -25,8 +25,10 @@ class WheelManager:
 
     #Distance en pixel
     def moveTo(self, pointToMoveTo, referentialConverter):
-        pointAdjusted = self.__adjustOrientation(pointToMoveTo, referentialConverter)
-        pointConverted = self.pixelToCentimeterConverter.convertPixelToCentimeter(pointAdjusted)
+        print pointToMoveTo[0], pointToMoveTo[1], "point.fsd"
+        #pointAdjusted = self.__adjustOrientation(pointToMoveTo, referentialConverter)
+        pointConverted = self.pixelToCentimeterConverter.convertPixelToCentimeter(pointToMoveTo)
+
 
         pointX = pointConverted[0]
         pointY = pointConverted[1]
@@ -83,11 +85,12 @@ class WheelManager:
     def __adjustOrientation(self, pointToMove, referentialConverter):
         degreeAngle = (np.arctan((pointToMove[1]/pointToMove[0]))/np.pi)*180
         angleToRotate = degreeAngle%45
-        print angleToRotate, "pewpew"
-        referentialConverter2 = ReferentialConverter((0,0), angleToRotate)
+        point = (0,0)
+        referentialConverter.adjustAngle(-angleToRotate)
+        referentialConverter.setPositionTo(point)
         self.rotate(angleToRotate)
 
-        pointAdjusted = referentialConverter2.convertWorldToRobot(pointToMove)
+        pointAdjusted = referentialConverter.convertWorldToRobot(pointToMove)
         return pointAdjusted
 
 

@@ -91,6 +91,11 @@ io.on('connection', function (client) {
     client.on('needPooling', function(){
         setInterval(function(){ io.emit('verifyIfMoving')}, 1000);
     })
+
+    client.on('sendBotIP', function(data){
+        console.log(data);
+    });
+)
 });
 
 server.listen(port, url);

@@ -1,5 +1,8 @@
 import json
 import os
+import socket
+import fcntl
+import struct
 
 from socketIO_client import SocketIO
 
@@ -31,7 +34,17 @@ def startRound(*args):
 def endRound():
     print("end round")
 
+
+def get_ip_address(ifname):
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    return socket.inet_ntoa(fcntl.ioctl(
+        s.fileno(),
+        0x8915,  # SIOCGIFADDR
+        struct.pack('256s', ifname[:15])
+    )[20:24])
+
 socketIO.emit('sendBotClientStatus','Connected')
+socketIO.emit('sendBotIP', get_ip_address('wlp3s0'))
 #socketIO.on("alignToTreasure", alignToTreasure)
 socketIO.on('sendNextCoordinates', needNewCoordinates)
 socketIO.on('startSignalRobot', startRound)
