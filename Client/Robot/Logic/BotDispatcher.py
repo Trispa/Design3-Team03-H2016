@@ -20,5 +20,4 @@ class BotDispatcher():
         orientation = int(coordinates["orientation"])
         referentialConverter = ReferentialConverter(botPosition,orientation)
         pointConverted = referentialConverter.convertWorldToRobot((int(coordinates["positionTOx"]), int(coordinates["positionTOy"])))
-
         self.state.handle(self, pointConverted)

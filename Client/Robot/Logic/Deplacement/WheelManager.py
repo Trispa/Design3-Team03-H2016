@@ -1,5 +1,6 @@
 import time
 import Client.Robot.Mechanical.SerialPortCommunicator
+import numpy as np
 from Client.Robot.Logic.Deplacement.PixelToCentimeterConverter import PixelToCentimeterConverter
 
 from threading import Timer,Thread,Event
@@ -23,7 +24,9 @@ class WheelManager:
 
     #Distance en pixel
     def moveTo(self, pointToMoveTo):
-        pointConverted = self.pixelToCentimeterConverter.convertPixelToCentimeter(pointToMoveTo)
+        pointAdjusted = self.__adjustOrientation(pointToMoveTo)
+        pointConverted = self.pixelToCentimeterConverter.convertPixelToCentimeter(pointAdjusted)
+
         pointX = pointConverted[0]
         pointY = pointConverted[1]
 
@@ -74,6 +77,17 @@ class WheelManager:
 
     def isRunning(self):
         return self.isMoving
+
+
+    def __adjustOrientation(self, pointToMove):
+        degreeAngle = (np.arcsin((pointToMove[1]/pointToMove[0]))/np.pi)*180
+        angleToRotate = degreeAngle%45
+        newAngle = degreeAngle + angleToRotate
+        self.rotate(angleToRotate)
+
+        mouvementLenght = np.sqrt(pointToMove[0]**2 + pointToMove[1]**2)
+        pointAjusted = (mouvementLenght*np.cos(newAngle), mouvementLenght*np.sin(newAngle))
+        return pointAjusted
 
 
     def __resetMotors(self):
