@@ -1,6 +1,7 @@
 from Client.BaseStation.Logic.Pathfinding.Graph.GraphGenerator import GraphGenerator
 from Client.BaseStation.Logic.Pathfinding.Path import Path
 from Client.BaseStation.Logic.Pathfinding.MapAdaptator import MapAdaptator
+from Client.BaseStation.Logic.Pathfinding.Obstacle import Obstacle
 from Client.BaseStation.Logic.Pathfinding.Graph.Node import Node
 from Client.BaseStation.Logic.Pathfinding.LineOfSightCalculator import LineOfSightCalculator
 import cv2
@@ -48,7 +49,7 @@ class Pathfinder:
                     goodPath = currentPath
         self.printPath(goodPath)
         self.theGoodPath = goodPath
-        #self.__displayPathfinder(goodPath, positionRobot)
+        self.__displayPathfinder(goodPath, positionRobot)
         return goodPath
 
 
@@ -134,7 +135,5 @@ class Pathfinder:
                       (0, 150, 150), 2, 1)
         cv2.imwrite('image' + str(self.indice) + '.jpg', img)
         self.indice = self.indice + 1
-
-
 
 

@@ -74,7 +74,7 @@ class EndNodeGenerator:
                 collisionUpperRightCorner, collisionBottomRightCornerTemp, safeZoneCornerBotLeft,
                 safeZoneCornerTopLeft)
         else:
-            endNode = self.__noObstacleBetweenCollisions(bottomRightCorner, collisionUpperRightCorner,
+            endNode = self.__twoCollisionTop_NoObstacleBetweenCollisions(bottomRightCorner, collisionBottomRightCorner,
                                                          collisionUpperRightCorner)
         return endNode
 
@@ -89,6 +89,18 @@ class EndNodeGenerator:
         else:
             endNode = self.__noObstacleBetweenCollisions(bottomRightCorner, collisionBottomRightCorner,
                                                          collisionUpperRightCorner)
+        return endNode
+
+
+    def __twoCollisionTop_NoObstacleBetweenCollisions(self, bottomRightCorner, collisionBottomRightCorner, collisionUpperRightCorner):
+        endNode = (Node((collisionUpperRightCorner.positionX + self.SAFE_MARGIN,
+                         (collisionBottomRightCorner.positionY + collisionUpperRightCorner.positionY) / 2)))
+        safeZoneCornerBotLeft = (bottomRightCorner[0], collisionBottomRightCorner.positionY - self.SAFE_MARGIN)
+        safeZoneCornerTopRight = (collisionUpperRightCorner.positionX + self.SAFE_MARGIN,
+                                  collisionUpperRightCorner.positionY + self.SAFE_MARGIN)
+        safeZoneCornerTopLeft = (bottomRightCorner[0], collisionUpperRightCorner.positionY+self.SAFE_MARGIN)
+        tempNode = self.graph.generateSafeZone(safeZoneCornerBotLeft, safeZoneCornerTopLeft, safeZoneCornerTopRight)
+        self.graph.connectTwoNodes(endNode, tempNode)
         return endNode
 
 
