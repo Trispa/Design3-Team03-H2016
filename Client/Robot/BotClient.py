@@ -4,6 +4,7 @@ import os
 from socketIO_client import SocketIO
 
 from Client.Robot.Logic.Deplacement.WheelManager import WheelManager
+
 from Logic.BotDispatcher import BotDispatcher
 
 c = os.path.dirname(__file__)
@@ -13,12 +14,15 @@ with open(configPath) as json_data_file:
     config = json.load(json_data_file)
 socketIO = SocketIO(config['url'], int(config['port']))
 
-#orderReceiver = BotDispatcher(RobotMock())
 botDispatcher = BotDispatcher(WheelManager())
 
 def needNewCoordinates(data):
     print("heading toward next coordinates")
-    botDispatcher.handleCurrentState(data)
+    botDispatcher.followPath(data)
+
+def alignToTreasure():
+    botDispatcher.alignToTreasure()
+    socketIO.emit("needNewCoordinates")
 
 def startRound(*args):
     print("start round")
@@ -28,6 +32,7 @@ def endRound():
     print("end round")
 
 socketIO.emit('sendBotClientStatus','Connected')
+socketIO.on("alignToTreasure", alignToTreasure)
 socketIO.on('sendNextCoordinates', needNewCoordinates)
 socketIO.on('startSignalRobot', startRound)
 socketIO.on('sendEndSignal', endRound)

@@ -46,8 +46,8 @@ def verifyIfMoving(path):
             time.sleep(1)
             socketIO.emit("sendNextCoordinates", jsonToSend)
         else:
-            print("sendingNextCoordinates")
-            socketIO.emit("needNewCoordinates")
+            print("sendingAlignToTreasureCommand")
+            socketIO.emit("alignToTreasure")
 
 
 def sendNextCoordinates():

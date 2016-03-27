@@ -1,15 +1,14 @@
-from State import FollowingPathState
 from ReferentialConverter import ReferentialConverter
+from Client.Robot.VisionEmbarque.VisionRobot import VisionRobot
+from Client.Robot.Mechanical.CameraTower import CameraTower
+
 
 class BotDispatcher():
-    def setState(self, newState) :
-        self.state = newState
-
     def __init__(self, wheelManager):
         self.wheelManager = wheelManager
-        self.setState(FollowingPathState.FollowingPathState())
+        self.vision = VisionRobot(wheelManager, CameraTower())
 
-    def handleCurrentState(self, coordinates):
+    def followPath(self, coordinates):
         print(coordinates)
         print("Bot going to "
       " : (" + str( coordinates["positionTOx"])+
@@ -20,5 +19,7 @@ class BotDispatcher():
         orientation = int(coordinates["orientation"])
         referentialConverter = ReferentialConverter(botPosition,orientation)
         pointConverted = referentialConverter.convertWorldToRobot((int(coordinates["positionTOx"]), int(coordinates["positionTOy"])))
+        self.wheelManager.moveTo(pointConverted)
 
-        self.state.handle(self, pointConverted)
+    def alignToTreasure(self):
+        self.vision.approcheVersTresor()

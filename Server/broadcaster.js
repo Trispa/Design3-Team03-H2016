@@ -69,6 +69,10 @@ io.on('connection', function (client) {
         io.emit('sendRefusingOrderSignal');
     });
 
+    client.on('alignToTreasure', function(){
+        io.emit('alignToTreasure');
+    });
+
     client.on('sendManchesterCode', function(data){
         request(manchesterUrl+'?code='+data, function(error, response, body) {
             manchesterInfo = {"decryptedCharacter":data, "target":JSON.parse(body)};
