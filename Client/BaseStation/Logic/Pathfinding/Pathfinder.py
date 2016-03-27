@@ -8,12 +8,10 @@ import cv2
 import numpy as np
 
 class Pathfinder:
-    def __init__(self, obstaclesList):
-        #self.mapAdaptator = MapAdaptator(map)
-        #obstaclesList, mapSizeX, mapSizeY, minCorner = self.mapAdaptator.getMapInfo()
-        #self.minCorner = minCorner
-        mapSizeX = 1000
-        mapSizeY = 600
+    def __init__(self, map):
+        self.mapAdaptator = MapAdaptator(map)
+        obstaclesList, mapSizeX, mapSizeY, minCorner = self.mapAdaptator.getMapInfo()
+        self.minCorner = minCorner
         self.graphGenerator = GraphGenerator(obstaclesList, mapSizeX, mapSizeY)
         self.graph = self.graphGenerator.generateGraph()
         self.lineOfSightCalculator = LineOfSightCalculator(self.graph)
@@ -138,10 +136,4 @@ class Pathfinder:
         cv2.imwrite('image' + str(self.indice) + '.jpg', img)
         self.indice = self.indice + 1
 
-obs = []
-obs.append(Obstacle((200,100)))
-obs.append(Obstacle((240,85)))
-obs.append(Obstacle((270,400)))
-bob = Pathfinder(obs)
-bob.findPath((500,500), (100,100))
 
