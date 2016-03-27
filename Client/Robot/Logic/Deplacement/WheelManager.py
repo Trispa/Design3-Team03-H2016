@@ -81,8 +81,9 @@ class WheelManager:
 
 
     def __adjustOrientation(self, pointToMove, referentialConverter):
-        degreeAngle = (np.arcsin((pointToMove[1]/pointToMove[0]))/np.pi)*180
+        degreeAngle = (np.arctan((pointToMove[1]/pointToMove[0]))/np.pi)*180
         angleToRotate = degreeAngle%45
+        print angleToRotate, "pewpew"
         referentialConverter2 = ReferentialConverter((0,0), angleToRotate)
         self.rotate(angleToRotate)
 

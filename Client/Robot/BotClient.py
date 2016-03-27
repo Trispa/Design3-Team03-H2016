@@ -32,7 +32,7 @@ def endRound():
     print("end round")
 
 socketIO.emit('sendBotClientStatus','Connected')
-socketIO.on("alignToTreasure", alignToTreasure)
+#socketIO.on("alignToTreasure", alignToTreasure)
 socketIO.on('sendNextCoordinates', needNewCoordinates)
 socketIO.on('startSignalRobot', startRound)
 socketIO.on('sendEndSignal', endRound)
