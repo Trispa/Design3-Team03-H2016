@@ -2,8 +2,7 @@ import json
 import os
 import sys
 import threading
-from thread import start_new_thread
-
+import time
 from Logic.BaseStationDispatcher import BaseStationDispatcher
 
 sys.path.insert(1, "/Logic")
@@ -44,6 +43,7 @@ def verifyIfMoving(path):
                           "positionTOx" : path[index+1].positionX,
                           "positionTOy" : path[index+1].positionY,
                           "orientation":botInfo["robotOrientation"]}
+            time.sleep(1)
             socketIO.emit("sendNextCoordinates", jsonToSend)
         else:
             print("sendingNextCoordinates")
