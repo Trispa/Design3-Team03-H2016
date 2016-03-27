@@ -23,7 +23,7 @@ class VisionRobot:
     def __init__(self):
 
         self.robot = MoteurRoue()
-        self.robot.MAX_SPEED = 0.07
+        self.robot.MAX_SPEED = 0.03
         self.camera = CameraTower()
         self.camera.step = 1
         self.tresor = None
@@ -114,14 +114,14 @@ class VisionRobot:
             x,y,w,h = cv2.boundingRect(self.tresor)
             ih, iw, ic = self.image.shape
             # print x, y, iw, ih
-            square = 25
+            square = 23
 
             xob = iw/2  - square/2
             yob = ih/2 - square/2
             # print xob, yob
             # print xob + square, yob +square
 
-            cv2.rectangle(self.image,(xob, yob),(xob + square, yob + square),(0,0,255),2)
+            cv2.rectangle(self.image,(xob, yob),(xob + square, yob + square+7),(0,0,255),2)
             # cv2.rectangle(self.image,(x,y),(x+w,y+h),(0,255,0),2)
 
             if x <= (iw/2 - square):
@@ -130,9 +130,9 @@ class VisionRobot:
                 self.camera.moveCameraRight()
             else:
                 centerX = True
-            if y <= (ih/2 - square):
+            if y <= (ih/2 - square+7):
                 self.camera.moveCameraUp()
-            elif y >= (ih/2 + square):
+            elif y >= (ih/2 + square+7):
                 self.camera.moveCameraDown()
             else:
                 centerY = True
@@ -216,6 +216,7 @@ class VisionRobot:
         moveYArriver = False
         movingX = False
         moveXArriver = False
+        lastAngle= 0
 
 
         # self.camera.moveCameraByAngle(1, 50)
@@ -245,30 +246,38 @@ class VisionRobot:
                 if not movingY and not moveYArriver:
                     diff = self.diffLigneParralelle()
                     if diff < 0:
-                        self.robot.avanceVector(0,-30)
+                        self.robot.avanceVectorInfinie(0,-30)
                     else:
-                        self.robot.avanceVector(0,30)
-                        print "IS MOVING Y POSITIF"
-                    # print "not movingX"
+                        self.robot.avanceVectorInfinie(0,30)
                     movingY = True
-                    # center = False
-                elif not movingX and not moveXArriver:
-                    # self.robot.avanceVector(30, 0)
-                    movingX = True
+
+                if moveYArriver:
+                    if not movingX and not moveXArriver:
+                        self.robot.avanceVectorInfinie(30, 0)
+                        movingX = True
 
             if movingY and not moveYArriver:
                 print "movingY"
-                if abs(self.diffLigneParralelle()) < 10:
+                if abs(self.diffLigneParralelle()) < 8:
                     self.robot.stopAllMotors()
                     moveYArriver = True
+                    movingY = False
 
-            elif movingX and not moveXArriver:
+            if movingX and not moveXArriver:
                 print "movingX"
-                if 63 < self.camera.degreeVerti < 67:
-                    print self.camera.degreeVerti
+                print self.camera.degreeVerti
 
+
+                if self.camera.degreeVerti < 67:
                     self.robot.stopAllMotors()
                     moveXArriver = True
+                elif self.camera.degreeVerti < lastAngle - 1:
+                    self.robot.stopAllMotors()
+                    # moveXArriver = True
+                    moveYArriver = False
+                    movingX = False
+                lastAngle = self.camera.degreeVerti
+
 
 
             if moveYArriver and moveXArriver:

@@ -81,11 +81,9 @@ class SerialPortCommunicator:
 
     def driveMoteurLine(self, axe, speed, positif):
         self._sendCommand(self.CHANGE_SPEED_LINE, self.FALSE, self.ONE_SECOND_DELAY, axe, speed * 100, positif)
-        print "Send Line"
 
     def driveMoteurRotation(self, speed, direction):
         self._sendCommand(self.CHANGE_SPEED_ROTATION, self.FALSE, self.ONE_SECOND_DELAY, speed * 100, direction)
-        print "Send Rotation"
 
 
      #################################### MANCHESTER ################################

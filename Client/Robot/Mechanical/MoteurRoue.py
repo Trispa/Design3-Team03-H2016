@@ -102,6 +102,49 @@ class MoteurRoue:
         return timeToTravel
 
 
+    def avanceVectorInfinie(self, x, y):
+        # while self.isRunning:
+        #     pass
+        self.isRunning = True
+        self.beforeChangeDirection()
+        xSpeed = self.MAX_SPEED
+        ySpeed = self.MAX_SPEED
+        if abs(x) > abs(y):
+            ySpeed = (abs(y) * xSpeed) / abs(x)
+        elif abs(x) < abs(y):
+            xSpeed = (abs(x) * ySpeed) / abs(y)
+
+        timeToTravel = max(abs(x), abs(y)) / (max(xSpeed, ySpeed) * 100) + max(xSpeed, ySpeed) * 1.1
+
+        print("xSpeed : " + str(xSpeed) + " ySpeed : " + str(ySpeed) + " Time : " + str(timeToTravel))
+
+        #positif 1
+        #negatif 0
+        #axe x = 0
+        #axe y = 1
+        if x > 0:
+            # self.spc.driveMoteur(3, xSpeed, CCW)
+            # self.spc.driveMoteur(2, xSpeed, CW)
+            self.spc.driveMoteurLine(0, xSpeed, 1)
+        if x < 0:
+            # self.spc.driveMoteur(3, xSpeed, CW)
+            # self.spc.driveMoteur(2, xSpeed, CCW)
+            self.spc.driveMoteurLine(0, xSpeed, 0)
+        if y > 0:
+            # self.spc.driveMoteur(1, ySpeed, CCW)
+            # self.spc.driveMoteur(4, ySpeed, CW)
+            self.spc.driveMoteurLine(1, ySpeed, 1)
+        if y < 0:
+            # self.spc.driveMoteur(1, ySpeed, CW)
+            # self.spc.driveMoteur(4, ySpeed, CCW)
+            self.spc.driveMoteurLine(1, ySpeed, 0)
+
+        # self.debutDeLInterruption(timeToTravel)
+        # time.sleep(timeToTravel)
+        # self.stopAllMotors()
+        return timeToTravel
+
+
 
     def isRunning(self):
         return self.isRunning
