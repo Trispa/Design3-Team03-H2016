@@ -31,14 +31,14 @@ class SerialPortCommunicator:
     #Pololu : /dev/serial/by-id/pci-Pololu_Corporation_Pololu_Micro_Maestro_6-Servo_Controller_00021864-if0
 
     #Mon Port
-    def __init__(self, bitrateArduino = 115200, arduinoPort = "/dev/ttyACM0"):
+    #def __init__(self, bitrateArduino = 115200, arduinoPort = "/dev/ttyACM0"):
 
 #Pololu : /dev/serial/by-id/pci-Pololu_Corporation_Pololu_Micro_Maestro_6-Servo_Controller_00021864-if0
 
     #Ubuntu pci-FTDI...
     #Fedora usb-FTDI...
 
-    #def __init__(self, bitrateArduino = 115200, arduinoPort = "/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A7007dag-if00-port0"):
+    def __init__(self, bitrateArduino = 115200, arduinoPort = "/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A7007dag-if00-port0"):
         self.arduino = serial.Serial(arduinoPort, bitrateArduino, timeout = 1)
         #self.polulu = serial.Serial(poluluPort, bitratePolulu, timeout = 1)
         sleep(1)
