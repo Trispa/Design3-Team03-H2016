@@ -19,6 +19,9 @@ class ReferentialConverter:
         matrixDeplacementRobot.__setitem__(1,self.__roundTo3Decimal(matrixDeplacementRobot.__getitem__(1)))
         return matrixDeplacementRobot
 
+    def adjustAngle(self, angle):
+        self.orientation += angle
+
 
     def __roundTo3Decimal(self, numberToberounded):
         return float("{0:.3f}".format(float(numberToberounded)))

@@ -23,3 +23,4 @@ class BotDispatcher():
 
     def alignToTreasure(self):
         self.vision.approcheVersTresor()
+
