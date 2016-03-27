@@ -9,12 +9,21 @@ class worldVision:
         self.camera = cv2.VideoCapture(0)
         self.camera.set(3, 3264)
         self.camera.set(4, 2448)
+        self.mapImage = None
         ret, frame = self.camera.read()
         frame = cv2.resize(frame, (960, 720))
         self.mapImage = WorldImage(frame)
         self.mapImage.buildMap(frame)
         self.mapImage.addLabels(frame)
+        self.mapImage.updateRobotPosition(frame)
 
+    def initializeRound(self):
+        ret, frame = self.camera.read()
+        frame = cv2.resize(frame, (960, 720))
+        self.mapImage = WorldImage(frame)
+        self.mapImage.buildMap(frame)
+        self.mapImage.addLabels(frame)
+        self.mapImage.updateRobotPosition(frame)
 
     def getCurrentImage(self):
         ret, frame = self.camera.read()

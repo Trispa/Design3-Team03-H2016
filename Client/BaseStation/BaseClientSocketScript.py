@@ -52,9 +52,8 @@ def verifyIfMoving(path):
 
 def sendNextCoordinates():
     path = dispatcher.handleCurrentSequencerState()
+    sendInfo()
     verifyIfMoving(path)
-
-
 
 def startRound():
     botPosition, botOrientation = dispatcher.initialiseWorldData()
