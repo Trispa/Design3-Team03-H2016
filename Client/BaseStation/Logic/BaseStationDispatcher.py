@@ -20,9 +20,8 @@ class BaseStationDispatcher():
         self.path = self.sequencer.handleCurrentState(convertedPoint)
         return self.path
 
-
-
     def initialiseWorldData(self):
+        self.world.initializeRound()
         image, map = self.world.getCurrentImage()
         self.pathfinder = Pathfinder(map)
         mapCoordinatesAdjuster = MapCoordinatesAjuster(map)

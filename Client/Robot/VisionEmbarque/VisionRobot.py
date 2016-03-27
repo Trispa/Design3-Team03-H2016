@@ -1,11 +1,13 @@
-import numpy as np
-import cv2
-from math import sqrt, cos, sin, radians
-import time
-from Client.Robot.Mechanical.CameraTower import CameraTower
 import math
+from math import sqrt, cos, sin, radians
 from os import system
-from Client.Robot.Mechanical.MoteurRoue import MoteurRoue
+
+import cv2
+import numpy as np
+
+from Client.Robot.Logic.Deplacement.WheelManager import MoteurRoue
+from Client.Robot.Mechanical.CameraTower import CameraTower
+
 
 # Print seulement les 2 plus gros carre si plus grand que 100
 # Detecter une seul grosse forme par couleur
@@ -241,13 +243,13 @@ class VisionRobot:
 
             center = self.moveCameraEmbarquee()
 
-            if center and not self.robot.isRunning:
+            if center and not self.robot.isMoving:
                 if not movingY and not moveYArriver:
                     diff = self.diffLigneParralelle()
                     if diff < 0:
-                        self.robot.avanceVector(0,-30)
+                        self.robot.moveTo(0, -30)
                     else:
-                        self.robot.avanceVector(0,30)
+                        self.robot.moveTo(0, 30)
                         print "IS MOVING Y POSITIF"
                     # print "not movingX"
                     movingY = True
@@ -259,7 +261,7 @@ class VisionRobot:
             if movingY and not moveYArriver:
                 print "movingY"
                 if abs(self.diffLigneParralelle()) < 10:
-                    self.robot.stopAllMotors()
+                    self.robot.__stopAllMotors()
                     moveYArriver = True
 
             elif movingX and not moveXArriver:
@@ -267,7 +269,7 @@ class VisionRobot:
                 if 63 < self.camera.degreeVerti < 67:
                     print self.camera.degreeVerti
 
-                    self.robot.stopAllMotors()
+                    self.robot.__stopAllMotors()
                     moveXArriver = True
 
 
