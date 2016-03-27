@@ -2,11 +2,17 @@ import time
 import SerialPortCommunicator
 from threading import Timer,Thread,Event
 
-NB_MOTEUR = 5
-CW = 0
-CCW = 1
+
 
 class MoteurRoue:
+    NB_MOTEUR = 5
+    CW = 0
+    CCW = 1
+    X_AXIS = 0
+    Y_AXIS = 1
+    POSITIVE_SPEED = 1
+    NEGATIVE_SPEED = 0
+
     def __init__(self):
         self.spc = SerialPortCommunicator.SerialPortCommunicator()
         self.thread = None
@@ -80,21 +86,13 @@ class MoteurRoue:
         #axe x = 0
         #axe y = 1
         if x > 0:
-            # self.spc.driveMoteur(3, xSpeed, CCW)
-            # self.spc.driveMoteur(2, xSpeed, CW)
-            self.spc.driveMoteurLine(0, xSpeed, 1)
+            self.spc.driveMoteurLine(self.X_AXIS, xSpeed, self.POSITIVE_SPEED)
         if x < 0:
-            # self.spc.driveMoteur(3, xSpeed, CW)
-            # self.spc.driveMoteur(2, xSpeed, CCW)
-            self.spc.driveMoteurLine(0, xSpeed, 0)
+            self.spc.driveMoteurLine(self.X_AXIS, xSpeed, self.NEGATIVE_SPEED)
         if y > 0:
-            # self.spc.driveMoteur(1, ySpeed, CCW)
-            # self.spc.driveMoteur(4, ySpeed, CW)
-            self.spc.driveMoteurLine(1, ySpeed, 1)
+            self.spc.driveMoteurLine(self.Y_AXIS, ySpeed, self.POSITIVE_SPEED)
         if y < 0:
-            # self.spc.driveMoteur(1, ySpeed, CW)
-            # self.spc.driveMoteur(4, ySpeed, CCW)
-            self.spc.driveMoteurLine(1, ySpeed, 0)
+            self.spc.driveMoteurLine(self.Y_AXIS, ySpeed, self.NEGATIVE_SPEED)
 
         # self.debutDeLInterruption(timeToTravel)
         time.sleep(timeToTravel)
