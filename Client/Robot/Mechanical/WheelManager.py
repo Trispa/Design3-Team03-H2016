@@ -1,8 +1,8 @@
 import time
 import SerialPortCommunicator
+from Client.Robot.Logic.Deplacement.PixelToCentimeterConverter import PixelToCentimeterConverter
+
 from threading import Timer,Thread,Event
-
-
 
 class MoteurRoue:
     NB_MOTEUR = 5
@@ -12,131 +12,119 @@ class MoteurRoue:
     Y_AXIS = 1
     POSITIVE_SPEED = 1
     NEGATIVE_SPEED = 0
+    MAX_SPEED = 0.14
+    ROTATION_SPEED = 0,05
 
     def __init__(self):
         self.spc = SerialPortCommunicator.SerialPortCommunicator()
+        self.pixelToCentimeterConverter = PixelToCentimeterConverter()
         self.thread = None
-        self.isRunning = False
-        self.MAX_SPEED = 0.14
+        self.isMoving = False
 
-    def stopAllMotors(self):
-        self.spc.stopAllMotor()
-        self.isRunning = False
+    #Distance en pixel
+    def moveTo(self, pointToMoveTo):
+        pointConverted = self.pixelToCentimeterConverter.convertPixelToCentimeter(pointToMoveTo)
+        pointX = pointConverted[0]
+        pointY = pointConverted[1]
 
-    def stopAllMotorsInterrupt(self):
-        self.spc.stopAllMotor()
-        self.isRunning = False
-        self.thread.cancel()
-
-    def rotation(self, degree):
-        # while self.isRunning:
-        #     pass
-        self.isRunning = True
-        speed = 0.05
-        timeToSleep = 0.035 * abs(degree) + 0.075
-        direction = "CW"
-        if degree <= 0:
-            direction = "CCW"
-
-
-        self.beforeChangeDirection()
-        if(direction == 'CW'):
-            self.spc.driveMoteurRotation(speed, 0)
-            # for i in range(1, NB_MOTEUR):
-            #     self.spc.driveMoteur(i, speed, CW)
-            #     # time.sleep(0.01)
-        elif(direction == "CCW"):
-            self.spc.driveMoteurRotation(speed, 1)
-            # for i in range(1, NB_MOTEUR):
-            #     self.spc.driveMoteur(i, speed, CCW)
-
-        time.sleep(timeToSleep)
-        self.stopAllMotors()
-        # self.debutDeLInterruption(timeToSleep)
-        return timeToSleep
-
-
-    def beforeChangeDirection(self):
-        self.stopAllMotors()
-        time.sleep(0.2)
-
-    def debutDeLInterruption(self, t):
-        self.thread = Timer(t, self.stopAllMotorsInterrupt)
-        self.thread.start()
-
-#Distance en centimetre
-    def avanceVector(self, x, y):
-        # while self.isRunning:
-        #     pass
-        self.isRunning = True
-        self.beforeChangeDirection()
+        self.isMoving = True
+        self.__resetMotors()
         xSpeed = self.MAX_SPEED
         ySpeed = self.MAX_SPEED
-        if abs(x) > abs(y):
-            ySpeed = (abs(y) * xSpeed) / abs(x)
-        elif abs(x) < abs(y):
-            xSpeed = (abs(x) * ySpeed) / abs(y)
 
-        timeToTravel = max(abs(x), abs(y)) / (max(xSpeed, ySpeed) * 100) + max(xSpeed, ySpeed) * 1.1
+        if abs(pointX) > abs(pointY):
+            ySpeed = (abs(pointY) * xSpeed) / abs(pointX)
+        elif abs(pointX) < abs(pointY):
+            xSpeed = (abs(pointX) * ySpeed) / abs(pointY)
 
+        timeToTravel = max(abs(pointX), abs(pointY)) / (max(xSpeed, ySpeed) * 100) + max(xSpeed, ySpeed) * 1.1
         print("xSpeed : " + str(xSpeed) + " ySpeed : " + str(ySpeed) + " Time : " + str(timeToTravel))
 
-        #positif 1
-        #negatif 0
-        #axe x = 0
-        #axe y = 1
-        if x > 0:
+        if pointX > 0:
             self.spc.driveMoteurLine(self.X_AXIS, xSpeed, self.POSITIVE_SPEED)
-        if x < 0:
+        if pointX < 0:
             self.spc.driveMoteurLine(self.X_AXIS, xSpeed, self.NEGATIVE_SPEED)
-        if y > 0:
+        if pointY > 0:
             self.spc.driveMoteurLine(self.Y_AXIS, ySpeed, self.POSITIVE_SPEED)
-        if y < 0:
+        if pointY < 0:
             self.spc.driveMoteurLine(self.Y_AXIS, ySpeed, self.NEGATIVE_SPEED)
 
         # self.debutDeLInterruption(timeToTravel)
         time.sleep(timeToTravel)
-        self.stopAllMotors()
+        self.__stopAllMotors()
         return timeToTravel
 
 
+    def rotate(self, degree):
+        # while self.isRunning:
+        #     pass
+        self.isMoving = True
+        timeToSleep = 0.035 * abs(degree) + 0.075
+        self.__resetMotors()
+
+        if(degree <= 0):
+            self.spc.driveMoteurRotation(self.ROTATION_SPEED, self.NEGATIVE_SPEED)
+        else:
+            self.spc.driveMoteurRotation(self.ROTATION_SPEED, self.POSITIVE_SPEED)
+        time.sleep(timeToSleep)
+        # self.debutDeLInterruption(timeToSleep)
+        self.__stopAllMotors()
+        return timeToSleep
+
 
     def isRunning(self):
-        return self.isRunning
+        return self.isMoving
+
+    def __resetMotors(self):
+        self.__stopAllMotors()
+        time.sleep(0.2)
+
+    def __debutDeLInterruption(self, timeToWait):
+        self.thread = Timer(timeToWait, self.__stopAllMotorsInterrupt)
+        self.thread.start()
+
+    def __stopAllMotors(self):
+        self.spc.stopAllMotor()
+        self.isMoving = False
+
+    def __stopAllMotorsInterrupt(self):
+        self.spc.stopAllMotor()
+        self.isMoving = False
+        self.thread.cancel()
 
 
     def demo3(self):
-        self.avanceVector(0, 66)
+        self.moveTo(0, 66)
         time.sleep(0.5)
-        self.avanceVector(-66, 0)
+        self.moveTo(-66, 0)
         time.sleep(0.5)
-        self.avanceVector(0, -66)
+        self.moveTo(0, -66)
         time.sleep(0.5)
-        self.avanceVector(66, 0)
+        self.moveTo(66, 0)
         time.sleep(0.5)
-        self.avanceVector(-50, -50)
+        self.moveTo(-50, -50)
         time.sleep(0.5)
-        self.avanceVector(50, 50)
+        self.moveTo(50, 50)
 
     def demoR(self):
-        self.rotation("CW", 180)
+        self.rotate("CW", 180)
         time.sleep(1)
-        self.rotation("CCW", 90)
+        self.rotate("CCW", 90)
         time.sleep(1)
-        self.rotation("CW", 90)
+        self.rotate("CW", 90)
         time.sleep(1)
-        self.rotation("CCW", 180)
+        self.rotate("CCW", 180)
 
 
 
 if __name__ == '__main__':
     mr = MoteurRoue()
-    mr.stopAllMotors()
+    mr.__stopAllMotors()
     time.sleep(0.1)
 
-    mr.avanceVector(-30, 0)
+    mr.moveTo(-30, 0)
     time.sleep(2)
-    mr.avanceVector(30, 0)
+    mr.moveTo(30, 0)
     # mr.avanceVector(10, 0)
     # mr.avanceVector(0, 10)
     # mr.avanceVector(0, -10)

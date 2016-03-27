@@ -14,7 +14,7 @@ class WheelManager:
     def moveTo(self, pointToMoveTo):
             pointConverted = self.pixelToCentimeterConverter.convertPixelToCentimeter(pointToMoveTo)
             self.isMoving = True
-            timeToTravel = self.moteurRoue.avanceVector(pointConverted[0],pointConverted[1])
+            timeToTravel = self.moteurRoue.moveTo(pointConverted[0], pointConverted[1])
             self.isMoving = False
 
 
@@ -24,7 +24,7 @@ class WheelManager:
             self.isMoving = True
             rotationSpeed, timeForRotation = self.speedCalculator.generateRotationInfos(angle)
 
-            self.moteurRoue.rotation(angle)
+            self.moteurRoue.rotate(angle)
 
 
             self.isMoving = False

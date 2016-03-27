@@ -6,7 +6,7 @@ from Logic.BotDispatcher import BotDispatcher
 from Client.Robot.Logic.Deplacement.WheelManager import WheelManager
 
 from Logic.RobotMock import RobotMock
-from Mechanical.MoteurRoue import MoteurRoue
+from Mechanical.WheelManager import MoteurRoue
 
 c = os.path.dirname(__file__)
 configPath = os.path.join(c, "..", "..", "Shared", "config.json")
