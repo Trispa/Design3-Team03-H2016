@@ -2,11 +2,18 @@ from worldImage import WorldImage
 import os
 import base64
 import cv2
+import platform
+from os import system
 
 class worldVision:
 
     def __init__(self):
-        self.camera = cv2.VideoCapture(1)
+        if platform.system().lower() == "Linux".lower():
+            system("v4l2-ctl --device=1 -c brightness=150 -c gain=120 -c exposure_auto=1")
+            system("v4l2-ctl --device=1 -c exposure_absolute=275")
+            self.camera = cv2.VideoCapture(1)
+        else:
+            self.camera = cv2.VideoCapture(0)
         self.camera.set(3, 3264)
         self.camera.set(4, 2448)
         self.mapImage = None

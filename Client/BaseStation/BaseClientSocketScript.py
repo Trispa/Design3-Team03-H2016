@@ -9,7 +9,7 @@ sys.path.insert(1, "/Logic")
 sys.path.append("/../../Shared")
 
 from socketIO_client import SocketIO
-
+from threading import Thread
 dispatcher = BaseStationDispatcher()
 
 c = os.path.dirname(__file__)
@@ -20,7 +20,6 @@ with open(configPath) as json_data_file:
 socketIO = SocketIO(config['url'], int(config['port']))
 
 def verifyIfMoving(path):
-    print len(path)
     for index in range(0, len(path)):
         x = path[index].positionX
         y = path[index].positionY
@@ -28,22 +27,29 @@ def verifyIfMoving(path):
             botInfo = dispatcher.getCurrentWorldInformation()
             botPositionX = botInfo["robotPosition"][0]
             botPositionY = botInfo["robotPosition"][1]
-            while ((botPositionX > x + 10 or
-                botPositionX < x - 10) and
-                   (botPositionY > y + 10 or
-                botPositionY < y - 10)):
+            orientation = botInfo["robotOrientation"]
+            print( "is " + str(botPositionX) + " between " + str(x+5) + " and " + str(x-5))
+            print( "is " + str(botPositionY) + " between " + str(y+5) + " and " + str(y-5))
+            while ((botPositionX > x + 8 or
+                botPositionX < x - 8) and
+                   (botPositionY > y + 8 or
+                botPositionY < y - 8)):
                 botInfo = dispatcher.getCurrentWorldInformation()
                 botPositionX = botInfo["robotPosition"][0]
                 botPositionY = botInfo["robotPosition"][1]
-                print "not close enough"
-            print "close enough"
+                orientation = botInfo["robotOrientation"]
+                print "no"
+            print "yes" + str(botPositionX) + " is between " + str(x+5) + " and " + str(x-5)
+            print( "yes " + str(botPositionY) + " is between " + str(y+5) + " and " + str(y-5))
+            time.sleep(5)
             botInfo = dispatcher.getCurrentWorldInformation()
+
             jsonToSend = {"positionFROMx" : botInfo["robotPosition"][0],
                           "positionFROMy" : botInfo["robotPosition"][1],
                           "positionTOx" : path[index+1].positionX,
                           "positionTOy" : path[index+1].positionY,
                           "orientation":botInfo["robotOrientation"]}
-            time.sleep(1)
+
             socketIO.emit("sendNextCoordinates", jsonToSend)
         else:
             print("sendingAlignToTreasureCommand")
@@ -52,8 +58,7 @@ def verifyIfMoving(path):
 
 def sendNextCoordinates():
     path = dispatcher.handleCurrentSequencerState()
-    sendInfo()
-    verifyIfMoving(path)
+    Thread(target=verifyIfMoving(path)).start()
 
 def startRound():
     botPosition, botOrientation = dispatcher.initialiseWorldData()

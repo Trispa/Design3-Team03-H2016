@@ -7,15 +7,20 @@ import numpy as np
 
 from Client.Robot.Logic.Deplacement.WheelManager import WheelManager
 from Client.Robot.Mechanical.CameraTower import CameraTower
+import platform
 
 
 # Print seulement les 2 plus gros carre si plus grand que 100
 # Detecter une seul grosse forme par couleur
 class VisionRobot:
-    image = cv2.imread("image/ry1-2.jpg")
     mask = 0
-    video = cv2.VideoCapture(1)
-    system("v4l2-ctl --device=1 --set-ctrl gain=50")
+    if platform.linux_distribution()[0].lower() == "Ubuntu".lower():
+        video = cv2.VideoCapture(1)
+        system("v4l2-ctl --device=1 --set-ctrl gain=50")
+    elif platform.linux_distribution()[0].lower() == "Fedora".lower():
+        video = cv2.VideoCapture(0)
+        system("v4l2-ctl --device=0 --set-ctrl gain=50")
+
 
     balayageHori = 0
     LARGEUR_TRESOR_METRE = 2.5
