@@ -47,3 +47,4 @@ class Robot():
         x = float(end[0] - origin[0])
         y = float(end[1] - origin[1])
         self.center = (origin[0] + x/2, origin[1] + y/2)
+

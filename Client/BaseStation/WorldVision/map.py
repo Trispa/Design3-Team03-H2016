@@ -12,6 +12,7 @@ class Map:
         self.limit = Square("limit", np.array([[]], dtype=np.int32))
         self.robot = Robot(Shape("robot", np.array([[]], dtype=np.int32)), Shape("orientation", np.array([[]], dtype=np.int32)))
         self.target = None
+        self.treasures = []
 
     def getShapesList(self):
         return self.__shapes
@@ -65,6 +66,18 @@ class Map:
 
     def setTarget(self, target):
         self.target =  target.getShape(self.__shapes)
+
+    def setTreasures(self, relativeAngles):
+        rightAngle = 90
+        robotDistanceFromLowerWall = self.limit.getMaxCorner()[1] - self.robot.center[1]
+        robotDistanceFromUpperWall = self.robot.center[1] - self.limit.getMinCorner()[1]
+        for cameraAngle in relativeAngles:
+            if cameraAngle < rightAngle:
+                thirdAngle = 180 - rightAngle - cameraAngle
+            else:
+                cameraAngle = 180 - cameraAngle
+                thirdAngle = 180 - rightAngle - cameraAngle
+
 
     def findSimilarShape(self, newPossibleshape):
 
