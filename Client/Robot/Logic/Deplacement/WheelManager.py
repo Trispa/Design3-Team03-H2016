@@ -60,6 +60,41 @@ class WheelManager:
         self.__stopAllMotors()
         return timeToTravel
 
+    def moveToInfinit(self, pointX, pointY):
+        # print pointToMoveTo[0], pointToMoveTo[1], "point.fsd"
+        # pointAdjusted = self.__adjustOrientation(pointToMoveTo, referentialConverter)
+        # pointConverted = self.pixelToCentimeterConverter.convertPixelToCentimeter(pointAdjusted)
+        #
+        #
+        # pointX = pointConverted[0]
+        # pointY = pointConverted[1]
+
+        self.isMoving = True
+        self.__resetMotors()
+        xSpeed = self.MAX_SPEED
+        ySpeed = self.MAX_SPEED
+
+        if abs(pointX) > abs(pointY):
+            ySpeed = (abs(pointY) * xSpeed) / abs(pointX)
+        elif abs(pointX) < abs(pointY):
+            xSpeed = (abs(pointX) * ySpeed) / abs(pointY)
+
+        timeToTravel = max(abs(pointX), abs(pointY)) / (max(xSpeed, ySpeed) * 100) + max(xSpeed, ySpeed) * 1.1
+        print("xSpeed : " + str(xSpeed) + " ySpeed : " + str(ySpeed) + " Time : " + str(timeToTravel))
+
+        if pointX > 0:
+            self.spc.driveMoteurLine(self.X_AXIS, xSpeed, self.POSITIVE_SPEED)
+        if pointX < 0:
+            self.spc.driveMoteurLine(self.X_AXIS, xSpeed, self.NEGATIVE_SPEED)
+        if pointY > 0:
+            self.spc.driveMoteurLine(self.Y_AXIS, ySpeed, self.POSITIVE_SPEED)
+        if pointY < 0:
+            self.spc.driveMoteurLine(self.Y_AXIS, ySpeed, self.NEGATIVE_SPEED)
+
+        # self.debutDeLInterruption(timeToTravel)
+
+        return timeToTravel
+
 
     def rotate(self, degree):
         # while self.isRunning:
@@ -108,6 +143,9 @@ class WheelManager:
     def __stopAllMotors(self):
         self.spc.stopAllMotor()
         self.isMoving = False
+
+    def stopAllMotors(self):
+        self.__stopAllMotors()
 
     def __stopAllMotorsInterrupt(self):
         self.spc.stopAllMotor()

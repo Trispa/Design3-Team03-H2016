@@ -32,7 +32,7 @@ class VisionRobot:
         self.robot = moteurRoue
         self.robot.MAX_SPEED = 0.03
         self.camera = cameraTower
-        self.camera.step = 1
+        self.camera.step = 0.5
         self.tresor = None
         yellowDown = [0, 100, 100]
         yellowUp = [35, 255, 255]
@@ -121,7 +121,7 @@ class VisionRobot:
             x,y,w,h = cv2.boundingRect(self.tresor)
             ih, iw, ic = self.image.shape
             # print x, y, iw, ih
-            square = 23
+            square = 18
 
             xob = iw/2  - square/2
             yob = ih/2 - square/2
@@ -253,33 +253,30 @@ class VisionRobot:
                 if not movingY and not moveYArriver:
                     diff = self.diffLigneParralelle()
                     if diff < 0:
-                        self.robot.avanceVectorInfinie(0,-30)
+                        self.robot.moveToInfinit(0,-30)
                     else:
-                        self.robot.avanceVectorInfinie(0,30)
+                        self.robot.moveToInfinit(0,30)
                     movingY = True
 
                 if moveYArriver:
                     if not movingX and not moveXArriver:
-                        self.robot.avanceVectorInfinie(30, 0)
+                        self.robot.moveToInfinit(30, 0)
                         movingX = True
 
             if movingY and not moveYArriver:
-                print "movingY"
-
                 if abs(self.diffLigneParralelle()) < 8:
                     self.robot.stopAllMotors()
                     moveYArriver = True
                     movingY = False
 
             if movingX and not moveXArriver:
-                print "movingX"
                 print self.camera.degreeVerti
 
 
-                if self.camera.degreeVerti < 67:
+                if self.camera.degreeVerti < 68:
                     self.robot.stopAllMotors()
                     moveXArriver = True
-                elif self.camera.degreeVerti < lastAngle - 1:
+                elif self.camera.degreeVerti < lastAngle - 0.5:
                     self.robot.stopAllMotors()
                     # moveXArriver = True
                     moveYArriver = False
