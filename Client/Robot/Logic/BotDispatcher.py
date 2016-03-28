@@ -6,7 +6,7 @@ from Client.Robot.Mechanical.CameraTower import CameraTower
 class BotDispatcher():
     def __init__(self, wheelManager):
         self.wheelManager = wheelManager
-        #self.vision = VisionRobot(wheelManager, CameraTower())
+        self.vision = VisionRobot(wheelManager, CameraTower())
 
     def followPath(self, coordinates):
         print(coordinates)
