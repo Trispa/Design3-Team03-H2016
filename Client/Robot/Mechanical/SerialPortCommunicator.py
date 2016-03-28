@@ -13,15 +13,13 @@ class SerialPortCommunicator:
 
     LED_FUNCTION_ON = 1
     LED_FUNCTION_OFF = 2
+
     CHANGE_SINGLE_MOTEUR_SPEED = 3
     STOP_ALL_MOTEUR = 5
-    CHANGE_SPEED_LINE = 7
-    CHANGE_SPEED_ROTATION = 8
+    CHANGE_SPEED_ROTATION = 7
 
     CW = 0
     CCW = 1
-
-
 
     # def __init__(self, bitrateArduino = 9600, arduinoPort = "/dev/ttyUSB0"):
     #     STOP_ALL_MOTEUR = 4
@@ -35,6 +33,7 @@ class SerialPortCommunicator:
 
     #Mon Port
     def __init__(self, bitrateArduino = 115200, arduinoPort = "/dev/ttyACM1"):
+
 #Pololu : /dev/serial/by-id/pci-Pololu_Corporation_Pololu_Micro_Maestro_6-Servo_Controller_00021864-if0
 
     #Ubuntu pci-FTDI...
@@ -97,9 +96,5 @@ class SerialPortCommunicator:
     def driveMoteurRotation(self, speed, direction):
         self._sendCommand(self.CHANGE_SPEED_ROTATION, self.FALSE, self.ONE_SECOND_DELAY, speed * 100, direction)
 
-
-
 if __name__ == "__main__":
     spc = SerialPortCommunicator()
-
-
