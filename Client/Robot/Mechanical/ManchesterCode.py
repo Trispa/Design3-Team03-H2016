@@ -16,9 +16,8 @@ class ManchesterCode():
     TRUE = 1
     BIT_STOP_ERROR = "Bit stop errorne"
     CHAINE_VIDE_ERROR= "Chaine vide"
-    def __init__(self, spc):
-        self.spc = spc
-
+    def __init__(self):
+         self.spc = SerialPortCommunicator.SerialPortCommunicator()
 
 
 ######################manchester##################
@@ -107,7 +106,7 @@ class ManchesterCode():
             word_counts = Counter(self.ascii)
             top_tree = word_counts.most_common(1)
             b = [str(i[0]) for i in top_tree]
-            print top_tree
+            #print top_tree
             return  b[0]
         elif(self.error == -1):
             return self.CHAINE_VIDE_ERROR
@@ -117,8 +116,7 @@ class ManchesterCode():
 ### Utilisation du code Manchester########
 
 if __name__ == "__main__":
-    spc = SerialPortCommunicator.SerialPortCommunicator()
-    man = ManchesterCode(spc)
+    man = ManchesterCode()
     letter = man.getAsciiManchester()
 
     print "ascii Code : ",letter

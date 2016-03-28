@@ -9,15 +9,15 @@
 #define endingLEDPin 13
 
  char  *machaine;
- int bitRecu;
 CommandReceiver::CommandReceiver()
 {
 
 }
 
-CommandReceiver::CommandReceiver(DriveMoteur* d)
+CommandReceiver::CommandReceiver(DriveMoteur* d,  ReadManchester* man)
 {
   dm = d;
+  rm = man;
 }
   
 
@@ -76,13 +76,9 @@ void CommandReceiver::dispatchCommand() {
 
 
 	case 4: // ReadMAnchesterBits
-	    	machaine = readManchester->getMaschesterBits();
-	    	bitRecu =   atoi( machaine );
-	    	if(callbackRequested == 1){
-	      		sendCallback(bitRecu);
-	    	}
-	    	break;
-
+          rm->enableManchester();
+         
+          break;
  	case 5:// j'ai changé le 4 en 5 car le 4 appartenais déjà  au ReadManchester
     		for(int i = 0; i<4; i++)
     		{
@@ -90,7 +86,13 @@ void CommandReceiver::dispatchCommand() {
     		}
        break;
 
-	case 6:
+  case 6: // callback MAnchester
+          if(callbackRequested == 1){
+             sendCallback(rm->getChaineCopie());
+          }
+          break;
+
+	case 7:
 		if (parameters[0] == 0) //Axe des X
 		{
 			if(parameters[2] == 1) //Direction positive
@@ -120,7 +122,7 @@ void CommandReceiver::dispatchCommand() {
 		}
     break;
 
-	case 7:
+	case 8:
 		for(int i = 0; i<4; i++)
 			{
 	  			dm[i].driveMoteur(parameters[0]/100.0, parameters[1]);
@@ -141,10 +143,15 @@ void CommandReceiver::sendCallback(long callbackData) {
 	Serial.print(callbackData, DEC);
 }
 
-/*void CommandReceiver::sendCallback(char* callbackData) {
+
+void CommandReceiver::sendCallback(char* callbackData) {
   Serial.print('R');
   Serial.print(callbackData);
-}*/
+}
+void CommandReceiver::sendCallback(String callbackData) {
+  Serial.print('R');
+  Serial.print(callbackData);
+}
 
 void CommandReceiver::executeCommand() {
 	readPort();

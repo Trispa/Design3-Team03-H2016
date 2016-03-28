@@ -13,7 +13,7 @@
 class CommandReceiver {
 public:  
 	CommandReceiver();
-  CommandReceiver(DriveMoteur* listDriveMoteur);
+  CommandReceiver(DriveMoteur* listDriveMoteur, ReadManchester* rm);
   	
 	void executeCommand();
 	void process();
@@ -27,6 +27,8 @@ public:
 	long readULongFromBytes();
 	void sendCallback(long callbackData);
   void sendCallback(char* callbackData);
+  
+  void sendCallback(String callbackData);
 	byte commandWaitingFlag;
 	byte commandInProgressFlag;
 	volatile long* positionData;
@@ -40,9 +42,8 @@ public:
   long parameters[MaximumParametersQuantity];
 
 
-  DriveMoteur* dm;
-
-  ReadManchester* readManchester;
+ DriveMoteur* dm;
+ ReadManchester* rm;
 };
 
 #endif

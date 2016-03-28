@@ -14,10 +14,9 @@ class SerialPortCommunicator:
     LED_FUNCTION_ON = 1
     LED_FUNCTION_OFF = 2
     CHANGE_SINGLE_MOTEUR_SPEED = 3
-    GET_CODE_MANCHESTER = 4
     STOP_ALL_MOTEUR = 5
-    CHANGE_SPEED_LINE = 6
-    CHANGE_SPEED_ROTATION = 7
+    CHANGE_SPEED_LINE = 7
+    CHANGE_SPEED_ROTATION = 8
 
     CW = 0
     CCW = 1
@@ -92,57 +91,8 @@ class SerialPortCommunicator:
         self._sendCommand(self.CHANGE_SPEED_ROTATION, self.FALSE, self.ONE_SECOND_DELAY, speed * 100, direction)
 
 
-     #################################### MANCHESTER ################################
-    def getManchesterCode(self):
-        return self._sendCommand(self.GET_CODE_MANCHESTER,self.TRUE,self.ONE_SECOND_DELAY, 1)
-
-    def getCodebits(self):
-        trouve = 0
-        indice = 0
-        chaine = self.getManchesterCode();
-        c = ''
-        data = ""
-        patern = "111111110"
-        if(chaine != ""):
-            while  (trouve == 0):
-                indice  = indice + 1
-                bitStop = chaine[indice: indice+16]
-                if(bitStop[:9] == patern):
-                    trouve == 1
-                    data = bitStop[9:]
-                    break
-        else:
-            return -1
-        print("chaine recu : "+chaine)
-        print("code  : " + data)
-        return data
-
-    def letter_from_bits(self,bits, encoding='utf-8', errors='surrogatepass'):
-        n = int(bits, 2)
-        return self.int2bytes(n).decode(encoding, errors)
-
-    def int2bytes(self, i):
-        hex_string = '%x' % i
-        n = len(hex_string)
-        return binascii.unhexlify(hex_string.zfill(n + (n & 1)))
-
-    def getAsciiManchester(self):
-        data = self.getCodebits()
-        if(data == -1):
-            print ("la chaine recu est vide ")
-        else:
-            return spc.letter_from_bits(data)
-        return -2
-        #################################### END MANCHESTER ################################
 
 if __name__ == "__main__":
     spc = SerialPortCommunicator()
-    letter = spc.getAsciiManchester()
-    if(letter ==-2):
-        print("Erreur")
-    else:
-        print("ASCII :" + letter)
-    spc.stopAllMotor()
 
-    print(spc.getAsciiManchester())
 
