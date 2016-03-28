@@ -12,3 +12,4 @@ coverage.xml
 *,cover
 .hypothesis/
 *.pyc
+Server/node_modules/*

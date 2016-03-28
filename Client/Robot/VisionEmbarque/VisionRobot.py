@@ -1,25 +1,35 @@
-import numpy as np
-import cv2
-from math import sqrt, cos, sin, radians
-import time
-from Client.Robot.Mechanical.CameraTower import CameraTower
 import math
-from Client.Robot.Mechanical.MoteurRoue import MoteurRoue
+from math import sqrt, cos, sin, radians
+from os import system
+
+import cv2
+import numpy as np
+
+from Client.Robot.Logic.Deplacement.WheelManager import WheelManager
+from Client.Robot.Mechanical.CameraTower import CameraTower
+import platform
+
 
 class VisionRobot:
-    image = cv2.imread("image/ry1-2.jpg")
     mask = 0
-    video = cv2.VideoCapture(1)
+    if platform.linux_distribution()[0].lower() == "Ubuntu".lower():
+        video = cv2.VideoCapture(1)
+        system("v4l2-ctl --device=1 --set-ctrl gain=50")
+    elif platform.linux_distribution()[0].lower() == "Fedora".lower():
+        video = cv2.VideoCapture(0)
+        system("v4l2-ctl --device=0 --set-ctrl gain=50")
+
     balayageHori = 0
     LARGEUR_TRESOR_METRE = 2.5
     FOCAL = 508
     largeurTresorPixel = 0
 
-    def __init__(self):
+    def __init__(self, moteurRoue, cameraTower):
 
-        # self.robot = MoteurRoue()
-        self.camera = CameraTower()
-        self.camera.step = 1
+        self.robot = moteurRoue
+        self.robot.MAX_SPEED = 0.03
+        self.camera = cameraTower
+        self.camera.step = 0.5
         self.tresor = None
         yellowDown = [0, 100, 100]
         yellowUp = [35, 255, 255]
@@ -50,7 +60,7 @@ class VisionRobot:
                 if cv2.contourArea(c) > cv2.contourArea(cntsMax):
                     cntsMax = c
 
-            if cv2.contourArea(cntsMax) > 200:
+            if cv2.contourArea(cntsMax) > 100:
                 self.tresor = cntsMax
                 x,y,w,h = cv2.boundingRect(self.tresor)
                 dots.append((x,y,w,h))
@@ -108,14 +118,14 @@ class VisionRobot:
             x,y,w,h = cv2.boundingRect(self.tresor)
             ih, iw, ic = self.image.shape
             # print x, y, iw, ih
-            square = 30
+            square = 18
 
             xob = iw/2  - square/2
             yob = ih/2 - square/2
-            print xob, yob
-            print xob + square, yob +square
+            # print xob, yob
+            # print xob + square, yob +square
 
-            cv2.rectangle(self.image,(xob, yob),(xob + square, yob + square),(0,0,255),2)
+            cv2.rectangle(self.image,(xob, yob),(xob + square, yob + square+7),(0,0,255),2)
             # cv2.rectangle(self.image,(x,y),(x+w,y+h),(0,255,0),2)
 
             if x <= (iw/2 - square):
@@ -124,9 +134,9 @@ class VisionRobot:
                 self.camera.moveCameraRight()
             else:
                 centerX = True
-            if y <= (ih/2 - square):
+            if y <= (ih/2 - square+7):
                 self.camera.moveCameraUp()
-            elif y >= (ih/2 + square):
+            elif y >= (ih/2 + square+7):
                 self.camera.moveCameraDown()
             else:
                 centerY = True
@@ -139,7 +149,6 @@ class VisionRobot:
                 self.camera.moveCameraRight()
             else:
                 self.balayageHori = 1
-                self.camera.moveCameraByAngle(0, 90)
 
             if self.balayageHori == 1 and self.camera.degreeHori > 55:
                 self.camera.moveCameraLeft()
@@ -164,7 +173,7 @@ class VisionRobot:
         return (distanceX, distanceY)
 
     def diffLigneParralelle(self):
-        ret,thresh1 = cv2.threshold(self.image,100,255,cv2.THRESH_BINARY)
+        ret,thresh1 = cv2.threshold(self.image,125,255,cv2.THRESH_BINARY)
 
 
         ih, iw, ic = self.image.shape
@@ -173,118 +182,126 @@ class VisionRobot:
         dot1 = []
         dot2 = []
 
-        while dot1 == [] or dot2 == []:
-            if dot1 == []:
-                col1 = col1 + 1
-                for i in range(0, ih):
-                    if np.equal(thresh1[i, 0], np.array([255,255,255])).all():
-                        dot1 = (0, i)
-                        break
 
+        col1 = col1 + 1
+        for i in range(0, ih):
+            if np.equal(thresh1[i, 0], np.array([255,255,255])).all():
+                dot1 = (0, i)
+                break
+            if dot1 == []:
+                dot1 = (0, ih-1)
+
+        for i in range(0, ih):
+            if np.equal(thresh1[i, col2], np.array([255, 255, 255])).all():
+                dot2 = (col2, i)
+                break
             if dot2 == []:
-                col2 = col2 - 1
-                for i in range(0, ih):
-                    if np.equal(thresh1[i, col2], np.array([255, 255, 255])).all():
+                for i in range(iw - 1, -1, -1):
+                    if np.equal(thresh1[ih - 1, i], np.array([255, 255, 255])).all():
                         dot2 = (col2, i)
                         break
 
-        print dot1
-        print dot2
+        # print dot1
+        # print dot2
         # dot1 = (1279, 0)
+        self.image = thresh1
 
-        cv2.line(thresh1, dot1, dot2, (255, 0, 0), 2)
-        cv2.line(thresh1, (dot1[0], (dot1[1] + dot2[1])/2), (dot2[0], (dot1[1] + dot2[1])/2),(0, 0, 255), 2)
-        return dot1[1] - (dot1[1] + dot2[1])/2
+        cv2.line(self.image, dot1, dot2, (255, 0, 0), 2)
+        cv2.line(self.image, (dot1[0], (dot1[1] + dot2[1])/2), (dot2[0], (dot1[1] + dot2[1])/2),(0, 0, 255), 2)
+        distancePixel = dot1[1] - (dot1[1] + dot2[1])/2
+        # print distancePixel
+        return distancePixel
 
 
-
-    def detectAndShowImage(self):
-        self.detecColor()
-        self.findContour()
-        cv2.imshow("Image", self.image)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            pass
-
-    def goDetectTresorAround(self):
+    def approcheVersTresor(self):
         findSomething = False
         center = False
+        movingY = False
+        moveYArriver = False
+        movingX = False
+        moveXArriver = False
+        lastAngle= 0
 
-        self.camera.moveCameraByAngle(1, 0)
-        self.camera.moveCameraByAngle(0, 80)
+
+        # self.camera.moveCameraByAngle(1, 50)
+        # self.camera.moveCameraByAngle(0, 80)
+
         while(self.video.isOpened()):
-            # ret, self.image = self.video.read()
-            while not findSomething:
-                ret, self.image = self.video.read()
+            ret, self.image = self.video.read()
+            self.detecColor()
+            self.findContour()
+
+            if not findSomething:
+                # print "findSomething"
                 findSomething = self.balayageCamera()
-                self.detectAndShowImage()
 
-            while not center:
-                # for i in range(0,5):
-                ret, self.image = self.video.read()
-                center = self.moveCameraEmbarquee()
-                self.detectAndShowImage()
-
-
-
-            print self.camera.degreeHori
-            self.camera.moveCameraLeft()
-            self.camera.moveCameraLeft()
+            if self.tresor == None:
+                findSomething = False
+                movingY = False
+                moveYArriver = False
+                movingX = False
+                moveXArriver = False
 
 
+
+            center = self.moveCameraEmbarquee()
+
+            if center and not self.robot.isMoving:
+                if not movingY and not moveYArriver:
+                    diff = self.diffLigneParralelle()
+                    if diff < 0:
+                        self.robot.moveToInfinit(0,-30)
+                    else:
+                        self.robot.moveToInfinit(0,30)
+                    movingY = True
+
+                if moveYArriver:
+                    if not movingX and not moveXArriver:
+                        self.robot.moveToInfinit(30, 0)
+                        movingX = True
+
+            if movingY and not moveYArriver:
+                if abs(self.diffLigneParralelle()) < 8:
+                    self.robot.stopAllMotors()
+                    moveYArriver = True
+                    movingY = False
+
+
+            if movingX and not moveXArriver:
+                print self.camera.degreeVerti
+
+
+                if self.camera.degreeVerti < 68:
+                    self.robot.stopAllMotors()
+                    moveXArriver = True
+                elif self.camera.degreeVerti < lastAngle - 0.5:
+                    self.robot.stopAllMotors()
+                    # moveXArriver = True
+                    moveYArriver = False
+                    movingX = False
+                lastAngle = self.camera.degreeVerti
+
+
+
+            if moveYArriver and moveXArriver:
+                print "!!! ARRIVER !!!"
+                return True
 
             cv2.imshow("Image", self.image)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
         self.video.release()
         cv2.destroyAllWindows()
-
-    def goCamera(self):
-        findSomething = False
-        center = False
-
-        self.camera.moveCameraByAngle(1, 0)
-        self.camera.moveCameraByAngle(0, 100)
-        while(self.video.isOpened()):
-            # ret, self.image = self.video.read()
-            while not findSomething:
-                ret, self.image = self.video.read()
-                findSomething = self.balayageCamera()
-                self.detectAndShowImage()
-
-            while not center:
-                for i in range(0,5):
-                    ret, self.image = self.video.read()
-                    center = self.moveCameraEmbarquee()
-                    self.detectAndShowImage()
-                    print self.diffLigneParralelle()
-
-
-
-            # if not self.robot.isRunning:
-            if True:
-                dis = self.distanceFromCamera()
-                print dis
-                # self.approcheDuRobot(self.distanceFromCamera())
-                center = False
-                time.sleep(3)
-                ret, self.image = self.video.read()
-
-
-            cv2.imshow("Image", self.image)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-        self.video.release()
-        cv2.destroyAllWindows()
-
-    def approcheDuRobot(self, distanceDuTresor):
-        if abs(distanceDuTresor[0]) > 1:
-            self.robot.avanceVector(distanceDuTresor[0], 0)
-
-        if abs(distanceDuTresor[1]) > 1:
-            self.robot.avanceVector(0, distanceDuTresor[1])
 
 
 if __name__ == "__main__":
-    vr = VisionRobot()
+    mr = WheelManager()
+    ct = CameraTower()
+    vr = VisionRobot(mr, ct)
 
-    vr.goCamera()
+    vr.approcheVersTresor()
+    # vr.goDetectTresorAround()
+    # print("distance")
+    # print(vr.DistanceAdjascentte(34))
+    # vr.detecColor()
+    # vr.findContour()

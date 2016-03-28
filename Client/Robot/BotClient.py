@@ -1,12 +1,14 @@
 import json
 import os
+import socket
+import fcntl
+import struct
 
 from socketIO_client import SocketIO
-from Logic.BotDispatcher import BotDispatcher
+
 from Client.Robot.Logic.Deplacement.WheelManager import WheelManager
 
-from Logic.RobotMock import RobotMock
-from Mechanical.MoteurRoue import MoteurRoue
+from Logic.BotDispatcher import BotDispatcher
 
 c = os.path.dirname(__file__)
 configPath = os.path.join(c, "..", "..", "Shared", "config.json")
@@ -15,26 +17,35 @@ with open(configPath) as json_data_file:
     config = json.load(json_data_file)
 socketIO = SocketIO(config['url'], int(config['port']))
 
-#orderReceiver = BotDispatcher(RobotMock())
-botDispatcher = BotDispatcher(WheelManager(MoteurRoue()))
+botDispatcher = BotDispatcher(WheelManager())
 
-def needNewCoordinates(*args):
+def needNewCoordinates(data):
     print("heading toward next coordinates")
-    botDispatcher.handleCurrentState(args[0])
-    whichObstacleNextIsNeeded = int(args[0]["index"]) + 1
-    print(botDispatcher.state.__class__)
-    socketIO.emit(botDispatcher.state.sendingSignal, {"index" : str(whichObstacleNextIsNeeded)})
+    botDispatcher.followPath(data)
+
+def alignToTreasure():
+    botDispatcher.alignToTreasure()
+    socketIO.emit("needNewCoordinates")
 
 def startRound(*args):
     print("start round")
-    botDispatcher.acceptOrders()
-    socketIO.emit(botDispatcher.state.sendingSignal, {"index": "0"})
+    socketIO.emit("needNewCoordinates")
 
 def endRound():
     print("end round")
-    botDispatcher.refuseOrders()
+
+
+def get_ip_address(ifname):
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    return socket.inet_ntoa(fcntl.ioctl(
+        s.fileno(),
+        0x8915,  # SIOCGIFADDR
+        struct.pack('256s', ifname[:15])
+    )[20:24])
 
 socketIO.emit('sendBotClientStatus','Connected')
+socketIO.emit('sendBotIP', get_ip_address('wlp4s0'))
+socketIO.on("alignToTreasure", alignToTreasure)
 socketIO.on('sendNextCoordinates', needNewCoordinates)
 socketIO.on('startSignalRobot', startRound)
 socketIO.on('sendEndSignal', endRound)

@@ -1,6 +1,7 @@
 from Client.BaseStation.Logic.Pathfinding.Graph.GraphGenerator import GraphGenerator
 from Client.BaseStation.Logic.Pathfinding.Path import Path
 from Client.BaseStation.Logic.Pathfinding.MapAdaptator import MapAdaptator
+from Client.BaseStation.Logic.Pathfinding.Obstacle import Obstacle
 from Client.BaseStation.Logic.Pathfinding.Graph.Node import Node
 from Client.BaseStation.Logic.Pathfinding.LineOfSightCalculator import LineOfSightCalculator
 import cv2
@@ -22,9 +23,13 @@ class Pathfinder:
 
     def findPath(self, positionRobot, pointToMoveTo):
         print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+        print "jango fett", positionRobot
         startingPathNode = self.graph.findGoodSafeNodeToGo(positionRobot)
+        print "boba fett:", startingPathNode.positionX, startingPathNode.positionY
         endingPathNode = self.graph.findGoodSafeNodeToGo(pointToMoveTo)
 
+        self.pathsList = []
+        self.goodPaths = []
         path = Path()
         path.append(Node(positionRobot))
         path.append(startingPathNode)
@@ -48,7 +53,7 @@ class Pathfinder:
                     goodPath = currentPath
         self.printPath(goodPath)
         self.theGoodPath = goodPath
-        #self.__displayPathfinder(goodPath, positionRobot)
+        self.__displayPathfinder(goodPath, positionRobot)
         return goodPath
 
 
@@ -88,7 +93,7 @@ class Pathfinder:
         for compteur in range (1, self.theGoodPath.__len__()):
             startLine = (self.theGoodPath[compteur-1].positionX + self.minCorner[0], self.theGoodPath[compteur-1].positionY + self.minCorner[1])
             endLine =  (self.theGoodPath[compteur].positionX + self.minCorner[0], self.theGoodPath[compteur].positionY + self.minCorner[1])
-            cv2.line(img, startLine, endLine,
+            cv2.line(img, (int(startLine[0]), int(startLine[1])), (int(endLine[0]), int(endLine[1])),
                       (0, 0, 255), 2, 1)
 
 
@@ -125,7 +130,7 @@ class Pathfinder:
             else:
                 startLine = (goodPath[compteur-1].positionX,goodPath[compteur-1].positionY)
             endLine =  (goodPath[compteur].positionX,goodPath[compteur].positionY)
-            cv2.line(img, startLine, endLine,
+            cv2.line(img, (int(startLine[0]), int(startLine[1])), (int(endLine[0]), int(endLine[1])),
                       (0, 0, 255), 2, 1)
             
         for compteur in range (0, self.graph.safeZonesList.__len__()):
@@ -134,7 +139,5 @@ class Pathfinder:
                       (0, 150, 150), 2, 1)
         cv2.imwrite('image' + str(self.indice) + '.jpg', img)
         self.indice = self.indice + 1
-
-
 
 

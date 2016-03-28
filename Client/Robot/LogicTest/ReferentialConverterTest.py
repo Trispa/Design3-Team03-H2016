@@ -47,7 +47,7 @@ class ReferentialConverterTest(TestCase):
 
     def test_givenNotDefaultPointToBeCovertedWithDefaultOrientationWhenConverWorldToRobotThenPointIsConvertedCorrectly(self):
         pointConverted = self.referentialConverter.convertWorldToRobot(self.ANOTHER_POINT)
-        ConvertedPointShouldBe = (-100,50)
+        ConvertedPointShouldBe = (100,-50)
 
         self.assertEqual(ConvertedPointShouldBe.__getitem__(0), pointConverted.__getitem__(0).__getitem__(0))
         self.assertEqual(ConvertedPointShouldBe.__getitem__(1), pointConverted.__getitem__(1).__getitem__(0))

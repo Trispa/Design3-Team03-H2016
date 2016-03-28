@@ -56,6 +56,7 @@ class BottomPathGenerator:
         self.graph.connectTwoNodes(borderNodeRightBottom, tempNode)
 
 
+
     def __findGoodRightCollision(self, collisionBottomRightCorner, currentObstacle):
         goodRightCollision = collisionBottomRightCorner
         collisionUpperLeftCornerTemp, collisionUpperRightCornerTemp, collisionBottomLeftCornerTemp, collisionBottomRightCornerTemp = self.collisionDetector.detectCloserObstacleForEachCornerXAxis(

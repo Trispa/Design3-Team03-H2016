@@ -15,9 +15,27 @@ class WorldImage:
     def setImage(self, mapImage):
         self.__mapImage = mapImage
 
+    def setTarget(self, target):
+        self.__map.setTarget(target)
+
     def buildMap(self, mapImage):
         self.__map = self.__myMapBuilder.buildMapWithAllFilter(mapImage, self.__map)
-        self.__map.robot.setOrientation()
+
+    def updateRobotPosition(self, mapImage):
+        self.__myMapBuilder.updateRobotPosition(mapImage, self.__map)
+
+        if len(self.__map.robot.blackCircle.getContour()) > 0:
+            robot = [self.__map.robot.blackCircle.getContour()]
+        else:
+            robot = []
+
+        if len(self.__map.robot.purpleCircle.getContour()) > 0:
+            orientation = [self.__map.robot.purpleCircle.getContour()]
+        else:
+            orientation = []
+
+        cv2.drawContours( mapImage, orientation, -1, (0, 255, 0), 3 )
+        cv2.drawContours( mapImage, robot, -1, (0, 255, 0), 3 )
 
     def defineShapesColor(self):
         self.__map.setShapesColor(self.__mapImage)
@@ -44,26 +62,16 @@ class WorldImage:
         else:
             limit = []
 
-        if len(self.__map.robot.square.getContour()) > 0:
-            robot = [self.__map.robot.square.getContour()]
-            orientation = [self.__map.robot.circle.getContour()]
+        if self.__map.target != None:
+            target = [self.__map.target.getContour()]
         else:
-            robot = []
-
-        if len(self.__map.robot.circle.getContour()) > 0:
-            orientation = [self.__map.robot.circle.getContour()]
-        else:
-            orientation = []
+            target = []
 
         contourList = self.__map.getContourList()
         cv2.drawContours( frame, self.__map.getContourList(), -1, (0, 255, 0), 3 )
         cv2.drawContours( frame, limit, -1, (0, 255, 0), 3 )
-        cv2.drawContours( frame, orientation, -1, (0, 255, 0), 3 )
-        cv2.drawContours( frame, robot, -1, (0, 255, 0), 3 )
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        scale = 0.4
-        thickness = 1
-        cv2.putText(frame, str(self.__map.robot.orientation), self.__map.robot.square.findCenterOfMass(), font, scale, (255,255,255), thickness, 8)
+        cv2.drawContours( frame, target, -1, (255, 0, 0), 3 )
+
 
 
         return frame
