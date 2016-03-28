@@ -26,8 +26,8 @@ class WheelManager:
     #Distance en pixel
     def moveTo(self, pointToMoveTo, referentialConverter):
         print pointToMoveTo[0], pointToMoveTo[1], "point.fsd"
-        #pointAdjusted = self.__adjustOrientation(pointToMoveTo, referentialConverter)
-        pointConverted = self.pixelToCentimeterConverter.convertPixelToCentimeter(pointToMoveTo)
+        pointAdjusted = self.__adjustOrientation(pointToMoveTo, referentialConverter)
+        pointConverted = self.pixelToCentimeterConverter.convertPixelToCentimeter(pointAdjusted)
 
 
         pointX = pointConverted[0]
@@ -84,14 +84,17 @@ class WheelManager:
 
     def __adjustOrientation(self, pointToMove, referentialConverter):
         degreeAngle = (np.arctan((pointToMove[1]/pointToMove[0]))/np.pi)*180
-        angleToRotate = degreeAngle%45
+	angleToRotate = degreeAngle%45
+	print angleToRotate
         point = (0,0)
-        referentialConverter.adjustAngle(-angleToRotate)
-        referentialConverter.setPositionTo(point)
-        self.rotate(angleToRotate)
+	referentialConverter = ReferentialConverter(point, angleToRotate)
+        #referentialConverter.adjustAngle(-angleToRotate)
+        #referentialConverter.setPositionTo(point
+	self.rotate(-angleToRotate)
 
         pointAdjusted = referentialConverter.convertWorldToRobot(pointToMove)
-        return pointAdjusted
+        print "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@BOBA FETT", pointAdjusted[0], pointAdjusted[1]
+	return pointAdjusted
 
 
     def __resetMotors(self):
