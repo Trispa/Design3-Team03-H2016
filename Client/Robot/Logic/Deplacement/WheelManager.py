@@ -26,7 +26,11 @@ class WheelManager:
     #Distance en pixel
     def moveTo(self, pointToMoveTo, referentialConverter):
         print pointToMoveTo[0], pointToMoveTo[1], "point.fsd"
-        pointAdjusted = self.__adjustOrientation(pointToMoveTo, referentialConverter)
+        if pointToMoveTo[0] != 0 or pointToMoveTo[1] != 0:
+            pointAdjusted = self.__adjustOrientation(pointToMoveTo, referentialConverter)
+        else:
+            pointAdjusted = pointToMoveTo
+
         pointConverted = self.pixelToCentimeterConverter.convertPixelToCentimeter(pointAdjusted)
 
 
@@ -107,6 +111,7 @@ class WheelManager:
             self.spc.driveMoteurRotation(self.ROTATION_SPEED, self.NEGATIVE_SPEED)
         else:
             self.spc.driveMoteurRotation(self.ROTATION_SPEED, self.POSITIVE_SPEED)
+        print timeToSleep
         time.sleep(timeToSleep)
         # self.debutDeLInterruption(timeToSleep)
         self.__stopAllMotors()

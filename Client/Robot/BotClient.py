@@ -45,7 +45,7 @@ def get_ip_address(ifname):
 
 socketIO.emit('sendBotClientStatus','Connected')
 socketIO.emit('sendBotIP', get_ip_address('wlp4s0'))
-#socketIO.on("alignToTreasure", alignToTreasure)
+socketIO.on("alignToTreasure", alignToTreasure)
 socketIO.on('sendNextCoordinates', needNewCoordinates)
 socketIO.on('startSignalRobot', startRound)
 socketIO.on('sendEndSignal', endRound)
