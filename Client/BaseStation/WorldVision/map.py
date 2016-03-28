@@ -3,6 +3,7 @@ import numpy as np
 from shape import Shape
 from Robot import Robot
 from allShapes import Square
+import math
 import copy
 
 class Map:
@@ -69,15 +70,32 @@ class Map:
 
     def setTreasures(self, relativeAngles):
         rightAngle = 90
-        robotDistanceFromLowerWall = self.limit.getMaxCorner()[1] - self.robot.center[1]
-        robotDistanceFromUpperWall = self.robot.center[1] - self.limit.getMinCorner()[1]
+        lowerWall = True
+        yDistanceFromPurpleCircle = 15
+        cameraDistanceFromBackgroundWall = self.robot.purpleCircle.findCenterOfMass()[0] - 20 - self.limit.getMinCorner()[0]
+        cameraDistanceFromLowerWall = self.limit.getMaxCorner()[1] - self.robot.purpleCircle.findCenterOfMass()[1] - yDistanceFromPurpleCircle
+        cameraDistanceFromUpperWall = self.robot.purpleCircle.findCenterOfMass()[1] - yDistanceFromPurpleCircle - self.limit.getMinCorner()[1]
         for cameraAngle in relativeAngles:
-            if cameraAngle < rightAngle:
-                thirdAngle = 180 - rightAngle - cameraAngle
-            else:
-                cameraAngle = 180 - cameraAngle
-                thirdAngle = 180 - rightAngle - cameraAngle
+            if cameraAngle < 87 or cameraAngle > 93:
+                if cameraAngle < rightAngle:
+                    xDistanceOfTreasureFromCamera = math.tan(math.radians(cameraAngle))*cameraDistanceFromLowerWall
+                    treasurePosition = (cameraDistanceFromBackgroundWall - xDistanceOfTreasureFromCamera, self.limit.getMaxCorner()[1])
+                else:
+                    lowerWall = False
+                    cameraAngle = 180 - cameraAngle
+                    xDistanceOfTreasureFromCamera = math.tan(math.radians(cameraAngle))*cameraDistanceFromUpperWall
+                    treasurePosition = (cameraDistanceFromBackgroundWall - xDistanceOfTreasureFromCamera, self.limit.getMinCorner()[1])
 
+                if cameraDistanceFromBackgroundWall - xDistanceOfTreasureFromCamera < 0:
+                    yDistanceFromCamera = (-1 * (cameraDistanceFromBackgroundWall - xDistanceOfTreasureFromCamera)) / math.tan(math.radians(cameraAngle))
+                    if lowerWall:
+                        treasurePosition = (self.limit.getMinCorner()[0], self.limit.getMaxCorner()[1] - yDistanceFromCamera)
+                    else:
+                        treasurePosition = (self.limit.getMinCorner()[0], yDistanceFromCamera)
+            else:
+                treasurePosition = (self.limit.getMinCorner()[0], self.robot.center[1])
+
+            self.treasures.append(treasurePosition)
 
     def findSimilarShape(self, newPossibleshape):
 
