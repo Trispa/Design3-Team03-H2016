@@ -5,9 +5,13 @@ from Client.Robot.Mechanical.CameraTower import CameraTower
 from Client.BaseStation.WorldVision.colorContainer import ColorContainer
 
 class TreasuresDetector:
+    MAX_LENGHT_DIFFERENCE = 15
+    MAX_PIXEL_FROM_FOLLOWED_TREASURE = 50
+    START_CAMERA_HORIZONTAL_ANGLE = 80
+    START_CAMERA_VERTICAL_ANGLE = 110
+    ACCEPTABLE_PIXEL_DIFFERENCE = 10
     mask = 0
     video = cv2.VideoCapture(1)
-    largeurTresorPixel = 0
     treasuresAngle = []
     followedTreasure = None
 
@@ -28,13 +32,13 @@ class TreasuresDetector:
         for contour in contours:
             if len(contour) > 3 and cv2.contourArea(contour) > 1:
                 xElementCoordinate,yElementCoordinate,width,height = cv2.boundingRect(contour)
-                if abs(width - height) < 15:
+                if abs(width - height) < self.MAX_LENGHT_DIFFERENCE:
                     cv2.rectangle(self.image,(xElementCoordinate,yElementCoordinate),(xElementCoordinate+width,yElementCoordinate+height),(0,255,0),2)
                     if xElementCoordinate > self.xCoordinateToBeHigher:
                         if self.followedTreasure != None:
-                            if abs(xElementCoordinate - self.followedTreasure[0]) < 50:
+                            if abs(xElementCoordinate - self.followedTreasure[0]) < self.MAX_PIXEL_FROM_FOLLOWED_TREASURE:
                                 self.followedTreasure = cv2.boundingRect(contour)
-                                self.xCoordinateToBeHigher = 320
+                                self.xCoordinateToBeHigher = self.image.shape[1] / 2
                         else:
                             self.followedTreasure = cv2.boundingRect(contour)
 
@@ -43,10 +47,10 @@ class TreasuresDetector:
         self.findContour()
 
     def isCenteredWithTreasure(self):
-        if abs(self.followedTreasure[0] - (self.image.shape[1]/2)) <= 10:
+        if abs(self.followedTreasure[0] - (self.image.shape[1]/2)) <= self.ACCEPTABLE_PIXEL_DIFFERENCE:
             self.treasuresAngle.append(self.camera.degreeHori)
             print("Ajout d'un tresor a " + str(self.camera.degreeHori) + " degree")
-            self.xCoordinateToBeHigher = self.image.shape[1] / 2 + 10
+            self.xCoordinateToBeHigher = self.image.shape[1] / 2 + self.ACCEPTABLE_PIXEL_DIFFERENCE
             self.followedTreasure = None
             return True
         return False
@@ -54,14 +58,15 @@ class TreasuresDetector:
     def buildTresorsAngleList(self):
 
         self.center = True
-        self.xCoordinateToBeHigher = 320
-        self.camera.moveCameraByAngle(1, 0)
-        self.camera.moveCameraByAngle(0, 110)
+        self.camera.moveCameraByAngle(1, self.START_CAMERA_HORIZONTAL_ANGLE)
+        self.camera.moveCameraByAngle(0, self.START_CAMERA_VERTICAL_ANGLE)
         self.followedTreasure = None
 
         while(self.video.isOpened()):
 
             self.centered = False
+            ret, self.image = self.video.read()
+            self.xCoordinateToBeHigher = self.image.shape[1] / 2
             while self.followedTreasure == None:
                 ret, self.image = self.video.read()
                 self.detectAndShowImage()
