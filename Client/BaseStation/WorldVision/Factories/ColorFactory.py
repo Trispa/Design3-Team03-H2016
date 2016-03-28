@@ -9,5 +9,7 @@ class ColorFactory():
             return Black(bgrColor, colorName)
         elif colorName == "Purple":
             return Purple(bgrColor, colorName)
+        elif colorName == "YellowTreasure":
+            return YellowTreasure(bgrColor, colorName)
         else:
             return GenericColor(bgrColor, colorName)
