@@ -4,7 +4,7 @@ import time
 from Client.Robot.Mechanical.CameraTower import CameraTower
 from Client.BaseStation.WorldVision.colorContainer import ColorContainer
 
-class VisionRobot:
+class TreasuresDetector:
     mask = 0
     video = cv2.VideoCapture(1)
     largeurTresorPixel = 0
@@ -16,7 +16,7 @@ class VisionRobot:
         self.camera.step = 0.4
         self.centered = False
 
-    def detectColor(self):
+    def setMask(self):
         coloredImage = cv2.cvtColor(self.image,cv2.COLOR_BGR2HSV)
         blurMapImage = cv2.GaussianBlur(coloredImage, (5, 5), 0)
         self.mask = cv2.inRange(blurMapImage, ColorContainer.yellow.lower, ColorContainer.yellow.higher)
@@ -39,7 +39,7 @@ class VisionRobot:
                             self.followedTreasure = cv2.boundingRect(contour)
 
     def detectAndShowImage(self):
-        self.detectColor()
+        self.setMask()
         self.findContour()
 
     def isCenteredWithTreasure(self):
@@ -51,7 +51,7 @@ class VisionRobot:
             return True
         return False
 
-    def goCamera(self):
+    def buildTresorsAngleList(self):
 
         self.center = True
         self.xCoordinateToBeHigher = 320
@@ -89,5 +89,5 @@ class VisionRobot:
 
 
 if __name__ == "__main__":
-    vr = VisionRobot()
-    vr.goCamera()
+    myTreasuresDetector = TreasuresDetector()
+    myTreasuresDetector.buildTresorsAngleList()
