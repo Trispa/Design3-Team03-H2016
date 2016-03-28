@@ -63,6 +63,9 @@ class Map:
         for shape in self.__shapes:
             shape.setColor(copy.copy(mapImage))
 
+    def setTarget(self, target):
+        self.target =  target.getShape(self.__shapes)
+
     def findSimilarShape(self, newPossibleshape):
 
         newContourCenterOfMassX, newContourCenterOfMassY = newPossibleshape.findCenterOfMass()
@@ -106,8 +109,6 @@ class Map:
             if(shape.myColor.colorName == "Black" or shape.myColor.colorName == "Purple"):
                 self.__shapes.remove(shape)
 
-    def setTarget(self, target):
-        self.target =  target.getShape(self.__shapes)
 
 
 
