@@ -23,9 +23,13 @@ class Pathfinder:
 
     def findPath(self, positionRobot, pointToMoveTo):
         print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+        print "jango fett", positionRobot
         startingPathNode = self.graph.findGoodSafeNodeToGo(positionRobot)
+        print "boba fett:", startingPathNode.positionX, startingPathNode.positionY
         endingPathNode = self.graph.findGoodSafeNodeToGo(pointToMoveTo)
 
+        self.pathsList = []
+        self.goodPaths = []
         path = Path()
         path.append(Node(positionRobot))
         path.append(startingPathNode)
@@ -40,7 +44,7 @@ class Pathfinder:
             currentPath.append(Node(pointToMoveTo))
 
         self.__polishGoodPaths()
-        #self.lineOfSightCalculator.tryStraightLine(self.goodPaths)
+        self.lineOfSightCalculator.tryStraightLine(self.goodPaths)
 
         for compteur in range(0, self.goodPaths.__len__()):
             currentPath= self.goodPaths[compteur]
@@ -126,7 +130,7 @@ class Pathfinder:
             else:
                 startLine = (goodPath[compteur-1].positionX,goodPath[compteur-1].positionY)
             endLine =  (goodPath[compteur].positionX,goodPath[compteur].positionY)
-            cv2.line(img, startLine, endLine,
+            cv2.line(img, (int(startLine[0]), int(startLine[1])), (int(endLine[0]), int(endLine[1])),
                       (0, 0, 255), 2, 1)
             
         for compteur in range (0, self.graph.safeZonesList.__len__()):

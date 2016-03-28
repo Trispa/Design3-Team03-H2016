@@ -36,32 +36,32 @@ class OrderReceiverTest(TestCase):
         self.assertEquals('ExecutingOrderState', self.orderReceiver.state.__class__.__name__)
 
     def test_givenOrderReceiverWhenHandlingCurrentStateAtExecutingOrdersThenWheelManagerMoveToCoordinates(self):
-        self.orderReceiver.handleCurrentState(self.RANDOM_COORDINATES)
+        self.orderReceiver.followPath(self.RANDOM_COORDINATES)
 
         assert self.wheelManager.moveTo.called
 
 
     def test_givenOrderReceiverWhenHandlingCurrentStateAtRefusingOrdersThenWheelManagerDoesNotMove(self):
         self.orderReceiver.refuseOrders()
-        self.orderReceiver.handleCurrentState(self.RANDOM_COORDINATES)
+        self.orderReceiver.followPath(self.RANDOM_COORDINATES)
 
         assert not self.wheelManager.moveTo.called
 
     def test_givenOrderReceiverWhenHandlingCurrentStateWithChargingStationCoordinateThenStateIsExecutingOrders(self):
         self.RANDOM_COORDINATES['type'] = "charging station"
-        self.orderReceiver.handleCurrentState(self.RANDOM_COORDINATES)
+        self.orderReceiver.followPath(self.RANDOM_COORDINATES)
 
         self.assertEquals('ExecutingOrderState', self.orderReceiver.state.__class__.__name__)
 
     def test_givenOrderReceiverWhenHandlingCurrentStateWithTreasureCoordinateThenStateIsExecutingOrders(self):
         self.RANDOM_COORDINATES['type'] = "treasure"
         self.RANDOM_COORDINATES['endOfPhase'] = "no"
-        self.orderReceiver.handleCurrentState(self.RANDOM_COORDINATES)
+        self.orderReceiver.followPath(self.RANDOM_COORDINATES)
 
         self.assertEquals('ExecutingOrderState', self.orderReceiver.state.__class__.__name__)
 
     def test_givenOrderReceiverWhenHandlingCurrentStateWithEndCoordinateThenStateIsRefusingOrders(self):
         self.RANDOM_COORDINATES['endOfPhase'] = "yes"
-        self.orderReceiver.handleCurrentState(self.RANDOM_COORDINATES)
+        self.orderReceiver.followPath(self.RANDOM_COORDINATES)
 
         self.assertEquals('RefusingOrderState', self.orderReceiver.state.__class__.__name__)

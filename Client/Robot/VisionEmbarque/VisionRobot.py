@@ -5,29 +5,34 @@ from os import system
 import cv2
 import numpy as np
 
-from Client.Robot.Logic.Deplacement.WheelManager import MoteurRoue
+from Client.Robot.Logic.Deplacement.WheelManager import WheelManager
 from Client.Robot.Mechanical.CameraTower import CameraTower
+import platform
 
 
 # Print seulement les 2 plus gros carre si plus grand que 100
 # Detecter une seul grosse forme par couleur
 class VisionRobot:
-    image = cv2.imread("image/ry1-2.jpg")
     mask = 0
-    video = cv2.VideoCapture(1)
-    system("v4l2-ctl --device=1 --set-ctrl gain=50")
+    if platform.linux_distribution()[0].lower() == "Ubuntu".lower():
+        video = cv2.VideoCapture(1)
+        system("v4l2-ctl --device=1 --set-ctrl gain=50")
+    elif platform.linux_distribution()[0].lower() == "Fedora".lower():
+        video = cv2.VideoCapture(0)
+        system("v4l2-ctl --device=0 --set-ctrl gain=50")
+
 
     balayageHori = 0
     LARGEUR_TRESOR_METRE = 2.5
     FOCAL = 508
     largeurTresorPixel = 0
 
-    def __init__(self):
+    def __init__(self, moteurRoue, cameraTower):
 
-        self.robot = MoteurRoue()
-        self.robot.MAX_SPEED = 0.07
-        self.camera = CameraTower()
-        self.camera.step = 1
+        self.robot = moteurRoue
+        self.robot.MAX_SPEED = 0.03
+        self.camera = cameraTower
+        self.camera.step = 0.5
         self.tresor = None
         yellowDown = [0, 100, 100]
         yellowUp = [35, 255, 255]
@@ -116,14 +121,14 @@ class VisionRobot:
             x,y,w,h = cv2.boundingRect(self.tresor)
             ih, iw, ic = self.image.shape
             # print x, y, iw, ih
-            square = 25
+            square = 18
 
             xob = iw/2  - square/2
             yob = ih/2 - square/2
             # print xob, yob
             # print xob + square, yob +square
 
-            cv2.rectangle(self.image,(xob, yob),(xob + square, yob + square),(0,0,255),2)
+            cv2.rectangle(self.image,(xob, yob),(xob + square, yob + square+7),(0,0,255),2)
             # cv2.rectangle(self.image,(x,y),(x+w,y+h),(0,255,0),2)
 
             if x <= (iw/2 - square):
@@ -132,9 +137,9 @@ class VisionRobot:
                 self.camera.moveCameraRight()
             else:
                 centerX = True
-            if y <= (ih/2 - square):
+            if y <= (ih/2 - square+7):
                 self.camera.moveCameraUp()
-            elif y >= (ih/2 + square):
+            elif y >= (ih/2 + square+7):
                 self.camera.moveCameraDown()
             else:
                 centerY = True
@@ -211,13 +216,14 @@ class VisionRobot:
         return distancePixel
 
 
-    def goCamera(self):
+    def approcheVersTresor(self):
         findSomething = False
         center = False
         movingY = False
         moveYArriver = False
         movingX = False
         moveXArriver = False
+        lastAngle= 0
 
 
         # self.camera.moveCameraByAngle(1, 50)
@@ -247,35 +253,41 @@ class VisionRobot:
                 if not movingY and not moveYArriver:
                     diff = self.diffLigneParralelle()
                     if diff < 0:
-                        self.robot.moveTo(0, -30)
+                        self.robot.moveToInfinit(0,-30)
                     else:
-                        self.robot.moveTo(0, 30)
-                        print "IS MOVING Y POSITIF"
-                    # print "not movingX"
+                        self.robot.moveToInfinit(0,30)
                     movingY = True
-                    # center = False
-                elif not movingX and not moveXArriver:
-                    # self.robot.avanceVector(30, 0)
-                    movingX = True
+
+                if moveYArriver:
+                    if not movingX and not moveXArriver:
+                        self.robot.moveToInfinit(30, 0)
+                        movingX = True
 
             if movingY and not moveYArriver:
-                print "movingY"
-                if abs(self.diffLigneParralelle()) < 10:
-                    self.robot.__stopAllMotors()
+                if abs(self.diffLigneParralelle()) < 8:
+                    self.robot.stopAllMotors()
                     moveYArriver = True
+                    movingY = False
 
-            elif movingX and not moveXArriver:
-                print "movingX"
-                if 63 < self.camera.degreeVerti < 67:
-                    print self.camera.degreeVerti
+            if movingX and not moveXArriver:
+                print self.camera.degreeVerti
 
-                    self.robot.__stopAllMotors()
+
+                if self.camera.degreeVerti < 68:
+                    self.robot.stopAllMotors()
                     moveXArriver = True
+                elif self.camera.degreeVerti < lastAngle - 0.5:
+                    self.robot.stopAllMotors()
+                    # moveXArriver = True
+                    moveYArriver = False
+                    movingX = False
+                lastAngle = self.camera.degreeVerti
+
 
 
             if moveYArriver and moveXArriver:
                 print "!!! ARRIVER !!!"
-                break
+                return True
 
             cv2.imshow("Image", self.image)
             if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -285,9 +297,11 @@ class VisionRobot:
 
 
 if __name__ == "__main__":
-    vr = VisionRobot()
+    mr = WheelManager()
+    ct = CameraTower()
+    vr = VisionRobot(mr, ct)
 
-    vr.goCamera()
+    vr.approcheVersTresor()
     # vr.goDetectTresorAround()
     # print("distance")
     # print(vr.DistanceAdjascentte(34))
