@@ -80,6 +80,11 @@ io.on('connection', function (client) {
         });
     });
 
+    client.on('readManchester', function(){
+        console.log('readManchester');
+        io.emit('readManchester');
+    });
+
     client.on('sendToChargingStation', function(){
         io.emit('sendToChargingStation');
     });

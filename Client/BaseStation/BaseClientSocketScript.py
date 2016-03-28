@@ -57,8 +57,9 @@ def verifyIfMoving(path):
 
 
 def sendNextCoordinates():
-    path = dispatcher.handleCurrentSequencerState()
-    Thread(target=verifyIfMoving(path)).start()
+    # path = dispatcher.handleCurrentSequencerState()
+    # Thread(target=verifyIfMoving(path)).start()
+    socketIO.emit("readManchester")
 
 def startRound():
     botPosition, botOrientation = dispatcher.initialiseWorldData()
@@ -67,6 +68,7 @@ def startRound():
     botState = {"positionX": botPosition[0],
             "positionY": botPosition[1],
             "orientation": botOrientation}
+    socketIO.emit("readManchester")
     socketIO.emit("startSignalRobot",botState)
 
 def sendInfo():
