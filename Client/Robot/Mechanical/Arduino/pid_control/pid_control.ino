@@ -1,7 +1,6 @@
 #define NB_DRIVEMOTEUR 4
 
 #include "DriveMoteur.h"
-//#include "ReadManchester.h"
 #include "commandReceiver.h"
 
 /****************MANCHESTER SETUP***********/
