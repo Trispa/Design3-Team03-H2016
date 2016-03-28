@@ -5,21 +5,15 @@ from Client.Robot.Mechanical.CameraTower import CameraTower
 from Client.BaseStation.WorldVision.colorContainer import ColorContainer
 
 class VisionRobot:
-    image = cv2.imread("image/ry1-2.jpg")
     mask = 0
     video = cv2.VideoCapture(1)
-    balayageHori = 0
-    LARGEUR_TRESOR_METRE = 2.5
-    FOCAL = 508
     largeurTresorPixel = 0
-    treasures = []
-    treasure = None
+    treasuresAngle = []
+    followedTreasure = None
 
     def __init__(self):
-
         self.camera = CameraTower()
-        self.camera.step = 0.5
-        self.tresor = None
+        self.camera.step = 0.4
         self.centered = False
 
     def detectColor(self):
@@ -33,42 +27,42 @@ class VisionRobot:
         contours, hierarchy = cv2.findContours(closing, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_TC89_L1)
         for contour in contours:
             if len(contour) > 3 and cv2.contourArea(contour) > 1:
-                x,y,w,h = cv2.boundingRect(contour)
-                if abs(w - h) < 15:
-                    cv2.rectangle(self.image,(x,y),(x+w,y+h),(0,255,0),2)
-                    if x > self.xMin:
-                        if self.treasure != None:
-                            if abs(x - self.treasure[0]) < 50:
-                                self.treasure = cv2.boundingRect(contour)
-                                self.xMin = 320
+                xElementCoordinate,yElementCoordinate,width,height = cv2.boundingRect(contour)
+                if abs(width - height) < 15:
+                    cv2.rectangle(self.image,(xElementCoordinate,yElementCoordinate),(xElementCoordinate+width,yElementCoordinate+height),(0,255,0),2)
+                    if xElementCoordinate > self.xCoordinateToBeHigher:
+                        if self.followedTreasure != None:
+                            if abs(xElementCoordinate - self.followedTreasure[0]) < 50:
+                                self.followedTreasure = cv2.boundingRect(contour)
+                                self.xCoordinateToBeHigher = 320
                         else:
-                            self.treasure = cv2.boundingRect(contour)
+                            self.followedTreasure = cv2.boundingRect(contour)
 
     def detectAndShowImage(self):
         self.detectColor()
         self.findContour()
 
     def isCenteredWithTreasure(self):
-        if abs(self.treasure[0] - (self.image.shape[1]/2)) <= 10:
-            self.treasures.append(self.camera.degreeHori)
+        if abs(self.followedTreasure[0] - (self.image.shape[1]/2)) <= 10:
+            self.treasuresAngle.append(self.camera.degreeHori)
             print("Ajout d'un tresor a " + str(self.camera.degreeHori) + " degree")
-            self.xMin = self.image.shape[1] / 2 + 10
-            self.treasure = None
+            self.xCoordinateToBeHigher = self.image.shape[1] / 2 + 10
+            self.followedTreasure = None
             return True
         return False
 
     def goCamera(self):
 
         self.center = True
-        self.xMin = 320
-        self.camera.moveCameraByAngle(1, 80)
+        self.xCoordinateToBeHigher = 320
+        self.camera.moveCameraByAngle(1, 0)
         self.camera.moveCameraByAngle(0, 110)
-        self.treasure = None
+        self.followedTreasure = None
 
         while(self.video.isOpened()):
 
             self.centered = False
-            while self.treasure == None:
+            while self.followedTreasure == None:
                 ret, self.image = self.video.read()
                 self.detectAndShowImage()
                 self.camera.moveCameraRight()
