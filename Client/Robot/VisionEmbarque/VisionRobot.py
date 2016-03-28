@@ -30,7 +30,6 @@ class VisionRobot:
     def __init__(self, moteurRoue, cameraTower):
 
         self.robot = moteurRoue
-        self.robot.MAX_SPEED = 0.03
         self.camera = cameraTower
         self.camera.step = 0.5
         self.tresor = None
