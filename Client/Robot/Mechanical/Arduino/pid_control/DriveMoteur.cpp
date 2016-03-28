@@ -121,7 +121,7 @@ int DriveMoteur::isRunning()
     if(_run == -1)
     {
       _run = 0;
-      return  1;
+      return  -1;
     }
     else
       return _run;
