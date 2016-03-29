@@ -61,11 +61,11 @@ def sendNextCoordinates():
 
 
 def startRound():
-    dispatcher.startFromBegining()
-    startSignal()
-
-def startSignal():
     botPosition, botOrientation = dispatcher.initialiseWorldData()
+    dispatcher.startFromBegining()
+    startSignal(botPosition, botOrientation)
+
+def startSignal(botPosition, botOrientation):
     print("Bot is at : (" + str(botPosition[0]) + "," + str(botPosition[1]) + ")")
     print("Bot is orienting towards :" + str(botOrientation) + "degrees")
     botState = {"positionX": botPosition[0],
@@ -81,12 +81,14 @@ def setTarget(manchesterInfo):
     dispatcher.setTarget(manchesterInfo['target'])
 
 def startFromTreasure():
+    botPosition, botOrientation = dispatcher.initialiseWorldData()
     dispatcher.startFromTreasure()
-    startSignal()
+    startSignal(botPosition, botOrientation)
 
 def startFromTarget():
+    botPosition, botOrientation = dispatcher.initialiseWorldData()
     dispatcher.startFromTarget()
-    startSignal()
+    startSignal(botPosition, botOrientation)
 
 def setTreasuresOnMap(data):
     dispatcher.setTreasuresOnMap(data)
@@ -99,7 +101,7 @@ def setInterval(function, seconds):
     timer.start()
     return timer
 
-setInterval(sendInfo, 5)
+socketIO.on("needNewinfo", sendInfo)
 socketIO.on('needNewCoordinates', sendNextCoordinates)
 socketIO.on('startSignal', startRound)
 socketIO.on('sendManchesterInfo', setTarget)

@@ -4,6 +4,7 @@ import base64
 import cv2
 import platform
 from os import system
+from threading import Thread, current_thread
 
 class worldVision:
 
@@ -33,11 +34,23 @@ class worldVision:
         self.mapImage.updateRobotPosition(frame)
 
     def getCurrentImage(self):
-        ret, frame = self.camera.read()
+        ret = True
+        frame = None
+        for i in range(7):
+            old_frame = frame
+            ret, frame = self.camera.read()
+            if not ret:
+                old_frame = frame
+                break
+        frame = old_frame
         frame = cv2.resize(frame, (960, 720))
+        print current_thread()
         self.mapImage.updateRobotPosition(frame)
+        self.mapImage = WorldImage(frame)
+        self.mapImage.buildMap(frame)
+        self.mapImage.addLabels(frame)
         worldImage = self.mapImage.drawMapOnImage(frame)
-        return worldImage, self.mapImage.getMap()
+        return frame, self.mapImage.getMap()
 
     def getCurrentMap(self):
         ret, frame = self.camera.read()

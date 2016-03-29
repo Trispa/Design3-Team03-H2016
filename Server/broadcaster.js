@@ -115,6 +115,8 @@ io.on('connection', function (client) {
     client.on('setTreasures', function(data){
        io.emit('setTreasures', data);
     });
+    setInterval(function(){ io.emit('needNewinfo')}, 5000);
+
 });
 
 server.listen(port, url);

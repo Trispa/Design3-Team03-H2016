@@ -79,6 +79,7 @@ void loop()
           dv[i].asservissement();
         }
         else if(dv[i].isRunning() == -1)
+//        else
         {
           listEndCounting[i] = 0;
           listStartCounting[i] = 0;
