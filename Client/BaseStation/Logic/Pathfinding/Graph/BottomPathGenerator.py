@@ -2,7 +2,8 @@ from Client.BaseStation.Logic.Pathfinding.Graph.Node import Node
 
 class BottomPathGenerator:
     def __init__(self, SAFE_MARGIN, MAP_SIZE_Y, graph, collisionDetector):
-        self. SAFE_MARGIN = SAFE_MARGIN
+        self.SAFE_MARGIN = SAFE_MARGIN
+        self.WALL_SAFE_MARGIN = SAFE_MARGIN - 25
         self. MAP_SIZE_Y = MAP_SIZE_Y
         self.graph = graph
         self.collisionDetector = collisionDetector
@@ -48,7 +49,7 @@ class BottomPathGenerator:
 
     def __obstacleIsNextToWall(self, borderNodeLeftBottom, borderNodeRightBottom, bottomLeftCorner,
                                collisionBottomLeftCorner):
-        safeZoneCornerBotLeft = (bottomLeftCorner[0], collisionBottomLeftCorner.positionY - self.SAFE_MARGIN)
+        safeZoneCornerBotLeft = (bottomLeftCorner[0], collisionBottomLeftCorner.positionY - self.WALL_SAFE_MARGIN)
         safeZoneCornerTopRight = (borderNodeRightBottom.positionX, bottomLeftCorner[1])
         safeZoneCornerTopLeft = (bottomLeftCorner[0], bottomLeftCorner[1])
         tempNode = self.graph.generateSafeZone(safeZoneCornerBotLeft, safeZoneCornerTopLeft, safeZoneCornerTopRight)

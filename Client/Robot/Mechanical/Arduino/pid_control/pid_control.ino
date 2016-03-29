@@ -78,6 +78,13 @@ void loop()
           listPID[i].Compute();
           dv[i].asservissement();
         }
+        else if(dv[i].isRunning() == -1)
+        {
+          listEndCounting[i] = 0;
+          listStartCounting[i] = 0;
+          listNbTicks[i] = 0;
+          listPID[i].Initialize();
+        }
     }
 
 }

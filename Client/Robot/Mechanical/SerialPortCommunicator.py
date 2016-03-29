@@ -32,7 +32,7 @@ class SerialPortCommunicator:
     #Pololu : /dev/serial/by-id/pci-Pololu_Corporation_Pololu_Micro_Maestro_6-Servo_Controller_00021864-if0
 
     #Mon Port
-    #def __init__(self, bitrateArduino = 115200, arduinoPort = "/dev/ttyACM0"):
+    #def __init__(self, bitrateArduino = 115200, arduinoPort = "/dev/ttyACM1"):
 
 #Pololu : /dev/serial/by-id/pci-Pololu_Corporation_Pololu_Micro_Maestro_6-Servo_Controller_00021864-if0
 
@@ -98,4 +98,3 @@ class SerialPortCommunicator:
 
 if __name__ == "__main__":
     spc = SerialPortCommunicator()
-
