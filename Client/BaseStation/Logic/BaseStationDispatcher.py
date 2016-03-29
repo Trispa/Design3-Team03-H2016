@@ -48,6 +48,14 @@ class BaseStationDispatcher():
     def startFromTreasure(self):
         self.sequencer.setState(SendingBotToTreasureState())
 
+    def getCurrentMap(self):
+        map = self.world.getCurrentMap()
+        mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
+        convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.center)
+        informationToSend = {"robotPosition":convertedPoint,
+                           "robotOrientation":map.robot.orientation}
+        return informationToSend
+
     def setTarget(self, jsonTarget):
         targetFactory = TargetFactory()
         target = targetFactory.constructTarget(jsonTarget)

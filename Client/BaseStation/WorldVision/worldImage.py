@@ -18,6 +18,9 @@ class WorldImage:
     def setTarget(self, target):
         self.__map.setTarget(target)
 
+    def defineTreasures(self, relativeAngles):
+        self.__map.setTreasures(relativeAngles)
+
     def buildMap(self, mapImage):
         self.__map = self.__myMapBuilder.buildMapWithAllFilter(mapImage, self.__map)
 
@@ -67,7 +70,9 @@ class WorldImage:
         else:
             target = []
 
-        contourList = self.__map.getContourList()
+        for treasure in self.__map.treasures:
+            cv2.circle(frame,(int(treasure[0]), int(treasure[1])), 10, (17,148,162), 2)
+
         cv2.drawContours( frame, self.__map.getContourList(), -1, (0, 255, 0), 3 )
         cv2.drawContours( frame, limit, -1, (0, 255, 0), 3 )
         cv2.drawContours( frame, target, -1, (255, 0, 0), 3 )
