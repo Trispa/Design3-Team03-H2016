@@ -42,18 +42,18 @@ def verifyIfMoving(path):
             print "yes" + str(botPositionX) + " is between " + str(x+5) + " and " + str(x-5)
             print( "yes " + str(botPositionY) + " is between " + str(y+5) + " and " + str(y-5))
             time.sleep(5)
-            botInfo = dispatcher.getCurrentWorldInformation()
+            if(index+1 != len(path)):
+                socketIO.emit("alignToTreasure")
+            else:
+                botInfo = dispatcher.getCurrentWorldInformation()
 
-            jsonToSend = {"positionFROMx" : botInfo["robotPosition"][0],
-                          "positionFROMy" : botInfo["robotPosition"][1],
-                          "positionTOx" : path[index+1].positionX,
-                          "positionTOy" : path[index+1].positionY,
-                          "orientation":botInfo["robotOrientation"]}
+                jsonToSend = {"positionFROMx" : botInfo["robotPosition"][0],
+                              "positionFROMy" : botInfo["robotPosition"][1],
+                              "positionTOx" : path[index+1].positionX,
+                              "positionTOy" : path[index+1].positionY,
+                              "orientation":botInfo["robotOrientation"]}
 
-            socketIO.emit("sendNextCoordinates", jsonToSend)
-        else:
-            print("sendingAlignToTreasureCommand")
-            socketIO.emit("alignToTreasure")
+                socketIO.emit("sendNextCoordinates", jsonToSend)
 
 
 def sendNextCoordinates():
