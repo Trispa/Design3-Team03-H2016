@@ -8,8 +8,7 @@
 #define MilimetersToTicks 7.69
 #define endingLEDPin 13
 
-char* machaine;
-
+ char  *machaine;
 CommandReceiver::CommandReceiver()
 {
 
@@ -21,87 +20,127 @@ CommandReceiver::CommandReceiver(DriveMoteur* d,  ReadManchester* man)
   rm = man;
 }
 
-void CommandReceiver::decomposeParameters() {
-  byte numberOfParameters = Serial.read() - ASCIIOffset;
-  
-  while(Serial.available() < (numberOfParameters * NumberOfBytesInLong) ) {}
-  
-  long buffer = 0;
-  int index = 0;
 
-  while(index < numberOfParameters) {
-    parameters[index] = readULongFromBytes();
-    index++;
-  }
+void CommandReceiver::decomposeParameters() {
+	byte numberOfParameters = Serial.read() - ASCIIOffset;
+
+	while(Serial.available() < (numberOfParameters * NumberOfBytesInLong) ) {}
+
+	long buffer = 0;
+	int index = 0;
+
+	while(index < numberOfParameters) {
+		parameters[index] = readULongFromBytes();
+		index++;
+	}
 }
 
 
 void CommandReceiver::decomposeCommand() {
-  commandIndex = Serial.read() - ASCIIOffset;
+	commandIndex = Serial.read() - ASCIIOffset;
 
-  callbackRequested = Serial.read() - ASCIIOffset;
+	callbackRequested = Serial.read() - ASCIIOffset;
 
-  decomposeParameters();
+	decomposeParameters();
 }
 
 void CommandReceiver::process() {
-  executeCommand();
+	executeCommand();
 }
 
 void CommandReceiver::readPort() {
-  if(Serial.read() == 'C') {
-    while(Serial.available() < StandardHeaderLenght) {}
-    decomposeCommand();
-    commandWaitingFlag = 1;
-  }
-}   
+	if(Serial.read() == 'C') {
+		while(Serial.available() < StandardHeaderLenght) {}
+		decomposeCommand();
+		commandWaitingFlag = 1;
+	}
+}
 
 //à voir si par roue et s'entendre sur quelle roue est à quel indice
 void CommandReceiver::dispatchCommand() {
-  long resistance;
-  int rotationDirection = 1;
+	long resistance;
+	int rotationDirection = 1;
 
-  switch (commandIndex) {
-  case 1: //lightEndingLED
-    digitalWrite(endingLEDPin, HIGH);
-    break;    
-    
-  case 2: //turnOffEndingLED
-    digitalWrite(endingLEDPin, LOW);
-    break;
+	switch (commandIndex) {
+	case 1: //lightEndingLED
+		digitalWrite(endingLEDPin, HIGH);
+		break;
 
-    case 3: //change speed of a motor
-        dm[parameters[0]-1].driveMoteur(parameters[1]/100.0, parameters[2]);
-        break;
+	case 2: //turnOffEndingLED
+		digitalWrite(endingLEDPin, LOW);
+		break;
+
+  	case 3: //change speed of a motor
+    		dm[parameters[0]-1].driveMoteur(parameters[1]/100.0, parameters[2]);
+    		break;
 
 
-    case 4: // ReadMAnchesterBits
+	case 4: // ReadMAnchesterBits
           rm->enableManchester();
-         
+
           break;
-  
-    case 5:// j'ai changé le 4 en 5 car le 4 appartenais déjà  au ReadManchester
-          for(int i = 0; i<4; i++)
-          {
-              dm[i].driveMoteur(0,0);
-          }
-    case 6: // callback MAnchester
+ 	case 5:// j'ai changé le 4 en 5 car le 4 appartenais déjà  au ReadManchester
+    		for(int i = 0; i<4; i++)
+    		{
+      			dm[i].driveMoteur(0,0);
+    		}
+       break;
+
+  case 6: // callback MAnchester
           if(callbackRequested == 1){
              sendCallback(rm->getChaineCopie());
           }
           break;
-  
-    default: //for test purposes
-      if(callbackRequested == 1) {
-        sendCallback(parameters[0]);
-      }
+
+	case 7:
+		if (parameters[0] == 0) //Axe des X
+		{
+			if(parameters[2] == 1) //Direction positive
+			{
+				dm[1].driveMoteur(parameters[1]/100.0, 0);
+				dm[2].driveMoteur(parameters[1]/100.0, 1);
+			}
+			else // Direction negative
+			{
+				dm[1].driveMoteur(parameters[1]/100.0, 1);
+				dm[2].driveMoteur(parameters[1]/100.0, 0);
+			}
+		}
+		else //Axe des Y
+		{
+			if(parameters[2] == 1) //Direction positive
+			{
+				dm[0].driveMoteur(parameters[1]/100.0, 1);
+				dm[3].driveMoteur(parameters[1]/100.0, 0);
+			}
+			else // Direction Negative
+			{
+				dm[0].driveMoteur(parameters[1]/100.0, 0);
+				dm[3].driveMoteur(parameters[1]/100.0, 1);
+			}
+
+		}
+    break;
+
+	case 8:
+		for(int i = 0; i<4; i++)
+			{
+	  			dm[i].driveMoteur(parameters[0]/100.0, parameters[1]);
+			}
       break;
-    }    
+
+
+	default: //for test purposes
+		if(callbackRequested == 1) {
+			sendCallback(parameters[0]);
+		}
+		break;
+	}
 }
 
 void CommandReceiver::sendCallback(long callbackData) {
-  Serial.print('R');
-  Serial.print(callbackData, DEC);
+	Serial.print('R');
+	Serial.print(callbackData, DEC);
 }
 
 
@@ -115,24 +154,23 @@ void CommandReceiver::sendCallback(String callbackData) {
 }
 
 void CommandReceiver::executeCommand() {
-  readPort();
-  
-  if(commandWaitingFlag == 1) {
-    dispatchCommand();
-    commandWaitingFlag = 0;
-  }
+	readPort();
+
+	if(commandWaitingFlag == 1) {
+		dispatchCommand();
+		commandWaitingFlag = 0;
+	}
 }
 
 long CommandReceiver::readULongFromBytes() {
-  union u_tag {
-    byte bytes[NumberOfBytesInLong];
-    long returnLong;
-  } bytesToLong;
+	union u_tag {
+		byte bytes[NumberOfBytesInLong];
+		long returnLong;
+	} bytesToLong;
 
-  bytesToLong.bytes[0] = Serial.read();
-  bytesToLong.bytes[1] = Serial.read();
-  bytesToLong.bytes[2] = Serial.read();
-  bytesToLong.bytes[3] = Serial.read();
-  return bytesToLong.returnLong;
+	bytesToLong.bytes[0] = Serial.read();
+	bytesToLong.bytes[1] = Serial.read();
+	bytesToLong.bytes[2] = Serial.read();
+	bytesToLong.bytes[3] = Serial.read();
+	return bytesToLong.returnLong;
 }
-
