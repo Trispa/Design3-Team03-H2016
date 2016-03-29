@@ -15,10 +15,8 @@ class BaseStationDispatcher():
 
     def handleCurrentSequencerState(self):
         image, map = self.world.getCurrentImage()
-        mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
-        convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.center)
-        self.path = self.sequencer.handleCurrentState(convertedPoint)
-        return self.path
+        self.path, signal = self.sequencer.handleCurrentState(map)
+        return self.path, signal
 
     def initialiseWorldData(self):
         self.world.initializeRound()

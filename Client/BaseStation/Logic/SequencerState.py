@@ -1,17 +1,26 @@
+from MapCoordinatesAjuster import MapCoordinatesAjuster
+
 class SendingBotToChargingStationState():
-    def handle(self, sequencer, robotPosition, pathfinder):
-        chargingStationPosition = (722,111)
+
+    def handle(self, sequencer, map, pathfinder):
+        mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
+        convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.center)
         sequencer.setState(SendingBotToTreasureState())
-        return pathfinder.findPath(robotPosition, chargingStationPosition)
+        return pathfinder.findPath(convertedPoint, (905,55)), "alignPositionToChargingStation"
 
 class SendingBotToTreasureState():
-    def handle(self, sequencer, robotPosition, pathfinder):
+    def handle(self, sequencer, map, pathfinder):
+        mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
+        convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.center)
         sequencer.setState(SendingBotToTargetState())
-        return  pathfinder.findPath(robotPosition, (910,55))
+        return  pathfinder.findPath(convertedPoint, (100,100)), "alignPositionToTreasure"
 
 
 class SendingBotToTargetState():
-    def handle(self, sequencer, robotPosition, pathfinder):
+    def handle(self, sequencer, map, pathfinder):
+        mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
+        convertedTargetPosition = mapCoordinatesAdjuster.convertPoint(map.target.findCenterOfMass())
+        convertedRobotPosition = mapCoordinatesAdjuster.convertPoint(map.robot.center)
         sequencer.setState(SendingBotToChargingStationState())
-        return pathfinder.findPath(robotPosition, (700,150))
+        return pathfinder.findPath(convertedRobotPosition, convertedTargetPosition), "alignPositionToTarget"
 

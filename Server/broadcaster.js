@@ -100,7 +100,15 @@ io.on('connection', function (client) {
     client.on('sendBotIP', function(data){
         console.log(data);
     });
-
+    client.on('alignPositionToChargingStation', function(){
+        io.emit('alignPositionToChargingStation');
+    });
+    client.on('alignPositionToTreasure', function(){
+        io.emit('alignPositionToTreasure');
+    });
+    client.on('alignPositionToTarget', function (){
+        io.emit('alignPositionToTarget');
+    });
 });
 
 server.listen(port, url);

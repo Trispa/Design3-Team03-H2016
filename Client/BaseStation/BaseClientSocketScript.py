@@ -19,7 +19,7 @@ with open(configPath) as json_data_file:
 
 socketIO = SocketIO(config['url'], int(config['port']))
 
-def verifyIfMoving(path):
+def verifyIfMoving(path, nextSignal):
     for index in range(0, len(path)):
         x = path[index].positionX
         y = path[index].positionY
@@ -43,7 +43,7 @@ def verifyIfMoving(path):
             print( "yes " + str(botPositionY) + " is between " + str(y+5) + " and " + str(y-5))
             time.sleep(5)
             if(index+1 != len(path)):
-                socketIO.emit("alignToTreasure")
+                socketIO.emit(nextSignal)
             else:
                 botInfo = dispatcher.getCurrentWorldInformation()
 
@@ -57,8 +57,8 @@ def verifyIfMoving(path):
 
 
 def sendNextCoordinates():
-    path = dispatcher.handleCurrentSequencerState()
-    Thread(target=verifyIfMoving(path)).start()
+    path, nextSignal = dispatcher.handleCurrentSequencerState()
+    Thread(target=verifyIfMoving(path, nextSignal)).start()
 
 def startRound():
     botPosition, botOrientation = dispatcher.initialiseWorldData()
