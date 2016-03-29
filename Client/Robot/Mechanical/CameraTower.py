@@ -7,7 +7,7 @@ class CameraTower:
     def __init__(self):
         self.m = maestro.Controller()
         self.degreeHori = 100
-        self.degreeVerti = 80
+        self.degreeVerti = 30
         self.step = 5
         self.moveCameraByAngle(0, self.degreeVerti)
         self.moveCameraByAngle(1, self.degreeHori)
@@ -48,8 +48,8 @@ class CameraTower:
 
     def angleLimit(self, b):
         a = b
-        if a < 50:
-            return 50
+        if a < 5:
+            return 5
         elif a > 174:
             return 174
         else:
@@ -58,8 +58,8 @@ class CameraTower:
     def getPWMfromAngle(self, a):
         na = 0
         pwm = 0
-        if a < 51:
-            na = 51
+        if a < 5:
+            na = 5
         elif a > 174:
             na = 174
         else:

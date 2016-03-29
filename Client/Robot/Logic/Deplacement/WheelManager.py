@@ -25,10 +25,10 @@ class WheelManager:
         self.isMoving = False
 
     #Distance en pixel
-    def moveTo(self, pointToMoveTo, referentialConverter):
+    def moveTo(self, pointToMoveTo):
         print pointToMoveTo[0], pointToMoveTo[1], "point.fsd"
-        if pointToMoveTo[0] != 0 or pointToMoveTo[1] != 0:
-            pointAdjusted = self.__adjustOrientation(pointToMoveTo, referentialConverter)
+        if not(pointToMoveTo[0] == 0 or pointToMoveTo[1] == 0):
+            pointAdjusted = self.__adjustOrientation(pointToMoveTo)
         else:
             pointAdjusted = pointToMoveTo
 
@@ -66,13 +66,6 @@ class WheelManager:
         return timeToTravel
 
     def moveToInfinit(self, pointX, pointY):
-        # print pointToMoveTo[0], pointToMoveTo[1], "point.fsd"
-        # pointAdjusted = self.__adjustOrientation(pointToMoveTo, referentialConverter)
-        # pointConverted = self.pixelToCentimeterConverter.convertPixelToCentimeter(pointAdjusted)
-        #
-        #
-        # pointX = pointConverted[0]
-        # pointY = pointConverted[1]
 
         self.isMoving = True
         self.__resetMotors()
@@ -84,8 +77,8 @@ class WheelManager:
         elif abs(pointX) < abs(pointY):
             xSpeed = (abs(pointX) * ySpeed) / abs(pointY)
 
-        timeToTravel = max(abs(pointX), abs(pointY)) / (max(xSpeed, ySpeed) * 100) + max(xSpeed, ySpeed) * 1.1
-        print("xSpeed : " + str(xSpeed) + " ySpeed : " + str(ySpeed) + " Time : " + str(timeToTravel))
+
+        print("xSpeed : " + str(xSpeed) + " ySpeed : " + str(ySpeed))
 
         if pointX > 0:
             self.spc.driveMoteurLine(self.X_AXIS, xSpeed, self.POSITIVE_SPEED)
@@ -98,7 +91,6 @@ class WheelManager:
 
         # self.debutDeLInterruption(timeToTravel)
 
-        return timeToTravel
 
 
     def rotate(self, degree):
@@ -121,19 +113,18 @@ class WheelManager:
         return self.isMoving
 
 
-    def __adjustOrientation(self, pointToMove, referentialConverter):
+    def __adjustOrientation(self, pointToMove):
         degreeAngle = (np.arctan((pointToMove[1]/pointToMove[0]))/np.pi)*180
-	angleToRotate = degreeAngle%45
-	print angleToRotate
+        angleToRotate = degreeAngle%45
+        print angleToRotate
         point = (0,0)
-	referentialConverter = ReferentialConverter(point, angleToRotate)
-        #referentialConverter.adjustAngle(-angleToRotate)
-        #referentialConverter.setPositionTo(p
-	self.rotate(-angleToRotate)
+        referentialConverter = ReferentialConverter(point, angleToRotate)
+
+        self.rotate(-angleToRotate)
 
         pointAdjusted = referentialConverter.convertWorldToRobot(pointToMove)
-        print "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@BOBA FETT", pointAdjusted[0], pointAdjusted[1]
-	return pointAdjusted
+        print "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ BOBA FETT", pointAdjusted[0], pointAdjusted[1]
+        return pointAdjusted
 
 
     def __resetMotors(self):
@@ -183,12 +174,16 @@ class WheelManager:
 
 if __name__ == '__main__':
     mr = WheelManager()
-    mr.__stopAllMotors()
+    mr.stopAllMotors()
     time.sleep(0.1)
 
-    mr.moveTo(-30, 0)
+    mr.moveTo((0, 50))
     time.sleep(2)
-    mr.moveTo(30, 0)
+    mr.moveTo((0, -50))
+    time.sleep(2)
+    mr.moveTo((50, 0))
+    time.sleep(2)
+    mr.moveTo((-50, 0))
     # mr.avanceVector(10, 0)
     # mr.avanceVector(0, 10)
     # mr.avanceVector(0, -10)

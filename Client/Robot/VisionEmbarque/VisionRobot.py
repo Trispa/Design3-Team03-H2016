@@ -17,7 +17,7 @@ class VisionRobot:
         system("v4l2-ctl --device=1 --set-ctrl gain=50")
     elif platform.linux_distribution()[0].lower() == "Fedora".lower():
         video = cv2.VideoCapture(0)
-        system("v4l2-ctl --device=0 --set-ctrl gain=50")
+        system("v4l2-ctl --device=0 --set-ctrl gain=0 -c brightness=80")
 
     balayageHori = 0
     LARGEUR_TRESOR_METRE = 2.5
@@ -119,17 +119,17 @@ class VisionRobot:
             # print x, y, iw, ih
             square = 18
 
-            xob = iw/2  - square/2
+            xob = (iw/2-5)  - square/2
             yob = ih/2 - square/2
             # print xob, yob
             # print xob + square, yob +square
 
-            cv2.rectangle(self.image,(xob, yob),(xob + square, yob + square+7),(0,0,255),2)
+            cv2.rectangle(self.image,(xob, yob),(xob + square-3, yob + square+7),(0,0,255),2)
             # cv2.rectangle(self.image,(x,y),(x+w,y+h),(0,255,0),2)
 
-            if x <= (iw/2 - square):
+            if x <= (iw/2 - square-3):
                 self.camera.moveCameraLeft()
-            elif x >= (iw/2 + square):
+            elif x >= (iw/2 + square-3):
                 self.camera.moveCameraRight()
             else:
                 centerX = True
@@ -222,8 +222,8 @@ class VisionRobot:
         lastAngle= 0
 
 
-        # self.camera.moveCameraByAngle(1, 50)
-        # self.camera.moveCameraByAngle(0, 80)
+        self.camera.moveCameraByAngle(1, 50)
+        self.camera.moveCameraByAngle(0, 30)
 
         while(self.video.isOpened()):
             ret, self.image = self.video.read()
@@ -270,15 +270,15 @@ class VisionRobot:
                 print self.camera.degreeVerti
 
 
-                if self.camera.degreeVerti < 68:
+                if self.camera.degreeVerti <= 7:
                     self.robot.stopAllMotors()
                     moveXArriver = True
-                elif self.camera.degreeVerti < lastAngle - 0.5:
+                elif self.camera.degreeVerti <= lastAngle - 0.5:
                     self.robot.stopAllMotors()
                     # moveXArriver = True
                     moveYArriver = False
                     movingX = False
-                lastAngle = self.camera.degreeVerti
+                    lastAngle = self.camera.degreeVerti
 
 
 
@@ -286,11 +286,11 @@ class VisionRobot:
                 print "!!! ARRIVER !!!"
                 return True
 
-            cv2.imshow("Image", self.image)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
-        self.video.release()
-        cv2.destroyAllWindows()
+            # cv2.imshow("Image", self.image)
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     break
+        # self.video.release()
+        # cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":
