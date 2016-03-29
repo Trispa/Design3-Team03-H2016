@@ -19,44 +19,52 @@ with open(configPath) as json_data_file:
 
 socketIO = SocketIO(config['url'], int(config['port']))
 
-def verifyIfMoving(path):
-    for index in range(0, len(path)):
-        x = path[index].positionX
-        y = path[index].positionY
-        botInfo = dispatcher.getCurrentMap()
+def verifyIfMoving(path, nextSignal):
+    pixelRangeToSendNextCoordinates = 8
+    for nodeBotIsGoingTo in range(0, len(path)):
+        xPositionOfNodeThatBotIsGoingTo = path[nodeBotIsGoingTo].positionX
+        yPositionOfNodeThatBotIsGoingTo = path[nodeBotIsGoingTo].positionY
+
+        botInfo = dispatcher.getCurrentWorldInformation()
+
         botPositionX = botInfo["robotPosition"][0]
         botPositionY = botInfo["robotPosition"][1]
 
-        while (((botPositionX > x + 8) or
-            botPositionX <= x - 8) and
-               (botPositionY > y + 8 or
-            botPositionY <= y - 8)):
-            botInfo = dispatcher.getCurrentMap()
+        while ((botPositionX > xPositionOfNodeThatBotIsGoingTo + pixelRangeToSendNextCoordinates or
+            botPositionX < xPositionOfNodeThatBotIsGoingTo - pixelRangeToSendNextCoordinates) and
+               (botPositionY > yPositionOfNodeThatBotIsGoingTo + pixelRangeToSendNextCoordinates or
+            botPositionY < yPositionOfNodeThatBotIsGoingTo - pixelRangeToSendNextCoordinates)):
+            botInfo = dispatcher.getCurrentWorldInformation()
             botPositionX = botInfo["robotPosition"][0]
             botPositionY = botInfo["robotPosition"][1]
             print "not close enough"
+
         print "close enough"
         time.sleep(5)
 
-        if(index+1 != len(path)):
-            socketIO.emit("alignToTreasure")
+        if(nodeBotIsGoingTo+1 != len(path)):
+            socketIO.emit(nextSignal)
+
         else:
             botInfo = dispatcher.getCurrentWorldInformation()
-
             jsonToSend = {"positionFROMx" : botInfo["robotPosition"][0],
                           "positionFROMy" : botInfo["robotPosition"][1],
-                          "positionTOx" : path[index+1].positionX,
-                          "positionTOy" : path[index+1].positionY,
+                          "positionTOx" : path[nodeBotIsGoingTo+1].positionX,
+                          "positionTOy" : path[nodeBotIsGoingTo+1].positionY,
                           "orientation":botInfo["robotOrientation"]}
-
             socketIO.emit("sendNextCoordinates", jsonToSend)
 
-
 def sendNextCoordinates():
-    path = dispatcher.handleCurrentSequencerState()
-    Thread(target=verifyIfMoving(path)).start()
+    path, nextSignal = dispatcher.handleCurrentSequencerState()
+    if(path != None and nextSignal != None):
+        Thread(target=verifyIfMoving(path, nextSignal)).start()
+
 
 def startRound():
+    dispatcher.startFromBegining()
+    startSignal()
+
+def startSignal():
     botPosition, botOrientation = dispatcher.initialiseWorldData()
     print("Bot is at : (" + str(botPosition[0]) + "," + str(botPosition[1]) + ")")
     print("Bot is orienting towards :" + str(botOrientation) + "degrees")
@@ -72,6 +80,16 @@ def sendInfo():
 def setTarget(manchesterInfo):
     dispatcher.setTarget(manchesterInfo['target'])
 
+def startFromTreasure():
+    dispatcher.startFromTreasure()
+    startSignal()
+
+def startFromTarget():
+    dispatcher.startFromTarget()
+    startSignal()
+
+def setTreasuresOnMap(data):
+    dispatcher.setTreasuresOnMap(data)
 
 def setInterval(function, seconds):
     def func_wrapper():
@@ -86,6 +104,9 @@ socketIO.on('needNewCoordinates', sendNextCoordinates)
 socketIO.on('startSignal', startRound)
 socketIO.on('sendManchesterInfo', setTarget)
 socketIO.on("verifyIfMoving", verifyIfMoving)
+socketIO.on("startFromTreasure", startFromTreasure)
+socketIO.on("startFromTarget", startFromTarget)
+socketIO.on('setTreasures', setTreasuresOnMap)
 
 socketIO.wait()
 

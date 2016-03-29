@@ -85,12 +85,12 @@ io.on('connection', function (client) {
         io.emit('readManchester');
     });
 
-    client.on('sendToChargingStation', function(){
-        io.emit('sendToChargingStation');
+    client.on('startFromTarget', function(){
+        io.emit('startFromTarget');
     });
 
-    client.on('sendToTreasure', function(){
-        io.emit('sendToTreasure');
+    client.on('startFromTreasure', function(){
+        io.emit('startFromTreasure');
     });
 
     client.on('needPooling', function(){
@@ -100,7 +100,21 @@ io.on('connection', function (client) {
     client.on('sendBotIP', function(data){
         console.log(data);
     });
-
+    client.on('alignPositionToChargingStation', function(){
+        io.emit('alignPositionToChargingStation');
+    });
+    client.on('alignPositionToTreasure', function(){
+        io.emit('alignPositionToTreasure');
+    });
+    client.on('alignPositionToTarget', function (){
+        io.emit('alignPositionToTarget');
+    });
+    client.on('detectTreasure', function(){
+       io.emit('detectTreasure');
+    });
+    client.on('setTreasures', function(data){
+       io.emit('setTreasures', data);
+    });
 });
 
 server.listen(port, url);

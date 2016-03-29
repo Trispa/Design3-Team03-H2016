@@ -23,16 +23,28 @@ def needNewCoordinates(data):
     print("heading toward next coordinates")
     botDispatcher.followPath(data)
 
-def alignToTreasure():
-    botDispatcher.alignToTreasure()
-    socketIO.emit("needNewCoordinates")
 
 def startRound(*args):
     print("start round")
     socketIO.emit("needNewCoordinates")
 
+def alignToTreasure():
+    botDispatcher.alignToTreasure()
+    socketIO.emit("needNewCoordinates")
+def alignToChargingStation():
+    botDispatcher.alignToTreasure()
+    readManchester()
+    socketIO.emit("needNewCoordinates")
+def alignToTarget():
+    #TODO code pour s'enligner a la cible
+    socketIO.emit("needNewCoordinates")
+
 def endRound():
     print("end round")
+
+def detectTreasure():
+    socketIO.emit('setTreasures', botDispatcher.detectTreasure())
+    socketIO.emit('needNewCoordinates')
 
 def readManchester():
     character = botDispatcher.readManchester()
@@ -48,10 +60,14 @@ def get_ip_address(ifname):
 
 socketIO.emit('sendBotClientStatus','Connected')
 socketIO.emit('sendBotIP', get_ip_address('wlp4s0'))
-socketIO.on("alignToTreasure", alignToTreasure)
+
 socketIO.on('sendNextCoordinates', needNewCoordinates)
 socketIO.on('startSignalRobot', startRound)
 socketIO.on('sendEndSignal', endRound)
 socketIO.on('readManchester', readManchester)
+socketIO.on("alignPositionToChargingStation", alignToChargingStation)
+socketIO.on("alignPositionToTreasure", alignToTreasure)
+socketIO.on("alignPositionToTarget", alignToTarget)
+socketIO.on("detectTreasure", detectTreasure)
 
 socketIO.wait()

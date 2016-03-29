@@ -7,11 +7,11 @@ from Client.BaseStation.WorldVision.colorContainer import ColorContainer
 class TreasuresDetector:
     MAX_LENGHT_DIFFERENCE = 15
     MAX_PIXEL_FROM_FOLLOWED_TREASURE = 50
-    START_CAMERA_HORIZONTAL_ANGLE = 80
+    START_CAMERA_HORIZONTAL_ANGLE = 0
     START_CAMERA_VERTICAL_ANGLE = 110
     ACCEPTABLE_PIXEL_DIFFERENCE = 10
     mask = 0
-    video = cv2.VideoCapture(1)
+    video = cv2.VideoCapture(0)
     treasuresAngle = []
     followedTreasure = None
 
@@ -62,7 +62,7 @@ class TreasuresDetector:
         self.camera.moveCameraByAngle(0, self.START_CAMERA_VERTICAL_ANGLE)
         self.followedTreasure = None
 
-        while(self.video.isOpened()):
+        while(self.video.isOpened() and self.camera.degreeHori != 180):
 
             self.centered = False
             ret, self.image = self.video.read()
@@ -71,25 +71,15 @@ class TreasuresDetector:
                 ret, self.image = self.video.read()
                 self.detectAndShowImage()
                 self.camera.moveCameraRight()
-                cv2.imshow("Image", self.image)
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    pass
 
             while not self.centered:
                 ret, self.image = self.video.read()
                 self.detectAndShowImage()
                 self.camera.moveCameraRight()
                 self.centered = self.isCenteredWithTreasure()
-                cv2.imshow("Image", self.image)
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    pass
 
-
-            cv2.imshow("Image", self.image)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
         self.video.release()
-        cv2.destroyAllWindows()
+        return self.treasuresAngle
 
 
 
