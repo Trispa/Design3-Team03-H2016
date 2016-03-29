@@ -57,6 +57,10 @@ function sendManchesterCall(){
     socket.emit("readManchester")
 }
 
+function sendManchesterMockCall(){
+    socket.emit("sendManchesterCode", "A")
+}
+
 var currentTimer;
 
 function startTimer(){
@@ -97,11 +101,11 @@ function reset(){
     $("#minute-left").text("10");
 }
 
-function sendBotToChargingStationOnly(){
-    socket.emit("sendToChargingStation");
+function startFromTreasure(){
+    socket.emit("startFromTreasure");
 }
 
-
-function sendToTreasure(){
-    socket.emit("sendToTreasure");
+function startFromTarget(){
+    socket.emit("startFromTarget");
+    sendManchesterMockCall();
 }

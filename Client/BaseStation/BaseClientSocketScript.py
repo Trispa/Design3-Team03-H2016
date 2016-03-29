@@ -76,6 +76,13 @@ def sendInfo():
 def setTarget(manchesterInfo):
     dispatcher.setTarget(manchesterInfo['target'])
 
+def startFromTreasure():
+    dispatcher.startFromTreasure()
+    startRound()
+
+def startFromTarget():
+    dispatcher.startFromTarget()
+    startRound()
 
 def setInterval(function, seconds):
     def func_wrapper():
@@ -90,6 +97,8 @@ socketIO.on('needNewCoordinates', sendNextCoordinates)
 socketIO.on('startSignal', startRound)
 socketIO.on('sendManchesterInfo', setTarget)
 socketIO.on("verifyIfMoving", verifyIfMoving)
+socketIO.on("startFromTreasure", startFromTreasure)
+socketIO.on("startFromTarget", startFromTarget)
 
 socketIO.wait()
 

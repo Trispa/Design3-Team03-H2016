@@ -85,12 +85,12 @@ io.on('connection', function (client) {
         io.emit('readManchester');
     });
 
-    client.on('sendToChargingStation', function(){
-        io.emit('sendToChargingStation');
+    client.on('startFromTarget', function(){
+        io.emit('startFromTarget');
     });
 
-    client.on('sendToTreasure', function(){
-        io.emit('sendToTreasure');
+    client.on('startFromTreasure', function(){
+        io.emit('startFromTreasure');
     });
 
     client.on('needPooling', function(){

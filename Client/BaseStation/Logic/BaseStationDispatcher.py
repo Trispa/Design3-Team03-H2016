@@ -2,7 +2,6 @@ from Client.BaseStation.WorldVision.worldVision import worldVision
 from Client.BaseStation.Logic.Sequencer import Sequencer as seq
 from Client.BaseStation.Logic.Pathfinding.Pathfinder import Pathfinder
 from TargetFactory import TargetFactory
-from MapCoordinatesAjuster import MapCoordinatesAjuster
 from SequencerState import *
 import cv2
 import base64
@@ -39,6 +38,12 @@ class BaseStationDispatcher():
                            "robotOrientation":map.robot.orientation,
                            "encodedImage":base64ConvertedImage}
         return informationToSend
+
+    def startFromTarget(self):
+        self.sequencer.setState(SendingBotToTargetState())
+
+    def startFromTreasure(self):
+        self.sequencer.setState(SendingBotToTreasureState())
 
     def setTarget(self, jsonTarget):
         targetFactory = TargetFactory()
