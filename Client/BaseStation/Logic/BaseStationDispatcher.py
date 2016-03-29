@@ -60,3 +60,6 @@ class BaseStationDispatcher():
         targetFactory = TargetFactory()
         target = targetFactory.constructTarget(jsonTarget)
         self.world.setTarget(target)
+
+    def setTreasuresOnMap(self, data):
+        self.world.setTreasures(data)

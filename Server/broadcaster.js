@@ -109,6 +109,12 @@ io.on('connection', function (client) {
     client.on('alignPositionToTarget', function (){
         io.emit('alignPositionToTarget');
     });
+    client.on('detectTreasure', function(){
+       io.emit('detectTreasure');
+    });
+    client.on('setTreasures', function(data){
+       io.emit('setTreasures', data);
+    });
 });
 
 server.listen(port, url);

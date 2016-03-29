@@ -1,13 +1,19 @@
 from MapCoordinatesAjuster import MapCoordinatesAjuster
 
 class SendingBotToChargingStationState():
-
     def handle(self, sequencer, map, pathfinder):
         mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
         convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.center)
-
-        sequencer.setState(SendingBotToTreasureState())
+        sequencer.setState(DetectTreasureState())
         return pathfinder.findPath(convertedPoint, (905,55)), "alignPositionToChargingStation"
+
+
+class DetectTreasureState():
+    def handle(self, sequencer, map, pathfinder):
+        mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
+        convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.center)
+        sequencer.setState(SendingBotToTreasureState())
+        return  pathfinder.findPath(convertedPoint, (850,200)), "detectTreasure"
 
 class SendingBotToTreasureState():
     def handle(self, sequencer, map, pathfinder):
@@ -22,7 +28,7 @@ class SendingBotToTargetState():
         mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
         convertedTargetPosition = mapCoordinatesAdjuster.convertPoint(map.target.findCenterOfMass())
         convertedRobotPosition = mapCoordinatesAdjuster.convertPoint(map.robot.center)
-        sequencer.setState(SendingBotToChargingStationState())
+        sequencer.setState(StopMovingState())
         return pathfinder.findPath(convertedRobotPosition, convertedTargetPosition), "alignPositionToTarget"
 
 class StopMovingState():

@@ -85,6 +85,9 @@ def startFromTarget():
     dispatcher.startFromTarget()
     startRound()
 
+def setTreasuresOnMap(data):
+    dispatcher.setTreasuresOnMap(data)
+
 def setInterval(function, seconds):
     def func_wrapper():
         setInterval(function, seconds)
@@ -100,6 +103,7 @@ socketIO.on('sendManchesterInfo', setTarget)
 socketIO.on("verifyIfMoving", verifyIfMoving)
 socketIO.on("startFromTreasure", startFromTreasure)
 socketIO.on("startFromTarget", startFromTarget)
+socketIO.on('setTreasures', setTreasuresOnMap)
 
 socketIO.wait()
 

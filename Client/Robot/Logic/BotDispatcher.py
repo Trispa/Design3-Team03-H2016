@@ -3,7 +3,7 @@ from Client.Robot.VisionEmbarque.VisionRobot import VisionRobot
 from Client.Robot.Mechanical.CameraTower import CameraTower
 from Client.Robot.Mechanical.SerialPortCommunicator import SerialPortCommunicator
 from Client.Robot.Mechanical.ManchesterCode import ManchesterCode
-
+from Client.Robot.VisionEmbarque.tresorsDetection import TreasuresDetector
 
 class BotDispatcher():
     def __init__(self, wheelManager):
@@ -26,6 +26,9 @@ class BotDispatcher():
     def alignToTreasure(self):
         self.vision.approcheVersTresor()
 
+    def detectTreasure(self):
+        treasureDetector = TreasuresDetector()
+        return treasureDetector.buildTresorsAngleList()
 
     def readManchester(self):
         serial = SerialPortCommunicator()

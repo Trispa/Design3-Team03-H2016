@@ -42,6 +42,10 @@ def alignToTarget():
 def endRound():
     print("end round")
 
+def detectTreasure():
+    socketIO.emit('setTreasures', botDispatcher.detectTreasure())
+    socketIO.emit('needNewCoordinates')
+
 def readManchester():
     character = botDispatcher.readManchester()
     socketIO.emit("sendManchesterCode", character)
@@ -64,5 +68,6 @@ socketIO.on('readManchester', readManchester)
 socketIO.on("alignPositionToChargingStation", alignToChargingStation)
 socketIO.on("alignPositionToTreasure", alignToTreasure)
 socketIO.on("alignPositionToTarget", alignToTarget)
+socketIO.on("detectTreasure", detectTreasure)
 
 socketIO.wait()
