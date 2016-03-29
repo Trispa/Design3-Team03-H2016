@@ -33,9 +33,12 @@ class BaseStationDispatcher():
         convertedImage = cv2.imencode('.png',image)[1]
         base64ConvertedImage = base64.encodestring(convertedImage)
         mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
+        print map.robot.center
         convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.center)
-        informationToSend = {"robotPosition":(60,40),
-                           "robotOrientation":90,
+        print convertedPoint
+
+        informationToSend = {"robotPosition":convertedPoint,
+                           "robotOrientation":map.robot.orientation,
                            "encodedImage":base64ConvertedImage}
         return informationToSend
 
