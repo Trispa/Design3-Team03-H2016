@@ -62,6 +62,9 @@ def sendNextCoordinates():
 
 def startRound():
     dispatcher.startFromBegining()
+    startSignal()
+
+def startSignal():
     botPosition, botOrientation = dispatcher.initialiseWorldData()
     print("Bot is at : (" + str(botPosition[0]) + "," + str(botPosition[1]) + ")")
     print("Bot is orienting towards :" + str(botOrientation) + "degrees")
@@ -79,11 +82,11 @@ def setTarget(manchesterInfo):
 
 def startFromTreasure():
     dispatcher.startFromTreasure()
-    startRound()
+    startSignal()
 
 def startFromTarget():
     dispatcher.startFromTarget()
-    startRound()
+    startSignal()
 
 def setTreasuresOnMap(data):
     dispatcher.setTreasuresOnMap(data)

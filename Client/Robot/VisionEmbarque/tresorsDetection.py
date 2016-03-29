@@ -7,7 +7,7 @@ from Client.BaseStation.WorldVision.colorContainer import ColorContainer
 class TreasuresDetector:
     MAX_LENGHT_DIFFERENCE = 15
     MAX_PIXEL_FROM_FOLLOWED_TREASURE = 50
-    START_CAMERA_HORIZONTAL_ANGLE = 80
+    START_CAMERA_HORIZONTAL_ANGLE = 0
     START_CAMERA_VERTICAL_ANGLE = 110
     ACCEPTABLE_PIXEL_DIFFERENCE = 10
     mask = 0
