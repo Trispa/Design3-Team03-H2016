@@ -35,9 +35,9 @@ class SerialPortCommunicator:
 
     def __init__(self, bitrateArduino = 115200, arduinoPort = "/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A7007dag-if00-port0"):
         if platform.linux_distribution()[0].lower() == "Ubuntu".lower():
-            self.arduino = "/dev/serial/by-id/pci-FTDI_FT232R_USB_UART_A7007dag-if00-port0"
+            arduinoPort = "/dev/serial/by-id/pci-FTDI_FT232R_USB_UART_A7007dag-if00-port0"
         elif platform.linux_distribution()[0].lower() == "Fedora".lower():
-            self.arduino = "/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A7007dag-if00-port0"
+            arduinoPort = "/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A7007dag-if00-port0"
         self.arduino = serial.Serial(arduinoPort, bitrateArduino, timeout = 1)
         #self.polulu = serial.Serial(poluluPort, bitratePolulu, timeout = 1)
         sleep(1)

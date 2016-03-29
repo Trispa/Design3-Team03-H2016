@@ -64,7 +64,7 @@ class CameraTower:
             na = 174
         else:
             na = a
-        pwm = ((17.6 * na) - 573) * 4
+        pwm = (10.293 * na + 626.277) * 4
         return int(pwm)
 
     def demo(self):
