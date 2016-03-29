@@ -16,6 +16,7 @@ class SerialPortCommunicator:
 
     CHANGE_SINGLE_MOTEUR_SPEED = 3
     STOP_ALL_MOTEUR = 5
+    CHANGE_SPEED_LINE = 6
     CHANGE_SPEED_ROTATION = 7
 
     CW = 0
