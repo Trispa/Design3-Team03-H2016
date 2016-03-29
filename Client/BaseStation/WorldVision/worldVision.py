@@ -39,6 +39,12 @@ class worldVision:
         worldImage = self.mapImage.drawMapOnImage(frame)
         return worldImage, self.mapImage.getMap()
 
+    def getCurrentMap(self):
+        ret, frame = self.camera.read()
+        frame = cv2.resize(frame, (960, 720))
+        self.mapImage.updateRobotPosition(frame)
+        return  self.mapImage.getMap()
+
     def setTarget(self, target):
         self.mapImage.setTarget(target)
 
