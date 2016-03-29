@@ -117,6 +117,17 @@ class WheelManager:
         return timeToSleep
 
 
+    def setOrientation(self, currentRobotOrientation, angleToSet):
+        if (angleToSet - currentRobotOrientation < 0 and angleToSet - currentRobotOrientation <= -180):
+            angleToSet += 360
+            angleToRotate = -(angleToSet - currentRobotOrientation)
+        elif (angleToSet - currentRobotOrientation < 0 and angleToSet - currentRobotOrientation > -180):
+            angleToRotate = currentRobotOrientation - angleToSet
+        else:
+            angleToRotate = angleToSet - currentRobotOrientation
+        self.rotate(angleToRotate)
+
+
     def isRunning(self):
         return self.isMoving
 
