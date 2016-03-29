@@ -76,24 +76,23 @@ class Map:
         cameraDistanceFromLowerWall = self.limit.getMaxCorner()[1] - self.robot.purpleCircle.findCenterOfMass()[1] - yDistanceFromPurpleCircle
         cameraDistanceFromUpperWall = self.robot.purpleCircle.findCenterOfMass()[1] - yDistanceFromPurpleCircle - self.limit.getMinCorner()[1]
         for cameraAngle in relativeAngles:
-            if cameraAngle < 87 or cameraAngle > 93:
-                if cameraAngle < rightAngle:
-                    xDistanceOfTreasureFromCamera = math.tan(math.radians(cameraAngle))*cameraDistanceFromLowerWall
-                    treasurePosition = (cameraDistanceFromBackgroundWall - xDistanceOfTreasureFromCamera, self.limit.getMaxCorner()[1])
-                else:
-                    lowerWall = False
-                    cameraAngle = 180 - cameraAngle
-                    xDistanceOfTreasureFromCamera = math.tan(math.radians(cameraAngle))*cameraDistanceFromUpperWall
-                    treasurePosition = (cameraDistanceFromBackgroundWall - xDistanceOfTreasureFromCamera, self.limit.getMinCorner()[1])
-
-                if cameraDistanceFromBackgroundWall - xDistanceOfTreasureFromCamera < 0:
-                    yDistanceFromCamera = (-1 * (cameraDistanceFromBackgroundWall - xDistanceOfTreasureFromCamera)) / math.tan(math.radians(cameraAngle))
-                    if lowerWall:
-                        treasurePosition = (self.limit.getMinCorner()[0], self.limit.getMaxCorner()[1] - yDistanceFromCamera)
-                    else:
-                        treasurePosition = (self.limit.getMinCorner()[0], yDistanceFromCamera)
+            lowerWall = True
+            if cameraAngle < rightAngle:
+                xDistanceOfTreasureFromCamera = math.tan(math.radians(cameraAngle))*cameraDistanceFromLowerWall
+                treasurePosition = (cameraDistanceFromBackgroundWall - xDistanceOfTreasureFromCamera, self.limit.getMaxCorner()[1])
             else:
-                treasurePosition = (self.limit.getMinCorner()[0], self.robot.center[1])
+                lowerWall = False
+                cameraAngle = 180 - cameraAngle
+                xDistanceOfTreasureFromCamera = math.tan(math.radians(cameraAngle))*cameraDistanceFromUpperWall
+                treasurePosition = (cameraDistanceFromBackgroundWall - xDistanceOfTreasureFromCamera, self.limit.getMinCorner()[1])
+
+            if cameraDistanceFromBackgroundWall - xDistanceOfTreasureFromCamera < 0:
+                yDistanceFromCamera = (-1 * (cameraDistanceFromBackgroundWall - xDistanceOfTreasureFromCamera)) / math.tan(math.radians(cameraAngle))
+                if lowerWall:
+                    treasurePosition = (self.limit.getMinCorner()[0], self.limit.getMaxCorner()[1] - yDistanceFromCamera)
+                else:
+                    treasurePosition = (self.limit.getMinCorner()[0], self.limit.getMinCorner()[1] + yDistanceFromCamera)
+
 
             self.treasures.append(treasurePosition)
 

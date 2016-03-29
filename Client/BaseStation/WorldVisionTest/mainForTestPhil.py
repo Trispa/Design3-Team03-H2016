@@ -47,7 +47,7 @@ def myMain2():
         geometricalImage.buildMap(frame)
         geometricalImage.updateRobotPosition(frame)
         geometricalImage.addLabels(frame)
-        geometricalImage.defineTreasures([85, 88, 180, 0, 28, 130])
+        geometricalImage.defineTreasures([30, 150, 87])
         geometricalImage.drawMapOnImage(frame)
 
 
