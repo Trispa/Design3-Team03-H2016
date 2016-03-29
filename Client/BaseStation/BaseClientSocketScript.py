@@ -23,33 +23,33 @@ def verifyIfMoving(path):
     for index in range(0, len(path)):
         x = path[index].positionX
         y = path[index].positionY
-        if(index+1 != len(path)):
+        botInfo = dispatcher.getCurrentMap()
+        botPositionX = botInfo["robotPosition"][0]
+        botPositionY = botInfo["robotPosition"][1]
+
+        while (((botPositionX > x + 8) or
+            botPositionX <= x - 8) and
+               (botPositionY > y + 8 or
+            botPositionY <= y - 8)):
             botInfo = dispatcher.getCurrentMap()
             botPositionX = botInfo["robotPosition"][0]
             botPositionY = botInfo["robotPosition"][1]
+            print "not close enough"
+        print "close enough"
+        time.sleep(5)
 
-            while (((botPositionX > x + 8) or
-                botPositionX <= x - 8) and
-                   (botPositionY > y + 8 or
-                botPositionY <= y - 8)):
-                botInfo = dispatcher.getCurrentMap()
-                botPositionX = botInfo["robotPosition"][0]
-                botPositionY = botInfo["robotPosition"][1]
-                print "not close enough"
-            print "close enough"
-            time.sleep(5)
-            botInfo = dispatcher.getCurrentMap()
+        if(index+1 != len(path)):
+            socketIO.emit("alignToTreasure")
+        else:
+            botInfo = dispatcher.getCurrentWorldInformation()
 
             jsonToSend = {"positionFROMx" : botInfo["robotPosition"][0],
                           "positionFROMy" : botInfo["robotPosition"][1],
                           "positionTOx" : path[index+1].positionX,
                           "positionTOy" : path[index+1].positionY,
                           "orientation":botInfo["robotOrientation"]}
-            socketIO.emit("sendNextCoordinates", jsonToSend)
 
-        else:
-            print("sendingAlignToTreasureCommand")
-            socketIO.emit("alignToTreasure")
+            socketIO.emit("sendNextCoordinates", jsonToSend)
 
 
 def sendNextCoordinates():

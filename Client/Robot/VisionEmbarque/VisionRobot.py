@@ -10,8 +10,6 @@ from Client.Robot.Mechanical.CameraTower import CameraTower
 import platform
 
 
-# Print seulement les 2 plus gros carre si plus grand que 100
-# Detecter une seul grosse forme par couleur
 class VisionRobot:
     mask = 0
     if platform.linux_distribution()[0].lower() == "Ubuntu".lower():
@@ -20,7 +18,6 @@ class VisionRobot:
     elif platform.linux_distribution()[0].lower() == "Fedora".lower():
         video = cv2.VideoCapture(0)
         system("v4l2-ctl --device=0 --set-ctrl gain=50")
-
 
     balayageHori = 0
     LARGEUR_TRESOR_METRE = 2.5
@@ -267,6 +264,7 @@ class VisionRobot:
                     self.robot.stopAllMotors()
                     moveYArriver = True
                     movingY = False
+
 
             if movingX and not moveXArriver:
                 print self.camera.degreeVerti

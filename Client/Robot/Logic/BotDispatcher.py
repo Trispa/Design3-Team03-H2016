@@ -1,6 +1,8 @@
 from ReferentialConverter import ReferentialConverter
 from Client.Robot.VisionEmbarque.VisionRobot import VisionRobot
 from Client.Robot.Mechanical.CameraTower import CameraTower
+from Client.Robot.Mechanical.SerialPortCommunicator import SerialPortCommunicator
+from Client.Robot.Mechanical.ManchesterCode import ManchesterCode
 
 
 class BotDispatcher():
@@ -23,4 +25,10 @@ class BotDispatcher():
 
     def alignToTreasure(self):
         self.vision.approcheVersTresor()
+
+
+    def readManchester(self):
+        serial = SerialPortCommunicator()
+        manchester = ManchesterCode(serial)
+        return manchester.getAsciiManchester()
 

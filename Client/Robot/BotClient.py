@@ -34,6 +34,9 @@ def startRound(*args):
 def endRound():
     print("end round")
 
+def readManchester():
+    character = botDispatcher.readManchester()
+    socketIO.emit("sendManchesterCode", character)
 
 def get_ip_address(ifname):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -49,5 +52,6 @@ socketIO.on("alignToTreasure", alignToTreasure)
 socketIO.on('sendNextCoordinates', needNewCoordinates)
 socketIO.on('startSignalRobot', startRound)
 socketIO.on('sendEndSignal', endRound)
+socketIO.on('readManchester', readManchester)
 
 socketIO.wait()

@@ -12,37 +12,40 @@
 
 class CommandReceiver {
 public:  
-	CommandReceiver();
-  CommandReceiver(DriveMoteur* listDriveMoteur);
-  	
-	void executeCommand();
-	void process();
+
+ 
+  CommandReceiver();
+  CommandReceiver(DriveMoteur* listDriveMoteur, ReadManchester* rm);
+  void executeCommand();
+  void process();
 
 
 
-	void decomposeParameters();
-	void decomposeCommand();
-	void readPort();
-	void dispatchCommand();
-	long readULongFromBytes();
-	void sendCallback(long callbackData);
+  void decomposeParameters();
+  void decomposeCommand();
+  void readPort();
+  void dispatchCommand();
+  long readULongFromBytes();
+  void sendCallback(long callbackData);
   void sendCallback(char* callbackData);
-	byte commandWaitingFlag;
-	byte commandInProgressFlag;
-	volatile long* positionData;
-	double* speedData;
-	int nextPidCommand;
-	int currentPidCommand;
-	long pidBuffer[MaximumBufferLenght];
+  void sendCallback(String callbackData);
+  byte commandWaitingFlag;
+  byte commandInProgressFlag;
+  volatile long* positionData;
+  double* speedData;
+  int nextPidCommand;
+  int currentPidCommand;
+  long pidBuffer[MaximumBufferLenght];
 
-	byte commandIndex;
-	byte callbackRequested;
+  byte commandIndex;
+  byte callbackRequested;
   long parameters[MaximumParametersQuantity];
-
+  
 
   DriveMoteur* dm;
+  ReadManchester* rm;
 
-  ReadManchester* readManchester;
+
 };
 
 #endif
