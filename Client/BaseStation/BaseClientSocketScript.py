@@ -23,37 +23,33 @@ def verifyIfMoving(path):
     for index in range(0, len(path)):
         x = path[index].positionX
         y = path[index].positionY
-        if(index+1 != len(path)):
-            botInfo = dispatcher.getCurrentWorldInformation()
+        botInfo = dispatcher.getCurrentMap()
+        botPositionX = botInfo["robotPosition"][0]
+        botPositionY = botInfo["robotPosition"][1]
+
+        while (((botPositionX > x + 8) or
+            botPositionX <= x - 8) and
+               (botPositionY > y + 8 or
+            botPositionY <= y - 8)):
+            botInfo = dispatcher.getCurrentMap()
             botPositionX = botInfo["robotPosition"][0]
             botPositionY = botInfo["robotPosition"][1]
-            orientation = botInfo["robotOrientation"]
-            print( "is " + str(botPositionX) + " between " + str(x+5) + " and " + str(x-5))
-            print( "is " + str(botPositionY) + " between " + str(y+5) + " and " + str(y-5))
-            while ((botPositionX > x + 8 or
-                botPositionX < x - 8) and
-                   (botPositionY > y + 8 or
-                botPositionY < y - 8)):
-                botInfo = dispatcher.getCurrentWorldInformation()
-                botPositionX = botInfo["robotPosition"][0]
-                botPositionY = botInfo["robotPosition"][1]
-                orientation = botInfo["robotOrientation"]
-                print "no"
-            print "yes" + str(botPositionX) + " is between " + str(x+5) + " and " + str(x-5)
-            print( "yes " + str(botPositionY) + " is between " + str(y+5) + " and " + str(y-5))
-            time.sleep(5)
-            if(index+1 != len(path)):
-                socketIO.emit("alignToTreasure")
-            else:
-                botInfo = dispatcher.getCurrentWorldInformation()
+            print "not close enough"
+        print "close enough"
+        time.sleep(5)
 
-                jsonToSend = {"positionFROMx" : botInfo["robotPosition"][0],
-                              "positionFROMy" : botInfo["robotPosition"][1],
-                              "positionTOx" : path[index+1].positionX,
-                              "positionTOy" : path[index+1].positionY,
-                              "orientation":botInfo["robotOrientation"]}
+        if(index+1 != len(path)):
+            socketIO.emit("alignToTreasure")
+        else:
+            botInfo = dispatcher.getCurrentWorldInformation()
 
-                socketIO.emit("sendNextCoordinates", jsonToSend)
+            jsonToSend = {"positionFROMx" : botInfo["robotPosition"][0],
+                          "positionFROMy" : botInfo["robotPosition"][1],
+                          "positionTOx" : path[index+1].positionX,
+                          "positionTOy" : path[index+1].positionY,
+                          "orientation":botInfo["robotOrientation"]}
+
+            socketIO.emit("sendNextCoordinates", jsonToSend)
 
 
 def sendNextCoordinates():

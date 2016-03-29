@@ -15,6 +15,7 @@ class WheelManager:
     POSITIVE_SPEED = 1
     NEGATIVE_SPEED = 0
     MAX_SPEED = 0.11
+    MAX_SPEED_VISION = 0.03
     ROTATION_SPEED = 0.05
 
     def __init__(self):
@@ -75,8 +76,8 @@ class WheelManager:
 
         self.isMoving = True
         self.__resetMotors()
-        xSpeed = self.MAX_SPEED
-        ySpeed = self.MAX_SPEED
+        xSpeed = self.MAX_SPEED_VISION
+        ySpeed = self.MAX_SPEED_VISION
 
         if abs(pointX) > abs(pointY):
             ySpeed = (abs(pointY) * xSpeed) / abs(pointX)
@@ -101,13 +102,11 @@ class WheelManager:
 
 
     def rotate(self, degree):
-        # while self.isRunning:
-        #     pass
         self.isMoving = True
-        timeToSleep = 0.035 * abs(degree) + 0.075
+        timeToSleep = 0.031 * abs(degree) + 0.129
         self.__resetMotors()
 
-        if(degree <= 0):
+        if(degree <=0):
             self.spc.driveMoteurRotation(self.ROTATION_SPEED, self.NEGATIVE_SPEED)
         else:
             self.spc.driveMoteurRotation(self.ROTATION_SPEED, self.POSITIVE_SPEED)
@@ -129,7 +128,7 @@ class WheelManager:
         point = (0,0)
 	referentialConverter = ReferentialConverter(point, angleToRotate)
         #referentialConverter.adjustAngle(-angleToRotate)
-        #referentialConverter.setPositionTo(point
+        #referentialConverter.setPositionTo(p
 	self.rotate(-angleToRotate)
 
         pointAdjusted = referentialConverter.convertWorldToRobot(pointToMove)

@@ -8,6 +8,7 @@ from Client.BaseStation.Logic.Pathfinding.Graph.Graph import Graph
 class GraphGenerator:
     SAFE_MARGIN = 100
 
+
     def __init__(self, obstaclesList, mapSizeX, mapSizeY):
         self.MAP_SIZE_X = mapSizeX
         self.MAP_SIZE_Y = mapSizeY
