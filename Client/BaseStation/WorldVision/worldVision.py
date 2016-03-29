@@ -44,7 +44,6 @@ class worldVision:
                 break
         frame = old_frame
         frame = cv2.resize(frame, (960, 720))
-        print current_thread()
         self.mapImage.updateRobotPosition(frame)
         self.mapImage.buildMap(frame)
         self.mapImage.addLabels(frame)

@@ -90,6 +90,7 @@ io.on('connection', function (client) {
     });
 
     client.on('startFromTreasure', function(){
+        console.log("retransmitting start treasure command")
         io.emit('startFromTreasure');
     });
 
@@ -115,7 +116,6 @@ io.on('connection', function (client) {
     client.on('setTreasures', function(data){
        io.emit('setTreasures', data);
     });
-    setInterval(function(){ io.emit('needNewinfo')}, 1000);
 
 });
 

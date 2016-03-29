@@ -81,6 +81,7 @@ def setTarget(manchesterInfo):
     dispatcher.setTarget(manchesterInfo['target'])
 
 def startFromTreasure():
+    print("start from treasure launch")
     botPosition, botOrientation = dispatcher.initialiseWorldData()
     dispatcher.startFromTreasure()
     startSignal(botPosition, botOrientation)
@@ -93,15 +94,8 @@ def startFromTarget():
 def setTreasuresOnMap(data):
     dispatcher.setTreasuresOnMap(data)
 
-def setInterval(function, seconds):
-    def func_wrapper():
-        setInterval(function, seconds)
-        function()
-    timer = threading.Timer(seconds, func_wrapper)
-    timer.start()
-    return timer
 
-socketIO.on("needNewinfo", sendInfo)
+dispatcher.setTimer(sendInfo, 5)
 socketIO.on('needNewCoordinates', sendNextCoordinates)
 socketIO.on('startSignal', startRound)
 socketIO.on('sendManchesterInfo', setTarget)
