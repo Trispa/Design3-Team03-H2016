@@ -20,47 +20,44 @@ with open(configPath) as json_data_file:
 socketIO = SocketIO(config['url'], int(config['port']))
 
 def verifyIfMoving(path, nextSignal):
-    for index in range(0, len(path)):
-        x = path[index].positionX
-        y = path[index].positionY
-        if(index+1 != len(path)):
+    pixelRangeToSendNextCoordinates = 8
+    for nodeBotIsGoingTo in range(0, len(path)):
+        xPositionOfNodeThatBotIsGoingTo = path[nodeBotIsGoingTo].positionX
+        yPositionOfNodeThatBotIsGoingTo = path[nodeBotIsGoingTo].positionY
+        if(nodeBotIsGoingTo+1 != len(path)):
             botInfo = dispatcher.getCurrentWorldInformation()
             botPositionX = botInfo["robotPosition"][0]
             botPositionY = botInfo["robotPosition"][1]
-            orientation = botInfo["robotOrientation"]
-            print( "is " + str(botPositionX) + " between " + str(x+5) + " and " + str(x-5))
-            print( "is " + str(botPositionY) + " between " + str(y+5) + " and " + str(y-5))
-            while ((botPositionX > x + 8 or
-                botPositionX < x - 8) and
-                   (botPositionY > y + 8 or
-                botPositionY < y - 8)):
+            while ((botPositionX > xPositionOfNodeThatBotIsGoingTo + pixelRangeToSendNextCoordinates or
+                botPositionX < xPositionOfNodeThatBotIsGoingTo - pixelRangeToSendNextCoordinates) and
+                   (botPositionY > yPositionOfNodeThatBotIsGoingTo + pixelRangeToSendNextCoordinates or
+                botPositionY < yPositionOfNodeThatBotIsGoingTo - pixelRangeToSendNextCoordinates)):
                 botInfo = dispatcher.getCurrentWorldInformation()
                 botPositionX = botInfo["robotPosition"][0]
                 botPositionY = botInfo["robotPosition"][1]
-                orientation = botInfo["robotOrientation"]
-                print "no"
-            print "yes" + str(botPositionX) + " is between " + str(x+5) + " and " + str(x-5)
-            print( "yes " + str(botPositionY) + " is between " + str(y+5) + " and " + str(y-5))
+                print "not close enough"
+            print "close enough"
             time.sleep(5)
-            if(index+1 != len(path)):
+            if(nodeBotIsGoingTo+1 != len(path)):
                 socketIO.emit(nextSignal)
             else:
                 botInfo = dispatcher.getCurrentWorldInformation()
-
                 jsonToSend = {"positionFROMx" : botInfo["robotPosition"][0],
                               "positionFROMy" : botInfo["robotPosition"][1],
-                              "positionTOx" : path[index+1].positionX,
-                              "positionTOy" : path[index+1].positionY,
+                              "positionTOx" : path[nodeBotIsGoingTo+1].positionX,
+                              "positionTOy" : path[nodeBotIsGoingTo+1].positionY,
                               "orientation":botInfo["robotOrientation"]}
-
                 socketIO.emit("sendNextCoordinates", jsonToSend)
 
 
 def sendNextCoordinates():
     path, nextSignal = dispatcher.handleCurrentSequencerState()
-    Thread(target=verifyIfMoving(path, nextSignal)).start()
+    if(path != None and nextSignal != None):
+        Thread(target=verifyIfMoving(path, nextSignal)).start()
+
 
 def startRound():
+    dispatcher.startFromBegining()
     botPosition, botOrientation = dispatcher.initialiseWorldData()
     print("Bot is at : (" + str(botPosition[0]) + "," + str(botPosition[1]) + ")")
     print("Bot is orienting towards :" + str(botOrientation) + "degrees")

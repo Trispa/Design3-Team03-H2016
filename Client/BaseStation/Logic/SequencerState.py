@@ -24,3 +24,7 @@ class SendingBotToTargetState():
         sequencer.setState(SendingBotToChargingStationState())
         return pathfinder.findPath(convertedRobotPosition, convertedTargetPosition), "alignPositionToTarget"
 
+class StopMovingState():
+    def handle(self, sequencer, map, pathfinder):
+        return None, None
+

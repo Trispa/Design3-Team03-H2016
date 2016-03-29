@@ -39,6 +39,9 @@ class BaseStationDispatcher():
                            "encodedImage":base64ConvertedImage}
         return informationToSend
 
+    def startFromBegining(self):
+        self.sequencer.setState(SendingBotToChargingStationState())
+
     def startFromTarget(self):
         self.sequencer.setState(SendingBotToTargetState())
 
