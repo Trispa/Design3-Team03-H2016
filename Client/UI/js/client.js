@@ -54,7 +54,7 @@ function start(){
 }
 
 function sendManchesterCall(){
-    socket.emit("sendManchesterCode", "A")
+    socket.emit("readManchester")
 }
 
 var currentTimer;
