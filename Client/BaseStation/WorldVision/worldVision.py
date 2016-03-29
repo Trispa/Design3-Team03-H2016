@@ -48,3 +48,6 @@ class worldVision:
     def setTarget(self, target):
         self.mapImage.setTarget(target)
 
+    def setTreasures(self, relativeAngles):
+        self.mapImage.defineTreasures(relativeAngles)
+
