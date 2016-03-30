@@ -102,6 +102,7 @@ function reset(){
 }
 
 function startFromTreasure(){
+    console.log("command launch");
     socket.emit("startFromTreasure");
 }
 

@@ -90,11 +90,8 @@ io.on('connection', function (client) {
     });
 
     client.on('startFromTreasure', function(){
+        console.log("retransmitting start treasure command")
         io.emit('startFromTreasure');
-    });
-
-    client.on('needPooling', function(){
-        setInterval(function(){ io.emit('verifyIfMoving')}, 1000);
     });
 
     client.on('sendBotIP', function(data){
@@ -109,12 +106,15 @@ io.on('connection', function (client) {
     client.on('alignPositionToTarget', function (){
         io.emit('alignPositionToTarget');
     });
-    client.on('detectTreasure', function(){
-       io.emit('detectTreasure');
+    client.on('detectTreasure', function(robotAngle){
+        console.log(robotAngle);
+       io.emit('detectTreasure', robotAngle);
     });
     client.on('setTreasures', function(data){
+        console.log("sending treasures ");
        io.emit('setTreasures', data);
     });
+
 });
 
 server.listen(port, url);

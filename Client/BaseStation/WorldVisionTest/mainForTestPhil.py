@@ -30,21 +30,21 @@ def myMain():
 
 def myMain2():
 
-    #camera = cv2.VideoCapture(0)
-    #camera.set(3, 3264)
-    #camera.set(4, 2448)
+    camera = cv2.VideoCapture(1)
+    camera.set(3, 3264)
+    camera.set(4, 2448)
 
     frame = cv2.imread('Photo-Test/Frames/Picture 500.jpg')
     geometricalImage = WorldImage(frame)
 
     while(True):
 
-        #ret, frame = camera.read()
-        frame = cv2.imread('Photo-Test/Frames/Picture 500.jpg')
+        ret, frame = camera.read()
+        #frame = cv2.imread('Photo-Test/Frames/Picture 500.jpg')
         frame = cv2.resize(frame, (960, 720))
         # copyF = copy.copy(frame)
         #
-       # geometricalImage.buildMap(frame)
+        geometricalImage.buildMap(frame)
         geometricalImage.updateRobotPosition(frame)
         geometricalImage.addLabels(frame)
         geometricalImage.defineTreasures([30, 150, 87])

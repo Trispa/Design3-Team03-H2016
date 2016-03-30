@@ -1,7 +1,7 @@
 import json
 import os
 import sys
-import threading
+from threading import current_thread
 import time
 from Logic.BaseStationDispatcher import BaseStationDispatcher
 
@@ -20,6 +20,8 @@ with open(configPath) as json_data_file:
 socketIO = SocketIO(config['url'], int(config['port']))
 
 def verifyIfMoving(path, nextSignal):
+    print("verify if moving")
+    print current_thread()
     pixelRangeToSendNextCoordinates = 8
     for nodeBotIsGoingTo in range(0, len(path)):
         xPositionOfNodeThatBotIsGoingTo = path[nodeBotIsGoingTo].positionX
@@ -29,6 +31,7 @@ def verifyIfMoving(path, nextSignal):
 
         botPositionX = botInfo["robotPosition"][0]
         botPositionY = botInfo["robotPosition"][1]
+        botOrientation = botInfo["robotOrientation"]
 
         while ((botPositionX > xPositionOfNodeThatBotIsGoingTo + pixelRangeToSendNextCoordinates or
             botPositionX < xPositionOfNodeThatBotIsGoingTo - pixelRangeToSendNextCoordinates) and
@@ -37,15 +40,18 @@ def verifyIfMoving(path, nextSignal):
             botInfo = dispatcher.getCurrentWorldInformation()
             botPositionX = botInfo["robotPosition"][0]
             botPositionY = botInfo["robotPosition"][1]
+            botOrientation = botInfo["robotOrientation"]
             print "not close enough"
 
         print "close enough"
         time.sleep(5)
 
-        if(nodeBotIsGoingTo+1 != len(path)):
-            socketIO.emit(nextSignal)
+        if(nodeBotIsGoingTo+1 == len(path)):
+            print("emitting" + nextSignal)
+            socketIO.emit(nextSignal, botOrientation)
 
         else:
+            print("sending bot to next coordinates")
             botInfo = dispatcher.getCurrentWorldInformation()
             jsonToSend = {"positionFROMx" : botInfo["robotPosition"][0],
                           "positionFROMy" : botInfo["robotPosition"][1],
@@ -57,15 +63,15 @@ def verifyIfMoving(path, nextSignal):
 def sendNextCoordinates():
     path, nextSignal = dispatcher.handleCurrentSequencerState()
     if(path != None and nextSignal != None):
-        Thread(target=verifyIfMoving(path, nextSignal)).start()
+        Thread(target=verifyIfMoving, args=(path, nextSignal)).start()
 
 
 def startRound():
-    dispatcher.startFromBegining()
-    startSignal()
-
-def startSignal():
     botPosition, botOrientation = dispatcher.initialiseWorldData()
+    dispatcher.startFromBegining()
+    startSignal(botPosition, botOrientation)
+
+def startSignal(botPosition, botOrientation):
     print("Bot is at : (" + str(botPosition[0]) + "," + str(botPosition[1]) + ")")
     print("Bot is orienting towards :" + str(botOrientation) + "degrees")
     botState = {"positionX": botPosition[0],
@@ -81,25 +87,28 @@ def setTarget(manchesterInfo):
     dispatcher.setTarget(manchesterInfo['target'])
 
 def startFromTreasure():
+    print("start from treasure launch")
+    botPosition, botOrientation = dispatcher.initialiseWorldData()
     dispatcher.startFromTreasure()
-    startSignal()
+    startSignal(botPosition, botOrientation)
 
 def startFromTarget():
+    botPosition, botOrientation = dispatcher.initialiseWorldData()
     dispatcher.startFromTarget()
-    startSignal()
+    startSignal(botPosition, botOrientation)
 
 def setTreasuresOnMap(data):
+    print("settingTreasuresOnMap")
     dispatcher.setTreasuresOnMap(data)
 
-def setInterval(function, seconds):
-    def func_wrapper():
-        setInterval(function, seconds)
-        function()
-    timer = threading.Timer(seconds, func_wrapper)
-    timer.start()
-    return timer
+def sendImageThread():
+    while True:
+        sendInfo()
+        time.sleep(5)
 
-setInterval(sendInfo, 5)
+
+Thread(target=sendImageThread).start()
+
 socketIO.on('needNewCoordinates', sendNextCoordinates)
 socketIO.on('startSignal', startRound)
 socketIO.on('sendManchesterInfo', setTarget)

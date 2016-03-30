@@ -2,6 +2,8 @@ from Client.BaseStation.WorldVision.worldVision import worldVision
 from Client.BaseStation.Logic.Sequencer import Sequencer as seq
 from Client.BaseStation.Logic.Pathfinding.Pathfinder import Pathfinder
 from TargetFactory import TargetFactory
+import threading
+from threading import current_thread
 from SequencerState import *
 import cv2
 import base64
@@ -11,6 +13,7 @@ class BaseStationDispatcher():
         self.world = worldVision()
         self.pathfinder = None
         self.path = None
+        self.timer = None
 
     def handleCurrentSequencerState(self):
         image, map = self.world.getCurrentImage()
@@ -34,6 +37,7 @@ class BaseStationDispatcher():
         base64ConvertedImage = base64.encodestring(convertedImage)
         mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
         convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.center)
+
         informationToSend = {"robotPosition":convertedPoint,
                            "robotOrientation":map.robot.orientation,
                            "encodedImage":base64ConvertedImage}
@@ -63,3 +67,13 @@ class BaseStationDispatcher():
 
     def setTreasuresOnMap(self, data):
         self.world.setTreasures(data)
+
+    def setTimer(self, function,seconds):
+        if self.timer != None:
+            self.timer.cancel()
+        def func_wrapper():
+            self.setTimer(function, seconds)
+            function()
+        self.timer = threading.Timer(seconds, func_wrapper)
+        self.timer.start()
+        return self.timer

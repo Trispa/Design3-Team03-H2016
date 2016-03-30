@@ -1,30 +1,25 @@
 import math
 from math import sqrt, cos, sin, radians
-from os import system
 
 import cv2
 import numpy as np
 
 from Client.Robot.Logic.Deplacement.WheelManager import WheelManager
 from Client.Robot.Mechanical.CameraTower import CameraTower
-import platform
+
 
 
 class VisionRobot:
     mask = 0
-    if platform.linux_distribution()[0].lower() == "Ubuntu".lower():
-        video = cv2.VideoCapture(1)
-        system("v4l2-ctl --device=1 --set-ctrl gain=50")
-    elif platform.linux_distribution()[0].lower() == "Fedora".lower():
-        video = cv2.VideoCapture(0)
-        system("v4l2-ctl --device=0 --set-ctrl gain=0 -c brightness=80")
 
     balayageHori = 0
     LARGEUR_TRESOR_METRE = 2.5
     FOCAL = 508
     largeurTresorPixel = 0
 
-    def __init__(self, moteurRoue, cameraTower):
+    def __init__(self, moteurRoue, cameraTower, videoCapture):
+        self.video = videoCapture
+
 
         self.robot = moteurRoue
         self.camera = cameraTower
@@ -289,7 +284,7 @@ class VisionRobot:
             # cv2.imshow("Image", self.image)
             # if cv2.waitKey(1) & 0xFF == ord('q'):
             #     break
-        # self.video.release()
+        self.video.release()
         # cv2.destroyAllWindows()
 
 
