@@ -50,7 +50,7 @@ class BaseStationDispatcher():
         self.sequencer.setState(SendingBotToTargetState())
 
     def startFromTreasure(self):
-        self.sequencer.setState(DetectTreasureState())
+        self.sequencer.setState(SendingBotToTreasureState())
 
     def getCurrentMap(self):
         map = self.world.getCurrentMap()
@@ -71,11 +71,9 @@ class BaseStationDispatcher():
     def setTimer(self, function,seconds):
         if self.timer != None:
             self.timer.cancel()
-            print("kill")
         def func_wrapper():
             self.setTimer(function, seconds)
             function()
-        print current_thread()
         self.timer = threading.Timer(seconds, func_wrapper)
         self.timer.start()
         return self.timer

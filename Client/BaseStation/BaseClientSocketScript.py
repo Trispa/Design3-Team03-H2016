@@ -20,6 +20,7 @@ with open(configPath) as json_data_file:
 socketIO = SocketIO(config['url'], int(config['port']))
 
 def verifyIfMoving(path, nextSignal):
+    print("verify if moving")
     pixelRangeToSendNextCoordinates = 8
     for nodeBotIsGoingTo in range(0, len(path)):
         xPositionOfNodeThatBotIsGoingTo = path[nodeBotIsGoingTo].positionX
@@ -43,9 +44,11 @@ def verifyIfMoving(path, nextSignal):
         time.sleep(5)
 
         if(nodeBotIsGoingTo+1 == len(path)):
+            print("emitting" + nextSignal)
             socketIO.emit(nextSignal)
 
         else:
+            print("sending bot to next coordinates")
             botInfo = dispatcher.getCurrentWorldInformation()
             jsonToSend = {"positionFROMx" : botInfo["robotPosition"][0],
                           "positionFROMy" : botInfo["robotPosition"][1],
@@ -56,10 +59,8 @@ def verifyIfMoving(path, nextSignal):
 
 def sendNextCoordinates():
     path, nextSignal = dispatcher.handleCurrentSequencerState()
-    socketIO.emit(nextSignal)
-    #
-    # if(path != None and nextSignal != None):
-    #     Thread(target=verifyIfMoving(path, nextSignal)).start()
+    if(path != None and nextSignal != None):
+        Thread(target=verifyIfMoving(path, nextSignal)).start()
 
 
 def startRound():
