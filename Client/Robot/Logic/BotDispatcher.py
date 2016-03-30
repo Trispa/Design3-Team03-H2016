@@ -44,7 +44,9 @@ class BotDispatcher():
         self.wheelManager.moveTo(pointConverted)
 
     def alignToTreasure(self):
-        self.vision = VisionRobot(self.wheelManager,self.cameraTower, self.video )
+        self.positionAdjuster = None
+        self.maestro = None
+        self.maestro = Controller()
         self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro)
         self.positionAdjuster.approcheDuTresor()
 

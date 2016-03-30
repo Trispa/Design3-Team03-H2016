@@ -12,10 +12,10 @@ class PositionAdjuster:
 
 
     def setPositionToTakeTresor(self):
-        self.maestro.setTarget(2, 762.5 * 4)
+        self.maestro.setTarget(2, 762 * 4)
 
     def setPositionToSecuriseTresor(self):
-        self.maestro.setTarget(2, 1764.25 * 4)
+        self.maestro.setTarget(2, 1764 * 4)
 
     def avancePourTerminerApproche(self):
         self.wheelManager.moveTo((3, 0))

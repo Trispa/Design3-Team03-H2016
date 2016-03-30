@@ -214,7 +214,7 @@ class VisionRobot:
         moveYArriver = False
         movingX = False
         moveXArriver = False
-        lastAngle= 0
+        lastAngle= 180
 
 
         self.camera.moveCameraByAngle(1, 50)
