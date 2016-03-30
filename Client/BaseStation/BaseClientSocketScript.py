@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+import cProfile
 from threading import current_thread
 import time
 from Logic.BaseStationDispatcher import BaseStationDispatcher
@@ -21,8 +22,7 @@ socketIO = SocketIO(config['url'], int(config['port']))
 
 def verifyIfMoving(path, nextSignal):
     print("verify if moving")
-    print current_thread()
-    pixelRangeToSendNextCoordinates = 8
+    pixelRangeToSendNextCoordinates = 10
     for nodeBotIsGoingTo in range(0, len(path)):
         xPositionOfNodeThatBotIsGoingTo = path[nodeBotIsGoingTo].positionX
         yPositionOfNodeThatBotIsGoingTo = path[nodeBotIsGoingTo].positionY
@@ -42,9 +42,8 @@ def verifyIfMoving(path, nextSignal):
             botPositionY = botInfo["robotPosition"][1]
             botOrientation = botInfo["robotOrientation"]
             print "not close enough"
-
-        print "close enough"
         time.sleep(5)
+        print "close enough"
 
         if(nodeBotIsGoingTo+1 == len(path)):
             print("emitting" + nextSignal)
@@ -63,8 +62,11 @@ def verifyIfMoving(path, nextSignal):
 def sendNextCoordinates():
     path, nextSignal = dispatcher.handleCurrentSequencerState()
     if(path != None and nextSignal != None):
-        Thread(target=verifyIfMoving, args=(path, nextSignal)).start()
+        verifyIfMoving(path, nextSignal)
 
+def alignPositionToChargingStation():
+    botInfo = dispatcher.getCurrentWorldInformation()
+    socketIO.emit('alignPositionToChargingStation', botInfo['robotOrientation'])
 
 def startRound():
     botPosition, botOrientation = dispatcher.initialiseWorldData()
@@ -88,6 +90,7 @@ def setTarget(manchesterInfo):
 
 def startFromTreasure():
     print("start from treasure launch")
+    socketIO.emit("sendManchesterCode", "A")
     botPosition, botOrientation = dispatcher.initialiseWorldData()
     dispatcher.startFromTreasure()
     startSignal(botPosition, botOrientation)
@@ -106,6 +109,9 @@ def sendImageThread():
         sendInfo()
         time.sleep(5)
 
+def getRobotAngle():
+    botInfo = dispatcher.getCurrentWorldInformation()
+    socketIO.emit("returnRobotAngle",botInfo["robotOrientation"])
 
 Thread(target=sendImageThread).start()
 
@@ -116,6 +122,8 @@ socketIO.on("verifyIfMoving", verifyIfMoving)
 socketIO.on("startFromTreasure", startFromTreasure)
 socketIO.on("startFromTarget", startFromTarget)
 socketIO.on('setTreasures', setTreasuresOnMap)
-
+socketIO.on("getRobotAngle", getRobotAngle)
+socketIO.on('rotateDoneToChargingStation', alignPositionToChargingStation)
+#cProfile.run('socketIO.wait()')
 socketIO.wait()
 

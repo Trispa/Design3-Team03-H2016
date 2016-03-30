@@ -28,13 +28,20 @@ def startRound(*args):
     print("start round")
     socketIO.emit("needNewCoordinates")
 
-def alignToTreasure():
+def alignToTreasure(robotAngle):
     botDispatcher.alignToTreasure()
     socketIO.emit("needNewCoordinates")
-def alignToChargingStation():
+
+def rotateToChargingStation(robotAngle):
+    botDispatcher.setRobotOrientation(robotAngle, 270)
+    socketIO.emit('rotateDoneToChargingStation')
+
+def alignToChargingStation(robotAngle):
+    botDispatcher.setRobotOrientation(robotAngle, 270)
     botDispatcher.alignToTreasure()
     readManchester()
     socketIO.emit("needNewCoordinates")
+
 def alignToTarget():
     #TODO code pour s'enligner a la cible
     socketIO.emit("needNewCoordinates")
@@ -43,7 +50,8 @@ def endRound():
     print("end round")
 
 def detectTreasure(robotAngle):
-    anglesList = botDispatcher.detectTreasure(robotAngle)
+    botDispatcher.setRobotOrientation(robotAngle, 180)
+    anglesList = botDispatcher.detectTreasure()
     socketIO.emit('setTreasures', anglesList)
     socketIO.emit('needNewCoordinates')
 
@@ -70,5 +78,6 @@ socketIO.on("alignPositionToChargingStation", alignToChargingStation)
 socketIO.on("alignPositionToTreasure", alignToTreasure)
 socketIO.on("alignPositionToTarget", alignToTarget)
 socketIO.on("detectTreasure", detectTreasure)
+socketIO.on('rotateToChargingStation', rotateToChargingStation)
 
 socketIO.wait()

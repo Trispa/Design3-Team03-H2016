@@ -33,6 +33,7 @@ class BaseStationDispatcher():
         image, map = self.world.getCurrentImage()
         if(self.pathfinder != None):
             self.pathfinder.drawPath(image)
+        cv2.resize(image, (320,240))
         convertedImage = cv2.imencode('.png',image)[1]
         base64ConvertedImage = base64.encodestring(convertedImage)
         mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
@@ -50,7 +51,7 @@ class BaseStationDispatcher():
         self.sequencer.setState(SendingBotToTargetState())
 
     def startFromTreasure(self):
-        self.sequencer.setState(DetectTreasureState())
+        self.sequencer.setState(SendingBotToTreasureState())
 
     def getCurrentMap(self):
         map = self.world.getCurrentMap()
