@@ -214,10 +214,10 @@ class VisionRobot:
         moveYArriver = False
         movingX = False
         moveXArriver = False
-        lastAngle= 0
         self.tresor = None
         print "approcheverstresor debut de la fonction"
         print self.video.isOpened()
+        lastAngle= 180
 
         self.camera.moveCameraByAngle(1, 50)
         self.camera.moveCameraByAngle(0, 30)
