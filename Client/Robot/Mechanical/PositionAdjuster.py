@@ -48,6 +48,7 @@ class PositionAdjuster:
         return True
 
     def approcheDuTresor(self):
+        print "debut approche tresors"
         self.setPositionToTakeTresor()
         while not self.visionRobot.approcheVersTresor():
             pass
