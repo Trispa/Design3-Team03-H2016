@@ -284,7 +284,7 @@ class VisionRobot:
             # cv2.imshow("Image", self.image)
             # if cv2.waitKey(1) & 0xFF == ord('q'):
             #     break
-        # self.video.release()
+        self.video.release()
         # cv2.destroyAllWindows()
 
 
