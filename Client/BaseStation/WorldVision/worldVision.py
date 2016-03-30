@@ -63,5 +63,5 @@ class worldVision:
         self.mapImage.defineTreasures(relativeAngles)
 
     def findBestTresorPosition(self):
-        self.mapImage.findBestTresor()
+        return self.mapImage.findBestTresor()
 
