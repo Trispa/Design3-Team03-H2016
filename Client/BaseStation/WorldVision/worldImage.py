@@ -3,6 +3,8 @@ import numpy as np
 import mapBuilder as MB
 import map
 import copy
+from Client.BaseStation.Logic.Pathfinding.Pathfinder import Pathfinder
+from Client.BaseStation.Logic.MapCoordinatesAjuster import MapCoordinatesAjuster
 
 class WorldImage:
 
@@ -20,6 +22,11 @@ class WorldImage:
 
     def defineTreasures(self, relativeAngles):
         self.__map.setTreasures(relativeAngles)
+
+    def findBestTresor(self):
+        self.myPath, ret = self.__map.getPositionInFrontOfTreasure()
+
+        return self.__map.getPositionInFrontOfTreasure()
 
     def buildMap(self, mapImage):
         self.__map = self.__myMapBuilder.buildMapWithAllFilter(mapImage, self.__map)
@@ -76,7 +83,5 @@ class WorldImage:
         cv2.drawContours( frame, self.__map.getContourList(), -1, (0, 255, 0), 3 )
         cv2.drawContours( frame, limit, -1, (0, 255, 0), 3 )
         cv2.drawContours( frame, target, -1, (255, 0, 0), 3 )
-
-
 
         return frame
