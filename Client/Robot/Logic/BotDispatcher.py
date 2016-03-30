@@ -40,7 +40,8 @@ class BotDispatcher():
     def alignToTreasure(self):
         self.vision.approcheVersTresor()
 
-    def detectTreasure(self):
+    def detectTreasure(self, robotAngle):
+        self.wheelManager.setOrientation(robotAngle, 180)
         treasureDetector = TreasuresDetector(self.cameraTower, self.video )
         return treasureDetector.buildTresorsAngleList()
 

@@ -42,8 +42,8 @@ def alignToTarget():
 def endRound():
     print("end round")
 
-def detectTreasure():
-    anglesList = botDispatcher.detectTreasure()
+def detectTreasure(robotAngle):
+    anglesList = botDispatcher.detectTreasure(robotAngle)
     socketIO.emit('setTreasures', anglesList)
     socketIO.emit('needNewCoordinates')
 
