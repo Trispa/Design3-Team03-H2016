@@ -28,8 +28,8 @@ def startRound(*args):
     print("start round")
     socketIO.emit("needNewCoordinates")
 
-def alignToTreasure(json):
-    botDispatcher.setRobotOrientation(float(json['botOrientation']), float(json['angleToGo']))
+def alignToTreasure(robotAngle):
+    botDispatcher.setRobotOrientation(robotAngle, botDispatcher.treasureAngle)
     botDispatcher.alignToTreasure()
     socketIO.emit("needNewCoordinates")
 
@@ -38,11 +38,12 @@ def rotateToChargingStation(json):
     socketIO.emit('rotateDoneToChargingStation')
 
 def rotateToTreasure(json):
+    botDispatcher.treasureAngle =  float(json['angleToGo'])
     botDispatcher.setRobotOrientation(float(json['botOrientation']), float(json['angleToGo']))
     socketIO.emit('rotateDoneToTreasure')
 
 def alignToChargingStation(json):
-    botDispatcher.setRobotOrientation(float(json['botOrientation']), float(json['angleToGo']))
+    botDispatcher.setRobotOrientation(json, 270)
     botDispatcher.alignToChargingStation()
     readManchester()
     botDispatcher.returnToMap()

@@ -17,7 +17,7 @@ class BotDispatcher():
         self.wheelManager = wheelManager
         self.maestro =Controller()
         self.cameraTower = CameraTower(self.maestro)
-
+        self.treasureAngle = 0
 
         if platform.linux_distribution()[0].lower() == "Ubuntu".lower():
             self.video = cv2.VideoCapture(1)
@@ -64,4 +64,5 @@ class BotDispatcher():
         serial = SerialPortCommunicator()
         manchester = ManchesterCode(serial)
         return manchester.getAsciiManchester()
+
 
