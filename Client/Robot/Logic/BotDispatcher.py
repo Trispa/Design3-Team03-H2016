@@ -5,6 +5,7 @@ from Client.Robot.Mechanical.SerialPortCommunicator import SerialPortCommunicato
 from Client.Robot.Mechanical.ManchesterCode import ManchesterCode
 from Client.Robot.VisionEmbarque.tresorsDetection import TreasuresDetector
 from Client.Robot.Mechanical.maestro import Controller
+from Client.Robot.Mechanical.PositionAdjuster import PositionAdjuster
 import platform
 import cv2
 from os import system
@@ -26,6 +27,8 @@ class BotDispatcher():
             system("v4l2-ctl --device=0 --set-ctrl gain=50")
 
         self.vision = VisionRobot(wheelManager,self.cameraTower, self.video )
+        self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro)
+
 
     def followPath(self, coordinates):
         print(coordinates)
@@ -49,6 +52,12 @@ class BotDispatcher():
 
     def setRobotOrientation(self, robotAngle, angleToRotate):
         self.wheelManager.setOrientation(robotAngle, angleToRotate)
+
+    def alignToChargingStation(self):
+        self.positionAdjuster.approcheStationDeCharge()
+
+    def returnToMap(self):
+        self.positionAdjuster.chargementTerminer()
 
 
     def readManchester(self):

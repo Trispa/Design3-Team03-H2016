@@ -38,8 +38,9 @@ def rotateToChargingStation(robotAngle):
 
 def alignToChargingStation(robotAngle):
     botDispatcher.setRobotOrientation(robotAngle, 270)
-    botDispatcher.alignToTreasure()
+    botDispatcher.alignToChargingStation()
     readManchester()
+    botDispatcher.returnToMap()
     socketIO.emit("needNewCoordinates")
 
 def alignToTarget():

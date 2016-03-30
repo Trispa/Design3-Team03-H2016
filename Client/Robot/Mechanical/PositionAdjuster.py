@@ -1,6 +1,6 @@
 
 
-class GrabTresor:
+class PositionAdjuster:
     #Manque un SerialPortCommunication
     def __init__(self, wheelManager, visionRobot, maestro):
         self.maestro = maestro
