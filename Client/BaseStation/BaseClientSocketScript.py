@@ -1,7 +1,7 @@
 import json
 import os
 import sys
-import threading
+from threading import current_thread
 import time
 from Logic.BaseStationDispatcher import BaseStationDispatcher
 
@@ -21,6 +21,7 @@ socketIO = SocketIO(config['url'], int(config['port']))
 
 def verifyIfMoving(path, nextSignal):
     print("verify if moving")
+    print current_thread()
     pixelRangeToSendNextCoordinates = 8
     for nodeBotIsGoingTo in range(0, len(path)):
         xPositionOfNodeThatBotIsGoingTo = path[nodeBotIsGoingTo].positionX
@@ -62,7 +63,7 @@ def verifyIfMoving(path, nextSignal):
 def sendNextCoordinates():
     path, nextSignal = dispatcher.handleCurrentSequencerState()
     if(path != None and nextSignal != None):
-        Thread(target=verifyIfMoving(path, nextSignal)).start()
+        Thread(target=verifyIfMoving, args=(path, nextSignal)).start()
 
 
 def startRound():
@@ -100,8 +101,14 @@ def setTreasuresOnMap(data):
     print("settingTreasuresOnMap")
     dispatcher.setTreasuresOnMap(data)
 
+def sendImageThread():
+    while True:
+        sendInfo()
+        time.sleep(5)
 
-dispatcher.setTimer(sendInfo, 5)
+
+Thread(target=sendImageThread).start()
+
 socketIO.on('needNewCoordinates', sendNextCoordinates)
 socketIO.on('startSignal', startRound)
 socketIO.on('sendManchesterInfo', setTarget)
