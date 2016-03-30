@@ -215,21 +215,25 @@ class VisionRobot:
         movingX = False
         moveXArriver = False
         lastAngle= 0
-
+        self.tresor = None
+        print "approcheverstresor debut de la fonction"
+        print self.video.isOpened()
 
         self.camera.moveCameraByAngle(1, 50)
         self.camera.moveCameraByAngle(0, 30)
 
         while(self.video.isOpened()):
+            print "while video is opened()"
             ret, self.image = self.video.read()
             self.detecColor()
             self.findContour()
 
             if not findSomething:
-                # print "findSomething"
+                print "try to findSomething"
                 findSomething = self.balayageCamera()
 
             if self.tresor == None:
+                print "tresor = none"
                 findSomething = False
                 movingY = False
                 moveYArriver = False
@@ -241,6 +245,7 @@ class VisionRobot:
             center = self.moveCameraEmbarquee()
 
             if center and not self.robot.isMoving:
+                print "center found"
                 if not movingY and not moveYArriver:
                     diff = self.diffLigneParralelle()
                     if diff < 0:
@@ -255,6 +260,7 @@ class VisionRobot:
                         movingX = True
 
             if movingY and not moveYArriver:
+                print "moving Y"
                 if abs(self.diffLigneParralelle()) < 8:
                     self.robot.stopAllMotors()
                     moveYArriver = True
@@ -262,6 +268,7 @@ class VisionRobot:
 
 
             if movingX and not moveXArriver:
+                print "moving X"
                 print self.camera.degreeVerti
 
 
