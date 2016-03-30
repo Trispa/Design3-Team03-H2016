@@ -1,7 +1,6 @@
 import numpy as np
 import cv2
 import time
-from Client.Robot.Mechanical.CameraTower import CameraTower
 from Client.BaseStation.WorldVision.colorContainer import ColorContainer
 
 class TreasuresDetector:
@@ -11,14 +10,14 @@ class TreasuresDetector:
     START_CAMERA_VERTICAL_ANGLE = 110
     ACCEPTABLE_PIXEL_DIFFERENCE = 10
     mask = 0
-    video = cv2.VideoCapture(0)
     treasuresAngle = []
     followedTreasure = None
 
-    def __init__(self):
-        self.camera = CameraTower()
+    def __init__(self, cameraTower, video):
+        self.camera = cameraTower
         self.camera.step = 0.4
         self.centered = False
+        self.video = video
 
     def setMask(self):
         coloredImage = cv2.cvtColor(self.image,cv2.COLOR_BGR2HSV)

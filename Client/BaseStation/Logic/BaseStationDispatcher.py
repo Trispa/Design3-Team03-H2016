@@ -50,7 +50,7 @@ class BaseStationDispatcher():
         self.sequencer.setState(SendingBotToTargetState())
 
     def startFromTreasure(self):
-        self.sequencer.setState(SendingBotToTreasureState())
+        self.sequencer.setState(DetectTreasureState())
 
     def getCurrentMap(self):
         map = self.world.getCurrentMap()

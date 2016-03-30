@@ -42,7 +42,7 @@ def verifyIfMoving(path, nextSignal):
         print "close enough"
         time.sleep(5)
 
-        if(nodeBotIsGoingTo+1 != len(path)):
+        if(nodeBotIsGoingTo+1 == len(path)):
             socketIO.emit(nextSignal)
 
         else:
@@ -56,8 +56,10 @@ def verifyIfMoving(path, nextSignal):
 
 def sendNextCoordinates():
     path, nextSignal = dispatcher.handleCurrentSequencerState()
-    if(path != None and nextSignal != None):
-        Thread(target=verifyIfMoving(path, nextSignal)).start()
+    socketIO.emit(nextSignal)
+    #
+    # if(path != None and nextSignal != None):
+    #     Thread(target=verifyIfMoving(path, nextSignal)).start()
 
 
 def startRound():
