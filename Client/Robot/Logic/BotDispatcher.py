@@ -44,15 +44,13 @@ class BotDispatcher():
         self.wheelManager.moveTo(pointConverted)
 
     def alignToTreasure(self):
-        self.vision.approcheVersTresor()
+        self.positionAdjuster.approcheDuTresor()
 
     def detectTreasure(self):
         treasureDetector = TreasuresDetector(self.cameraTower, self.video )
         return treasureDetector.buildTresorsAngleList()
 
     def setRobotOrientation(self, robotAngle, angleToRotate):
-	print "Angle robot ", robotAngle
-	print "Angle a obtenir ", angleToRotate
         self.wheelManager.setOrientation(robotAngle, angleToRotate)
 
     def alignToChargingStation(self):

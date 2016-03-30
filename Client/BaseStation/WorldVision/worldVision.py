@@ -65,3 +65,5 @@ class worldVision:
     def findBestTresorPosition(self):
         return self.mapImage.findBestTresor()
 
+    def getRobotOrientationForTreasure(self):
+        return self.mapImage.getMap().orientationForTreasure

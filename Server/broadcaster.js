@@ -114,11 +114,17 @@ io.on('connection', function (client) {
         console.log("sending treasures ");
        io.emit('setTreasures', data);
     });
-    client.on('rotateToChargingStation', function(angle){
-        io.emit('rotateToChargingStation', angle);
+    client.on('rotateToChargingStation', function(angles){
+        io.emit('rotateToChargingStation', angles);
     })
     client.on('rotateDoneToChargingStation', function(){
         io.emit('rotateDoneToChargingStation');
+    })
+    client.on('rotateToTreasure', function(angles){
+        io.emit("rotateToTreasure", angles);
+    })
+    client.on("rotateDoneToTreasure", function(){
+        io.emit('rotateDoneToTreasure');
     })
 });
 

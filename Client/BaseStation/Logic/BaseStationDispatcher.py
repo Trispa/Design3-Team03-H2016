@@ -17,8 +17,8 @@ class BaseStationDispatcher():
 
     def handleCurrentSequencerState(self):
         image, map = self.world.getCurrentImage()
-        self.path, signal = self.sequencer.handleCurrentState(map)
-        return self.path, signal
+        self.path, signal, angleToRotateTo = self.sequencer.handleCurrentState(map)
+        return self.path, signal, angleToRotateTo
 
     def initialiseWorldData(self):
         self.world.initializeRound()

@@ -20,7 +20,7 @@ with open(configPath) as json_data_file:
 
 socketIO = SocketIO(config['url'], int(config['port']))
 
-def verifyIfMoving(path, nextSignal):
+def verifyIfMoving(path, nextSignal, angleToRotate):
     print("verify if moving")
     pixelRangeToSendNextCoordinates = 10
     for nodeBotIsGoingTo in range(0, len(path)):
@@ -47,7 +47,9 @@ def verifyIfMoving(path, nextSignal):
 
         if(nodeBotIsGoingTo+1 == len(path)):
             print("emitting" + nextSignal)
-            socketIO.emit(nextSignal, botOrientation)
+            jsonToSend = {"botOrientation":botOrientation,
+                          "angleToGo":angleToRotate}
+            socketIO.emit(nextSignal, jsonToSend)
 
         else:
             print("sending bot to next coordinates")
@@ -60,13 +62,17 @@ def verifyIfMoving(path, nextSignal):
             socketIO.emit("sendNextCoordinates", jsonToSend)
 
 def sendNextCoordinates():
-    path, nextSignal = dispatcher.handleCurrentSequencerState()
+    path, nextSignal, angleToRotate = dispatcher.handleCurrentSequencerState()
     if(path != None and nextSignal != None):
-        verifyIfMoving(path, nextSignal)
+        verifyIfMoving(path, nextSignal, angleToRotate)
 
 def alignPositionToChargingStation():
     botInfo = dispatcher.getCurrentWorldInformation()
     socketIO.emit('alignPositionToChargingStation', botInfo['robotOrientation'])
+
+def alignPositionToTreasure():
+    botInfo = dispatcher.getCurrentWorldInformation()
+    socketIO.emit('alignPositionToTreasure', botInfo['robotOrientation'])
 
 def startRound():
     botPosition, botOrientation = dispatcher.initialiseWorldData()
@@ -109,10 +115,6 @@ def sendImageThread():
         sendInfo()
         time.sleep(5)
 
-def getRobotAngle():
-    botInfo = dispatcher.getCurrentWorldInformation()
-    socketIO.emit("returnRobotAngle",botInfo["robotOrientation"])
-
 Thread(target=sendImageThread).start()
 
 socketIO.on('needNewCoordinates', sendNextCoordinates)
@@ -122,7 +124,7 @@ socketIO.on("verifyIfMoving", verifyIfMoving)
 socketIO.on("startFromTreasure", startFromTreasure)
 socketIO.on("startFromTarget", startFromTarget)
 socketIO.on('setTreasures', setTreasuresOnMap)
-socketIO.on("getRobotAngle", getRobotAngle)
+socketIO.on('rotateDoneToTreasure', alignPositionToTreasure)
 socketIO.on('rotateDoneToChargingStation', alignPositionToChargingStation)
 #cProfile.run('socketIO.wait()')
 socketIO.wait()
