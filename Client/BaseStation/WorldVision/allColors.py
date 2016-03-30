@@ -58,10 +58,10 @@ class Black(Color):
 class YellowTreasure(Color):
     def __init__(self, bgrColor, colorName):
         Color.__init__(self, bgrColor, colorName)
-        lowerValue = 84
-        higherValue = 200
-        lowerSaturation = 170
-        higherSaturation = 220
+        lowerValue = 75
+        higherValue = 255
+        lowerSaturation = 150
+        higherSaturation = 255
         self.lower = np.array([25,lowerSaturation,lowerValue])
         self.higher = np.array([36,higherSaturation,higherValue])
 
