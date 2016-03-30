@@ -45,6 +45,8 @@ class BotDispatcher():
         return treasureDetector.buildTresorsAngleList()
 
     def setRobotOrientation(self, robotAngle, angleToRotate):
+	print "Angle robot ", robotAngle
+	print "Angle a obtenir ", angleToRotate
         self.wheelManager.setOrientation(robotAngle, angleToRotate)
 
 
