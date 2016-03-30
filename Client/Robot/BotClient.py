@@ -56,8 +56,8 @@ def alignToTarget():
 def endRound():
     print("end round")
 
-def detectTreasure(robotAngle):
-    botDispatcher.setRobotOrientation(robotAngle, 180)
+def detectTreasure(json):
+    botDispatcher.setRobotOrientation(float(json['botOrientation']), float(json['angleToGo']))
     anglesList = botDispatcher.detectTreasure()
     socketIO.emit('setTreasures', anglesList)
     socketIO.emit('needNewCoordinates')
