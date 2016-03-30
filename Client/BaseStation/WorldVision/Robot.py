@@ -37,7 +37,7 @@ class Robot():
                     if(angle > 180):
                         angle = 180 + (angle - 180)
 
-            self.orientation = angle
+            self.orientation = (angle + 270)%360
         else:
             self.orientation = 0
 
