@@ -30,6 +30,7 @@ def verifyIfMoving(path, nextSignal):
 
         botPositionX = botInfo["robotPosition"][0]
         botPositionY = botInfo["robotPosition"][1]
+        botOrientation = botInfo["robotOrientation"]
 
         while ((botPositionX > xPositionOfNodeThatBotIsGoingTo + pixelRangeToSendNextCoordinates or
             botPositionX < xPositionOfNodeThatBotIsGoingTo - pixelRangeToSendNextCoordinates) and
@@ -38,6 +39,7 @@ def verifyIfMoving(path, nextSignal):
             botInfo = dispatcher.getCurrentWorldInformation()
             botPositionX = botInfo["robotPosition"][0]
             botPositionY = botInfo["robotPosition"][1]
+            botOrientation = botInfo["robotOrientation"]
             print "not close enough"
 
         print "close enough"
@@ -45,7 +47,7 @@ def verifyIfMoving(path, nextSignal):
 
         if(nodeBotIsGoingTo+1 == len(path)):
             print("emitting" + nextSignal)
-            socketIO.emit(nextSignal)
+            socketIO.emit(nextSignal, botOrientation)
 
         else:
             print("sending bot to next coordinates")
@@ -59,9 +61,8 @@ def verifyIfMoving(path, nextSignal):
 
 def sendNextCoordinates():
     path, nextSignal = dispatcher.handleCurrentSequencerState()
-    socketIO.emit(nextSignal)
-    # if(path != None and nextSignal != None):
-    #     Thread(target=verifyIfMoving(path, nextSignal)).start()
+    if(path != None and nextSignal != None):
+        Thread(target=verifyIfMoving(path, nextSignal)).start()
 
 
 def startRound():

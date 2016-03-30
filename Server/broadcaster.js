@@ -106,8 +106,8 @@ io.on('connection', function (client) {
     client.on('alignPositionToTarget', function (){
         io.emit('alignPositionToTarget');
     });
-    client.on('detectTreasure', function(){
-       io.emit('detectTreasure');
+    client.on('detectTreasure', function(robotAngle){
+       io.emit('detectTreasure', robotAngle);
     });
     client.on('setTreasures', function(data){
         console.log("sending treasures ");
