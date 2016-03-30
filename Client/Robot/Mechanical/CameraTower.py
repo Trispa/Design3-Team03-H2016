@@ -4,8 +4,8 @@ VERTICAL = 0
 HORIZONTALE = 1
 
 class CameraTower:
-    def __init__(self):
-        self.m = maestro.Controller()
+    def __init__(self, maestro):
+        self.m = maestro
         self.degreeHori = 100
         self.degreeVerti = 30
         self.step = 5
