@@ -59,8 +59,9 @@ def verifyIfMoving(path, nextSignal):
 
 def sendNextCoordinates():
     path, nextSignal = dispatcher.handleCurrentSequencerState()
-    if(path != None and nextSignal != None):
-        Thread(target=verifyIfMoving(path, nextSignal)).start()
+    socketIO.emit(nextSignal)
+    # if(path != None and nextSignal != None):
+    #     Thread(target=verifyIfMoving(path, nextSignal)).start()
 
 
 def startRound():
@@ -95,6 +96,7 @@ def startFromTarget():
     startSignal(botPosition, botOrientation)
 
 def setTreasuresOnMap(data):
+    print("settingTreasuresOnMap")
     dispatcher.setTreasuresOnMap(data)
 
 

@@ -94,10 +94,6 @@ io.on('connection', function (client) {
         io.emit('startFromTreasure');
     });
 
-    client.on('needPooling', function(){
-        setInterval(function(){ io.emit('verifyIfMoving')}, 1000);
-    });
-
     client.on('sendBotIP', function(data){
         console.log(data);
     });
@@ -114,6 +110,7 @@ io.on('connection', function (client) {
        io.emit('detectTreasure');
     });
     client.on('setTreasures', function(data){
+        console.log("sending treasures ");
        io.emit('setTreasures', data);
     });
 
