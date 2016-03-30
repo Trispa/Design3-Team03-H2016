@@ -4,6 +4,7 @@ from Client.Robot.Mechanical.CameraTower import CameraTower
 from Client.Robot.Mechanical.SerialPortCommunicator import SerialPortCommunicator
 from Client.Robot.Mechanical.ManchesterCode import ManchesterCode
 from Client.Robot.VisionEmbarque.tresorsDetection import TreasuresDetector
+from Client.Robot.Mechanical.maestro import Controller
 import platform
 import cv2
 from os import system
@@ -13,7 +14,9 @@ from os import system
 class BotDispatcher():
     def __init__(self, wheelManager):
         self.wheelManager = wheelManager
-        self.cameraTower = CameraTower()
+        self.maestro =Controller()
+        self.cameraTower = CameraTower(self.maestro)
+
 
         if platform.linux_distribution()[0].lower() == "Ubuntu".lower():
             self.video = cv2.VideoCapture(1)
