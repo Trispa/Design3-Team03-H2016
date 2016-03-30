@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+import cProfile
 from threading import current_thread
 import time
 from Logic.BaseStationDispatcher import BaseStationDispatcher
@@ -21,7 +22,6 @@ socketIO = SocketIO(config['url'], int(config['port']))
 
 def verifyIfMoving(path, nextSignal):
     print("verify if moving")
-    print current_thread()
     pixelRangeToSendNextCoordinates = 8
     for nodeBotIsGoingTo in range(0, len(path)):
         xPositionOfNodeThatBotIsGoingTo = path[nodeBotIsGoingTo].positionX
@@ -42,9 +42,8 @@ def verifyIfMoving(path, nextSignal):
             botPositionY = botInfo["robotPosition"][1]
             botOrientation = botInfo["robotOrientation"]
             print "not close enough"
-
-        print "close enough"
         time.sleep(5)
+        print "close enough"
 
         if(nodeBotIsGoingTo+1 == len(path)):
             print("emitting" + nextSignal)
@@ -63,7 +62,7 @@ def verifyIfMoving(path, nextSignal):
 def sendNextCoordinates():
     path, nextSignal = dispatcher.handleCurrentSequencerState()
     if(path != None and nextSignal != None):
-        Thread(target=verifyIfMoving, args=(path, nextSignal)).start()
+        verifyIfMoving(path, nextSignal)
 
 
 def startRound():
@@ -88,6 +87,7 @@ def setTarget(manchesterInfo):
 
 def startFromTreasure():
     print("start from treasure launch")
+    socketIO.emit("sendManchesterCode", "A")
     botPosition, botOrientation = dispatcher.initialiseWorldData()
     dispatcher.startFromTreasure()
     startSignal(botPosition, botOrientation)
@@ -116,6 +116,6 @@ socketIO.on("verifyIfMoving", verifyIfMoving)
 socketIO.on("startFromTreasure", startFromTreasure)
 socketIO.on("startFromTarget", startFromTarget)
 socketIO.on('setTreasures', setTreasuresOnMap)
-
-socketIO.wait()
+cProfile.run('socketIO.wait()')
+#socketIO.wait()
 
