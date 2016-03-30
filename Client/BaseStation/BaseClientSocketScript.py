@@ -22,7 +22,7 @@ socketIO = SocketIO(config['url'], int(config['port']))
 
 def verifyIfMoving(path, nextSignal):
     print("verify if moving")
-    pixelRangeToSendNextCoordinates = 8
+    pixelRangeToSendNextCoordinates = 10
     for nodeBotIsGoingTo in range(0, len(path)):
         xPositionOfNodeThatBotIsGoingTo = path[nodeBotIsGoingTo].positionX
         yPositionOfNodeThatBotIsGoingTo = path[nodeBotIsGoingTo].positionY
@@ -64,6 +64,9 @@ def sendNextCoordinates():
     if(path != None and nextSignal != None):
         verifyIfMoving(path, nextSignal)
 
+def alignPositionToChargingStation():
+    botInfo = dispatcher.getCurrentWorldInformation()
+    socketIO.emit('alignPositionToChargingStation', botInfo['robotOrientation'])
 
 def startRound():
     botPosition, botOrientation = dispatcher.initialiseWorldData()
@@ -106,6 +109,9 @@ def sendImageThread():
         sendInfo()
         time.sleep(5)
 
+def getRobotAngle():
+    botInfo = dispatcher.getCurrentWorldInformation()
+    socketIO.emit("returnRobotAngle",botInfo["robotOrientation"])
 
 Thread(target=sendImageThread).start()
 
@@ -116,6 +122,8 @@ socketIO.on("verifyIfMoving", verifyIfMoving)
 socketIO.on("startFromTreasure", startFromTreasure)
 socketIO.on("startFromTarget", startFromTarget)
 socketIO.on('setTreasures', setTreasuresOnMap)
+socketIO.on("getRobotAngle", getRobotAngle)
+socketIO.on('rotateDoneToChargingStation', alignPositionToChargingStation)
 #cProfile.run('socketIO.wait()')
 socketIO.wait()
 

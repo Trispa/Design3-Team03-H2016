@@ -114,7 +114,12 @@ io.on('connection', function (client) {
         console.log("sending treasures ");
        io.emit('setTreasures', data);
     });
-
+    client.on('rotateToChargingStation', function(angle){
+        io.emit('rotateToChargingStation', angle);
+    })
+    client.on('rotateDoneToChargingStation', function(){
+        io.emit('rotateDoneToChargingStation');
+    })
 });
 
 server.listen(port, url);

@@ -10,7 +10,7 @@ class worldVision:
 
     def __init__(self):
         if platform.system().lower() == "Linux".lower():
-            system("v4l2-ctl --device=1 -c brightness=90 -c gain=56 -c exposure_auto=1")
+            system("v4l2-ctl --device=1 -c brightness=100 -c gain=56 -c exposure_auto=1")
             system("v4l2-ctl --device=1 -c exposure_absolute=275")
             self.camera = cv2.VideoCapture(1)
         else:
