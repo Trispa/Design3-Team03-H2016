@@ -10,6 +10,8 @@ import copy
 
 class Map:
 
+    SAFE_MARGIN = 100
+
     def __init__(self):
         self.__shapes = []
         self.limit = Square("limit", np.array([[]], dtype=np.int32))
@@ -47,13 +49,13 @@ class Map:
         for treasurePosition in self.treasures:
             if treasurePosition[1] == self.limit.getMaxCorner()[1]:
                 orientation = 90
-                inFrontPosition = (treasurePosition[0], treasurePosition[1] - 100)
+                inFrontPosition = (treasurePosition[0], treasurePosition[1] - self.SAFE_MARGIN)
             elif treasurePosition[1] == self.limit.getMinCorner()[1]:
                 orientation = 270
-                inFrontPosition = (treasurePosition[0], treasurePosition[1] + 100)
+                inFrontPosition = (treasurePosition[0], treasurePosition[1] + self.SAFE_MARGIN)
             else:
                 orientation = 180
-                inFrontPosition = (treasurePosition[0] + 100, treasurePosition[1])
+                inFrontPosition = (treasurePosition[0] + self.SAFE_MARGIN, treasurePosition[1])
 
 
             myPath = myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint(inFrontPosition))
