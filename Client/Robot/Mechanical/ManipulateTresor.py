@@ -17,15 +17,10 @@ class GrabTresor:
     def setPositionToSecuriseTresor(self):
         self.maestro.setTarget(2, 1764.25 * 4)
 
-    def approcheDuTresor(self):
-        while not self.visionRobot.approcheVersTresor():
-            pass
-        return True
-
-    def derniereApprochePourGraberLeTresor(self):
+    def avancePourTerminerApproche(self):
         self.wheelManager.moveTo((3, 0))
 
-    def reculePourMonterElectroAimant(self):
+    def reculePourGraberTresor(self):
         self.wheelManager.moveTo((-3, 0))
 
     def activeElectroAiment(self):
@@ -35,6 +30,38 @@ class GrabTresor:
     def desactiveElectroAiment(self):
         print "ManipulateTresor.desactiveElectroAiment() : Pas encore implementer"
         pass
+
+    def approcheStationDeCharge(self):
+        self.setPositionToSecuriseTresor()
+        while not self.visionRobot.approcheVersTresor():
+            pass
+        self.avancePourTerminerApproche()
+        return True
+
+
+    def chargementTerminer(self):
+        i = 0
+        while i < 1000:
+            print "ManipuleTresor.approcheStationDeCharge() : Robot is charging"
+            i = i + 1
+        self.wheelManager.moveTo((-10, -10))
+        return True
+
+    def approcheDuTresor(self):
+        self.setPositionToTakeTresor()
+        while not self.visionRobot.approcheVersTresor():
+            pass
+        self.avancePourTerminerApproche()
+
+        self.activeElectroAiment()
+
+        self.reculePourGraberTresor()
+        self.setPositionToSecuriseTresor()
+
+        self.desactiveElectroAiment()
+        return True
+
+
     
 
 
