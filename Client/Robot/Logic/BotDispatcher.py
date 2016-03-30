@@ -22,7 +22,7 @@ class BotDispatcher():
             self.video = cv2.VideoCapture(0)
             system("v4l2-ctl --device=0 --set-ctrl gain=50")
 
-        #self.vision = VisionRobot(wheelManager,self.cameraTower, self.video )
+        self.vision = VisionRobot(wheelManager,self.cameraTower, self.video )
 
     def followPath(self, coordinates):
         print(coordinates)
@@ -38,8 +38,7 @@ class BotDispatcher():
         self.wheelManager.moveTo(pointConverted)
 
     def alignToTreasure(self):
-        pass
-        #self.vision.approcheVersTresor()
+        self.vision.approcheVersTresor()
 
     def detectTreasure(self):
         treasureDetector = TreasuresDetector(self.cameraTower, self.video )
