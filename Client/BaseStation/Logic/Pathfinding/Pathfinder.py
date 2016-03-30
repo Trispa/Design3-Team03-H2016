@@ -23,10 +23,9 @@ class Pathfinder:
 
     def findPath(self, positionRobot, pointToMoveTo):
         print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-        print "jango fett", positionRobot
         startingPathNode = self.graph.findGoodSafeNodeToGo(positionRobot)
-        print "boba fett:", startingPathNode.positionX, startingPathNode.positionY
         endingPathNode = self.graph.findGoodSafeNodeToGo(pointToMoveTo)
+        print pointToMoveTo, endingPathNode.positionX, endingPathNode.positionY
 
         self.pathsList = []
         self.goodPaths = []

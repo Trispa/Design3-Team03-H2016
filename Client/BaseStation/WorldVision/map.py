@@ -3,6 +3,8 @@ import numpy as np
 from shape import Shape
 from Robot import Robot
 from allShapes import Square
+from Client.BaseStation.Logic.Pathfinding.Pathfinder import Pathfinder
+from Client.BaseStation.Logic.MapCoordinatesAjuster import MapCoordinatesAjuster
 import math
 import copy
 
@@ -37,6 +39,28 @@ class Map:
 
     def getGreenSquare(self):
         return self.greenSquare
+
+    def getPositionInFrontOfTreasure(self):
+        myPathFinder = Pathfinder(self)
+        orientation = 0
+        myMapCoorDinateAjuster = MapCoordinatesAjuster(self)
+        for treasurePosition in self.treasures:
+            if treasurePosition[1] == self.limit.getMaxCorner()[1]:
+                orientation = 90
+                inFrontPosition = (treasurePosition[0], treasurePosition[1] - 100)
+            elif treasurePosition[1] == self.limit.getMinCorner()[1]:
+                orientation = 270
+                inFrontPosition = (treasurePosition[0], treasurePosition[1] + 100)
+            else:
+                orientation = 180
+                inFrontPosition = (treasurePosition[0] + 100, treasurePosition[1])
+
+
+            myPath = myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint(inFrontPosition))
+            if len(myPath) > 1:
+                return myPath, orientation
+        return False
+
 
     def setShapes(self, shapes):
         self.__shapes = shapes
