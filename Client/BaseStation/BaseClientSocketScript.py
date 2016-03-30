@@ -96,6 +96,7 @@ def startFromTarget():
     startSignal(botPosition, botOrientation)
 
 def setTreasuresOnMap(data):
+    print("settingTreasuresOnMap")
     dispatcher.setTreasuresOnMap(data)
 
 
