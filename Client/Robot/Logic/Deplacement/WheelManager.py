@@ -115,8 +115,10 @@ class WheelManager:
             angleToRotate = -(angleToSet - currentRobotOrientation)
         elif (angleToSet - currentRobotOrientation < 0 and angleToSet - currentRobotOrientation > -180):
             angleToRotate = currentRobotOrientation - angleToSet
-        else:
+        elif (angleToSet - currentRobotOrientation < 180):
             angleToRotate = angleToSet - currentRobotOrientation
+        else:
+            angleToRotate = angleToSet - (currentRobotOrientation+360)
         self.rotate(angleToRotate)
 
 
