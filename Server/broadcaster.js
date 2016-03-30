@@ -97,14 +97,14 @@ io.on('connection', function (client) {
     client.on('sendBotIP', function(data){
         console.log(data);
     });
-    client.on('alignPositionToChargingStation', function(){
-        io.emit('alignPositionToChargingStation');
+    client.on('alignPositionToChargingStation', function(robotAngle){
+        io.emit('alignPositionToChargingStation', robotAngle);
     });
-    client.on('alignPositionToTreasure', function(){
-        io.emit('alignPositionToTreasure');
+    client.on('alignPositionToTreasure', function(robotAngle){
+        io.emit('alignPositionToTreasure', robotAngle);
     });
-    client.on('alignPositionToTarget', function (){
-        io.emit('alignPositionToTarget');
+    client.on('alignPositionToTarget', function (robotAngle){
+        io.emit('alignPositionToTarget', robotAngle);
     });
     client.on('detectTreasure', function(robotAngle){
         console.log(robotAngle);

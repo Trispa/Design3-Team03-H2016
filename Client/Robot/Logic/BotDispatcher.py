@@ -40,10 +40,13 @@ class BotDispatcher():
     def alignToTreasure(self):
         self.vision.approcheVersTresor()
 
-    def detectTreasure(self, robotAngle):
-        self.wheelManager.setOrientation(robotAngle, 180)
+    def detectTreasure(self):
         treasureDetector = TreasuresDetector(self.cameraTower, self.video )
         return treasureDetector.buildTresorsAngleList()
+
+    def setRobotOrientation(self, robotAngle, angleToRotate):
+        self.wheelManager.setOrientation(robotAngle, angleToRotate)
+
 
     def readManchester(self):
         serial = SerialPortCommunicator()

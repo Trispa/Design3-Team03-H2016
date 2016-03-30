@@ -116,6 +116,6 @@ socketIO.on("verifyIfMoving", verifyIfMoving)
 socketIO.on("startFromTreasure", startFromTreasure)
 socketIO.on("startFromTarget", startFromTarget)
 socketIO.on('setTreasures', setTreasuresOnMap)
-cProfile.run('socketIO.wait()')
-#socketIO.wait()
+#cProfile.run('socketIO.wait()')
+socketIO.wait()
 
