@@ -64,17 +64,17 @@ class TreasuresDetector:
         self.camera.moveCameraByAngle(0, self.START_CAMERA_VERTICAL_ANGLE)
         self.followedTreasure = None
 
-        while(self.video.isOpened() and self.camera.degreeHori != 180):
+        while(self.video.isOpened() and self.camera.degreeHori < 173):
 
             self.centered = False
             ret, self.image = self.video.read()
             self.xCoordinateToBeHigher = self.image.shape[1] / 2
-            while self.followedTreasure == None:
+            while self.followedTreasure == None and self.camera.degreeHori < 173:
                 ret, self.image = self.video.read()
                 self.detectAndShowImage()
                 self.camera.moveCameraRight()
 
-            while not self.centered:
+            while not self.centered and self.camera.degreeHori < 173:
                 ret, self.image = self.video.read()
                 self.detectAndShowImage()
                 self.camera.moveCameraRight()
