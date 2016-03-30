@@ -50,8 +50,16 @@ class TreasuresDetector:
 
     def isCenteredWithTreasure(self):
         if abs(self.followedTreasure[0] - (self.image.shape[1]/2)) <= self.ACCEPTABLE_PIXEL_DIFFERENCE:
-            self.treasuresAngle.append(self.camera.degreeHori)
-            print("Ajout d'un tresor a " + str(self.camera.degreeHori) + " degree")
+            alreadyAdded = False
+            for angle in self.treasuresAngle:
+                if self.camera.degreeHori - angle < 2:
+                    averageAngle = (angle + self.camera.degreeHori) / 2
+                    self.treasuresAngle.remove(angle)
+                    self.treasuresAngle.append(averageAngle)
+                    alreadyAdded = True
+                    break
+            if not alreadyAdded:
+                self.treasuresAngle.append(self.camera.degreeHori)
             self.xCoordinateToBeHigher = self.image.shape[1] / 2 + self.ACCEPTABLE_PIXEL_DIFFERENCE + 10
             self.followedTreasure = None
             return True
@@ -81,6 +89,7 @@ class TreasuresDetector:
                 self.centered = self.isCenteredWithTreasure()
 
         self.video.release()
+        print("Liste des angles : ", self.treasuresAngle)
         return self.treasuresAngle
 
 
