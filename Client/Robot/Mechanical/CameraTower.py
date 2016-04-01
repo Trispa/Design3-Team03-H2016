@@ -4,65 +4,65 @@ HORIZONTALE = 1
 
 class CameraTower:
     def __init__(self, maestro):
-        self.m = maestro
-        self.degreeHori = 100
-        self.degreeVerti = 30
+        self.maestro = maestro
+        self.horizontalDegree = 100
+        self.verticalDegree = 30
         self.step = 5
-        self.moveCameraByAngle(0, self.degreeVerti)
-        self.moveCameraByAngle(1, self.degreeHori)
+        self.moveCameraByAngle(0, self.verticalDegree)
+        self.moveCameraByAngle(1, self.horizontalDegree)
 
     def moveCameraByAngle(self, direction, angle):
         if direction == 0:
             if angle > 135:
                 angle = 135
-            self.degreeVerti = self.angleLimit(angle)
+            self.verticalDegree = self.angleLimit(angle)
             # print("Verticale : " + str(self.degreeVerti))
-            self.m.setTargetOnMap(direction, self.getPWMfromAngle(angle))
+            self.maestro.setTargetOnMap(direction, self.getPWMfromAngle(angle))
         elif direction == 1:
-            self.degreeHori = self.angleLimit(angle)
+            self.horizontalDegree = self.angleLimit(angle)
             # print("Horizaontal : " + str(self.degreeHori))
-            self.m.setTargetOnMap(direction, self.getPWMfromAngle(angle))
+            self.maestro.setTargetOnMap(direction, self.getPWMfromAngle(angle))
         else:
             return -1
 
     def moveCameraUp(self):
-        self.degreeVerti += self.step
-        self.moveCameraByAngle(0, self.degreeVerti)
+        self.verticalDegree += self.step
+        self.moveCameraByAngle(0, self.verticalDegree)
 
     def moveCameraDown(self):
-        self.degreeVerti -= self.step
-        self.moveCameraByAngle(0, self.degreeVerti)
+        self.verticalDegree -= self.step
+        self.moveCameraByAngle(0, self.verticalDegree)
 
     def moveCameraLeft(self):
-        self.degreeHori -= self.step
-        self.moveCameraByAngle(1, self.degreeHori)
+        self.horizontalDegree -= self.step
+        self.moveCameraByAngle(1, self.horizontalDegree)
 
     def moveCameraRight(self):
-        self.degreeHori += self.step
-        self.moveCameraByAngle(1, self.degreeHori)
+        self.horizontalDegree += self.step
+        self.moveCameraByAngle(1, self.horizontalDegree)
 
     def centerCamera(self):
         self.moveCameraByAngle(0, 112)
         self.moveCameraByAngle(1, 121)
 
-    def angleLimit(self, b):
-        a = b
-        if a < 5:
+    def angleLimit(self, angle):
+        angleToVerify = angle
+        if angleToVerify < 5:
             return 5
-        elif a > 174:
+        elif angleToVerify > 174:
             return 174
         else:
-            return a
+            return angleToVerify
 
-    def getPWMfromAngle(self, a):
+    def getPWMfromAngle(self, angle):
         na = 0
         pwm = 0
-        if a < 5:
+        if angle < 5:
             na = 5
-        elif a > 174:
+        elif angle > 174:
             na = 174
         else:
-            na = a
+            na = angle
         pwm = (10.293 * na + 626.277) * 4
         return int(pwm)
 
@@ -71,14 +71,14 @@ class CameraTower:
             self.moveCameraByAngle(0, 0)
             self.moveCameraByAngle(1, 0)
             time.sleep(1)
-            while self.degreeHori < 170:
+            while self.horizontalDegree < 170:
                 self.moveCameraUp()
                 self.moveCameraRight()
                 time.sleep(0.4)
 
             self.moveCameraByAngle(0, 100)
             self.moveCameraByAngle(1, 100)
-            while self.degreeVerti > 60:
+            while self.verticalDegree > 60:
                 self.moveCameraLeft()
                 self.moveCameraDown()
                 time.sleep(0.4)
@@ -95,4 +95,4 @@ if __name__ == "__main__":
     # while 1:
     #     ct.moveCameraRight()
     #     time.sleep(0.5)
-    ct.m.close()
+    ct.maestro.close()

@@ -4,12 +4,11 @@ from math import sqrt, cos, sin, radians
 import cv2
 import numpy as np
 
-from Client.Robot.Logic.Deplacement.WheelManager import WheelManager
+from Client.Robot.Movement.WheelManager import WheelManager
 from Client.Robot.Mechanical.CameraTower import CameraTower
 
 
-
-class VisionRobot:
+class RobotVision:
     mask = 0
 
     balayageHori = 0
@@ -17,11 +16,11 @@ class VisionRobot:
     FOCAL = 508
     largeurTresorPixel = 0
 
-    def __init__(self, moteurRoue, cameraTower, videoCapture):
+    def __init__(self, wheelManager, cameraTower, videoCapture):
         self.video = videoCapture
 
 
-        self.robot = moteurRoue
+        self.robot = wheelManager
         self.camera = cameraTower
         self.camera.step = 0.5
         self.tresor = None
@@ -33,7 +32,7 @@ class VisionRobot:
         # self.color = [(yellow.lower, yellow.higher), (redDown, redUp)]
         self.color = [(yellowDown, yellowUp)]
 
-    def detecColor(self):
+    def detectColor(self):
         self.mask = 0
         for(lower, upper) in self.color:
             lower = np.array(lower, dtype = "uint8")
@@ -89,22 +88,22 @@ class VisionRobot:
             cv2.putText(self.image, str(distance), labelDot, cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0,0,255), 1, 8)
             return distance
 
-    def addLabels(self, c):
+    def addLabels(self, contour):
         font = cv2.FONT_HERSHEY_SIMPLEX
         scale = 0.4
         thickness = 1
 
-        x,y,w,h = cv2.boundingRect(c)
+        x,y,width,height = cv2.boundingRect(contour)
         point = (x, y - 5)
-        cv2.putText(self.image, "Position " + str(x) + " " + str(y) + " " + str(max(w, h)) + " pixel, " + str(cv2.contourArea(c)) + " area", point, font, scale, (0,0,255), thickness, 8)
+        cv2.putText(self.image, "Position " + str(x) + " " + str(y) + " " + str(max(width, height)) + " pixel, " + str(cv2.contourArea(contour)) + " area", point, font, scale, (0, 0, 255), thickness, 8)
 
 
-    def moveCameraEmbarquee(self):
+    def moveCamera(self):
         centerX = False
         centerY = False
         if self.tresor != None:
 
-            x,y,w,h = cv2.boundingRect(self.tresor)
+            x,y,width,height = cv2.boundingRect(self.tresor)
             ih, iw, ic = self.image.shape
             # print x, y, iw, ih
             square = 18
@@ -132,7 +131,7 @@ class VisionRobot:
 
         return centerX and centerY
 
-    def balayageCamera(self):
+    def swipeCamera(self):
         if self.tresor == None:
             if self.balayageHori == 0 and self.camera.degreeHori < 160:
                 self.camera.moveCameraRight()
@@ -149,19 +148,19 @@ class VisionRobot:
         return False
 
 
-    def distanceAdjascente(self):
+    def adjacentDistance(self):
             if self.largeurTresorPixel <= 0:
                 return 0
             return self.FOCAL * self.LARGEUR_TRESOR_METRE / self.largeurTresorPixel
 
     def distanceFromCamera(self):
-        distanceY = self.distanceAdjascente() * cos(radians(123 - self.camera.degreeHori) + math.pi/2)
-        distanceX = self.distanceAdjascente() * sin(radians(self.camera.degreeVerti - 64))
+        distanceY = self.adjacentDistance() * cos(radians(123 - self.camera.degreeHori) + math.pi / 2)
+        distanceX = self.adjacentDistance() * sin(radians(self.camera.degreeVerti - 64))
         # print 123 - self.camera.degreeHori, self.camera.degreeVerti, self.distanceAdjascente()
 
         return (distanceX, distanceY)
 
-    def diffLigneParralelle(self):
+    def differenceParraleleLines(self):
         ret,thresh1 = cv2.threshold(self.image,125,255,cv2.THRESH_BINARY)
 
 
@@ -201,7 +200,7 @@ class VisionRobot:
         return distancePixel
 
 
-    def approcheVersTresor(self):
+    def getCloserToTreasures(self):
         findSomething = False
         movingY = False
         moveYArriver = False
@@ -218,12 +217,12 @@ class VisionRobot:
         while(self.video.isOpened()):
             print "while video is opened()"
             ret, self.image = self.video.read()
-            self.detecColor()
+            self.detectColor()
             self.findContour()
 
             if not findSomething:
                 print "try to findSomething"
-                findSomething = self.balayageCamera()
+                findSomething = self.swipeCamera()
 
             if self.tresor == None:
                 print "tresor = none"
@@ -235,26 +234,26 @@ class VisionRobot:
 
 
 
-            center = self.moveCameraEmbarquee()
+            center = self.moveCamera()
 
             if center and not self.robot.isMoving:
                 print "center found"
                 if not movingY and not moveYArriver:
-                    diff = self.diffLigneParralelle()
+                    diff = self.differenceParraleleLines()
                     if diff < 0:
-                        self.robot.moveToInfinit(0,-30)
+                        self.robot.moveForever(0, -30)
                     else:
-                        self.robot.moveToInfinit(0,30)
+                        self.robot.moveForever(0, 30)
                     movingY = True
 
                 if moveYArriver:
                     if not movingX and not moveXArriver:
-                        self.robot.moveToInfinit(30, 0)
+                        self.robot.moveForever(30, 0)
                         movingX = True
 
             if movingY and not moveYArriver:
                 print "moving Y"
-                if abs(self.diffLigneParralelle()) < 8:
+                if abs(self.differenceParraleleLines()) < 8:
                     self.robot.stopAllMotors()
                     moveYArriver = True
                     movingY = False
@@ -291,9 +290,9 @@ class VisionRobot:
 if __name__ == "__main__":
     mr = WheelManager()
     ct = CameraTower()
-    vr = VisionRobot(mr, ct)
+    vr = RobotVision(mr, ct)
 
-    vr.approcheVersTresor()
+    vr.getCloserToTreasures()
     # vr.goDetectTresorAround()
     # print("distance")
     # print(vr.DistanceAdjascentte(34))

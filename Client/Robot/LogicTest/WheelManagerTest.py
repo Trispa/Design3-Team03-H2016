@@ -4,7 +4,7 @@ from mock import MagicMock
 from mock import call
 from mock import patch
 
-from Client.Robot.Logic.Deplacement.WheelManager import WheelManager
+from Client.Robot.Movement.WheelManager import WheelManager
 
 
 class WheelManagerTest(TestCase):

@@ -66,11 +66,11 @@ def sendNextCoordinates():
     if(path != None and nextSignal != None):
         verifyIfMoving(path, nextSignal, angleToRotate)
 
-def alignPositionToChargingStation():
+def sendAlignPositionToChargingStationSignal():
     botInfo = dispatcher.getCurrentWorldInformation()
     socketIO.emit('alignPositionToChargingStation', botInfo['robotOrientation'])
 
-def alignPositionToTreasure():
+def sendAlignPositionToTreasureSignal():
     botInfo = dispatcher.getCurrentWorldInformation()
     socketIO.emit('alignPositionToTreasure', botInfo['robotOrientation'])
 
@@ -124,8 +124,8 @@ socketIO.on("verifyIfMoving", verifyIfMoving)
 socketIO.on("startFromTreasure", startFromTreasure)
 socketIO.on("startFromTarget", startFromTarget)
 socketIO.on('setTreasures', setTreasuresOnMap)
-socketIO.on('rotateDoneToTreasure', alignPositionToTreasure)
-socketIO.on('rotateDoneToChargingStation', alignPositionToChargingStation)
+socketIO.on('rotateDoneToTreasure', sendAlignPositionToTreasureSignal)
+socketIO.on('rotateDoneToChargingStation', sendAlignPositionToChargingStationSignal)
 #cProfile.run('socketIO.wait()')
 socketIO.wait()
 

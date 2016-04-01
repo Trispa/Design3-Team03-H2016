@@ -1,13 +1,12 @@
 import json
 import os
 import socket
-import fcntl
 import struct
 
+import fcntl
 from socketIO_client import SocketIO
 
-from Client.Robot.Logic.Deplacement.WheelManager import WheelManager
-
+from Client.Robot.Movement.WheelManager import WheelManager
 from Logic.BotDispatcher import BotDispatcher
 
 c = os.path.dirname(__file__)
@@ -19,7 +18,7 @@ socketIO = SocketIO(config['url'], int(config['port']))
 
 botDispatcher = BotDispatcher(WheelManager())
 
-def needNewCoordinates(data):
+def goToNextPosition(data):
     print("heading toward next coordinates")
     botDispatcher.followPath(data)
 
@@ -42,11 +41,11 @@ def rotateToTreasure(json):
     botDispatcher.setRobotOrientation(float(json['botOrientation']), float(json['angleToGo']))
     socketIO.emit('rotateDoneToTreasure')
 
-def alignToChargingStation(json):
-    botDispatcher.setRobotOrientation(json, 270)
+def alignToChargingStation(robotAngle):
+    botDispatcher.setRobotOrientation(robotAngle, 270)
     botDispatcher.alignToChargingStation()
     readManchester()
-    botDispatcher.returnToMap()
+    botDispatcher.getRobotBackOnMap()
     socketIO.emit("needNewCoordinates")
 
 def alignToTarget():
@@ -70,14 +69,14 @@ def get_ip_address(ifname):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     return socket.inet_ntoa(fcntl.ioctl(
         s.fileno(),
-        0x8915,  # SIOCGIFADDR
+        0x8915,
         struct.pack('256s', ifname[:15])
     )[20:24])
 
 socketIO.emit('sendBotClientStatus','Connected')
 socketIO.emit('sendBotIP', get_ip_address('wlp4s0'))
 
-socketIO.on('sendNextCoordinates', needNewCoordinates)
+socketIO.on('sendNextCoordinates', goToNextPosition)
 socketIO.on('startSignalRobot', startRound)
 socketIO.on('sendEndSignal', endRound)
 socketIO.on('readManchester', readManchester)

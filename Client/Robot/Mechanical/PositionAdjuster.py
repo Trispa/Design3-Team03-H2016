@@ -2,44 +2,44 @@
 
 class PositionAdjuster:
     #Manque un SerialPortCommunication
-    def __init__(self, wheelManager, visionRobot, maestro):
+    def __init__(self, wheelManager, robotVision, maestro):
         self.maestro = maestro
         self.maestro.setSpeed(2, 15)
 
         self.wheelManager = wheelManager
-        self.visionRobot = visionRobot
+        self.localVision = robotVision
 
 
 
-    def setPositionToTakeTresor(self):
+    def lowerArm(self):
         self.maestro.setTargetOnMap(2, 762 * 4)
 
-    def setPositionToSecuriseTresor(self):
+    def ascendArm(self):
         self.maestro.setTargetOnMap(2, 1764 * 4)
 
-    def avancePourTerminerApproche(self):
+    def goForwardToStopApproaching(self):
         self.wheelManager.moveTo((3, 0))
 
-    def reculePourGraberTresor(self):
+    def goBackwardToGrabTreasure(self):
         self.wheelManager.moveTo((-3, 0))
 
-    def activeElectroAiment(self):
+    def activateMagnet(self):
         print "ManipulateTresor.activeElectroAiment() : Pas encore implementer"
         pass
 
-    def desactiveElectroAiment(self):
+    def deactivateMagnet(self):
         print "ManipulateTresor.desactiveElectroAiment() : Pas encore implementer"
         pass
 
-    def approcheStationDeCharge(self):
-        self.setPositionToSecuriseTresor()
-        while not self.visionRobot.approcheVersTresor():
+    def getCloserToChargingStation(self):
+        self.ascendArm()
+        while not self.localVision.getCloserToTreasures():
             pass
-        self.avancePourTerminerApproche()
+        self.goForwardToStopApproaching()
         return True
 
 
-    def chargementTerminer(self):
+    def stopCharging(self):
         i = 0
         while i < 1000:
             print "ManipuleTresor.approcheStationDeCharge() : Robot is charging"
@@ -47,19 +47,19 @@ class PositionAdjuster:
         self.wheelManager.moveTo((-10, -10))
         return True
 
-    def approcheDuTresor(self):
+    def getCloserToTreasure(self):
         print "debut approche tresors"
-        self.setPositionToTakeTresor()
-        while not self.visionRobot.approcheVersTresor():
+        self.lowerArm()
+        while not self.localVision.getCloserToTreasures():
             pass
-        self.avancePourTerminerApproche()
+        self.goForwardToStopApproaching()
 
-        self.activeElectroAiment()
+        self.activateMagnet()
 
-        self.reculePourGraberTresor()
-        self.setPositionToSecuriseTresor()
+        self.goBackwardToGrabTreasure()
+        self.ascendArm()
 
-        self.desactiveElectroAiment()
+        self.deactivateMagnet()
         return True
 
 
