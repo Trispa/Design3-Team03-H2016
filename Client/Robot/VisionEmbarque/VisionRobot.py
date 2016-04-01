@@ -29,8 +29,6 @@ class VisionRobot:
         yellowUp = [35, 255, 255]
 
         # yellow = colorFactory.constructColor(np.uint8([[[0,255,255]]]), "Yellow")
-        redDown = [0, 0, 80]
-        redUp = [85, 40, 255]
 
         # self.color = [(yellow.lower, yellow.higher), (redDown, redUp)]
         self.color = [(yellowDown, yellowUp)]
@@ -96,9 +94,6 @@ class VisionRobot:
         scale = 0.4
         thickness = 1
 
-        size, baseline = cv2.getTextSize("pixel", font, scale, thickness)
-        textWidth = size[0]
-        textHeight = size[1]
         x,y,w,h = cv2.boundingRect(c)
         point = (x, y - 5)
         cv2.putText(self.image, "Position " + str(x) + " " + str(y) + " " + str(max(w, h)) + " pixel, " + str(cv2.contourArea(c)) + " area", point, font, scale, (0,0,255), thickness, 8)
@@ -177,7 +172,6 @@ class VisionRobot:
         dot2 = []
 
 
-        col1 = col1 + 1
         for i in range(0, ih):
             if np.equal(thresh1[i, 0], np.array([255,255,255])).all():
                 dot1 = (0, i)
@@ -209,7 +203,6 @@ class VisionRobot:
 
     def approcheVersTresor(self):
         findSomething = False
-        center = False
         movingY = False
         moveYArriver = False
         movingX = False

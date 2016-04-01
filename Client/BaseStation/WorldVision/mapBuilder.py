@@ -13,8 +13,8 @@ class MapBuilder:
         self.LIMIT_SIZE = 300000
 
 
-    def buildMapWithAllFilter(self, mapImage, map):
-        blurMapImage = cv2.GaussianBlur(mapImage, (5, 5), 0)
+    def buildMapWithAllFilter(self, frame, map):
+        blurMapImage = cv2.GaussianBlur(frame, (5, 5), 0)
         for gray in cv2.split(blurMapImage):
             for threshold in xrange(0, 255, 24):
                 if threshold == 0:
@@ -41,18 +41,18 @@ class MapBuilder:
                         if len(lessPreciseContour) == 4:
                             map.setMapLimit(lessPreciseContour)
 
-        self.buildByColorClosing(mapImage, map)
-        self.buildByColorOpening(mapImage, map)
-        map.setShapesColor(mapImage)
+        self.buildByColorClosing(frame, map)
+        self.buildByColorOpening(frame, map)
+        map.setShapesColor(frame)
         map.filterRobot()
         map.deleteBlackShapes()
 
         return map
 
-    def buildByColorClosing(self, mapImage, map):
+    def buildByColorClosing(self, frame, map):
 
         for color in ColorContainer.islandColors:
-            hsvImage = cv2.cvtColor(mapImage,cv2.COLOR_BGR2HSV)
+            hsvImage = cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
             coloredImage = cv2.inRange(hsvImage,color.lower,color.higher)
 
             kernel = np.ones((5,5),np.uint8)
@@ -70,10 +70,10 @@ class MapBuilder:
 
         return map
 
-    def buildByColorOpening(self, mapImage, map):
+    def buildByColorOpening(self, frame, map):
 
         for color in ColorContainer.islandColors:
-            hsvImage = cv2.cvtColor(mapImage,cv2.COLOR_BGR2HSV)
+            hsvImage = cv2.cvtColor(frame,cv2.COLOR_BGR2HSV)
             coloredImage = cv2.inRange(hsvImage,color.lower,color.higher)
 
             kernel = np.ones((5,5),np.uint8)
@@ -91,8 +91,8 @@ class MapBuilder:
 
         return map
 
-    def updateRobotPosition(self, mapImage, map):
-        blurMapImage = cv2.GaussianBlur(mapImage, (5, 5), 0)
+    def updateRobotPosition(self, frame, map):
+        blurMapImage = cv2.GaussianBlur(frame, (5, 5), 0)
         for gray in cv2.split(blurMapImage):
             for threshold in xrange(0, 255, 24):
                 if threshold == 0:
@@ -103,12 +103,11 @@ class MapBuilder:
                 contours, hierarchy = cv2.findContours(binary, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
                 for contour in contours:
                     contour_len = cv2.arcLength(contour, True)
-                    lessPreciseContour = cv2.approxPolyDP(contour, 0.05*contour_len, True)
                     contour = cv2.approxPolyDP(contour, 0.02*contour_len, True)
 
                     if cv2.contourArea(contour) > 100 and cv2.isContourConvex(contour) and cv2.contourArea(contour) < 800:
                         myShape = self.shapeFactory.ConstructShape(contour)
-                        myShape.setColor(mapImage)
+                        myShape.setColor(frame)
 
                         if(myShape.getColorName() == "Purple" and myShape.getName() == "Circle"):
                             map.robot.purpleCircle = myShape

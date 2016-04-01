@@ -1,6 +1,4 @@
-import serial
 import binascii
-import re
 import SerialPortCommunicator
 from time import sleep
 from collections import Counter
@@ -23,15 +21,13 @@ class ManchesterCode():
 ######################manchester##################
 
     def readManchesterCode(self):
-        self.spc._sendCommand(self.READ_CODE_MANCHESTER,self.FALSE,self.ONE_SECOND_DELAY, 1)
+        self.spc.sendCommand(self.READ_CODE_MANCHESTER, self.FALSE, self.ONE_SECOND_DELAY, 1)
 
 
     def getManchesterCode(self):
-       return  self.spc._sendCommand(self.GET_CODE_MANCHESTER,self.TRUE, self.ONE_SECOND_DELAY, 1)
+       return  self.spc.sendCommand(self.GET_CODE_MANCHESTER, self.TRUE, self.ONE_SECOND_DELAY, 1)
 
     def manchester_decode(self, chaine):
-
-        i = 0
         chaine_paire = ""
         chaine_impaire = ""
         patern = "111111110"
@@ -101,15 +97,15 @@ class ManchesterCode():
 
     def getAsciiManchester(self):
 
-	ascii = []
+        ascii = []
         error = self.foundCodesManchester(ascii)
-        if(self.error == 0 or scii !=[]):
+        if(self.error == 0 or ascii !=[]):
             word_counts = Counter(ascii)
             top_tree = word_counts.most_common(1)
             b = [str(i[0]) for i in top_tree]
             print top_tree
             return  b[0]
-        elif(self.error == -1):
+        elif(error == -1):
             return self.CHAINE_VIDE_ERROR
         else:
             return self.BIT_STOP_ERROR

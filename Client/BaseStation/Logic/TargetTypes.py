@@ -9,7 +9,7 @@ class ColorTarget():
         elif(target == "vert"):
             self.target = "Green"
 
-    def getShape(self, obstacleList):
+    def getObstacle(self, obstacleList):
         obstacleTarget = None
         for obstacle in obstacleList:
             if obstacle.myColor.colorName == self.target:
@@ -27,7 +27,7 @@ class ShapeTarget():
         elif(target == "rectangle"):
             self.target = "Square"
 
-    def getShape(self, obstacleList):
+    def getObstacle(self, obstacleList):
         obstacleTarget = None
         for obstacle in obstacleList:
             if obstacle.geometricName == self.target:

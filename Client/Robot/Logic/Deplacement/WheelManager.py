@@ -4,7 +4,7 @@ from Client.Robot.Logic.ReferentialConverter import ReferentialConverter
 import numpy as np
 from Client.Robot.Logic.Deplacement.PixelToCentimeterConverter import PixelToCentimeterConverter
 
-from threading import Timer,Thread,Event
+from threading import Timer
 
 class WheelManager:
     NB_MOTEUR = 5
@@ -165,28 +165,28 @@ class WheelManager:
         self.thread.cancel()
 
 
-    def demo3(self):
-        self.moveTo(0, 66)
-        time.sleep(0.5)
-        self.moveTo(-66, 0)
-        time.sleep(0.5)
-        self.moveTo(0, -66)
-        time.sleep(0.5)
-        self.moveTo(66, 0)
-        time.sleep(0.5)
-        self.moveTo(-50, -50)
-        time.sleep(0.5)
-        self.moveTo(50, 50)
-
-
-    def demoR(self):
-        self.rotate("CW", 180)
-        time.sleep(1)
-        self.rotate("CCW", 90)
-        time.sleep(1)
-        self.rotate("CW", 90)
-        time.sleep(1)
-        self.rotate("CCW", 180)
+    # def demo3(self):
+    #     self.moveTo(0, 66)
+    #     time.sleep(0.5)
+    #     self.moveTo(-66, 0)
+    #     time.sleep(0.5)
+    #     self.moveTo(0, -66)
+    #     time.sleep(0.5)
+    #     self.moveTo(66, 0)
+    #     time.sleep(0.5)
+    #     self.moveTo(-50, -50)
+    #     time.sleep(0.5)
+    #     self.moveTo(50, 50)
+    #
+    #
+    # def demoR(self):
+    #     self.rotate("CW", 180)
+    #     time.sleep(1)
+    #     self.rotate("CCW", 90)
+    #     time.sleep(1)
+    #     self.rotate("CW", 90)
+    #     time.sleep(1)
+    #     self.rotate("CCW", 180)
 
 
 if __name__ == '__main__':

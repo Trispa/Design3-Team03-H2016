@@ -8,14 +8,9 @@ from Client.BaseStation.Logic.MapCoordinatesAjuster import MapCoordinatesAjuster
 
 class WorldImage:
 
-    def __init__(self, mapImage):
+    def __init__(self):
         self.__myMapBuilder = MB.MapBuilder()
-        self.__mapImage = mapImage
         self.__map = map.Map()
-
-
-    def setImage(self, mapImage):
-        self.__mapImage = mapImage
 
     def setTarget(self, target):
         self.__map.setTarget(target)
@@ -25,14 +20,13 @@ class WorldImage:
 
     def findBestTresor(self):
         self.myPath, ret = self.__map.getPositionInFrontOfTreasure()
-
         return self.__map.getPositionInFrontOfTreasure()
 
-    def buildMap(self, mapImage):
-        self.__map = self.__myMapBuilder.buildMapWithAllFilter(mapImage, self.__map)
+    def buildMap(self, frame):
+        self.__map = self.__myMapBuilder.buildMapWithAllFilter(frame, self.__map)
 
-    def updateRobotPosition(self, mapImage):
-        self.__myMapBuilder.updateRobotPosition(mapImage, self.__map)
+    def updateRobotPosition(self, frame):
+        self.__myMapBuilder.updateRobotPosition(frame, self.__map)
 
         if len(self.__map.robot.blackCircle.getContour()) > 0:
             robot = [self.__map.robot.blackCircle.getContour()]
@@ -44,11 +38,8 @@ class WorldImage:
         else:
             orientation = []
 
-        cv2.drawContours( mapImage, orientation, -1, (0, 255, 0), 3 )
-        cv2.drawContours( mapImage, robot, -1, (0, 255, 0), 3 )
-
-    def defineShapesColor(self):
-        self.__map.setShapesColor(self.__mapImage)
+        cv2.drawContours( frame, orientation, -1, (0, 255, 0), 3 )
+        cv2.drawContours( frame, robot, -1, (0, 255, 0), 3 )
 
     def getMap(self):
         return self.__map
@@ -66,7 +57,7 @@ class WorldImage:
             point = (x + ((w - textWidth) / 2), y + ((h + textHeight) / 2))
             cv2.putText(frame, shape.getName()+ " " + shape.myColor.colorName, point, font, scale, (255,255,255), thickness, 8)
 
-    def drawMapOnImage(self, frame):
+    def drawMapOnFrame(self, frame):
         if len(self.__map.getMapLimit().getContour()) > 0:
             limit = [self.__map.getMapLimit().getContour()]
         else:

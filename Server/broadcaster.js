@@ -90,7 +90,7 @@ io.on('connection', function (client) {
     });
 
     client.on('startFromTreasure', function(){
-        console.log("retransmitting start treasure command")
+        console.log("retransmitting start treasure command");
         io.emit('startFromTreasure');
     });
 
@@ -116,13 +116,13 @@ io.on('connection', function (client) {
     });
     client.on('rotateToChargingStation', function(angles){
         io.emit('rotateToChargingStation', angles);
-    })
+    });
     client.on('rotateDoneToChargingStation', function(){
         io.emit('rotateDoneToChargingStation');
-    })
+    });
     client.on('rotateToTreasure', function(angles){
         io.emit("rotateToTreasure", angles);
-    })
+    });
     client.on("rotateDoneToTreasure", function(){
         io.emit('rotateDoneToTreasure');
     })

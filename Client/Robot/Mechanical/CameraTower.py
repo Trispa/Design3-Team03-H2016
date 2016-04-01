@@ -1,5 +1,4 @@
 import time
-import maestro
 VERTICAL = 0
 HORIZONTALE = 1
 
@@ -18,11 +17,11 @@ class CameraTower:
                 angle = 135
             self.degreeVerti = self.angleLimit(angle)
             # print("Verticale : " + str(self.degreeVerti))
-            self.m.setTarget(direction, self.getPWMfromAngle(angle))
+            self.m.setTargetOnMap(direction, self.getPWMfromAngle(angle))
         elif direction == 1:
             self.degreeHori = self.angleLimit(angle)
             # print("Horizaontal : " + str(self.degreeHori))
-            self.m.setTarget(direction, self.getPWMfromAngle(angle))
+            self.m.setTargetOnMap(direction, self.getPWMfromAngle(angle))
         else:
             return -1
 

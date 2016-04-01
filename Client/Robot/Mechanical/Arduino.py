@@ -1,4 +1,4 @@
-from nanpy import ArduinoApi, SerialManager, Servo
+from nanpy import ArduinoApi, SerialManager
 
 class Arduino:
     def __init__(self):

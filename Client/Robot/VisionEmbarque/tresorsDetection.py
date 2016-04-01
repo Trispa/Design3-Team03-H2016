@@ -1,6 +1,5 @@
 import numpy as np
 import cv2
-import time
 from Client.Robot.Mechanical.CameraTower import CameraTower
 from Client.BaseStation.WorldVision.colorContainer import ColorContainer
 

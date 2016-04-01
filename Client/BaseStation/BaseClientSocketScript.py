@@ -2,7 +2,7 @@ import json
 import os
 import sys
 import cProfile
-from threading import current_thread
+
 import time
 from Logic.BaseStationDispatcher import BaseStationDispatcher
 
@@ -87,12 +87,12 @@ def startSignal(botPosition, botOrientation):
             "orientation": botOrientation}
     socketIO.emit("startSignalRobot",botState)
 
-def sendInfo():
+def sendInformations():
     print("asking for new informations")
     socketIO.emit('sendInfo', dispatcher.getCurrentWorldInformation())
 
-def setTarget(manchesterInfo):
-    dispatcher.setTarget(manchesterInfo['target'])
+def setTarget(jsonTarget):
+    dispatcher.setTargetOnMap(jsonTarget['target'])
 
 def startFromTreasure():
     print("start from treasure launch")
@@ -112,7 +112,7 @@ def setTreasuresOnMap(data):
 
 def sendImageThread():
     while True:
-        sendInfo()
+        sendInformations()
         time.sleep(5)
 
 Thread(target=sendImageThread).start()
