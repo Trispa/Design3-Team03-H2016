@@ -43,7 +43,7 @@ class LineOfSightCalculator:
             pointA2 = (finalNode.positionX, finalNode.positionY)
 
             topResult = self.__hasCollisionWithTopSideOfObstacle(topResult, currentObstacle, pointA1, pointA2)
-            botResult = self.__hasCollisionWithBotSideOfObstacle(botResult, currentObstacle, pointA1, pointA2)
+            botResult = self.__hasCollisionWithBottomSideOfObstacle(botResult, currentObstacle, pointA1, pointA2)
             leftResult = self.__hasCollisionWithLeftSideOfObstacle(currentObstacle, leftResult, pointA1, pointA2)
             rightResult = self.__hasCollisionWithRightSideOfObstacle(currentObstacle, pointA1, pointA2, rightResult)
         if topResult == True and botResult == True and leftResult == True and rightResult == True:
@@ -79,7 +79,7 @@ class LineOfSightCalculator:
         return leftResult
 
 
-    def __hasCollisionWithBotSideOfObstacle(self, botResult, currentObstacle, pointA1, pointA2):
+    def __hasCollisionWithBottomSideOfObstacle(self, botResult, currentObstacle, pointA1, pointA2):
         pointB1 = (
         currentObstacle.positionX - self.graph.SAFE_MARGIN, currentObstacle.positionY + self.graph.SAFE_MARGIN)
         pointB2 = (
