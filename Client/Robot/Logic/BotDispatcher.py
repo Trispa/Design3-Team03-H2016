@@ -5,6 +5,7 @@ from Client.Robot.Mechanical.SerialPortCommunicator import SerialPortCommunicato
 from Client.Robot.Mechanical.ManchesterCode import ManchesterCode
 from Client.Robot.VisionEmbarque.tresorsDetection import TreasuresDetector
 from Client.Robot.Mechanical.maestro import Controller
+from Client.Robot.Mechanical.PositionAdjuster import PositionAdjuster
 import platform
 import cv2
 from os import system
@@ -16,7 +17,7 @@ class BotDispatcher():
         self.wheelManager = wheelManager
         self.maestro =Controller()
         self.cameraTower = CameraTower(self.maestro)
-
+        self.treasureAngle = 0
 
         if platform.linux_distribution()[0].lower() == "Ubuntu".lower():
             self.video = cv2.VideoCapture(1)
@@ -26,6 +27,8 @@ class BotDispatcher():
             system("v4l2-ctl --device=0 --set-ctrl gain=50")
 
         self.vision = VisionRobot(wheelManager,self.cameraTower, self.video )
+        self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro)
+
 
     def followPath(self, coordinates):
         print(coordinates)
@@ -41,20 +44,29 @@ class BotDispatcher():
         self.wheelManager.moveTo(pointConverted)
 
     def alignToTreasure(self):
-        self.vision.approcheVersTresor()
+        self.positionAdjuster = None
+        self.maestro = None
+        self.maestro = Controller()
+        self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro)
+        self.positionAdjuster.approcheDuTresor()
 
     def detectTreasure(self):
         treasureDetector = TreasuresDetector(self.cameraTower, self.video )
         return treasureDetector.buildTresorsAngleList()
 
     def setRobotOrientation(self, robotAngle, angleToRotate):
-	print "Angle robot ", robotAngle
-	print "Angle a obtenir ", angleToRotate
         self.wheelManager.setOrientation(robotAngle, angleToRotate)
+
+    def alignToChargingStation(self):
+        self.positionAdjuster.approcheStationDeCharge()
+
+    def returnToMap(self):
+        self.positionAdjuster.chargementTerminer()
 
 
     def readManchester(self):
         serial = SerialPortCommunicator()
         manchester = ManchesterCode(serial)
         return manchester.getAsciiManchester()
+
 

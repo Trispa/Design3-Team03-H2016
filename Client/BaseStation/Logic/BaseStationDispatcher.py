@@ -17,8 +17,8 @@ class BaseStationDispatcher():
 
     def handleCurrentSequencerState(self):
         image, map = self.world.getCurrentImage()
-        self.path, signal = self.sequencer.handleCurrentState(map)
-        return self.path, signal
+        self.path, signal, angleToRotateTo = self.sequencer.handleCurrentState(map)
+        return self.path, signal, angleToRotateTo
 
     def initialiseWorldData(self):
         self.world.initializeRound()
@@ -51,7 +51,7 @@ class BaseStationDispatcher():
         self.sequencer.setState(SendingBotToTargetState())
 
     def startFromTreasure(self):
-        self.sequencer.setState(SendingBotToTreasureState())
+        self.sequencer.setState(DetectTreasureState())
 
     def getCurrentMap(self):
         map = self.world.getCurrentMap()

@@ -10,7 +10,6 @@ class ManchesterCode():
     READ_CODE_MANCHESTER = 4
     GET_CODE_MANCHESTER = 6
     ONE_SECOND_DELAY = 1
-    ascii = []
     error = 0
     FALSE = 0
     TRUE = 1
@@ -84,7 +83,7 @@ class ManchesterCode():
         n = len(hex_string)
         return binascii.unhexlify(hex_string.zfill(n + (n & 1)))
 
-    def foundCodesManchester(self):
+    def foundCodesManchester(self, ascii):
         nbr = 0
 
         while(nbr < 10  and self.error != -2 and self.error != -1):
@@ -96,15 +95,16 @@ class ManchesterCode():
             else:
                 lettre  = self.letter_from_bits(data)
                 print lettre,
-                self.ascii.append(lettre)
+                ascii.append(lettre)
             nbr = nbr+1
         return (self.error)
 
     def getAsciiManchester(self):
 
-        error = self.foundCodesManchester()
-        if(self.error == 0 or self.ascii !=[]):
-            word_counts = Counter(self.ascii)
+	ascii = []
+        error = self.foundCodesManchester(ascii)
+        if(self.error == 0 or scii !=[]):
+            word_counts = Counter(ascii)
             top_tree = word_counts.most_common(1)
             b = [str(i[0]) for i in top_tree]
             print top_tree

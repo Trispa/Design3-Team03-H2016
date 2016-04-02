@@ -18,6 +18,7 @@ class Map:
         self.robot = Robot(Shape("robot", np.array([[]], dtype=np.int32)), Shape("orientation", np.array([[]], dtype=np.int32)))
         self.target = None
         self.treasures = []
+        self.orientationForTreasure = 0
 
     def getShapesList(self):
         return self.__shapes
@@ -48,20 +49,23 @@ class Map:
         myMapCoorDinateAjuster = MapCoordinatesAjuster(self)
         for treasurePosition in self.treasures:
             if treasurePosition[1] == self.limit.getMaxCorner()[1]:
-                orientation = 90
+                self.orientationForTreasure = 90
                 inFrontPosition = (treasurePosition[0], treasurePosition[1] - self.SAFE_MARGIN)
             elif treasurePosition[1] == self.limit.getMinCorner()[1]:
-                orientation = 270
+                self.orientationForTreasure  = 270
                 inFrontPosition = (treasurePosition[0], treasurePosition[1] + self.SAFE_MARGIN)
             else:
-                orientation = 180
+                self.orientationForTreasure  = 180
                 inFrontPosition = (treasurePosition[0] + self.SAFE_MARGIN, treasurePosition[1])
 
 
             myPath = myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint(inFrontPosition))
             if len(myPath) > 1:
-                return myPath, orientation
-        return False
+                return inFrontPosition, self.orientationForTreasure
+        return (0,0)
+
+    def getOrientationFortreasure(self):
+        return self.orientationForTreasure
 
 
     def setShapes(self, shapes):
