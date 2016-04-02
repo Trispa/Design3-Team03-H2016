@@ -47,7 +47,7 @@ def myMain2():
         geometricalImage.updateRobotPosition(frame)
         geometricalImage.addLabels(frame)
         geometricalImage.defineTreasures([30, 150, 87])
-        geometricalImage.findBestTresor()
+        geometricalImage.getIslandPositioning("Square")
         geometricalImage.drawMapOnImage(frame)
 
         cv2.imshow("resized", frame)

@@ -42,6 +42,16 @@ class Shape:
     def getCornerCount(self):
         return len(self.contour)
 
+    def getEdgesList(self):
+        edgeList = []
+        edge = (self.contour[len(self.contour) - 1], self.contour[0])
+        edgeList.append(edge)
+        for corner in range(0, len(self.contour) - 1):
+            edge = (self.contour[corner], self.contour[corner + 1])
+            edgeList.append(edge)
+
+        return edgeList
+
     def setColor(self, mapImage):
         xCoordinate, yCoordinate, width, height = self.getBoundingRectangle()
         xStart = xCoordinate
@@ -80,13 +90,23 @@ class Shape:
     def checkAngleValue(self):
         return True
 
-    def isOutside(self, limit):
+    def isOutsideLimit(self, limit):
         limitMaxX, limitMaxY = limit.getMaxCorner()
         limitMinX, limitMinY = limit.getMinCorner()
         for corner in self.contour:
             if corner.item(1) < limitMinY or corner.item(1) > limitMaxY:
                 return True
         return False
+
+    def isOutside(self, point):
+        xElementCoordinate,yElementCoordinate,width,height = cv2.boundingRect(self.contour)
+        minX = xElementCoordinate
+        minY = yElementCoordinate
+        maxX = xElementCoordinate + width
+        maxY = yElementCoordinate + height
+        if point[0] > minX and point[0] < maxX and point[1] > minY and point[1] < maxY:
+            return False
+        return True
 
     def asSimilarCenterOfMass(self, otherShape):
         myCenterOfMassX, myCenterOfMassY = self.findCenterOfMass()

@@ -11,6 +11,7 @@ import copy
 class Map:
 
     SAFE_MARGIN = 100
+    SAFE_MARGIN_FOR_ISLAND = 100
 
     def __init__(self):
         self.__shapes = []
@@ -39,12 +40,8 @@ class Map:
             averageSize = averageSize/len(self.__shapes)
         return averageSize
 
-    def getGreenSquare(self):
-        return self.greenSquare
-
     def getPositionInFrontOfTreasure(self):
         myPathFinder = Pathfinder(self)
-        orientation = 0
         myMapCoorDinateAjuster = MapCoordinatesAjuster(self)
         for treasurePosition in self.treasures:
             if treasurePosition[1] == self.limit.getMaxCorner()[1]:
@@ -62,6 +59,59 @@ class Map:
             if len(myPath) > 1:
                 return myPath, orientation
         return False
+
+    def getPositionInFrontOfIsland(self, islandShapeName):
+        myPathFinder = Pathfinder(self)
+        orientation = 0
+        myMapCoorDinateAjuster = MapCoordinatesAjuster(self)
+        for shape in self.__shapes:
+            if shape.getName() == islandShapeName:
+                targetShape = shape
+
+        edgesList = targetShape.getEdgesList()
+        for edge in edgesList:
+            xCenterOfEdge = edge[0].item(0) + (((edge[0].item(0) - edge[1].item(0)) / 2) * -1)
+            yCenterOfEdge = edge[0].item(1) + (((edge[0].item(1) - edge[1].item(1)) / 2) * -1)
+
+            edgePerpendicularGradient = float(-1 / float(float(edge[1].item(1) - edge[0].item(1)) / float(edge[1].item(0) - edge[0].item(0))))
+            conversionGradient = 1
+            if edgePerpendicularGradient > 1:
+                conversionGradient = 0.1
+            if targetShape.isOutside((xCenterOfEdge + 1 * conversionGradient, yCenterOfEdge + 1 * edgePerpendicularGradient * conversionGradient)):
+                positionToGo = (xCenterOfEdge + self.SAFE_MARGIN_FOR_ISLAND * conversionGradient, yCenterOfEdge + self.SAFE_MARGIN_FOR_ISLAND * edgePerpendicularGradient * conversionGradient)
+                hypothenuse = 0
+                while hypothenuse < self.SAFE_MARGIN:
+                    positionToGo = (positionToGo[0] + 1, positionToGo[1] + edgePerpendicularGradient)
+                    opp = abs(yCenterOfEdge - positionToGo[1])
+                    adj = abs(xCenterOfEdge - positionToGo[0])
+                    hypothenuse = math.sqrt((opp * opp) + (adj * adj))
+            else:
+                positionToGo = (xCenterOfEdge - self.SAFE_MARGIN_FOR_ISLAND * conversionGradient, yCenterOfEdge - self.SAFE_MARGIN_FOR_ISLAND * edgePerpendicularGradient * conversionGradient)
+                hypothenuse = 0
+                while hypothenuse < self.SAFE_MARGIN:
+                    positionToGo = (positionToGo[0] - 1, positionToGo[1] - edgePerpendicularGradient)
+                    opp = abs(yCenterOfEdge - positionToGo[1])
+                    adj = abs(xCenterOfEdge - positionToGo[0])
+                    hypothenuse = math.sqrt((opp * opp) + (adj * adj))
+
+
+
+
+            angle = math.degrees(math.atan2(opp,adj))
+            if positionToGo[0] > xCenterOfEdge and positionToGo[1] < yCenterOfEdge:
+                angle = angle + 90
+            if positionToGo[0] > xCenterOfEdge and positionToGo[1] > yCenterOfEdge:
+                angle = angle + 180
+            if positionToGo[0] < xCenterOfEdge and positionToGo[1] > yCenterOfEdge:
+                angle = angle + 270
+
+            myPath = myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint(positionToGo))
+            if len(myPath) > 1:
+                return myPath, orientation, [edge[0], edge[1]]
+
+        return [], 0, []
+
+
 
 
     def setShapes(self, shapes):
@@ -155,7 +205,7 @@ class Map:
     def deleteOutsiderShapes(self):
         shapesToDelete = []
         for shape in self.__shapes:
-            if shape.isOutside(self.limit):
+            if shape.isOutsideLimit(self.limit):
                 shapesToDelete.append(shape)
 
         for shape in shapesToDelete:
