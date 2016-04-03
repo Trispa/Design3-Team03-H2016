@@ -79,3 +79,17 @@ class BaseStationDispatcher():
         self.timer = threading.Timer(seconds, func_wrapper)
         self.timer.start()
         return self.timer
+
+
+    #debug section
+    def setSequencerStateToSendChargingStation(self):
+        self.sequencer.setState(SendingBotToChargingStationState)
+
+    def setSequencerStateToDetectTreasures(self):
+        self.sequencer.setState(DetectTreasureState)
+
+    def setSequencerStateToSendToTreasure(self):
+        self.sequencer.setState(SendingBotToTreasureState)
+
+    def setSequencerStateToSendToTarget(self):
+        self.sequencer.setState(SendingBotToTargetState)
