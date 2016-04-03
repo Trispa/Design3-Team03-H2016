@@ -30,17 +30,18 @@ class BaseStationDispatcher():
         return map.robot.center, map.robot.orientation
 
     def getCurrentWorldInformation(self):
-        image, map = self.world.getCurrentImage()
+        #image, map = self.world.getCurrentImage()
+        image = cv2.imread("Logic/Picture 500.jpg")
         if(self.pathfinder != None):
             self.pathfinder.drawPath(image)
         cv2.resize(image, (320,240))
         convertedImage = cv2.imencode('.png',image)[1]
         base64ConvertedImage = base64.encodestring(convertedImage)
-        mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
-        convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.center)
-
+        # mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
+        # convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.center)
+        convertedPoint = (0,0)
         informationToSend = {"robotPosition":convertedPoint,
-                           "robotOrientation":map.robot.orientation,
+                           "robotOrientation":0,
                            "encodedImage":base64ConvertedImage}
         return informationToSend
 
