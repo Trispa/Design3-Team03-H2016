@@ -2,6 +2,7 @@ import json
 import os
 import socket
 import struct
+from Client.Robot.Mechanical.maestro import Controller
 
 import fcntl
 from socketIO_client import SocketIO
@@ -16,7 +17,7 @@ with open(configPath) as json_data_file:
     config = json.load(json_data_file)
 socketIO = SocketIO(config['url'], int(config['port']))
 
-botDispatcher = BotDispatcher(WheelManager())
+botDispatcher = BotDispatcher(WheelManager(), Controller())
 
 def goToNextPosition(data):
     print("heading toward next coordinates")
@@ -29,7 +30,7 @@ def startRound(*args):
 
 def alignToTreasure(robotAngle):
     botDispatcher.setRobotOrientation(robotAngle, botDispatcher.treasureAngle)
-    botDispatcher.alignToTreasure()
+    botDispatcher.alignToTreasure(Controller())
     socketIO.emit("needNewCoordinates")
 
 def rotateToChargingStation(json):
