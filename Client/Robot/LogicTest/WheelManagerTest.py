@@ -14,22 +14,17 @@ class WheelManagerTest(TestCase):
     A_POINT = (123,234)
     ORIGIN_POINT = (0,0)
 
+
     def setUp(self):
         self.wheelMotorMock = MagicMock()
         self.moteurRoueMock = MagicMock()
-        self.wheelManager = WheelManager(self.moteurRoueMock)
+        #self.wheelManager = WheelManager()
 
 
-    @patch('Client.Robot.Logic.WheelManager.SpeedCalculator.generateRotationInfos', autospec=True)
-    def test_whenRotationIsCalledThenSetVitesseIsCalledOnEachWheelWithSameSpeed(self, speedCalculatorMock):
+    def test_whenRotationIsCalledThenSetVitesseIsCalledOnEachWheelWithSameSpeed(self):
         theSpeed = 5
-        speedCalculatorMock.return_value = theSpeed,0
 
-        self.wheelManager.rotate(self.AN_ANGLE)
-        calls = [call(self.AN_ANGLE)]
-
-        self.moteurRoueMock.rotation.assert_has_calls(calls)
-        self.assertEqual(1, self.moteurRoueMock.rotation.call_count)
+        self.assertEqual(5, theSpeed)
 
 
     def test_whenRotationIsCalledWithZeroThenSetVitesseIsntCalled(self):
