@@ -107,7 +107,7 @@ class MapBuilder:
 
                     if cv2.contourArea(contour) > 100 and cv2.isContourConvex(contour) and cv2.contourArea(contour) < 800:
                         myShape = self.shapeFactory.ConstructShape(contour)
-                        myShape.setColor(frame)
+                        myShape.findColor(frame)
 
                         if(myShape.getColorName() == "Purple" and myShape.getName() == "Circle"):
                             map.robot.purpleCircle = myShape

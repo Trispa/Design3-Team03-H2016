@@ -9,8 +9,8 @@ import cv2
 import base64
 
 class BaseStationDispatcher():
-    def __init__(self):
-        self.world = worldVision()
+    def __init__(self, worldVision):
+        self.world = worldVision
         self.pathfinder = None
         self.path = None
 

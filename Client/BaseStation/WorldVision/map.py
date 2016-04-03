@@ -84,7 +84,7 @@ class Map:
 
     def setShapesColor(self, frame):
         for shape in self.__shapes:
-            shape.setColor(copy.copy(frame))
+            shape.findColor(copy.copy(frame))
 
     def setTarget(self, target):
         self.target =  target.getObstacle(self.__shapes)

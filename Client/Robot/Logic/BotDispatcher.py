@@ -4,7 +4,6 @@ from Client.Robot.Mechanical.CameraTower import CameraTower
 from Client.Robot.Mechanical.SerialPortCommunicator import SerialPortCommunicator
 from Client.Robot.Mechanical.ManchesterCode import ManchesterCode
 from Client.Robot.LocalVision.TreasuresDetector import TreasuresDetector
-from Client.Robot.Mechanical.maestro import Controller
 from Client.Robot.Mechanical.PositionAdjuster import PositionAdjuster
 import platform
 import cv2
@@ -13,9 +12,9 @@ from os import system
 
 
 class BotDispatcher():
-    def __init__(self, wheelManager):
+    def __init__(self, wheelManager, maestro):
         self.wheelManager = wheelManager
-        self.maestro =Controller()
+        self.maestro = maestro
         self.cameraTower = CameraTower(self.maestro)
         self.treasureAngle = 0
 
@@ -25,6 +24,9 @@ class BotDispatcher():
         elif platform.linux_distribution()[0].lower() == "Fedora".lower():
             self.video = cv2.VideoCapture(0)
             system("v4l2-ctl --device=0 --set-ctrl gain=50")
+        else:
+            self.video = cv2.VideoCapture(0)
+
 
         self.vision = RobotVision(wheelManager, self.cameraTower, self.video)
         self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro)
@@ -43,10 +45,9 @@ class BotDispatcher():
         pointConverted = referentialConverter.convertWorldToRobot((int(coordinates["positionTOx"]), int(coordinates["positionTOy"])))
         self.wheelManager.moveTo(pointConverted)
 
-    def alignToTreasure(self):
+    def alignToTreasure(self, maestro):
         self.positionAdjuster = None
-        self.maestro = None
-        self.maestro = Controller()
+        self.maestro = maestro
         self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro)
         self.positionAdjuster.getCloserToTreasure()
 

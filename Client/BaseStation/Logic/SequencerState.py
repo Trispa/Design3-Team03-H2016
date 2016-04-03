@@ -31,9 +31,9 @@ class SendingBotToTargetState():
         convertedTargetPosition = mapCoordinatesAdjuster.convertPoint(map.target.findCenterOfMass())
         convertedRobotPosition = mapCoordinatesAdjuster.convertPoint(map.robot.center)
         sequencer.setState(StopMovingState())
-        return pathfinder.findPath(convertedRobotPosition, convertedTargetPosition), "alignPositionToTarget"
+        return pathfinder.findPath(convertedRobotPosition, convertedTargetPosition), "alignPositionToTarget", 90
 
 class StopMovingState():
     def handle(self, sequencer, map, pathfinder):
-        return None, None
+        return None, None, None
 
