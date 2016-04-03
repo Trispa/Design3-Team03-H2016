@@ -12,9 +12,9 @@ class MapAdaptatorTest(TestCase):
         self.map = MagicMock()
         self.limit = MagicMock()
         self.limit.getMinCorner.return_value = (100,100)
-    	self.map.getMapLimit.return_value = self.limit
+        self.map.getMapLimit.return_value = self.limit
 
-        self.mapAdaptator = MapAdaptator(map)
+        self.mapAdaptator = MapAdaptator(self.map)
 
     def test_test(self):
         goodMinCorner = (0,100)
