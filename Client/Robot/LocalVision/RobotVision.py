@@ -27,9 +27,6 @@ class RobotVision:
         yellowDown = [0, 100, 100]
         yellowUp = [35, 255, 255]
 
-        # yellow = colorFactory.constructColor(np.uint8([[[0,255,255]]]), "Yellow")
-
-        # self.color = [(yellow.lower, yellow.higher), (redDown, redUp)]
         self.color = [(yellowDown, yellowUp)]
 
     def detectColor(self):

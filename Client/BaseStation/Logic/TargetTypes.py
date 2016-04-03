@@ -12,7 +12,7 @@ class ColorTarget():
     def getObstacle(self, obstacleList):
         obstacleTarget = None
         for obstacle in obstacleList:
-            if obstacle.myColor.colorName == self.target:
+            if obstacle.color.colorName == self.target:
                 obstacleTarget = obstacle
         return obstacleTarget
 
