@@ -1,9 +1,9 @@
 from ReferentialConverter import ReferentialConverter
-from Client.Robot.VisionEmbarque.VisionRobot import VisionRobot
+from Client.Robot.LocalVision.RobotVision import RobotVision
 from Client.Robot.Mechanical.CameraTower import CameraTower
 from Client.Robot.Mechanical.SerialPortCommunicator import SerialPortCommunicator
 from Client.Robot.Mechanical.ManchesterCode import ManchesterCode
-from Client.Robot.VisionEmbarque.tresorsDetection import TreasuresDetector
+from Client.Robot.LocalVision.TreasuresDetector import TreasuresDetector
 from Client.Robot.Mechanical.maestro import Controller
 from Client.Robot.Mechanical.PositionAdjuster import PositionAdjuster
 import platform
@@ -26,7 +26,7 @@ class BotDispatcher():
             self.video = cv2.VideoCapture(0)
             system("v4l2-ctl --device=0 --set-ctrl gain=50")
 
-        self.vision = VisionRobot(wheelManager,self.cameraTower, self.video )
+        self.vision = RobotVision(wheelManager, self.cameraTower, self.video)
         self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro)
 
 
@@ -48,20 +48,20 @@ class BotDispatcher():
         self.maestro = None
         self.maestro = Controller()
         self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro)
-        self.positionAdjuster.approcheDuTresor()
+        self.positionAdjuster.getCloserToTreasure()
 
     def detectTreasure(self):
         treasureDetector = TreasuresDetector(self.cameraTower, self.video )
         return treasureDetector.buildTresorsAngleList()
 
-    def setRobotOrientation(self, robotAngle, angleToRotate):
-        self.wheelManager.setOrientation(robotAngle, angleToRotate)
+    def setRobotOrientation(self, robotAngle, angleToGetRobotTo):
+        self.wheelManager.setOrientation(robotAngle, angleToGetRobotTo)
 
     def alignToChargingStation(self):
-        self.positionAdjuster.approcheStationDeCharge()
+        self.positionAdjuster.getCloserToChargingStation()
 
-    def returnToMap(self):
-        self.positionAdjuster.chargementTerminer()
+    def getRobotBackOnMap(self):
+        self.positionAdjuster.stopCharging()
 
 
     def readManchester(self):

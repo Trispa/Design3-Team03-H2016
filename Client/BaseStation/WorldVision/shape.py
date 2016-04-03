@@ -10,7 +10,7 @@ class Shape:
         self.contour = contour
         self.geometricName = geometricName
         colorFactory = ColorFactory()
-        self.myColor = colorFactory.constructColor(np.uint8([[[0,255,255]]]), "Not defined")
+        self.color = colorFactory.constructColor(np.uint8([[[0, 255, 255]]]), "Not defined")
 
     def __eq__(self, other):
         if other == None:
@@ -23,7 +23,7 @@ class Shape:
         return self.contour
 
     def getColorName(self):
-        return self.myColor.getName()
+        return self.color.getName()
 
     def getArea(self):
         if len(self.contour) < 3:
@@ -36,27 +36,21 @@ class Shape:
     def getName(self):
         return self.geometricName
 
-    def getColor(self):
-        return self.myColor
-
-    def getCornerCount(self):
-        return len(self.contour)
-
-    def setColor(self, mapImage):
+    def setColor(self, frame):
         xCoordinate, yCoordinate, width, height = self.getBoundingRectangle()
         xStart = xCoordinate
         xEnd = xCoordinate + width
         yStart = yCoordinate
         yEnd = yCoordinate + height
         cropped = None
-        cropped = mapImage[yStart:yEnd, xStart:xEnd]
+        cropped = frame[yStart:yEnd, xStart:xEnd]
         centerX = cropped.shape[0] / 2
         centerY = cropped.shape[1] / 2
         bgrShapeColor = np.uint8([[[cropped[centerX][centerY][0],cropped[centerX][centerY][1],cropped[centerX][centerY][2]]]])
         hsvShapeColor = cv2.cvtColor(bgrShapeColor,cv2.COLOR_BGR2HSV)
         for color in ColorContainer.colors:
             if color.isInSameColorRange(hsvShapeColor):
-                self.myColor = color
+                self.color = color
 
     def findCenterOfMass(self):
         if len(self.contour) > 2:
@@ -87,15 +81,6 @@ class Shape:
             if corner.item(1) < limitMinY or corner.item(1) > limitMaxY:
                 return True
         return False
-
-    def asSimilarCenterOfMass(self, otherShape):
-        myCenterOfMassX, myCenterOfMassY = self.findCenterOfMass()
-        otherShapeCenterOfMassX, otherShapeCenterOfMassY = otherShape.findCenterOfMass()
-        if abs(myCenterOfMassX - otherShapeCenterOfMassX) < 10 and abs(myCenterOfMassX - otherShapeCenterOfMassY) < 10:
-            return True
-
-        return False
-
 
 
 

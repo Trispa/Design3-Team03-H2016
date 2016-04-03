@@ -1,45 +1,36 @@
-import serial
 import binascii
-import re
 import SerialPortCommunicator
 from time import sleep
 from collections import Counter
 
 class ManchesterCode():
-
     READ_CODE_MANCHESTER = 4
     GET_CODE_MANCHESTER = 6
     ONE_SECOND_DELAY = 1
     error = 0
     FALSE = 0
     TRUE = 1
-    BIT_STOP_ERROR = "Bit stop errorne"
-    CHAINE_VIDE_ERROR= "Chaine vide"
-    def __init__(self, spc):
-        self.spc = spc
+    BIT_STOP_ERROR = "Bit stop error"
+    EMPTY_STRING_ERROR= "Chaine vide"
 
-
-
-######################manchester##################
+    def __init__(self, serialPortCommunicator):
+        self.serialPortCommunicator = serialPortCommunicator
 
     def readManchesterCode(self):
-        self.spc._sendCommand(self.READ_CODE_MANCHESTER,self.FALSE,self.ONE_SECOND_DELAY, 1)
-
+        self.serialPortCommunicator.sendCommand(self.READ_CODE_MANCHESTER, self.FALSE, self.ONE_SECOND_DELAY, 1)
 
     def getManchesterCode(self):
-       return  self.spc._sendCommand(self.GET_CODE_MANCHESTER,self.TRUE, self.ONE_SECOND_DELAY, 1)
+       return  self.serialPortCommunicator.sendCommand(self.GET_CODE_MANCHESTER, self.TRUE, self.ONE_SECOND_DELAY, 1)
 
-    def manchester_decode(self, chaine):
-
-        i = 0
+    def decodeManchester(self, bitString):
         chaine_paire = ""
         chaine_impaire = ""
         patern = "111111110"
-        for  indice  in range(0, len(chaine)):
+        for  indice  in range(0, len(bitString)):
             if((indice % 2) == 0):
-                chaine_paire += chaine[indice]
+                chaine_paire += bitString[indice]
             else :
-                chaine_impaire += chaine[indice]
+                chaine_impaire += bitString[indice]
 
         if(chaine_paire.find(patern) != -1):
             return (chaine_paire, chaine_paire.find(patern))    # c'Est mieu de retourner le l'index et la chaine avec str.index
@@ -58,28 +49,19 @@ class ManchesterCode():
         bits = self.getManchesterCode()
         if(bits ==""):
             return -1
-
-        (chaine, indexPatern) = self.manchester_decode(bits)
-        #print(" chaine :", chaine)
-        #print("indexpaterne: ", indexPatern)
+        (chaine, indexPatern) = self.decodeManchester(bits)
         if(chaine == -2):
             return -2
         data =  chaine[indexPatern + 9 : indexPatern + 16]
-        #if(indexPatern > 7):
-            #data =  chaine[indexPatern - 7 : indexPatern]
-        #else:
-            #data =  chaine[indexPatern + 9 : indexPatern + 16]
-
-        #print data[:: -1]
         return data[:: -1]
 
 
-    def letter_from_bits(self,bits, encoding='utf-8', errors='surrogatepass'):
+    def getLetterFromBits(self, bits, encoding='utf-8', errors='surrogatepass'):
         n = int(bits, 2)
-        return self.int2bytes(n).decode(encoding, errors)
+        return self.convertIntegerToBytes(n).decode(encoding, errors)
 
-    def int2bytes(self, i):
-        hex_string = '%x' % i
+    def convertIntegerToBytes(self, integerToConvert):
+        hex_string = '%x' % integerToConvert
         n = len(hex_string)
         return binascii.unhexlify(hex_string.zfill(n + (n & 1)))
 
@@ -93,7 +75,7 @@ class ManchesterCode():
             elif(data == -1):
                 self.error = -1
             else:
-                lettre  = self.letter_from_bits(data)
+                lettre  = self.getLetterFromBits(data)
                 print lettre,
                 ascii.append(lettre)
             nbr = nbr+1
@@ -101,16 +83,16 @@ class ManchesterCode():
 
     def getAsciiManchester(self):
 
-	ascii = []
+        ascii = []
         error = self.foundCodesManchester(ascii)
-        if(self.error == 0 or scii !=[]):
+        if(self.error == 0 or ascii !=[]):
             word_counts = Counter(ascii)
             top_tree = word_counts.most_common(1)
             b = [str(i[0]) for i in top_tree]
             print top_tree
             return  b[0]
-        elif(self.error == -1):
-            return self.CHAINE_VIDE_ERROR
+        elif(error == -1):
+            return self.EMPTY_STRING_ERROR
         else:
             return self.BIT_STOP_ERROR
 

@@ -1,6 +1,5 @@
 import numpy as np
 import cv2
-import time
 from Client.Robot.Mechanical.CameraTower import CameraTower
 from Client.BaseStation.WorldVision.colorContainer import ColorContainer
 
@@ -52,14 +51,14 @@ class TreasuresDetector:
         if abs(self.followedTreasure[0] - (self.image.shape[1]/2)) <= self.ACCEPTABLE_PIXEL_DIFFERENCE:
             alreadyAdded = False
             for angle in self.treasuresAngle:
-                if self.camera.degreeHori - angle < 2:
-                    averageAngle = (angle + self.camera.degreeHori) / 2
+                if self.camera.horizontalDegree - angle < 2:
+                    averageAngle = (angle + self.camera.horizontalDegree) / 2
                     self.treasuresAngle.remove(angle)
                     self.treasuresAngle.append(averageAngle)
                     alreadyAdded = True
                     break
             if not alreadyAdded:
-                self.treasuresAngle.append(self.camera.degreeHori)
+                self.treasuresAngle.append(self.camera.horizontalDegree)
             self.xCoordinateToBeHigher = self.image.shape[1] / 2 + self.ACCEPTABLE_PIXEL_DIFFERENCE + 10
             self.followedTreasure = None
             return True
@@ -72,17 +71,17 @@ class TreasuresDetector:
         self.camera.moveCameraByAngle(0, self.START_CAMERA_VERTICAL_ANGLE)
         self.followedTreasure = None
 
-        while(self.video.isOpened() and self.camera.degreeHori < 173):
+        while(self.video.isOpened() and self.camera.horizontalDegree < 173):
 
             self.centered = False
             ret, self.image = self.video.read()
             self.xCoordinateToBeHigher = self.image.shape[1] / 2
-            while self.followedTreasure == None and self.camera.degreeHori < 173:
+            while self.followedTreasure == None and self.camera.horizontalDegree < 173:
                 ret, self.image = self.video.read()
                 self.detectAndShowImage()
                 self.camera.moveCameraRight()
 
-            while not self.centered and self.camera.degreeHori < 173:
+            while not self.centered and self.camera.horizontalDegree < 173:
                 ret, self.image = self.video.read()
                 self.detectAndShowImage()
                 self.camera.moveCameraRight()

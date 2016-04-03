@@ -1,7 +1,6 @@
 import serial
 from time import sleep
 import struct
-import binascii
 import platform
 
 class SerialPortCommunicator:
@@ -42,7 +41,7 @@ class SerialPortCommunicator:
         #self.polulu = serial.Serial(poluluPort, bitratePolulu, timeout = 1)
         sleep(1)
 
-    def _sendCommand(self, functionName, waitForCallback = 0, timeoutDelay = 1, *functionArgs):
+    def sendCommand(self, functionName, waitForCallback = 0, timeoutDelay = 1, *functionArgs):
         command = self.COMMAND_INDICATOR + str(functionName) + str(waitForCallback) + str(len(functionArgs))
         self.arduino.write(command)
 
@@ -73,22 +72,22 @@ class SerialPortCommunicator:
 
 
     def turnOnEndingLED(self):
-        self._sendCommand(self.LED_FUNCTION_ON, self.FALSE, self.ONE_SECOND_DELAY, 1)
+        self.sendCommand(self.LED_FUNCTION_ON, self.FALSE, self.ONE_SECOND_DELAY, 1)
 
     def turnOffEndingLED(self):
-        self._sendCommand(self.LED_FUNCTION_OFF, self.FALSE, self.ONE_SECOND_DELAY, 1)
+        self.sendCommand(self.LED_FUNCTION_OFF, self.FALSE, self.ONE_SECOND_DELAY, 1)
 
     def driveMoteur(self, noMoteur, speed, direction):
-        self._sendCommand(self.CHANGE_SINGLE_MOTEUR_SPEED, self.FALSE, self.ONE_SECOND_DELAY, noMoteur, speed * 100, direction)
+        self.sendCommand(self.CHANGE_SINGLE_MOTEUR_SPEED, self.FALSE, self.ONE_SECOND_DELAY, noMoteur, speed * 100, direction)
 
     def stopAllMotor(self):
-        self._sendCommand(self.STOP_ALL_MOTEUR, self.FALSE, self.ONE_SECOND_DELAY, 1)
+        self.sendCommand(self.STOP_ALL_MOTEUR, self.FALSE, self.ONE_SECOND_DELAY, 1)
 
     def driveMoteurLine(self, axe, speed, positif):
-        self._sendCommand(self.CHANGE_SPEED_LINE, self.FALSE, self.ONE_SECOND_DELAY, axe, speed * 100, positif)
+        self.sendCommand(self.CHANGE_SPEED_LINE, self.FALSE, self.ONE_SECOND_DELAY, axe, speed * 100, positif)
 
     def driveMoteurRotation(self, speed, direction):
-        self._sendCommand(self.CHANGE_SPEED_ROTATION, self.FALSE, self.ONE_SECOND_DELAY, speed * 100, direction)
+        self.sendCommand(self.CHANGE_SPEED_ROTATION, self.FALSE, self.ONE_SECOND_DELAY, speed * 100, direction)
 
 
 
