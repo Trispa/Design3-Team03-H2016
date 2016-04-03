@@ -5,17 +5,15 @@ from mock import MagicMock
 from Client.BaseStation.Logic import SequencerState
 
 
-class SendingBotToTreasureStateTest(TestCase):
+class DetectTreasureStateTest(TestCase):
 
     def setUp(self):
         self.pathfinder = MagicMock()
         self.sequencer = MagicMock()
         self.map = MagicMock()
 
-        self.map.getPositionInFrontOfTreasure.return_value = (100,100), 270
-
     def test_whenHandlingSaidStateThenPathfinderIsCalled(self):
-        testedState = SequencerState.SendingBotToTreasureState()
+        testedState = SequencerState.DetectTreasureState()
 
         testedState.handle(self.sequencer,self.map, self.pathfinder)
 
@@ -23,15 +21,15 @@ class SendingBotToTreasureStateTest(TestCase):
         assert self.sequencer.setState.called
 
     def test_whenHandlingSaidStateThenReturnsCorrectNextSignalInSequence(self):
-        testedState = SequencerState.SendingBotToTreasureState()
+        testedState = SequencerState.DetectTreasureState()
 
         path, signal, orientation = testedState.handle(self.sequencer,self.map, self.pathfinder)
 
-        self.assertEqual("rotateToTreasure", signal)
+        self.assertEqual("detectTreasure", signal)
 
     def test_whenHandlingSaidStateThenReturnsCorrectOrientationToGiveRobot(self):
-        testedState = SequencerState.SendingBotToTreasureState()
+        testedState = SequencerState.DetectTreasureState()
 
         path, signal, orientation = testedState.handle(self.sequencer,self.map, self.pathfinder)
 
-        self.assertEqual(270, orientation)
+        self.assertEqual(180, orientation)

@@ -1,41 +1,23 @@
 from unittest import TestCase
-
-import Client.BaseStation.Logic.SequencerState as SequencerState
+from mock import MagicMock
+from Client.BaseStation.Logic.SequencerState import *
 from Client.BaseStation.Logic.Sequencer import Sequencer
 
 
 class SequencerTest(TestCase):
 
+    def setUp(self):
+        self.pathfinder = MagicMock()
+        self.stateMock = MagicMock()
+        self.mapMock = MagicMock()
     def test_whenCreatingSequencerThenStateIsSendingBotToChargingStation(self):
-        testedSequencer = Sequencer()
+        testedSequencer = Sequencer(self.pathfinder)
 
-        self.assertEqual(testedSequencer.state.__class__.__name__, "SendingBotToChargingStationState")
+        self.assertTrue(isinstance(testedSequencer.state, SendingBotToChargingStationState))
 
+    def test_whenHandlingSequencerThenStateCallsHandle(self):
+        testedSequencer = Sequencer(self.pathfinder)
+        testedSequencer.setState(self.stateMock)
+        testedSequencer.handleCurrentState(self.mapMock)
 
-    def test_givenSequencerIsSendingBotToChargingStationWhenHandlingCurrentStateWithLastCoordinateThenStateBecomesSendingBotToTreasure(self):
-        testedSequencer = Sequencer()
-        testedSequencer.setState(
-            SequencerState.SendingBotToChargingStationState())
-
-        testedSequencer.handleCurrentState(testedSequencer.state.path.__len__() - 1)
-
-        self.assertEqual(testedSequencer.state.__class__.__name__, "SendingBotToTreasureState")
-
-
-    def test_givenSequencerSendingBotToTreasureWhenHandlingCurrentStateWithLastCoordinateThenStateBecomesSendingBotToTarget(self):
-        testedSequencer = Sequencer()
-        testedSequencer.setState(
-            SequencerState.SendingBotToTreasureState())
-
-        testedSequencer.handleCurrentState(testedSequencer.state.path.__len__() - 1)
-
-        self.assertEqual(testedSequencer.state.__class__.__name__, "SendingBotToTargetState")
-
-
-    def test_givenSequencerSendingBotToTargetWhenHandlingCurrentStateWithLastCoordinateThenStateBecomesSendingBotToChargingStation(self):
-        testedSequencer = Sequencer()
-        testedSequencer.setState(SequencerState.SendingBotToTargetState())
-
-        testedSequencer.handleCurrentState(testedSequencer.state.path.__len__() - 1)
-
-        self.assertEqual(testedSequencer.state.__class__.__name__, "SendingBotToChargingStationState")
+        assert self.stateMock.handle.called

@@ -36,7 +36,10 @@ class Shape:
     def getName(self):
         return self.geometricName
 
-    def setColor(self, frame):
+    def setColor(self, color):
+        self.color = color
+
+    def findColor(self, frame):
         xCoordinate, yCoordinate, width, height = self.getBoundingRectangle()
         xStart = xCoordinate
         xEnd = xCoordinate + width

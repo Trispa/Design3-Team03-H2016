@@ -5,13 +5,14 @@ import cProfile
 
 import time
 from Logic.BaseStationDispatcher import BaseStationDispatcher
+from WorldVision.worldVision import worldVision
 
 sys.path.insert(1, "/Logic")
 sys.path.append("/../../Shared")
 
 from socketIO_client import SocketIO
 from threading import Thread
-dispatcher = BaseStationDispatcher()
+dispatcher = BaseStationDispatcher(worldVision())
 
 c = os.path.dirname(__file__)
 configPath = os.path.join(c, "..", "..", "Shared", "config.json")
