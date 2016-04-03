@@ -1,7 +1,7 @@
 from unittest import TestCase
 from Client.BaseStation.WorldVision.map import Map
 from Client.BaseStation.WorldVision.shape import Shape
-from Client.BaseStation.WorldVision.allShapes import Square
+
 import numpy as np
 
 class TestMap(TestCase):
@@ -12,9 +12,9 @@ class TestMap(TestCase):
         secondContour = np.array([[[0,0]], [[2,3]], [[3,3]], [[3, 2]]], dtype=np.int32)
         differentContour = np.array([[[124,132]], [[134,132]], [[134,155]], [[124, 155]]], dtype=np.int32)
 
-        self.firstShape = Square(geometricalName, firstContour)
-        self.secondShape = Square(geometricalName, secondContour)
-        self.differentShape = Square(geometricalName, differentContour)
+        self.firstShape = Shape(geometricalName, firstContour)
+        self.secondShape = Shape(geometricalName, secondContour)
+        self.differentShape = Shape(geometricalName, differentContour)
 
 
     def test_givenAMapContainingOneShapeAndSimilarShapeWhenFindingSimilarShapeInMapWithTheSimilarShapeThenReturnTheShapeContainedInMap(self):
