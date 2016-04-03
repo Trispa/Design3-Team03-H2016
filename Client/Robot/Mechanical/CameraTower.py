@@ -16,12 +16,12 @@ class CameraTower:
             if angle > 135:
                 angle = 135
             self.verticalDegree = self.angleLimit(angle)
-            # print("Verticale : " + str(self.degreeVerti))
-            self.maestro.setTargetOnMap(direction, self.getPWMfromAngle(angle))
+            # print("Verticale : " + str(self.verticalDegree))
+            self.maestro.setTarget(direction, self.getPWMfromAngle(angle))
         elif direction == 1:
             self.horizontalDegree = self.angleLimit(angle)
-            # print("Horizaontal : " + str(self.degreeHori))
-            self.maestro.setTargetOnMap(direction, self.getPWMfromAngle(angle))
+            # print("Horizaontal : " + str(self.horizontalDegree))
+            self.maestro.setTarget(direction, self.getPWMfromAngle(angle))
         else:
             return -1
 

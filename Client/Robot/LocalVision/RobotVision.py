@@ -133,12 +133,12 @@ class RobotVision:
 
     def swipeCamera(self):
         if self.tresor == None:
-            if self.balayageHori == 0 and self.camera.degreeHori < 160:
+            if self.balayageHori == 0 and self.camera.horizontalDegree < 160:
                 self.camera.moveCameraRight()
             else:
                 self.balayageHori = 1
 
-            if self.balayageHori == 1 and self.camera.degreeHori > 55:
+            if self.balayageHori == 1 and self.camera.horizontalDegree > 55:
                 self.camera.moveCameraLeft()
             else:
                 self.balayageHori = 0
@@ -154,9 +154,9 @@ class RobotVision:
             return self.FOCAL * self.LARGEUR_TRESOR_METRE / self.largeurTresorPixel
 
     def distanceFromCamera(self):
-        distanceY = self.adjacentDistance() * cos(radians(123 - self.camera.degreeHori) + math.pi / 2)
-        distanceX = self.adjacentDistance() * sin(radians(self.camera.degreeVerti - 64))
-        # print 123 - self.camera.degreeHori, self.camera.degreeVerti, self.distanceAdjascente()
+        distanceY = self.adjacentDistance() * cos(radians(123 - self.camera.horizontalDegree) + math.pi / 2)
+        distanceX = self.adjacentDistance() * sin(radians(self.camera.verticalDegree - 64))
+        # print 123 - self.camera.horizontalDegree, self.camera.verticalDegree, self.distanceAdjascente()
 
         return (distanceX, distanceY)
 
@@ -261,18 +261,18 @@ class RobotVision:
 
             if movingX and not moveXArriver:
                 print "moving X"
-                print self.camera.degreeVerti
+                print self.camera.verticalDegree
 
 
-                if self.camera.degreeVerti <= 7:
+                if self.camera.verticalDegree <= 7:
                     self.robot.stopAllMotors()
                     moveXArriver = True
-                elif self.camera.degreeVerti <= lastAngle - 0.5:
+                elif self.camera.verticalDegree <= lastAngle - 0.5:
                     self.robot.stopAllMotors()
                     # moveXArriver = True
                     moveYArriver = False
                     movingX = False
-                    lastAngle = self.camera.degreeVerti
+                    lastAngle = self.camera.verticalDegree
 
 
 

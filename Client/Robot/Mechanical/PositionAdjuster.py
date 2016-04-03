@@ -12,10 +12,10 @@ class PositionAdjuster:
 
 
     def lowerArm(self):
-        self.maestro.setTargetOnMap(2, 762 * 4)
+        self.maestro.setTarget(2, 762 * 4)
 
     def ascendArm(self):
-        self.maestro.setTargetOnMap(2, 1764 * 4)
+        self.maestro.setTarget(2, 1764 * 4)
 
     def goForwardToStopApproaching(self):
         self.wheelManager.moveTo((3, 0))
