@@ -1,5 +1,6 @@
 import binascii
 import SerialPortCommunicator
+import re
 from time import sleep
 from collections import Counter
 
