@@ -164,17 +164,20 @@ def verifyIfMovingDebug(path, nextSignal, angleToRotate):
             socketIO.emit("sendNextCoordinates", jsonToSend)
 
 def debugSendBotToChargingStation():
+    dispatcher.initialiseWorldData()
     dispatcher.setSequencerStateToSendChargingStation()
     path, nextSignal, angleToRotate = dispatcher.handleCurrentSequencerState()
     verifyIfMovingDebug(path, nextSignal, angleToRotate)
 
 def debugAlignBotToChargingStation():
+    dispatcher.initialiseWorldData()
     botInfo = dispatcher.getCurrentWorldInformation()
     jsonToSend = {"robotOrientation":botInfo['robotOrientation'],
                   "sequence":False}
     socketIO.emit('alignPositionToChargingStation', jsonToSend)
 
 def debugSearchAllTreasure():
+    dispatcher.initialiseWorldData()
     dispatcher.setSequencerStateToDetectTreasures()
     path, nextSignal, angleToRotate = dispatcher.handleCurrentSequencerState()
     verifyIfMovingDebug(path, nextSignal, angleToRotate)
@@ -185,17 +188,20 @@ def debugSearchAllTreasure():
     socketIO.emit(nextSignal, jsonToSend)
 
 def debugSendBotToTreasure():
+    dispatcher.initialiseWorldData()
     dispatcher.setSequencerStateToSendToTreasure()
     path, nextSignal, angleToRotate = dispatcher.handleCurrentSequencerState()
     verifyIfMovingDebug(path, nextSignal, angleToRotate)
 
 def debugAlignBotToTreasure():
+    dispatcher.initialiseWorldData()
     botInfo = dispatcher.getCurrentWorldInformation()
     jsonToSend = {"robotOrientation":botInfo['robotOrientation'],
                   "sequence":False}
     socketIO.emit('alignPositionToTreasure', jsonToSend)
 
 def debugSendBotToTarget():
+    dispatcher.initialiseWorldData()
     dispatcher.setSequencerStateToSendToTarget()
     path, nextSignal, angleToRotate = dispatcher.handleCurrentSequencerState()
     verifyIfMovingDebug(path, nextSignal, angleToRotate)
