@@ -40,14 +40,14 @@ def myMain2():
     while(True):
 
         #ret, frame = camera.read()
-        frame = cv2.imread('Photo-Test/Frames/Picture 500.jpg')
+        frame = cv2.imread('Photo-Test/Frames/Picture 234.jpg')
         frame = cv2.resize(frame, (960, 720))
         # copyF = copy.copy(frame)
         geometricalImage.buildMap(frame)
         geometricalImage.updateRobotPosition(frame)
         geometricalImage.addLabels(frame)
         geometricalImage.defineTreasures([30, 150, 87])
-        geometricalImage.getIslandPositioning("Square")
+        geometricalImage.getIslandPositioning("Circle")
         geometricalImage.drawMapOnFrame(frame)
 
         cv2.imshow("resized", frame)
