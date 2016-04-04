@@ -23,7 +23,7 @@ class WorldImage:
         return self.__map.getPositionInFrontOfTreasure()
 
     def getIslandPositioning(self, shapeName):
-        self.myPath, ret, self.edge = self.__map.getPositionInFrontOfIsland(shapeName)
+        self.myPath, ret = self.__map.getPositionInFrontOfIsland(shapeName)
         return self.__map.getPositionInFrontOfIsland(shapeName)
 
     def buildMap(self, frame):
@@ -75,15 +75,8 @@ class WorldImage:
         for treasure in self.__map.treasures:
             cv2.circle(frame,(int(treasure[0]), int(treasure[1])), 10, (17,148,162), 2)
 
-        for compteur in range (1, self.myPath.__len__()):
-            startLine = (self.myPath[compteur-1].positionX,self.myPath[compteur-1].positionY)
-            endLine =  (self.myPath[compteur].positionX,self.myPath[compteur].positionY)
-            cv2.line(frame, (int(startLine[0]), int(startLine[1])), (int(endLine[0]), int(endLine[1])),
-                      (0, 0, 255), 2, 1)
-
         cv2.drawContours( frame, self.__map.getContourList(), -1, (0, 255, 0), 3 )
         cv2.drawContours( frame, limit, -1, (0, 255, 0), 3 )
         cv2.drawContours( frame, target, -1, (255, 0, 0), 3 )
-        cv2.drawContours( frame, self.edge, -1, (0, 0, 255), 4 )
 
         return frame

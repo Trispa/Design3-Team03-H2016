@@ -72,7 +72,6 @@ class Map:
                 targetShape = shape
 
         edgesList = targetShape.getEdgesList()
-        bestEdge = [edgesList[0][0], edgesList[0][1]]
         for edge in edgesList:
             xCenterOfEdge = edge[0].item(0) + (((edge[0].item(0) - edge[1].item(0)) / 2) * -1)
             yCenterOfEdge = edge[0].item(1) + (((edge[0].item(1) - edge[1].item(1)) / 2) * -1)
@@ -118,11 +117,10 @@ class Map:
             myNewPath = myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint(positionToGo))
 
             if myNewPath.totalDistance < myPath.totalDistance:
-                bestEdge = [edge[0], edge[1]]
                 myPath = myNewPath
                 orientation = angle
 
-        return myPath, orientation, bestEdge
+        return positionToGo, orientation
 
 
     def setMapLimit(self, contour):
