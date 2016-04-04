@@ -181,18 +181,25 @@ class RobotVision:
                 dot1 = (0, ih-1)
 
         for i in range(0, ih):
-            if np.equal(thresh1[i, col2], np.array([255,255,255])).all():
+            if not np.equal(thresh1[i, col2], np.array([0,0,0])).all():
                 dot2 = (col2, i)
                 break
             if dot2 == []:
                 for i in range(iw - 1, -1, -1):
-                    if np.equal(thresh1[ih - 1, i], np.array([255,255,255])).all():
+                    if not np.equal(thresh1[ih - 1, i], np.array([0,0,0])).all():
                         dot2 = (col2, i)
                         break
 
         # print dot1
         # print dot2
         # dot1 = (1279, 0)
+        if dot1 == []:
+            print "dot1 etait null"
+            dot1 = [0, 0]
+        if dot2 == []:
+            print "dot2 etait null"
+            dot2 = [iw - 1, ih - 1]
+
         self.image = thresh1
 
         cv2.line(self.image, dot1, dot2, (255, 0, 0), 2)
