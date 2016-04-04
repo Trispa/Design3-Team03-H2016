@@ -68,9 +68,8 @@ class Map:
         myMapCoorDinateAjuster = MapCoordinatesAjuster(self)
         myBestPosition = (0,0)
         orientation = 0
-        targetShape = self.target
 
-        edgesList = targetShape.getEdgesList()
+        edgesList = self.target.getEdgesList()
         for edge in edgesList:
             xCenterOfEdge = edge[0].item(0) + (((edge[0].item(0) - edge[1].item(0)) / 2) * -1)
             yCenterOfEdge = edge[0].item(1) + (((edge[0].item(1) - edge[1].item(1)) / 2) * -1)
@@ -107,11 +106,11 @@ class Map:
 
             angle = math.degrees(math.atan2(opp,adj))
             if positionToGo[0] > xCenterOfEdge and positionToGo[1] < yCenterOfEdge:
-                angle = angle + 90
+                angle = 180 - angle
             if positionToGo[0] > xCenterOfEdge and positionToGo[1] > yCenterOfEdge:
                 angle = angle + 180
             if positionToGo[0] < xCenterOfEdge and positionToGo[1] > yCenterOfEdge:
-                angle = angle + 270
+                angle = 360 - angle
 
             myNewPath = myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint(positionToGo))
 
