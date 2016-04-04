@@ -15,7 +15,7 @@ class Shape:
     def __eq__(self, other):
         if other == None:
             return False
-        return self.contour[0].item(0) == other.contour[0].item(0)
+        return self.contour[0].item(0) == other.contour[0].item(0) and self.contour[0].item(1) == other.contour[0].item(1)
 
     def getContour(self):
         if len(self.contour) < 2:
