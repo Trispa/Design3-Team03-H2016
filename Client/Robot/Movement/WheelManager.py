@@ -17,7 +17,7 @@ class WheelManager:
     POSITIVE_SPEED = 1
     NEGATIVE_SPEED = 0
     MAX_SPEED = 0.11
-    MAX_SPEED_VISION = 0.03
+    MAX_SPEED_VISION = 0.02
     ROTATION_SPEED = 0.05
 
     def __init__(self, serialPortCommunicator):

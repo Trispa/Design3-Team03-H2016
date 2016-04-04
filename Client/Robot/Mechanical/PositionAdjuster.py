@@ -4,7 +4,7 @@ class PositionAdjuster:
     #Manque un SerialPortCommunication
     def __init__(self, wheelManager, robotVision, maestro):
         self.maestro = maestro
-        self.maestro.setSpeed(2, 15)
+        self.maestro.setSpeed(2, 50)
 
         self.wheelManager = wheelManager
         self.localVision = robotVision
@@ -18,7 +18,7 @@ class PositionAdjuster:
         self.maestro.setTarget(2, 1764 * 4)
 
     def goForwardToStopApproaching(self):
-        self.wheelManager.moveTo((3, 0))
+        self.wheelManager.moveTo((10, 0))
 
     def goBackwardToGrabTreasure(self):
         self.wheelManager.moveTo((-3, 0))

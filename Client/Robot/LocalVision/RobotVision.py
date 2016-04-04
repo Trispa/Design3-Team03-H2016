@@ -24,8 +24,8 @@ class RobotVision:
         self.camera = cameraTower
         self.camera.step = 0.5
         self.tresor = None
-        yellowDown = [0, 100, 100]
-        yellowUp = [35, 255, 255]
+        yellowDown = [0, 90, 90]
+        yellowUp = [45, 255, 255]
 
         self.color = [(yellowDown, yellowUp)]
 
@@ -101,27 +101,29 @@ class RobotVision:
         if self.tresor != None:
 
             x,y,width,height = cv2.boundingRect(self.tresor)
+            x = x + width / 2
+            y = y + height /2
             ih, iw, ic = self.image.shape
             # print x, y, iw, ih
-            square = 18
+            square = 10
 
-            xob = (iw/2-5)  - square/2
+            xob = (iw/2-5) - square/2 + 13
             yob = ih/2 - square/2
             # print xob, yob
             # print xob + square, yob +square
 
-            cv2.rectangle(self.image,(xob, yob),(xob + square-3, yob + square+7),(0,0,255),2)
+            cv2.rectangle(self.image,(xob, yob),(xob + square-8, yob + square+7),(0,0,255),2)
             # cv2.rectangle(self.image,(x,y),(x+w,y+h),(0,255,0),2)
 
-            if x <= (iw/2 - square-3):
+            if x < (iw/2 - square-8):
                 self.camera.moveCameraLeft()
-            elif x >= (iw/2 + square-3):
+            elif x > (iw/2 + square-8):
                 self.camera.moveCameraRight()
             else:
                 centerX = True
-            if y <= (ih/2 - square+7):
+            if y < (ih/2 - square+7):
                 self.camera.moveCameraUp()
-            elif y >= (ih/2 + square+7):
+            elif y > (ih/2 + square+7):
                 self.camera.moveCameraDown()
             else:
                 centerY = True
@@ -150,7 +152,7 @@ class RobotVision:
                 return 0
             return self.FOCAL * self.LARGEUR_TRESOR_METRE / self.largeurTresorPixel
 
-    def distanceFromCamera(self):
+    def dista150nceFromCamera(self):
         distanceY = self.adjacentDistance() * cos(radians(123 - self.camera.horizontalDegree) + math.pi / 2)
         distanceX = self.adjacentDistance() * sin(radians(self.camera.verticalDegree - 64))
         # print 123 - self.camera.horizontalDegree, self.camera.verticalDegree, self.distanceAdjascente()
@@ -158,7 +160,7 @@ class RobotVision:
         return (distanceX, distanceY)
 
     def differenceParraleleLines(self):
-        ret,thresh1 = cv2.threshold(self.image,125,255,cv2.THRESH_BINARY)
+        ret,thresh1 = cv2.threshold(self.image,75,255,cv2.THRESH_BINARY)
 
 
         ih, iw, ic = self.image.shape
@@ -176,12 +178,12 @@ class RobotVision:
                 dot1 = (0, ih-1)
 
         for i in range(0, ih):
-            if np.equal(thresh1[i, col2], np.array([255, 255, 255])).all():
+            if np.equal(thresh1[i, col2], np.array([255,255,255])).all():
                 dot2 = (col2, i)
                 break
             if dot2 == []:
                 for i in range(iw - 1, -1, -1):
-                    if np.equal(thresh1[ih - 1, i], np.array([255, 255, 255])).all():
+                    if np.equal(thresh1[ih - 1, i], np.array([255,255,255])).all():
                         dot2 = (col2, i)
                         break
 
@@ -204,25 +206,20 @@ class RobotVision:
         movingX = False
         moveXArriver = False
         self.tresor = None
-        print "approcheverstresor debut de la fonction"
-        print self.video.isOpened()
         lastAngle= 180
 
         self.camera.moveCameraByAngle(1, 50)
         self.camera.moveCameraByAngle(0, 30)
 
         while(self.video.isOpened()):
-            print "while video is opened()"
             ret, self.image = self.video.read()
             self.detectColor()
             self.findContour()
 
             if not findSomething:
-                print "try to findSomething"
                 findSomething = self.swipeCamera()
 
             if self.tresor == None:
-                print "tresor = none"
                 findSomething = False
                 movingY = False
                 moveYArriver = False
@@ -234,7 +231,6 @@ class RobotVision:
             center = self.moveCamera()
 
             if center and not self.robot.isMoving:
-                print "center found"
                 if not movingY and not moveYArriver:
                     diff = self.differenceParraleleLines()
                     if diff < 0:
@@ -249,7 +245,6 @@ class RobotVision:
                         movingX = True
 
             if movingY and not moveYArriver:
-                print "moving Y"
                 if abs(self.differenceParraleleLines()) < 8:
                     self.robot.stopAllMotors()
                     moveYArriver = True
@@ -257,14 +252,14 @@ class RobotVision:
 
 
             if movingX and not moveXArriver:
-                print "moving X"
                 print self.camera.verticalDegree
 
 
-                if self.camera.verticalDegree <= 7:
+                if self.camera.verticalDegree <= 9:
                     self.robot.stopAllMotors()
                     moveXArriver = True
-                elif self.camera.verticalDegree <= lastAngle - 0.5:
+                elif self.camera.verticalDegree <= (lastAngle - 0.5) and self.camera.verticalDegree >= 15:
+                    print "Ajustement en Y", self.camera.verticalDegree
                     self.robot.stopAllMotors()
                     # moveXArriver = True
                     moveYArriver = False
@@ -277,11 +272,11 @@ class RobotVision:
                 print "!!! ARRIVER !!!"
                 return True
 
-            # cv2.imshow("Image", self.image)
-            # if cv2.waitKey(1) & 0xFF == ord('q'):
-            #     break
+            cv2.imshow("Image", self.image)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
         self.video.release()
-        # cv2.destroyAllWindows()
+        cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":
