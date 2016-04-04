@@ -97,7 +97,7 @@ class WheelManager:
 
     def rotate(self, degree):
         self.isMoving = True
-        timeToSleep = 0.029 * abs(degree) + 0.145
+        timeToSleep = 0.035 * abs(degree) + 0.068
         self.__resetMotors()
 
         if(degree <=0):
