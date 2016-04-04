@@ -56,8 +56,8 @@ def alignToChargingStation(json):
     if(json['sequence']):
         socketIO.emit("needNewCoordinates")
 
-def alignToTarget():
-    #TODO code pour s'enligner a la cible
+def alignToTarget(json):
+    botDispatcher.setRobotOrientation(json['botOrientation'], json['angleToGo'])
     socketIO.emit("needNewCoordinates")
 
 def endRound():
