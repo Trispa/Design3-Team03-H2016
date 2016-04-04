@@ -10,7 +10,7 @@ class MapCoordinatesAdjusterTest(TestCase):
         self.limit = MagicMock()
         self.limit.getMinCorner.return_value = (100,100)
         self.map.getMapLimit.return_value = self.limit
-        self.mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
+        self.mapCoordinatesAdjuster = MapCoordinatesAjuster(self.map)
 
     def test_goodConversion(self):
         convertedPoint = self.mapCoordinatesAdjuster.convertPoint((200,300))

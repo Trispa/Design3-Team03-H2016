@@ -114,13 +114,10 @@ class WheelManager:
     def setOrientation(self, currentRobotOrientation, angleToSet):
         if (angleToSet - currentRobotOrientation < 0 and angleToSet - currentRobotOrientation <= -180):
             angleToSet += 360
-            print "1"
             angleToRotate = -(angleToSet - currentRobotOrientation)
         elif (angleToSet - currentRobotOrientation < 0 and angleToSet - currentRobotOrientation > -180):
-            print "2"
             angleToRotate = -(currentRobotOrientation - angleToSet)
         elif (angleToSet - currentRobotOrientation < 180):
-            print "3"
             angleToRotate = angleToSet - currentRobotOrientation
         else:
             angleToRotate = angleToSet - (currentRobotOrientation+360)
