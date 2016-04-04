@@ -48,7 +48,7 @@ def myMain2():
         geometricalImage.addLabels(frame)
         geometricalImage.defineTreasures([30, 150, 87])
         geometricalImage.getIslandPositioning("Square")
-        geometricalImage.drawMapOnImage(frame)
+        geometricalImage.drawMapOnFrame(frame)
 
         cv2.imshow("resized", frame)
 

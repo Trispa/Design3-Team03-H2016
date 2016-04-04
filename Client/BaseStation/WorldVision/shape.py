@@ -98,14 +98,11 @@ class Shape:
         return False
 
     def isOutside(self, point):
-        xElementCoordinate,yElementCoordinate,width,height = cv2.boundingRect(self.contour)
-        minX = xElementCoordinate
-        minY = yElementCoordinate
-        maxX = xElementCoordinate + width
-        maxY = yElementCoordinate + height
-        if point[0] > minX and point[0] < maxX and point[1] > minY and point[1] < maxY:
+        dist = cv2.pointPolygonTest(self.contour,point,True)
+        if dist < 0:
+            return True
+        else:
             return False
-        return True
 
     def asSimilarCenterOfMass(self, otherShape):
         myCenterOfMassX, myCenterOfMassY = self.findCenterOfMass()

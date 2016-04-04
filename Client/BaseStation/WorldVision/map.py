@@ -11,7 +11,7 @@ import copy
 class Map:
 
     SAFE_MARGIN = 100
-    SAFE_MARGIN_FOR_ISLAND = 100
+    SAFE_MARGIN_FOR_ISLAND = 80
 
     def __init__(self):
         self.__shapes = []
@@ -76,7 +76,7 @@ class Map:
             yCenterOfEdge = edge[0].item(1) + (((edge[0].item(1) - edge[1].item(1)) / 2) * -1)
 
             edgePerpendicularGradient = float(-1 / float(float(edge[1].item(1) - edge[0].item(1)) / float(edge[1].item(0) - edge[0].item(0))))
-            conversionGradient = 1
+            conversionGradient = 10
             if edgePerpendicularGradient > 1:
                 conversionGradient = 0.1
             if targetShape.isOutside((xCenterOfEdge + 1 * conversionGradient, yCenterOfEdge + 1 * edgePerpendicularGradient * conversionGradient)):
