@@ -97,7 +97,6 @@ class Shape:
                 return True
         return False
 
-<<<<<<< HEAD
     def isOutside(self, point):
         xElementCoordinate,yElementCoordinate,width,height = cv2.boundingRect(self.contour)
         minX = xElementCoordinate
@@ -115,10 +114,6 @@ class Shape:
             return True
 
         return False
-
-
-=======
->>>>>>> master
 
 
 
