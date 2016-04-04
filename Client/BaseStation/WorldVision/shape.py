@@ -10,12 +10,12 @@ class Shape:
         self.contour = contour
         self.geometricName = geometricName
         colorFactory = ColorFactory()
-        self.myColor = colorFactory.constructColor(np.uint8([[[0,255,255]]]), "Not defined")
+        self.color = colorFactory.constructColor(np.uint8([[[0, 255, 255]]]), "Not defined")
 
     def __eq__(self, other):
         if other == None:
             return False
-        return self.contour[0].item(0) == other.contour[0].item(0)
+        return self.contour[0].item(0) == other.contour[0].item(0) and self.contour[0].item(1) == other.contour[0].item(1)
 
     def getContour(self):
         if len(self.contour) < 2:
@@ -23,7 +23,7 @@ class Shape:
         return self.contour
 
     def getColorName(self):
-        return self.myColor.getName()
+        return self.color.getName()
 
     def getArea(self):
         if len(self.contour) < 3:
@@ -36,8 +36,8 @@ class Shape:
     def getName(self):
         return self.geometricName
 
-    def getColor(self):
-        return self.myColor
+    def setColor(self, color):
+        self.color = color
 
     def getCornerCount(self):
         return len(self.contour)
@@ -49,24 +49,23 @@ class Shape:
         for corner in range(0, len(self.contour) - 1):
             edge = (self.contour[corner], self.contour[corner + 1])
             edgeList.append(edge)
-
         return edgeList
 
-    def setColor(self, mapImage):
+    def findColor(self, frame):
         xCoordinate, yCoordinate, width, height = self.getBoundingRectangle()
         xStart = xCoordinate
         xEnd = xCoordinate + width
         yStart = yCoordinate
         yEnd = yCoordinate + height
         cropped = None
-        cropped = mapImage[yStart:yEnd, xStart:xEnd]
+        cropped = frame[yStart:yEnd, xStart:xEnd]
         centerX = cropped.shape[0] / 2
         centerY = cropped.shape[1] / 2
         bgrShapeColor = np.uint8([[[cropped[centerX][centerY][0],cropped[centerX][centerY][1],cropped[centerX][centerY][2]]]])
         hsvShapeColor = cv2.cvtColor(bgrShapeColor,cv2.COLOR_BGR2HSV)
         for color in ColorContainer.colors:
             if color.isInSameColorRange(hsvShapeColor):
-                self.myColor = color
+                self.color = color
 
     def findCenterOfMass(self):
         if len(self.contour) > 2:
@@ -98,6 +97,7 @@ class Shape:
                 return True
         return False
 
+<<<<<<< HEAD
     def isOutside(self, point):
         xElementCoordinate,yElementCoordinate,width,height = cv2.boundingRect(self.contour)
         minX = xElementCoordinate
@@ -117,6 +117,8 @@ class Shape:
         return False
 
 
+=======
+>>>>>>> master
 
 
 

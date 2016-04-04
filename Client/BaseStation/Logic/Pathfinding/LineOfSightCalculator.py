@@ -43,7 +43,7 @@ class LineOfSightCalculator:
             pointA2 = (finalNode.positionX, finalNode.positionY)
 
             topResult = self.__hasCollisionWithTopSideOfObstacle(topResult, currentObstacle, pointA1, pointA2)
-            botResult = self.__hasCollisionWithBotSideOfObstacle(botResult, currentObstacle, pointA1, pointA2)
+            botResult = self.__hasCollisionWithBottomSideOfObstacle(botResult, currentObstacle, pointA1, pointA2)
             leftResult = self.__hasCollisionWithLeftSideOfObstacle(currentObstacle, leftResult, pointA1, pointA2)
             rightResult = self.__hasCollisionWithRightSideOfObstacle(currentObstacle, pointA1, pointA2, rightResult)
         if topResult == True and botResult == True and leftResult == True and rightResult == True:
@@ -79,7 +79,7 @@ class LineOfSightCalculator:
         return leftResult
 
 
-    def __hasCollisionWithBotSideOfObstacle(self, botResult, currentObstacle, pointA1, pointA2):
+    def __hasCollisionWithBottomSideOfObstacle(self, botResult, currentObstacle, pointA1, pointA2):
         pointB1 = (
         currentObstacle.positionX - self.graph.SAFE_MARGIN, currentObstacle.positionY + self.graph.SAFE_MARGIN)
         pointB2 = (
@@ -106,11 +106,11 @@ class LineOfSightCalculator:
 
 
     def __isInXRange(self,intersection, pointA1, pointA2, pointB1, pointB2):
-        return (intersection[0] < pointB2[0] and intersection[0] > pointB1[0]) and (
-                    intersection[0] < pointA2[0] and intersection[0] > pointA1[0])
+        return (intersection[0] <= pointB2[0] and intersection[0] >= pointB1[0]) and (
+                    intersection[0] <= pointA2[0] and intersection[0] >= pointA1[0])
 
 
     def __isInYRange(self,intersection, pointA1, pointA2, pointB1, pointB2):
-        return (intersection[1] < pointB2[1] and intersection[1] > pointB1[1]) and (
-                    intersection[1] < pointA2[1] and intersection[1] > pointA1[1])
+        return (intersection[1] <= pointB2[1] and intersection[1] >= pointB1[1]) and (
+                    intersection[1] <= pointA2[1] and intersection[1] >= pointA1[1])
 

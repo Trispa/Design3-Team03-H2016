@@ -7,65 +7,31 @@ from Client.BaseStation.Logic import SequencerState
 
 class SendingBotToTreasureStateTest(TestCase):
 
-    def test_whenCreatingSaidStateThenObstacleIndexIs0AndPathIsSet(self):
+    def setUp(self):
+        self.pathfinder = MagicMock()
+        self.sequencer = MagicMock()
+        self.map = MagicMock()
+
+        self.map.getPositionInFrontOfTreasure.return_value = (100,100), 270
+
+    def test_whenHandlingSaidStateThenPathfinderIsCalled(self):
         testedState = SequencerState.SendingBotToTreasureState()
 
-        self.assertEqual(testedState.obstacleIndex, 0)
-        self.assertIsNotNone(testedState.path)
+        testedState.handle(self.sequencer,self.map, self.pathfinder)
 
-    def test_whenCallingHandleOnSaidStateThenReturnCoordinatesWithTreasureType(self):
+        assert self.pathfinder.findPath.called
+        assert self.sequencer.setState.called
+
+    def test_whenHandlingSaidStateThenReturnsCorrectNextSignalInSequence(self):
         testedState = SequencerState.SendingBotToTreasureState()
-        sequencer = MagicMock()
 
-        coordinates = testedState.handle(sequencer, 0)
+        path, signal, orientation = testedState.handle(self.sequencer,self.map, self.pathfinder)
 
-        self.assertEquals(coordinates["type"], "treasure")
+        self.assertEqual("rotateToTreasure", signal)
 
-    def test_whenCallingHandleOnSaidStateWithFirstItemIndexThenReturnCoordinatesWithPositionTOCorrespondingAtTheCorrectCoordinatesFromPathList(self):
+    def test_whenHandlingSaidStateThenReturnsCorrectOrientationToGiveRobot(self):
         testedState = SequencerState.SendingBotToTreasureState()
-        sequencer = MagicMock()
 
-        coordinates = testedState.handle(sequencer, 0)
+        path, signal, orientation = testedState.handle(self.sequencer,self.map, self.pathfinder)
 
-        self.assertEquals(coordinates["positionTO"]["positionX"], str(testedState.path[0][0]))
-        self.assertEquals(coordinates["positionTO"]["positionY"], str(testedState.path[0][1]))
-
-    def test_whenCallingHandleOnSaidStateWithLastItemThenSequencerIsCalledToChangeState(self):
-        testedState = SequencerState.SendingBotToTreasureState()
-        sequencer = MagicMock()
-
-        testedState.handle(sequencer, testedState.path.__len__() - 1)
-
-        assert sequencer.setState.called
-
-    def test_whenCallingHandleOnSaidStateWithFirstItemThenSequencerIsNotCalledToChangeState(self):
-        testedState = SequencerState.SendingBotToTreasureState()
-        sequencer = MagicMock()
-
-        testedState.handle(sequencer, 0)
-
-        assert not sequencer.setState.called
-
-    def test_whenCallingHandleOnSaidStateWithLastItemThenReturnedCoordinatesHasEndToNo(self):
-        testedState = SequencerState.SendingBotToTreasureState()
-        sequencer = MagicMock()
-
-        coordinates = testedState.handle(sequencer, testedState.path.__len__() - 1)
-
-        self.assertEquals(coordinates["end"], "no")
-
-    def test_whenCallingHandleOnSaidStateWithLastItemThenReturnedCoordinatesHasIndexAtMinus1(self):
-        testedState = SequencerState.SendingBotToTreasureState()
-        sequencer = MagicMock()
-
-        coordinates = testedState.handle(sequencer, testedState.path.__len__() - 1)
-
-        self.assertEquals(coordinates["index"], "-1")
-
-    def test_whenCallingHandleOnSaidStateWithAnyItemThenReturnedCoordinatesHasIndexAtSameIndex(self):
-        testedState = SequencerState.SendingBotToTreasureState()
-        sequencer = MagicMock()
-
-        coordinates = testedState.handle(sequencer, 0)
-
-        self.assertEquals(coordinates["index"], "0")
+        self.assertEqual(270, orientation)

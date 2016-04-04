@@ -19,6 +19,7 @@ class Map:
         self.robot = Robot(Shape("robot", np.array([[]], dtype=np.int32)), Shape("orientation", np.array([[]], dtype=np.int32)))
         self.target = None
         self.treasures = []
+        self.orientationForTreasure = 0
 
     def getShapesList(self):
         return self.__shapes
@@ -43,22 +44,23 @@ class Map:
     def getPositionInFrontOfTreasure(self):
         myPathFinder = Pathfinder(self)
         myMapCoorDinateAjuster = MapCoordinatesAjuster(self)
+        orientationForTreasure = 0
         for treasurePosition in self.treasures:
             if treasurePosition[1] == self.limit.getMaxCorner()[1]:
-                orientation = 90
+                orientationForTreasure = 90
                 inFrontPosition = (treasurePosition[0], treasurePosition[1] - self.SAFE_MARGIN)
             elif treasurePosition[1] == self.limit.getMinCorner()[1]:
-                orientation = 270
+                orientationForTreasure  = 270
                 inFrontPosition = (treasurePosition[0], treasurePosition[1] + self.SAFE_MARGIN)
             else:
-                orientation = 180
+                orientationForTreasure  = 180
                 inFrontPosition = (treasurePosition[0] + self.SAFE_MARGIN, treasurePosition[1])
 
 
             myPath = myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint(inFrontPosition))
             if len(myPath) > 1:
-                return myPath, orientation
-        return False
+                return inFrontPosition, orientationForTreasure
+        return (0,0),0
 
     def getPositionInFrontOfIsland(self, islandShapeName):
         myPathFinder = Pathfinder(self)
@@ -112,11 +114,6 @@ class Map:
         return [], 0, []
 
 
-
-
-    def setShapes(self, shapes):
-        self.__shapes = shapes
-
     def setMapLimit(self, contour):
         cornerList = []
         minX = 0
@@ -137,12 +134,12 @@ class Map:
         if newFoundLimit.getArea() < self.limit.getArea() or len(self.limit.getContour()) == 0:
             self.limit = newFoundLimit
 
-    def setShapesColor(self, mapImage):
+    def setShapesColor(self, frame):
         for shape in self.__shapes:
-            shape.setColor(copy.copy(mapImage))
+            shape.findColor(copy.copy(frame))
 
     def setTarget(self, target):
-        self.target =  target.getShape(self.__shapes)
+        self.target =  target.getObstacle(self.__shapes)
 
     def setTreasures(self, relativeAngles):
         rightAngle = 90
@@ -174,9 +171,9 @@ class Map:
 
             self.treasures.append(treasurePosition)
 
-    def findSimilarShape(self, newPossibleshape):
+    def findSimilarShape(self, newPossibleShape):
 
-        newContourCenterOfMassX, newContourCenterOfMassY = newPossibleshape.findCenterOfMass()
+        newContourCenterOfMassX, newContourCenterOfMassY = newPossibleShape.findCenterOfMass()
         for shapeAlreadyFound in self.__shapes:
             oldContourCenterOfMassX, oldContourCenterOfMassY = shapeAlreadyFound.findCenterOfMass()
             if(abs(newContourCenterOfMassX - oldContourCenterOfMassX) < 20 and abs(newContourCenterOfMassY - oldContourCenterOfMassY) < 20):
@@ -199,9 +196,6 @@ class Map:
             if shape.getColorName() == "Black":
                 self.__shapes.remove(shape)
 
-    def deleteShape(self, shapeToDelete):
-        self.__shapes.remove(shapeToDelete)
-
     def deleteOutsiderShapes(self):
         shapesToDelete = []
         for shape in self.__shapes:
@@ -214,7 +208,7 @@ class Map:
     def filterRobot(self):
         shapes = self.__shapes
         for shape in shapes:
-            if(shape.myColor.colorName == "Black" or shape.myColor.colorName == "Purple"):
+            if(shape.color.colorName == "Black" or shape.color.colorName == "Purple"):
                 self.__shapes.remove(shape)
 
 

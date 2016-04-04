@@ -69,10 +69,6 @@ io.on('connection', function (client) {
         io.emit('sendRefusingOrderSignal');
     });
 
-    client.on('alignToTreasure', function(){
-        io.emit('alignToTreasure');
-    });
-
     client.on('sendManchesterCode', function(data){
         request(manchesterUrl+'?code='+data, function(error, response, body) {
             manchesterInfo = {"decryptedCharacter":data, "target":JSON.parse(body)};
@@ -90,31 +86,72 @@ io.on('connection', function (client) {
     });
 
     client.on('startFromTreasure', function(){
-        console.log("retransmitting start treasure command")
+        console.log("retransmitting start treasure command");
         io.emit('startFromTreasure');
     });
 
     client.on('sendBotIP', function(data){
         console.log(data);
     });
-    client.on('alignPositionToChargingStation', function(){
-        io.emit('alignPositionToChargingStation');
+    client.on('alignPositionToChargingStation', function(json){
+        io.emit('alignPositionToChargingStation', json);
     });
-    client.on('alignPositionToTreasure', function(){
-        io.emit('alignPositionToTreasure');
+    client.on('alignPositionToTreasure', function(json){
+        io.emit('alignPositionToTreasure', json);
     });
-    client.on('alignPositionToTarget', function (){
-        io.emit('alignPositionToTarget');
+    client.on('alignPositionToTarget', function (robotAngle){
+        io.emit('alignPositionToTarget', robotAngle);
     });
-    client.on('detectTreasure', function(robotAngle){
-        console.log(robotAngle);
-       io.emit('detectTreasure', robotAngle);
+    client.on('detectTreasure', function(jsonAngles){
+        console.log(jsonAngles);
+        io.emit('detectTreasure', jsonAngles);
     });
     client.on('setTreasures', function(data){
         console.log("sending treasures ");
-       io.emit('setTreasures', data);
+        io.emit('setTreasures', data);
+    });
+    client.on('rotateToChargingStation', function(angles){
+        io.emit('rotateToChargingStation', angles);
+    });
+    client.on('rotateDoneToChargingStation', function(isInSequence){
+        io.emit('rotateDoneToChargingStation', isInSequence);
+    });
+    client.on('rotateToTreasure', function(angles){
+        io.emit("rotateToTreasure", angles);
+    });
+    client.on("rotateDoneToTreasure", function(){
+        io.emit('rotateDoneToTreasure');
     });
 
+
+
+
+
+    //debug section
+    client.on("debugAlignBotToTarget", function(){
+        io.emit('debugAlignBotToTarget');
+    });
+    client.on("debugSendBotToTarget", function(){
+        io.emit('debugSendBotToTarget');
+    });
+    client.on("debugAlignBotToTreasure", function(){
+        io.emit('debugAlignBotToTreasure');
+    });
+    client.on("debugSendBotToTreasure", function(){
+        io.emit('debugSendBotToTreasure');
+    });
+    client.on("debugSearchAllTreasure", function(){
+        io.emit('debugSearchAllTreasure');
+    });
+    client.on("debugAlignBotToChargingStation", function(){
+        io.emit('debugAlignBotToChargingStation');
+    });
+    client.on("debugSendBotToChargingStation", function(){
+        io.emit('debugSendBotToChargingStation');
+    });
+    client.on("initializeWorld", function(){
+        io.emit('initializeWorld');
+    });
 });
 
 server.listen(port, url);

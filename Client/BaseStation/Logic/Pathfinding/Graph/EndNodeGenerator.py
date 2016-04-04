@@ -11,7 +11,7 @@ class EndNodeGenerator:
         self.graph = graph
 
 
-    def generateEndNode(self, currentObstacle, topRightCorner, bottomRightCorner, collisionBottomRightCorner, collisionUpperRightCorner, compteur):
+    def generateEndNode(self, currentObstacle, topRightCorner, bottomRightCorner, collisionBottomRightCorner, collisionUpperRightCorner, counter):
         if (collisionBottomRightCorner.positionY != self.MAP_SIZE_Y and collisionUpperRightCorner.positionY != 0):
             endNode = self.__twoCollisionOnTheRightSide(collisionBottomRightCorner, collisionUpperRightCorner, topRightCorner, bottomRightCorner, currentObstacle)
 
@@ -19,18 +19,18 @@ class EndNodeGenerator:
             endNode = self.__onlyOneCollision(bottomRightCorner, collisionBottomRightCorner, collisionUpperRightCorner,topRightCorner)
 
         elif (collisionBottomRightCorner.positionY == self.MAP_SIZE_Y and collisionUpperRightCorner.positionY == 0):
-                endNode = self.__noCollisionOnTheRightSide(compteur, currentObstacle)
+                endNode = self.__noCollisionOnTheRightSide(counter, currentObstacle)
 
         return endNode
 
 
-    def __noCollisionOnTheRightSide(self, compteur, currentObstacle):
+    def __noCollisionOnTheRightSide(self, counter, currentObstacle):
         safeZoneCornerTopLeft = (currentObstacle.positionX + self.SAFE_MARGIN, 0)
         safeZoneCornerBotLeft = (currentObstacle.positionX + self.SAFE_MARGIN, self.MAP_SIZE_Y)
-        if (compteur == self.obstaclesList.__len__() - 1):
+        if (counter == self.obstaclesList.__len__() - 1):
             endNode = self.__noCollision_obstacleIsTheLastOne(safeZoneCornerBotLeft, safeZoneCornerTopLeft)
         else:
-            endNode = self.__noCollision_ObstacleIsNotTheLastOne(compteur, safeZoneCornerBotLeft, safeZoneCornerTopLeft)
+            endNode = self.__noCollision_ObstacleIsNotTheLastOne(counter, safeZoneCornerBotLeft, safeZoneCornerTopLeft)
         endNode.isASafeNode = True
         return endNode
 

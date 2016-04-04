@@ -8,7 +8,7 @@ class ResultChecker:
         resultFileName = 'Results/Picture ' + str(pictureNumber) + '.txt'
         frameFileName = 'Frames/Picture ' + str(pictureNumber) + '.jpg'
         image = cv2.imread(frameFileName)
-        self.geometricalImage = WorldImage(image)
+        self.geometricalImage = WorldImage()
         self.geometricalImage.buildMap(image)
         self.geometricalImage.updateRobotPosition(image)
         resultFile = open(resultFileName, 'r')

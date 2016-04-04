@@ -9,16 +9,10 @@ import cv2
 import base64
 
 class BaseStationDispatcher():
-    def __init__(self):
-        self.world = worldVision()
+    def __init__(self, worldVision):
+        self.world = worldVision
         self.pathfinder = None
         self.path = None
-        self.timer = None
-
-    def handleCurrentSequencerState(self):
-        image, map = self.world.getCurrentImage()
-        self.path, signal = self.sequencer.handleCurrentState(map)
-        return self.path, signal
 
     def initialiseWorldData(self):
         self.world.initializeRound()
@@ -26,18 +20,23 @@ class BaseStationDispatcher():
         self.pathfinder = Pathfinder(map)
         mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
         convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.center)
-        self.sequencer = seq(self.pathfinder, convertedPoint)
-        return map.robot.center, map.robot.orientation
+        self.sequencer = seq(self.pathfinder)
+        return convertedPoint, map.robot.orientation
+
+    def handleCurrentSequencerState(self):
+        image, map = self.world.getCurrentImage()
+        self.path, signal, angleToRotateTo = self.sequencer.handleCurrentState(map)
+        return self.path, signal, angleToRotateTo
 
     def getCurrentWorldInformation(self):
         image, map = self.world.getCurrentImage()
         if(self.pathfinder != None):
             self.pathfinder.drawPath(image)
+        cv2.resize(image, (320,240))
         convertedImage = cv2.imencode('.png',image)[1]
         base64ConvertedImage = base64.encodestring(convertedImage)
         mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
         convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.center)
-
         informationToSend = {"robotPosition":convertedPoint,
                            "robotOrientation":map.robot.orientation,
                            "encodedImage":base64ConvertedImage}
@@ -46,21 +45,13 @@ class BaseStationDispatcher():
     def startFromBegining(self):
         self.sequencer.setState(SendingBotToChargingStationState())
 
-    def startFromTarget(self):
-        self.sequencer.setState(SendingBotToTargetState())
-
     def startFromTreasure(self):
         self.sequencer.setState(DetectTreasureState())
 
-    def getCurrentMap(self):
-        map = self.world.getCurrentMap()
-        mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
-        convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.center)
-        informationToSend = {"robotPosition":convertedPoint,
-                           "robotOrientation":map.robot.orientation}
-        return informationToSend
+    def startFromTarget(self):
+        self.sequencer.setState(SendingBotToTargetState())
 
-    def setTarget(self, jsonTarget):
+    def setTargetOnMap(self, jsonTarget):
         targetFactory = TargetFactory()
         target = targetFactory.constructTarget(jsonTarget)
         self.world.setTarget(target)
@@ -77,3 +68,18 @@ class BaseStationDispatcher():
         self.timer = threading.Timer(seconds, func_wrapper)
         self.timer.start()
         return self.timer
+
+
+    #debug section
+    def setSequencerStateToSendChargingStation(self):
+        self.sequencer.setState(SendingBotToChargingStationState())
+
+    def setSequencerStateToDetectTreasures(self):
+        self.sequencer.setState(DetectTreasureState())
+
+    def setSequencerStateToSendToTreasure(self):
+        self.sequencer.setState(SendingBotToTreasureState())
+
+    def setSequencerStateToSendToTarget(self):
+        self.sequencer.setState(SendingBotToTargetState())
+

@@ -1,10 +1,10 @@
 from ReferentialConverter import ReferentialConverter
-from Client.Robot.VisionEmbarque.VisionRobot import VisionRobot
+from Client.Robot.LocalVision.RobotVision import RobotVision
 from Client.Robot.Mechanical.CameraTower import CameraTower
 from Client.Robot.Mechanical.SerialPortCommunicator import SerialPortCommunicator
 from Client.Robot.Mechanical.ManchesterCode import ManchesterCode
-from Client.Robot.VisionEmbarque.tresorsDetection import TreasuresDetector
-from Client.Robot.Mechanical.maestro import Controller
+from Client.Robot.LocalVision.TreasuresDetector import TreasuresDetector
+from Client.Robot.Mechanical.PositionAdjuster import PositionAdjuster
 import platform
 import cv2
 from os import system
@@ -12,11 +12,11 @@ from os import system
 
 
 class BotDispatcher():
-    def __init__(self, wheelManager):
+    def __init__(self, wheelManager, maestro):
         self.wheelManager = wheelManager
-        self.maestro =Controller()
+        self.maestro = maestro
         self.cameraTower = CameraTower(self.maestro)
-
+        self.treasureAngle = 0
 
         if platform.linux_distribution()[0].lower() == "Ubuntu".lower():
             self.video = cv2.VideoCapture(1)
@@ -24,8 +24,13 @@ class BotDispatcher():
         elif platform.linux_distribution()[0].lower() == "Fedora".lower():
             self.video = cv2.VideoCapture(0)
             system("v4l2-ctl --device=0 --set-ctrl gain=50")
+        else:
+            self.video = cv2.VideoCapture(0)
 
-        self.vision = VisionRobot(wheelManager,self.cameraTower, self.video )
+
+        self.vision = RobotVision(wheelManager, self.cameraTower, self.video)
+        self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro)
+
 
     def followPath(self, coordinates):
         print(coordinates)
@@ -40,16 +45,29 @@ class BotDispatcher():
         pointConverted = referentialConverter.convertWorldToRobot((int(coordinates["positionTOx"]), int(coordinates["positionTOy"])))
         self.wheelManager.moveTo(pointConverted)
 
-    def alignToTreasure(self):
-        self.vision.approcheVersTresor()
+    def alignToTreasure(self, maestro):
+        self.positionAdjuster = None
+        self.maestro = maestro
+        self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro)
+        self.positionAdjuster.getCloserToTreasure()
 
-    def detectTreasure(self, robotAngle):
-        self.wheelManager.setOrientation(robotAngle, 180)
+    def detectTreasure(self):
         treasureDetector = TreasuresDetector(self.cameraTower, self.video )
         return treasureDetector.buildTresorsAngleList()
+
+    def setRobotOrientation(self, robotAngle, angleToGetRobotTo):
+        self.wheelManager.setOrientation(robotAngle, angleToGetRobotTo)
+
+    def alignToChargingStation(self):
+        self.positionAdjuster.getCloserToChargingStation()
+
+    def getRobotBackOnMap(self):
+        self.positionAdjuster.stopCharging()
+
 
     def readManchester(self):
         serial = SerialPortCommunicator()
         manchester = ManchesterCode(serial)
         return manchester.getAsciiManchester()
+
 

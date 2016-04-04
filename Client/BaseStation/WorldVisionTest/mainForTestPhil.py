@@ -9,7 +9,7 @@ import cProfile
 
 def myMain():
     frame = cv2.imread('Photo-Test/Frames/Picture 500.jpg')
-    geometricalImage = WorldImage(frame)
+    geometricalImage = WorldImage()
 
     #while(True):
 
@@ -21,7 +21,7 @@ def myMain():
     geometricalImage.buildMap(frame)
     geometricalImage.updateRobotPosition(frame)
     geometricalImage.addLabels(frame)
-    worldImage = geometricalImage.drawMapOnImage(frame)
+    worldImage = geometricalImage.drawMapOnFrame(frame)
     cv2.imshow("resized", frame)
 
     #if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -35,7 +35,7 @@ def myMain2():
     camera.set(4, 2448)
 
     frame = cv2.imread('Photo-Test/Frames/Picture 500.jpg')
-    geometricalImage = WorldImage(frame)
+    geometricalImage = WorldImage()
 
     while(True):
 

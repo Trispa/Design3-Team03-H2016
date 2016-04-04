@@ -1,16 +1,18 @@
 import json
 import os
 import sys
-from threading import current_thread
+import cProfile
+
 import time
 from Logic.BaseStationDispatcher import BaseStationDispatcher
+from WorldVision.worldVision import worldVision
 
 sys.path.insert(1, "/Logic")
 sys.path.append("/../../Shared")
 
 from socketIO_client import SocketIO
 from threading import Thread
-dispatcher = BaseStationDispatcher()
+dispatcher = BaseStationDispatcher(worldVision())
 
 c = os.path.dirname(__file__)
 configPath = os.path.join(c, "..", "..", "Shared", "config.json")
@@ -19,10 +21,9 @@ with open(configPath) as json_data_file:
 
 socketIO = SocketIO(config['url'], int(config['port']))
 
-def verifyIfMoving(path, nextSignal):
+def verifyIfMoving(path, nextSignal, angleToRotate):
     print("verify if moving")
-    print current_thread()
-    pixelRangeToSendNextCoordinates = 8
+    pixelRangeToSendNextCoordinates = 10
     for nodeBotIsGoingTo in range(0, len(path)):
         xPositionOfNodeThatBotIsGoingTo = path[nodeBotIsGoingTo].positionX
         yPositionOfNodeThatBotIsGoingTo = path[nodeBotIsGoingTo].positionY
@@ -42,13 +43,15 @@ def verifyIfMoving(path, nextSignal):
             botPositionY = botInfo["robotPosition"][1]
             botOrientation = botInfo["robotOrientation"]
             print "not close enough"
-
-        print "close enough"
         time.sleep(5)
+        print "close enough"
 
         if(nodeBotIsGoingTo+1 == len(path)):
             print("emitting" + nextSignal)
-            socketIO.emit(nextSignal, botOrientation)
+            jsonToSend = {"botOrientation":botOrientation,
+                          "angleToGo":angleToRotate,
+                          "sequence":True}
+            socketIO.emit(nextSignal, jsonToSend)
 
         else:
             print("sending bot to next coordinates")
@@ -61,10 +64,21 @@ def verifyIfMoving(path, nextSignal):
             socketIO.emit("sendNextCoordinates", jsonToSend)
 
 def sendNextCoordinates():
-    path, nextSignal = dispatcher.handleCurrentSequencerState()
+    path, nextSignal, angleToRotate = dispatcher.handleCurrentSequencerState()
     if(path != None and nextSignal != None):
-        Thread(target=verifyIfMoving, args=(path, nextSignal)).start()
+        verifyIfMoving(path, nextSignal, angleToRotate)
 
+def sendAlignPositionToChargingStationSignal():
+    botInfo = dispatcher.getCurrentWorldInformation()
+    jsonToSend = {"robotOrientation":botInfo['robotOrientation'],
+                  "sequence":True}
+    socketIO.emit('alignPositionToChargingStation', jsonToSend)
+
+def sendAlignPositionToTreasureSignal():
+    botInfo = dispatcher.getCurrentWorldInformation()
+    jsonToSend = {"robotOrientation":botInfo['robotOrientation'],
+                  "sequence":True}
+    socketIO.emit('alignPositionToTreasure', jsonToSend)
 
 def startRound():
     botPosition, botOrientation = dispatcher.initialiseWorldData()
@@ -79,15 +93,16 @@ def startSignal(botPosition, botOrientation):
             "orientation": botOrientation}
     socketIO.emit("startSignalRobot",botState)
 
-def sendInfo():
+def sendInformations():
     print("asking for new informations")
     socketIO.emit('sendInfo', dispatcher.getCurrentWorldInformation())
 
-def setTarget(manchesterInfo):
-    dispatcher.setTarget(manchesterInfo['target'])
+def setTarget(jsonTarget):
+    dispatcher.setTargetOnMap(jsonTarget['target'])
 
 def startFromTreasure():
     print("start from treasure launch")
+    socketIO.emit("sendManchesterCode", "A")
     botPosition, botOrientation = dispatcher.initialiseWorldData()
     dispatcher.startFromTreasure()
     startSignal(botPosition, botOrientation)
@@ -103,9 +118,91 @@ def setTreasuresOnMap(data):
 
 def sendImageThread():
     while True:
-        sendInfo()
+        sendInformations()
         time.sleep(5)
 
+
+
+
+
+
+
+
+
+
+#debug section
+def verifyIfMovingDebug(path, nextSignal, angleToRotate):
+    print("verify if moving")
+    pixelRangeToSendNextCoordinates = 10
+    for nodeBotIsGoingTo in range(0, len(path)):
+        xPositionOfNodeThatBotIsGoingTo = path[nodeBotIsGoingTo].positionX
+        yPositionOfNodeThatBotIsGoingTo = path[nodeBotIsGoingTo].positionY
+
+        botInfo = dispatcher.getCurrentWorldInformation()
+
+        botPositionX = botInfo["robotPosition"][0]
+        botPositionY = botInfo["robotPosition"][1]
+
+        while ((botPositionX > xPositionOfNodeThatBotIsGoingTo + pixelRangeToSendNextCoordinates or
+            botPositionX < xPositionOfNodeThatBotIsGoingTo - pixelRangeToSendNextCoordinates) and
+               (botPositionY > yPositionOfNodeThatBotIsGoingTo + pixelRangeToSendNextCoordinates or
+            botPositionY < yPositionOfNodeThatBotIsGoingTo - pixelRangeToSendNextCoordinates)):
+            botInfo = dispatcher.getCurrentWorldInformation()
+            botPositionX = botInfo["robotPosition"][0]
+            botPositionY = botInfo["robotPosition"][1]
+            print "not close enough"
+        time.sleep(5)
+        print "close enough"
+
+        if(nodeBotIsGoingTo+1 != len(path)):
+            print("sending bot to next coordinates")
+            botInfo = dispatcher.getCurrentWorldInformation()
+            jsonToSend = {"positionFROMx" : botInfo["robotPosition"][0],
+                          "positionFROMy" : botInfo["robotPosition"][1],
+                          "positionTOx" : path[nodeBotIsGoingTo+1].positionX,
+                          "positionTOy" : path[nodeBotIsGoingTo+1].positionY,
+                          "orientation":botInfo["robotOrientation"]}
+            socketIO.emit("sendNextCoordinates", jsonToSend)
+
+def debugSendBotToChargingStation():
+    dispatcher.setSequencerStateToSendChargingStation()
+    path, nextSignal, angleToRotate = dispatcher.handleCurrentSequencerState()
+    verifyIfMovingDebug(path, nextSignal, angleToRotate)
+
+def debugAlignBotToChargingStation():
+    botInfo = dispatcher.getCurrentWorldInformation()
+    jsonToSend = {"robotOrientation":botInfo['robotOrientation'],
+                  "sequence":False}
+    socketIO.emit('alignPositionToChargingStation', jsonToSend)
+
+def debugSearchAllTreasure():
+    dispatcher.setSequencerStateToDetectTreasures()
+    path, nextSignal, angleToRotate = dispatcher.handleCurrentSequencerState()
+    verifyIfMovingDebug(path, nextSignal, angleToRotate)
+    botInfo = dispatcher.getCurrentWorldInformation()
+    jsonToSend = {"botOrientation":botInfo['robotOrientation'],
+                  "angleToGo":180,
+                  "sequence":False}
+    socketIO.emit(nextSignal, jsonToSend)
+
+def debugSendBotToTreasure():
+    dispatcher.setSequencerStateToSendToTreasure()
+    path, nextSignal, angleToRotate = dispatcher.handleCurrentSequencerState()
+    verifyIfMovingDebug(path, nextSignal, angleToRotate)
+
+def debugAlignBotToTreasure():
+    botInfo = dispatcher.getCurrentWorldInformation()
+    jsonToSend = {"robotOrientation":botInfo['robotOrientation'],
+                  "sequence":False}
+    socketIO.emit('alignPositionToTreasure', jsonToSend)
+
+def debugSendBotToTarget():
+    dispatcher.setSequencerStateToSendToTarget()
+    path, nextSignal, angleToRotate = dispatcher.handleCurrentSequencerState()
+    verifyIfMovingDebug(path, nextSignal, angleToRotate)
+
+def initializeWorld():
+    dispatcher.initialiseWorldData()
 
 Thread(target=sendImageThread).start()
 
@@ -117,5 +214,16 @@ socketIO.on("startFromTreasure", startFromTreasure)
 socketIO.on("startFromTarget", startFromTarget)
 socketIO.on('setTreasures', setTreasuresOnMap)
 
+
+socketIO.on('debugSendBotToChargingStation', debugSendBotToChargingStation)
+socketIO.on('debugAlignBotToChargingStation', debugAlignBotToChargingStation)
+socketIO.on('debugSearchAllTreasure', debugSearchAllTreasure)
+socketIO.on('debugSendBotToTreasure', debugSendBotToTreasure)
+socketIO.on('debugAlignBotToTreasure', debugAlignBotToTreasure)
+socketIO.on('debugSendBotToTarget', debugSendBotToTarget)
+socketIO.on('initializeWorld', initializeWorld)
+socketIO.on('rotateDoneToTreasure', sendAlignPositionToTreasureSignal)
+socketIO.on('rotateDoneToChargingStation', sendAlignPositionToChargingStationSignal)
+#cProfile.run('socketIO.wait()')
 socketIO.wait()
 
