@@ -40,8 +40,8 @@ class ReferentialConverterTest(TestCase):
         pointConverted = self.referentialConverter.convertWorldToRobot(self.DEFAULT_POINT)
         ConvertedPointShouldBe = (0,0)
 
-        self.assertEqual(ConvertedPointShouldBe.__getitem__(0), pointConverted.__getitem__(0).__getitem__(0))
-        self.assertEqual(ConvertedPointShouldBe.__getitem__(1), pointConverted.__getitem__(1).__getitem__(0))
+        self.assertEqual(ConvertedPointShouldBe.__getitem__(0), pointConverted.__getitem__(0))
+        self.assertEqual(ConvertedPointShouldBe.__getitem__(1), pointConverted.__getitem__(1))
 
 
 
@@ -49,5 +49,5 @@ class ReferentialConverterTest(TestCase):
         pointConverted = self.referentialConverter.convertWorldToRobot(self.ANOTHER_POINT)
         ConvertedPointShouldBe = (100,-50)
 
-        self.assertEqual(ConvertedPointShouldBe.__getitem__(0), pointConverted.__getitem__(0).__getitem__(0))
-        self.assertEqual(ConvertedPointShouldBe.__getitem__(1), pointConverted.__getitem__(1).__getitem__(0))
+        self.assertEqual(ConvertedPointShouldBe.__getitem__(0), pointConverted.__getitem__(0))
+        self.assertEqual(ConvertedPointShouldBe.__getitem__(1), pointConverted.__getitem__(1))

@@ -4,7 +4,7 @@ class Sequencer :
     def setState(self, newState) :
         self.state = newState
 
-    def __init__(self, pathfinder, botPosition) :
+    def __init__(self, pathfinder) :
         self.pathfinder = pathfinder
         self.setState(SequencerState.SendingBotToChargingStationState())
 

@@ -2,16 +2,17 @@ import json
 import os
 import sys
 import cProfile
-from threading import current_thread
+
 import time
 from Logic.BaseStationDispatcher import BaseStationDispatcher
+from WorldVision.worldVision import worldVision
 
 sys.path.insert(1, "/Logic")
 sys.path.append("/../../Shared")
 
 from socketIO_client import SocketIO
 from threading import Thread
-dispatcher = BaseStationDispatcher()
+dispatcher = BaseStationDispatcher(worldVision())
 
 c = os.path.dirname(__file__)
 configPath = os.path.join(c, "..", "..", "Shared", "config.json")
@@ -67,13 +68,13 @@ def sendNextCoordinates():
     if(path != None and nextSignal != None):
         verifyIfMoving(path, nextSignal, angleToRotate)
 
-def alignPositionToChargingStation():
+def sendAlignPositionToChargingStationSignal():
     botInfo = dispatcher.getCurrentWorldInformation()
     jsonToSend = {"robotOrientation":botInfo['robotOrientation'],
                   "sequence":True}
     socketIO.emit('alignPositionToChargingStation', jsonToSend)
 
-def alignPositionToTreasure():
+def sendAlignPositionToTreasureSignal():
     botInfo = dispatcher.getCurrentWorldInformation()
     jsonToSend = {"robotOrientation":botInfo['robotOrientation'],
                   "sequence":True}
@@ -92,12 +93,12 @@ def startSignal(botPosition, botOrientation):
             "orientation": botOrientation}
     socketIO.emit("startSignalRobot",botState)
 
-def sendInfo():
+def sendInformations():
     print("asking for new informations")
     socketIO.emit('sendInfo', dispatcher.getCurrentWorldInformation())
 
-def setTarget(manchesterInfo):
-    dispatcher.setTarget(manchesterInfo['target'])
+def setTarget(jsonTarget):
+    dispatcher.setTargetOnMap(jsonTarget['target'])
 
 def startFromTreasure():
     print("start from treasure launch")
@@ -117,7 +118,7 @@ def setTreasuresOnMap(data):
 
 def sendImageThread():
     while True:
-        sendInfo()
+        sendInformations()
         time.sleep(5)
 
 
@@ -212,8 +213,7 @@ socketIO.on("verifyIfMoving", verifyIfMoving)
 socketIO.on("startFromTreasure", startFromTreasure)
 socketIO.on("startFromTarget", startFromTarget)
 socketIO.on('setTreasures', setTreasuresOnMap)
-socketIO.on('rotateDoneToTreasure', alignPositionToTreasure)
-socketIO.on('rotateDoneToChargingStation', alignPositionToChargingStation)
+
 
 socketIO.on('debugSendBotToChargingStation', debugSendBotToChargingStation)
 socketIO.on('debugAlignBotToChargingStation', debugAlignBotToChargingStation)
@@ -222,6 +222,8 @@ socketIO.on('debugSendBotToTreasure', debugSendBotToTreasure)
 socketIO.on('debugAlignBotToTreasure', debugAlignBotToTreasure)
 socketIO.on('debugSendBotToTarget', debugSendBotToTarget)
 socketIO.on('initializeWorld', initializeWorld)
+socketIO.on('rotateDoneToTreasure', sendAlignPositionToTreasureSignal)
+socketIO.on('rotateDoneToChargingStation', sendAlignPositionToChargingStationSignal)
 #cProfile.run('socketIO.wait()')
 socketIO.wait()
 

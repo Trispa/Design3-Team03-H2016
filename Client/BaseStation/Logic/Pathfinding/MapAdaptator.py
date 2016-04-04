@@ -5,8 +5,10 @@ class MapAdaptator:
         self.map = map
 
     def getMapInfo(self):
-        minCorner = (self.map.limit.getMinCorner())
-        maxCorner = (self.map.limit.getMaxCorner())
+
+        limit = self.map.getMapLimit()
+        minCorner = (limit.getMinCorner())
+        maxCorner = (limit.getMaxCorner())
         mapSizeX = maxCorner[0] - minCorner[0]
         mapSizeY = maxCorner[1] - minCorner[1]
 

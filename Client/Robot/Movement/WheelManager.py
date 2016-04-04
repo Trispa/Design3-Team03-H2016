@@ -1,10 +1,12 @@
 import time
-import Client.Robot.Mechanical.SerialPortCommunicator
-from Client.Robot.Logic.ReferentialConverter import ReferentialConverter
-import numpy as np
-from Client.Robot.Logic.Deplacement.PixelToCentimeterConverter import PixelToCentimeterConverter
+from threading import Timer
 
-from threading import Timer,Thread,Event
+import numpy as np
+
+import Client.Robot.Mechanical.SerialPortCommunicator
+from Client.Robot.Movement.PixelToCentimeterConverter import PixelToCentimeterConverter
+from Client.Robot.Logic.ReferentialConverter import ReferentialConverter
+
 
 class WheelManager:
     NB_MOTEUR = 5
@@ -18,8 +20,8 @@ class WheelManager:
     MAX_SPEED_VISION = 0.03
     ROTATION_SPEED = 0.05
 
-    def __init__(self):
-        self.spc = Client.Robot.Mechanical.SerialPortCommunicator.SerialPortCommunicator()
+    def __init__(self, serialPortCommunicator):
+        self.spc = serialPortCommunicator
         self.pixelToCentimeterConverter = PixelToCentimeterConverter()
         self.thread = None
         self.isMoving = False
@@ -62,10 +64,10 @@ class WheelManager:
 
         # self.debutDeLInterruption(timeToTravel)
         time.sleep(timeToTravel)
-        self.__stopAllMotors()
+        self.stopAllMotors()
         return timeToTravel
 
-    def moveToInfinit(self, pointX, pointY):
+    def moveForever(self, pointX, pointY):
 
         self.isMoving = True
         self.__resetMotors()
@@ -105,25 +107,22 @@ class WheelManager:
         print timeToSleep
         time.sleep(timeToSleep)
         # self.debutDeLInterruption(timeToSleep)
-        self.__stopAllMotors()
+        self.stopAllMotors()
         return timeToSleep
 
 
     def setOrientation(self, currentRobotOrientation, angleToSet):
         if (angleToSet - currentRobotOrientation < 0 and angleToSet - currentRobotOrientation <= -180):
             angleToSet += 360
-	    print "1"
             angleToRotate = -(angleToSet - currentRobotOrientation)
         elif (angleToSet - currentRobotOrientation < 0 and angleToSet - currentRobotOrientation > -180):
-            print "2"
-	    angleToRotate = -(currentRobotOrientation - angleToSet)
+            angleToRotate = -(currentRobotOrientation - angleToSet)
         elif (angleToSet - currentRobotOrientation < 180):
-            print "3"
-	    angleToRotate = angleToSet - currentRobotOrientation
+            angleToRotate = angleToSet - currentRobotOrientation
         else:
             angleToRotate = angleToSet - (currentRobotOrientation+360)
         print angleToRotate
-	self.rotate(-angleToRotate)
+        self.rotate(-angleToRotate)
 
 
     def isRunning(self):
@@ -145,62 +144,60 @@ class WheelManager:
 
 
     def __resetMotors(self):
-        self.__stopAllMotors()
+        self.stopAllMotors()
         time.sleep(0.2)
 
-    def __debutDeLInterruption(self, timeToWait):
-        self.thread = Timer(timeToWait, self.__stopAllMotorsInterrupt)
+    def __interruptionStart(self, timeToWait):
+        self.thread = Timer(timeToWait, self.__stopAllMotorsFromInterruption)
         self.thread.start()
 
-    def __stopAllMotors(self):
+    def stopAllMotors(self):
         self.spc.stopAllMotor()
         self.isMoving = False
 
-    def stopAllMotors(self):
-        self.__stopAllMotors()
-
-    def __stopAllMotorsInterrupt(self):
+    def __stopAllMotorsFromInterruption(self):
         self.spc.stopAllMotor()
         self.isMoving = False
         self.thread.cancel()
 
 
-    def demo3(self):
-        self.moveTo(0, 66)
-        time.sleep(0.5)
-        self.moveTo(-66, 0)
-        time.sleep(0.5)
-        self.moveTo(0, -66)
-        time.sleep(0.5)
-        self.moveTo(66, 0)
-        time.sleep(0.5)
-        self.moveTo(-50, -50)
-        time.sleep(0.5)
-        self.moveTo(50, 50)
-
-
-    def demoR(self):
-        self.rotate("CW", 180)
-        time.sleep(1)
-        self.rotate("CCW", 90)
-        time.sleep(1)
-        self.rotate("CW", 90)
-        time.sleep(1)
-        self.rotate("CCW", 180)
+    # def demo3(self):
+    #     self.moveTo(0, 66)
+    #     time.sleep(0.5)
+    #     self.moveTo(-66, 0)
+    #     time.sleep(0.5)
+    #     self.moveTo(0, -66)
+    #     time.sleep(0.5)
+    #     self.moveTo(66, 0)
+    #     time.sleep(0.5)
+    #     self.moveTo(-50, -50)
+    #     time.sleep(0.5)
+    #     self.moveTo(50, 50)
+    #
+    #
+    # def demoR(self):
+    #     self.rotate("CW", 180)
+    #     time.sleep(1)
+    #     self.rotate("CCW", 90)
+    #     time.sleep(1)
+    #     self.rotate("CW", 90)
+    #     time.sleep(1)
+    #     self.rotate("CCW", 180)
 
 
 if __name__ == '__main__':
-    mr = WheelManager()
-    mr.stopAllMotors()
-    time.sleep(0.1)
-
-    mr.moveTo((0, 50))
-    time.sleep(2)
-    mr.moveTo((0, -50))
-    time.sleep(2)
-    mr.moveTo((50, 0))
-    time.sleep(2)
-    mr.moveTo((-50, 0))
+    pass
+    # mr = WheelManager()
+    # mr.stopAllMotors()
+    # time.sleep(0.1)
+    #
+    # mr.moveTo((0, 50))
+    # time.sleep(2)
+    # mr.moveTo((0, -50))
+    # time.sleep(2)
+    # mr.moveTo((50, 0))
+    # time.sleep(2)
+    # mr.moveTo((-50, 0))
     # mr.avanceVector(10, 0)
     # mr.avanceVector(0, 10)
     # mr.avanceVector(0, -10)

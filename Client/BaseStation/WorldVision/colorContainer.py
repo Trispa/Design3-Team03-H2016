@@ -22,5 +22,5 @@ class ColorContainer():
     def getAllColors(self):
         return self.colors
 
-    def getIslandColor(self):
+    def getIslandColors(self):
         return self.islandColors

@@ -1,13 +1,13 @@
 import json
 import os
 import socket
-import fcntl
 import struct
-
+from Client.Robot.Mechanical.maestro import Controller
+from Client.Robot.Mechanical.SerialPortCommunicator import SerialPortCommunicator
+import fcntl
 from socketIO_client import SocketIO
 
-from Client.Robot.Logic.Deplacement.WheelManager import WheelManager
-
+from Client.Robot.Movement.WheelManager import WheelManager
 from Logic.BotDispatcher import BotDispatcher
 
 c = os.path.dirname(__file__)
@@ -17,9 +17,9 @@ with open(configPath) as json_data_file:
     config = json.load(json_data_file)
 socketIO = SocketIO(config['url'], int(config['port']))
 
-botDispatcher = BotDispatcher(WheelManager())
+botDispatcher = BotDispatcher(WheelManager(SerialPortCommunicator()), Controller())
 
-def needNewCoordinates(data):
+def goToNextPosition(data):
     print("heading toward next coordinates")
     botDispatcher.followPath(data)
 
@@ -31,9 +31,10 @@ def startRound(*args):
 def alignToTreasure(json):
     if(json['sequence']):
         botDispatcher.setRobotOrientation(json['robotOrientation'], botDispatcher.treasureAngle)
-    botDispatcher.alignToTreasure()
+    botDispatcher.alignToTreasure(Controller())
     if(json['sequence']):
         socketIO.emit("needNewCoordinates")
+
 
 def rotateToChargingStation(json):
     botDispatcher.setRobotOrientation(float(json['botOrientation']), float(json['angleToGo']))
@@ -51,7 +52,7 @@ def alignToChargingStation(json):
         botDispatcher.setRobotOrientation(json['robotOrientation'], angleToGetForChargingStation)
     botDispatcher.alignToChargingStation()
     readManchester()
-    botDispatcher.returnToMap()
+    botDispatcher.getRobotBackOnMap()
     if(json['sequence']):
         socketIO.emit("needNewCoordinates")
 
@@ -77,14 +78,14 @@ def get_ip_address(ifname):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     return socket.inet_ntoa(fcntl.ioctl(
         s.fileno(),
-        0x8915,  # SIOCGIFADDR
+        0x8915,
         struct.pack('256s', ifname[:15])
     )[20:24])
 
 socketIO.emit('sendBotClientStatus','Connected')
 socketIO.emit('sendBotIP', get_ip_address('wlp4s0'))
 
-socketIO.on('sendNextCoordinates', needNewCoordinates)
+socketIO.on('sendNextCoordinates', goToNextPosition)
 socketIO.on('startSignalRobot', startRound)
 socketIO.on('sendEndSignal', endRound)
 socketIO.on('readManchester', readManchester)

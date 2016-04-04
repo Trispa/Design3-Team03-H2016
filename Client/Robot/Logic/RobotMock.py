@@ -8,7 +8,7 @@ import thread
 class RobotMock:
     def __init__(self):
         self.isMoving = False
-        self.orientation = 0;
+        self.orientation = 0
         self.positionX = random.randrange(100, 900)
         self.positionY = random.randrange(100, 500)
         self.botInfo = {"voltage" : "N/A",
@@ -73,7 +73,7 @@ class RobotMock:
                 if event == cv2.EVENT_FLAG_LBUTTON:
                     pointToMove = (x, y)
                     if self.isMoving == False:
-                        self.moveTo(pointToMove);
+                        self.moveTo(pointToMove)
 
             self.__setFirstDisplay(mouseAction)
 
@@ -81,7 +81,6 @@ class RobotMock:
                 esc = cv2.waitKey(1)
                 if esc == 27: #escape pressed
                     break
-            cv2.destroyAllWindows
 
 
     def __setFirstDisplay(self, mouseAction):
