@@ -6,6 +6,7 @@ import numpy as np
 
 from Client.Robot.Movement.WheelManager import WheelManager
 from Client.Robot.Mechanical.CameraTower import CameraTower
+from Client.BaseStation.WorldVision.colorContainer import ColorContainer
 
 
 class RobotVision:
@@ -27,15 +28,30 @@ class RobotVision:
         yellowDown = [0, 90, 90]
         yellowUp = [45, 255, 255]
 
-        self.color = [(yellowDown, yellowUp)]
+        greenDown = [0, 100, 0]
+        greenUp = [66, 255, 66]
 
-    def detectColor(self):
+        self.yellowColor = [(yellowDown, yellowUp)]
+        self.greenColor = [(greenDown, greenUp)]
+
+    def detectTreasureColor(self):
         self.mask = 0
-        for(lower, upper) in self.color:
+        for(lower, upper) in self.yellowColor:
             lower = np.array(lower, dtype = "uint8")
             upper = np.array(upper, dtype="uint8")
 
             self.mask = self.mask + cv2.inRange(self.image, lower, upper)
+
+    def detectChargingStationColor(self):
+        self.mask = 0
+
+        colorContainer = ColorContainer()
+        hsvImage = cv2.cvtColor(self.image,cv2.COLOR_BGR2HSV)
+
+        lower = colorContainer.green.lower
+        upper = colorContainer.green.higher
+
+        self.mask = self.mask + cv2.inRange(hsvImage, lower, upper)
 
     def findContour(self):
 
@@ -223,7 +239,7 @@ class RobotVision:
 
         while(self.video.isOpened()):
             ret, self.image = self.video.read()
-            self.detectColor()
+            self.detectTreasureColor()
             self.findContour()
 
             if not findSomething:
@@ -288,6 +304,87 @@ class RobotVision:
                 break
         self.video.release()
         cv2.destroyAllWindows()
+
+    def getCloserToChargingStation(self):
+        findSomething = False
+        movingY = False
+        moveYArriver = False
+        movingX = False
+        moveXArriver = False
+        self.tresor = None
+        lastAngle= 180
+
+        self.camera.moveCameraByAngle(1, 70)
+        self.camera.moveCameraByAngle(0, 30)
+
+        while(self.video.isOpened()):
+            ret, self.image = self.video.read()
+            self.detectChargingStationColor()
+            self.findContour()
+
+            if not findSomething:
+                findSomething = self.swipeCamera()
+
+            if self.tresor == None:
+                findSomething = False
+                movingY = False
+                moveYArriver = False
+                movingX = False
+                moveXArriver = False
+
+
+
+            center = self.moveCamera()
+
+
+            if not self.robot.isMoving and center:
+                if not movingY and not moveYArriver:
+                    diff = self.differenceParraleleLines()
+                    if diff < 0:
+                        self.robot.moveForever(0, -30)
+                    else:
+                        self.robot.moveForever(0, 30)
+                    movingY = True
+
+                if moveYArriver:
+                    if not movingX and not moveXArriver:
+                        self.robot.moveForever(30, 0)
+                        movingX = True
+
+            if movingY and not moveYArriver:
+                if abs(self.differenceParraleleLines()) < 8:
+                    self.robot.stopAllMotors()
+                    moveYArriver = True
+                    movingY = False
+
+
+            if movingX and not moveXArriver:
+                print self.camera.verticalDegree
+
+
+                if self.camera.verticalDegree <= 20:
+                    self.robot.stopAllMotors()
+                    moveXArriver = True
+                elif self.camera.verticalDegree <= (lastAngle - 0.5) and self.camera.verticalDegree >= 16:
+                    print "Ajustement en Y", self.camera.verticalDegree
+                    self.robot.stopAllMotors()
+                    # moveXArriver = True
+                    moveYArriver = False
+                    movingX = False
+                    lastAngle = self.camera.verticalDegree
+
+
+
+            if moveYArriver and moveXArriver:
+                print "!!! ARRIVER !!!"
+                return True
+
+            cv2.imshow("Image", self.image)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+        self.video.release()
+        cv2.destroyAllWindows()
+
 
 
 if __name__ == "__main__":

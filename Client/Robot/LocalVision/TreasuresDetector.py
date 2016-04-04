@@ -22,7 +22,7 @@ class TreasuresDetector:
     def setMask(self):
         blurMapImage = cv2.GaussianBlur(self.image, (5, 5), 0)
         coloredImage = cv2.cvtColor(blurMapImage,cv2.COLOR_BGR2HSV)
-        self.mask = cv2.inRange(coloredImage, ColorContainer.yellow.lower, ColorContainer.yellow.higher)
+        self.mask = cv2.inRange(coloredImage, ColorContainer.yellowTreasure.lower, ColorContainer.yellowTreasure.higher)
 
     def findContour(self):
         kernel = np.ones((5,5),np.uint8)

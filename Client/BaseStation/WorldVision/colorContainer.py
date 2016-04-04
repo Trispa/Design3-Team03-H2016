@@ -6,7 +6,8 @@ class ColorContainer():
     colors = []
     islandColors = []
 
-    yellow = colorFactory.constructColor(np.uint8([[[162,148,17]]]), "YellowTreasure")
+    yellowTreasure = colorFactory.constructColor(np.uint8([[[162, 148, 17]]]), "YellowTreasure")
+    green = colorFactory.constructColor(np.uint8([[[0,255,0]]]), "Green")
 
     islandColors.append(colorFactory.constructColor(np.uint8([[[0,255,0]]]), "Green"))
     islandColors.append(colorFactory.constructColor(np.uint8([[[255,0,0]]]), "Blue"))
