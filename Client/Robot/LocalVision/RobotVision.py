@@ -285,11 +285,12 @@ class RobotVision:
 
 
 if __name__ == "__main__":
-    mr = WheelManager()
-    ct = CameraTower()
-    vr = RobotVision(mr, ct)
-
-    vr.getCloserToTreasures()
+    pass
+    # mr = WheelManager()
+    # ct = CameraTower()
+    # vr = RobotVision(mr, ct)
+    #
+    # vr.getCloserToTreasures()
     # vr.goDetectTresorAround()
     # print("distance")
     # print(vr.DistanceAdjascentte(34))

@@ -3,7 +3,7 @@ import os
 import socket
 import struct
 from Client.Robot.Mechanical.maestro import Controller
-
+from Client.Robot.Mechanical.SerialPortCommunicator import SerialPortCommunicator
 import fcntl
 from socketIO_client import SocketIO
 
@@ -17,7 +17,7 @@ with open(configPath) as json_data_file:
     config = json.load(json_data_file)
 socketIO = SocketIO(config['url'], int(config['port']))
 
-botDispatcher = BotDispatcher(WheelManager(), Controller())
+botDispatcher = BotDispatcher(WheelManager(SerialPortCommunicator()), Controller())
 
 def goToNextPosition(data):
     print("heading toward next coordinates")

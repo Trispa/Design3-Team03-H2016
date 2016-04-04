@@ -106,11 +106,11 @@ class LineOfSightCalculator:
 
 
     def __isInXRange(self,intersection, pointA1, pointA2, pointB1, pointB2):
-        return (intersection[0] < pointB2[0] and intersection[0] > pointB1[0]) and (
-                    intersection[0] < pointA2[0] and intersection[0] > pointA1[0])
+        return (intersection[0] <= pointB2[0] and intersection[0] >= pointB1[0]) and (
+                    intersection[0] <= pointA2[0] and intersection[0] >= pointA1[0])
 
 
     def __isInYRange(self,intersection, pointA1, pointA2, pointB1, pointB2):
-        return (intersection[1] < pointB2[1] and intersection[1] > pointB1[1]) and (
-                    intersection[1] < pointA2[1] and intersection[1] > pointA1[1])
+        return (intersection[1] <= pointB2[1] and intersection[1] >= pointB1[1]) and (
+                    intersection[1] <= pointA2[1] and intersection[1] >= pointA1[1])
 
