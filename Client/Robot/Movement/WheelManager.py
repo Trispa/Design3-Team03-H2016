@@ -20,8 +20,8 @@ class WheelManager:
     MAX_SPEED_VISION = 0.03
     ROTATION_SPEED = 0.05
 
-    def __init__(self):
-        self.spc = Client.Robot.Mechanical.SerialPortCommunicator.SerialPortCommunicator()
+    def __init__(self, serialPortCommunicator):
+        self.spc = serialPortCommunicator
         self.pixelToCentimeterConverter = PixelToCentimeterConverter()
         self.thread = None
         self.isMoving = False
@@ -189,17 +189,18 @@ class WheelManager:
 
 
 if __name__ == '__main__':
-    mr = WheelManager()
-    mr.stopAllMotors()
-    time.sleep(0.1)
-
-    mr.moveTo((0, 50))
-    time.sleep(2)
-    mr.moveTo((0, -50))
-    time.sleep(2)
-    mr.moveTo((50, 0))
-    time.sleep(2)
-    mr.moveTo((-50, 0))
+    pass
+    # mr = WheelManager()
+    # mr.stopAllMotors()
+    # time.sleep(0.1)
+    #
+    # mr.moveTo((0, 50))
+    # time.sleep(2)
+    # mr.moveTo((0, -50))
+    # time.sleep(2)
+    # mr.moveTo((50, 0))
+    # time.sleep(2)
+    # mr.moveTo((-50, 0))
     # mr.avanceVector(10, 0)
     # mr.avanceVector(0, 10)
     # mr.avanceVector(0, -10)
