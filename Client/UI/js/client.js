@@ -110,3 +110,30 @@ function startFromTarget(){
     socket.emit("startFromTarget");
     sendManchesterMockCall();
 }
+
+//Debug section calls
+
+function sendBotToChargingStation(){
+    socket.emit("debugSendBotToChargingStation");
+}
+function alignBotToChargingStation(){
+    socket.emit("debugAlignBotToChargingStation");
+}
+function searchAllTreasure(){
+    socket.emit("debugSearchAllTreasure");
+}
+function sendBotToTreasure(){
+    socket.emit("debugSendBotToTreasure");
+}
+function alignBotToTreasure(){
+    socket.emit("debugAlignBotToTreasure");
+}
+function sendBotToTarget(){
+    socket.emit("debugSendBotToTarget");
+}
+function alignBotToTarget(){
+    socket.emit("debugAlignBotToTarget");
+}
+function initializeWorld(){
+    socket.emit("initializeWorld");
+}

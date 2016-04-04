@@ -37,7 +37,6 @@ class BaseStationDispatcher():
         base64ConvertedImage = base64.encodestring(convertedImage)
         mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
         convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.center)
-
         informationToSend = {"robotPosition":convertedPoint,
                            "robotOrientation":map.robot.orientation,
                            "encodedImage":base64ConvertedImage}
@@ -59,3 +58,28 @@ class BaseStationDispatcher():
 
     def setTreasuresOnMap(self, data):
         self.world.setTreasures(data)
+
+    def setTimer(self, function,seconds):
+        if self.timer != None:
+            self.timer.cancel()
+        def func_wrapper():
+            self.setTimer(function, seconds)
+            function()
+        self.timer = threading.Timer(seconds, func_wrapper)
+        self.timer.start()
+        return self.timer
+
+
+    #debug section
+    def setSequencerStateToSendChargingStation(self):
+        self.sequencer.setState(SendingBotToChargingStationState())
+
+    def setSequencerStateToDetectTreasures(self):
+        self.sequencer.setState(DetectTreasureState())
+
+    def setSequencerStateToSendToTreasure(self):
+        self.sequencer.setState(SendingBotToTreasureState())
+
+    def setSequencerStateToSendToTarget(self):
+        self.sequencer.setState(SendingBotToTargetState())
+

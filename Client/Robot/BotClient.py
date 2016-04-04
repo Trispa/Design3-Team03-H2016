@@ -28,26 +28,33 @@ def startRound(*args):
     print("start round")
     socketIO.emit("needNewCoordinates")
 
-def alignToTreasure(robotAngle):
-    botDispatcher.setRobotOrientation(robotAngle, botDispatcher.treasureAngle)
+def alignToTreasure(json):
+    if(json['sequence']):
+        botDispatcher.setRobotOrientation(json['robotOrientation'], botDispatcher.treasureAngle)
     botDispatcher.alignToTreasure(Controller())
-    socketIO.emit("needNewCoordinates")
+    if(json['sequence']):
+        socketIO.emit("needNewCoordinates")
+
 
 def rotateToChargingStation(json):
     botDispatcher.setRobotOrientation(float(json['botOrientation']), float(json['angleToGo']))
-    socketIO.emit('rotateDoneToChargingStation')
+    socketIO.emit('rotateDoneToChargingStation', json["sequence"])
 
 def rotateToTreasure(json):
     botDispatcher.treasureAngle =  float(json['angleToGo'])
     botDispatcher.setRobotOrientation(float(json['botOrientation']), float(json['angleToGo']))
     socketIO.emit('rotateDoneToTreasure')
 
-def alignToChargingStation(robotAngle):
-    botDispatcher.setRobotOrientation(robotAngle, 270)
+def alignToChargingStation(json):
+    angleToGetForChargingStation = 270
+    minimumAngleDifferenceToRotate = 10
+    if(abs(json['robotOrientation'] - angleToGetForChargingStation) > minimumAngleDifferenceToRotate):
+        botDispatcher.setRobotOrientation(json['robotOrientation'], angleToGetForChargingStation)
     botDispatcher.alignToChargingStation()
     readManchester()
     botDispatcher.getRobotBackOnMap()
-    socketIO.emit("needNewCoordinates")
+    if(json['sequence']):
+        socketIO.emit("needNewCoordinates")
 
 def alignToTarget():
     #TODO code pour s'enligner a la cible
@@ -60,7 +67,8 @@ def detectTreasure(json):
     botDispatcher.setRobotOrientation(float(json['botOrientation']), float(json['angleToGo']))
     anglesList = botDispatcher.detectTreasure()
     socketIO.emit('setTreasures', anglesList)
-    socketIO.emit('needNewCoordinates')
+    if(json['sequence']):
+        socketIO.emit('needNewCoordinates')
 
 def readManchester():
     character = botDispatcher.readManchester()
