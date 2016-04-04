@@ -62,14 +62,13 @@ class Map:
                 return inFrontPosition, orientationForTreasure
         return (0,0),0
 
-    def getPositionInFrontOfIsland(self, islandShapeName):
+    def getPositionInFrontOfIsland(self):
         myPathFinder = Pathfinder(self)
         myPath = myPathFinder.findPath((-1, -1), (-1, -1))
         myMapCoorDinateAjuster = MapCoordinatesAjuster(self)
+        myBestPosition = (0,0)
         orientation = 0
-        for shape in self.__shapes:
-            if shape.getName() == islandShapeName:
-                targetShape = shape
+        targetShape = self.target
 
         edgesList = targetShape.getEdgesList()
         for edge in edgesList:
@@ -118,9 +117,10 @@ class Map:
 
             if myNewPath.totalDistance < myPath.totalDistance:
                 myPath = myNewPath
+                myBestPosition = positionToGo
                 orientation = angle
 
-        return positionToGo, orientation
+        return myBestPosition, orientation
 
 
     def setMapLimit(self, contour):
