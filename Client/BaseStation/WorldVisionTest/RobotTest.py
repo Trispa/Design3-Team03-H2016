@@ -77,7 +77,7 @@ class RobotMock(TestCase):
 
         self.assertEqual(self.robot.orientation, 225)
 
-    def test_givenCoordinatesFormingAVectorGoingToTheBottomWhenSettingCenterThenCenterIsMiddleOfVector(self):
+    def test_givenCoordinatesFormingAVectorGoingToTheBottomRightWhenSettingCenterThenCenterIsMiddleOfVector(self):
         self.circle.findCenterOfMass.return_value = (200, 200)
         self.square.findCenterOfMass.return_value = (300, 300)
 
