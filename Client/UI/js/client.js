@@ -134,3 +134,6 @@ function sendBotToTarget(){
 function alignBotToTarget(){
     socket.emit("debugAlignBotToTarget");
 }
+function initializeWorld(){
+    socket.emit("initializeWorld");
+}

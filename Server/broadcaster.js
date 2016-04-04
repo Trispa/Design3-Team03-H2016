@@ -153,6 +153,9 @@ io.on('connection', function (client) {
     client.on("debugSendBotToChargingStation", function(){
         io.emit('debugSendBotToChargingStation');
     });
+    client.on("initializeWorld", function(){
+        io.emit('initializeWorld');
+    });
 });
 
 server.listen(port, url);

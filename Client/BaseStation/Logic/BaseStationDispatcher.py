@@ -39,7 +39,7 @@ class BaseStationDispatcher():
         mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
         convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.center)
         informationToSend = {"robotPosition":convertedPoint,
-                           "robotOrientation":0,
+                           "robotOrientation":map.robot.orientation,
                            "encodedImage":base64ConvertedImage}
         return informationToSend
 
@@ -81,13 +81,13 @@ class BaseStationDispatcher():
 
     #debug section
     def setSequencerStateToSendChargingStation(self):
-        self.sequencer.setState(SendingBotToChargingStationState)
+        self.sequencer.setState(SendingBotToChargingStationState())
 
     def setSequencerStateToDetectTreasures(self):
-        self.sequencer.setState(DetectTreasureState)
+        self.sequencer.setState(DetectTreasureState())
 
     def setSequencerStateToSendToTreasure(self):
-        self.sequencer.setState(SendingBotToTreasureState)
+        self.sequencer.setState(SendingBotToTreasureState())
 
     def setSequencerStateToSendToTarget(self):
-        self.sequencer.setState(SendingBotToTargetState)
+        self.sequencer.setState(SendingBotToTargetState())
