@@ -18,7 +18,7 @@ class PositionAdjuster:
         self.maestro.setTarget(2, 1764 * 4)
 
     def goForwardToStopApproaching(self):
-        self.wheelManager.moveTo((10, 0))
+        self.wheelManager.moveTo((30, 0))
 
     def goBackwardToGrabTreasure(self):
         self.wheelManager.moveTo((-3, 0))

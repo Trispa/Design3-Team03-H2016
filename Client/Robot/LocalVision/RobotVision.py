@@ -105,25 +105,28 @@ class RobotVision:
             y = y + height /2
             ih, iw, ic = self.image.shape
             # print x, y, iw, ih
-            square = 10
+            squareW = 5
+            squareH = 20
 
-            xob = (iw/2-5) - square/2 + 13
-            yob = ih/2 - square/2
+            xob = (iw/2-5) - squareW/2 + 15
+            yob = ih/2 - squareH/2
             # print xob, yob
             # print xob + square, yob +square
 
-            cv2.rectangle(self.image,(xob, yob),(xob + square-8, yob + square+7),(0,0,255),2)
+            cv2.rectangle(self.image,(xob, yob),(xob + squareW, yob + squareH),(0,0,255),2)
+            cv2.circle(self.image, (x, y), 2, (0,0,255))
+
             # cv2.rectangle(self.image,(x,y),(x+w,y+h),(0,255,0),2)
 
-            if x < (iw/2 - square-8):
+            if x < (xob):
                 self.camera.moveCameraLeft()
-            elif x > (iw/2 + square-8):
+            elif x > (xob + squareW):
                 self.camera.moveCameraRight()
             else:
                 centerX = True
-            if y < (ih/2 - square+7):
+            if y < (yob):
                 self.camera.moveCameraUp()
-            elif y > (ih/2 + square+7):
+            elif y > (yob + squareH):
                 self.camera.moveCameraDown()
             else:
                 centerY = True
@@ -208,7 +211,7 @@ class RobotVision:
         self.tresor = None
         lastAngle= 180
 
-        self.camera.moveCameraByAngle(1, 50)
+        self.camera.moveCameraByAngle(1, 70)
         self.camera.moveCameraByAngle(0, 30)
 
         while(self.video.isOpened()):
@@ -230,7 +233,8 @@ class RobotVision:
 
             center = self.moveCamera()
 
-            if center and not self.robot.isMoving:
+
+            if not self.robot.isMoving and center:
                 if not movingY and not moveYArriver:
                     diff = self.differenceParraleleLines()
                     if diff < 0:
@@ -255,10 +259,10 @@ class RobotVision:
                 print self.camera.verticalDegree
 
 
-                if self.camera.verticalDegree <= 9:
+                if self.camera.verticalDegree <= 7.5:
                     self.robot.stopAllMotors()
                     moveXArriver = True
-                elif self.camera.verticalDegree <= (lastAngle - 0.5) and self.camera.verticalDegree >= 15:
+                elif self.camera.verticalDegree <= (lastAngle - 0.5) and self.camera.verticalDegree >= 16:
                     print "Ajustement en Y", self.camera.verticalDegree
                     self.robot.stopAllMotors()
                     # moveXArriver = True
