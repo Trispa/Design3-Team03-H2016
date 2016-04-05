@@ -48,7 +48,6 @@ def myMain2():
         geometricalImage.updateRobotPosition(frame)
         geometricalImage.addLabels(frame)
 
-
         cv2.imshow("resized", frame)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):

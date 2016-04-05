@@ -22,9 +22,9 @@ class WorldImage:
         self.myPath, self.orientation = self.__map.getPositionInFrontOfTreasure()
         return self.__map.getPositionInFrontOfTreasure()
 
-    def getIslandPositioning(self, shapeName):
-        self.myPath, ret = self.__map.getPositionInFrontOfIsland(shapeName)
-        return self.__map.getPositionInFrontOfIsland(shapeName)
+    def getIslandPositioning(self):
+        self.myPath, ret = self.__map.getPositionInFrontOfIsland()
+        return self.__map.getPositionInFrontOfIsland()
 
     def buildMap(self, frame):
         self.__map = self.__myMapBuilder.buildMapWithAllFilter(frame, self.__map)

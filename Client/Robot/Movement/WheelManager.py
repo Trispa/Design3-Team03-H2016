@@ -3,7 +3,7 @@ from threading import Timer
 
 import numpy as np
 
-import Client.Robot.Mechanical.SerialPortCommunicator
+from Client.Robot.Mechanical.SerialPortCommunicator import SerialPortCommunicator
 from Client.Robot.Movement.PixelToCentimeterConverter import PixelToCentimeterConverter
 from Client.Robot.Logic.ReferentialConverter import ReferentialConverter
 
@@ -17,7 +17,7 @@ class WheelManager:
     POSITIVE_SPEED = 1
     NEGATIVE_SPEED = 0
     MAX_SPEED = 0.11
-    MAX_SPEED_VISION = 0.03
+    MAX_SPEED_VISION = 0.02
     ROTATION_SPEED = 0.05
 
     def __init__(self, serialPortCommunicator):
@@ -50,8 +50,10 @@ class WheelManager:
         elif abs(pointX) < abs(pointY):
             xSpeed = (abs(pointX) * ySpeed) / abs(pointY)
 
-        timeToTravel = max(abs(pointX), abs(pointY)) / (max(xSpeed, ySpeed) * 100) + max(xSpeed, ySpeed) * 1.1
+        timeToTravel = max(abs(pointX), abs(pointY)) / (max(xSpeed, ySpeed) * 100) + max(xSpeed, ySpeed)
+        timeToTravel = timeToTravel * 1.03
         print("xSpeed : " + str(xSpeed) + " ySpeed : " + str(ySpeed) + " Time : " + str(timeToTravel))
+        print "Reel distance : ", xSpeed * timeToTravel
 
         if pointX > 0:
             self.spc.driveMoteurLine(self.X_AXIS, xSpeed, self.POSITIVE_SPEED)
@@ -97,7 +99,7 @@ class WheelManager:
 
     def rotate(self, degree):
         self.isMoving = True
-        timeToSleep = 0.029 * abs(degree) + 0.145
+        timeToSleep = 0.035 * abs(degree) + 0.068
         self.__resetMotors()
 
         if(degree <=0):
@@ -186,23 +188,14 @@ class WheelManager:
 
 
 if __name__ == '__main__':
-    pass
-    # mr = WheelManager()
-    # mr.stopAllMotors()
-    # time.sleep(0.1)
-    #
-    # mr.moveTo((0, 50))
-    # time.sleep(2)
-    # mr.moveTo((0, -50))
-    # time.sleep(2)
-    # mr.moveTo((50, 0))
-    # time.sleep(2)
-    # mr.moveTo((-50, 0))
-    # mr.avanceVector(10, 0)
-    # mr.avanceVector(0, 10)
-    # mr.avanceVector(0, -10)
-    # mr.rotation(-90)
-    # mr.rotation(90)
+    ratio = 49/9.5
+    spc = SerialPortCommunicator()
+    mr = WheelManager(spc)
+    mr.stopAllMotors()
+    time.sleep(0.1)
+
+
+    mr.moveTo((45*ratio, 0))
 
 
 

@@ -10,8 +10,8 @@ import copy
 
 class Map:
 
-    SAFE_MARGIN = 80
-    SAFE_MARGIN_FOR_ISLAND = 80
+    SAFE_MARGIN = 100
+    SAFE_MARGIN_FOR_ISLAND = 100
 
     def __init__(self):
         self.__shapes = []
@@ -62,16 +62,14 @@ class Map:
                 return inFrontPosition, orientationForTreasure
         return (0,0),0
 
-    def getPositionInFrontOfIsland(self, islandShapeName):
+    def getPositionInFrontOfIsland(self):
         myPathFinder = Pathfinder(self)
         myPath = myPathFinder.findPath((-1, -1), (-1, -1))
         myMapCoorDinateAjuster = MapCoordinatesAjuster(self)
+        myBestPosition = (0,0)
         orientation = 0
-        for shape in self.__shapes:
-            if shape.getName() == islandShapeName:
-                targetShape = shape
-
-        edgesList = targetShape.getEdgesList()
+        targetShape = self.target
+        edgesList = self.target.getEdgesList()
         for edge in edgesList:
             xCenterOfEdge = edge[0].item(0) + (((edge[0].item(0) - edge[1].item(0)) / 2) * -1)
             yCenterOfEdge = edge[0].item(1) + (((edge[0].item(1) - edge[1].item(1)) / 2) * -1)
@@ -108,19 +106,20 @@ class Map:
 
             angle = math.degrees(math.atan2(opp,adj))
             if positionToGo[0] > xCenterOfEdge and positionToGo[1] < yCenterOfEdge:
-                angle = angle + 90
+                angle = 180 - angle
             if positionToGo[0] > xCenterOfEdge and positionToGo[1] > yCenterOfEdge:
                 angle = angle + 180
             if positionToGo[0] < xCenterOfEdge and positionToGo[1] > yCenterOfEdge:
-                angle = angle + 270
+                angle = 360 - angle
 
             myNewPath = myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint(positionToGo))
 
             if myNewPath.totalDistance < myPath.totalDistance:
                 myPath = myNewPath
+                myBestPosition = positionToGo
                 orientation = angle
 
-        return positionToGo, orientation
+        return myBestPosition, orientation
 
 
     def setMapLimit(self, contour):
