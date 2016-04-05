@@ -22,7 +22,8 @@ class WorldImage:
         self.myPath, self.orientation = self.__map.getPositionInFrontOfTreasure()
         return self.__map.getPositionInFrontOfTreasure()
 
-    def getIslandPositioning(self):
+    def getIslandPositioning(self, target):
+        self.__map.setTarget(target)
         self.myPath, ret = self.__map.getPositionInFrontOfIsland()
         return self.__map.getPositionInFrontOfIsland()
 
