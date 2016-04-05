@@ -129,6 +129,34 @@ void CommandReceiver::dispatchCommand() {
 			}
       break;
 
+  case 9:
+    //controle electro aiment 00 decharge 10 ou 01 garde la charge 11 pour recharger
+    // 0 decharge
+    // 1 ou else garde charge
+    // 2 recharge
+    if(parameters[1] == 0)
+    {
+      digitalWrite(52, HIGH);
+      digitalWrite(53, HIGH);
+    }
+    else if(parameters[1] == 2)
+    {
+      digitalWrite(52, LOW);
+      digitalWrite(53, LOW);
+    }
+    else
+    {
+      digitalWrite(52, HIGH);
+      digitalWrite(53, LOW);      
+    }
+    break;
+
+  //callback de la lecture du condensenteur
+  case 10:
+    if(callbackRequested == 1){
+             sendCallback((analogRead(A0) * 5 / 1024) * 100);
+          }
+          break;
 
 	default: //for test purposes
 		if(callbackRequested == 1) {

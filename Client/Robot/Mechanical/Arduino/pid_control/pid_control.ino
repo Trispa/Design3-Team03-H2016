@@ -62,6 +62,17 @@ void setup() {
     listPID[i].SetOutputLimits(0, 2080);
   }
 
+//Lecture du condensateur 
+  pinMode(A0, INPUT);
+  //Pin de controle sur 2 bit
+  //00 decharge 10 ou 01 garde la charge 11 pour recharger
+  pinMode(52, INPUT);
+  pinMode(53, INPUT);
+
+  digitalWrite(52, HIGH);
+  digitalWrite(53, HIGH);
+  
+
 }
 
 void loop() 
