@@ -6,7 +6,7 @@ from Client.BaseStation.Logic.Pathfinding.Graph.TopPathGenerator import TopPathG
 from Client.BaseStation.Logic.Pathfinding.Graph.Graph import Graph
 
 class GraphGenerator:
-    SAFE_MARGIN = 90
+    SAFE_MARGIN = 50
 
 
     def __init__(self, obstaclesList, mapSizeX, mapSizeY):
