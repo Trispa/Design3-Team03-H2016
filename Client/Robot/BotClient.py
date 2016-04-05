@@ -48,6 +48,11 @@ def rotateToTreasure(json):
     botDispatcher.setRobotOrientation(float(json['botOrientation']), float(json['angleToGo']))
     socketIO.emit('rotateDoneToTreasure')
 
+def rotateToDetectTreasure(json):
+    botDispatcher.setRobotOrientation(json['botOrientation'],json['angleToGo'])
+    socketIO.emit('rotateDoneToDetectTreasure')
+
+
 def alignToChargingStation(json):
     angleToGetForChargingStation = 270
     minimumAngleDifferenceToRotate = 3
@@ -98,5 +103,6 @@ socketIO.on("alignPositionToTarget", alignToTarget)
 socketIO.on("detectTreasure", detectTreasure)
 socketIO.on('rotateToChargingStation', rotateToChargingStation)
 socketIO.on('rotateToTreasure', rotateToTreasure)
+socketIO.on('rotateToDetectTreasure', rotateToDetectTreasure)
 
 socketIO.wait()

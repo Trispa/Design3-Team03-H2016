@@ -122,6 +122,12 @@ io.on('connection', function (client) {
     client.on("rotateDoneToTreasure", function(){
         io.emit('rotateDoneToTreasure');
     });
+    client.on("rotateToDetectTreasure", function(){
+        io.emit('rotateToDetectTreasure');
+    });
+    client.on("rotateDoneToDetectTreasure", function(){
+        io.emit('rotateDoneToDetectTreasure');
+    });
 
 
 
