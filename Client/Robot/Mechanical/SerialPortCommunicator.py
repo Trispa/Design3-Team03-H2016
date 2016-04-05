@@ -16,6 +16,8 @@ class SerialPortCommunicator:
     STOP_ALL_MOTEUR = 5
     CHANGE_SPEED_LINE = 7
     CHANGE_SPEED_ROTATION = 8
+    CHANGE_CONDENSATOR_MODE = 9
+    READ_VOLTAGE = 10
 
     CW = 0
     CCW = 1
@@ -89,8 +91,40 @@ class SerialPortCommunicator:
     def driveMoteurRotation(self, speed, direction):
         self.sendCommand(self.CHANGE_SPEED_ROTATION, self.FALSE, self.ONE_SECOND_DELAY, speed * 100, direction)
 
+    #/controle electro aiment 00 decharge 10 ou 01 garde la charge 11 pour recharger
+    # // 0 decharge magnetique
+    # // 1 ou else garde charge
+    # // 2 recharge
+    def changeCondensatorMode(self, mode):
+        self.sendCommand(self.CHANGE_CONDENSATOR_MODE, self.FALSE, self.ONE_SECOND_DELAY, mode)
+
+    def readConsensatorVoltage(self):
+        tmpTempo = self.sendCommand(self.LED_FUNCTION_ON, self.TRUE, self.ONE_SECOND_DELAY, 1)
+        if tmpTempo == '':
+            return 0
+        else:
+            return float(tmpTempo) / 100.0
+
 
 
 if __name__ == "__main__":
     spc = SerialPortCommunicator()
+    spc.changeCondensatorMode(2)
+
+    v = spc.readConsensatorVoltage()
+
+    while v <= 3:
+        sleep(1)
+        v = spc.readConsensatorVoltage()
+        print "Voltage : ", v
+
+    spc.changeCondensatorMode(1)
+    a = raw_input("Press enter to active magnet")
+    spc.changeCondensatorMode(0)
+
+    while True:
+        sleep(1)
+        v = spc.readConsensatorVoltage()
+        print "Voltage : ", v
+
 

@@ -36,11 +36,14 @@ class RobotVision:
 
     def detectTreasureColor(self):
         self.mask = 0
-        for(lower, upper) in self.yellowColor:
-            lower = np.array(lower, dtype = "uint8")
-            upper = np.array(upper, dtype="uint8")
 
-            self.mask = self.mask + cv2.inRange(self.image, lower, upper)
+        colorContainer = ColorContainer()
+        hsvImage = cv2.cvtColor(self.image,cv2.COLOR_BGR2HSV)
+
+        lower = colorContainer.yellowTreasure.lower
+        upper = colorContainer.yellowTreasure.higher
+
+        self.mask = self.mask + cv2.inRange(hsvImage, lower, upper)
 
     def detectChargingStationColor(self):
         self.mask = 0
@@ -179,7 +182,7 @@ class RobotVision:
         return (distanceX, distanceY)
 
     def differenceParraleleLinesTresor(self):
-        ret,thresh1 = cv2.threshold(self.image,75,255,cv2.THRESH_BINARY)
+        ret,thresh1 = cv2.threshold(self.image,100,255,cv2.THRESH_BINARY)
 
 
         ih, iw, ic = self.image.shape
@@ -345,7 +348,7 @@ class RobotVision:
                 print "!!! ARRIVER !!!"
                 return True
 
-            #cv2.imshow("Image", self.image)
+            # cv2.imshow("Image", self.image)
             # if cv2.waitKey(1) & 0xFF == ord('q'):
             #     break
         self.video.release()
@@ -425,7 +428,7 @@ class RobotVision:
                 print "!!! ARRIVER !!!"
                 return True
 
-            # #cv2.imshow("Image", self.image)
+            # cv2.imshow("Image", self.image)
             # if cv2.waitKey(1) & 0xFF == ord('q'):
             #     break
         self.video.release()

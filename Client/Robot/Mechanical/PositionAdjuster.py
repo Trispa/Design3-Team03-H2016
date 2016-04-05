@@ -1,10 +1,17 @@
-
+import time
+from Client.Robot.Movement.WheelManager import WheelManager
+from Client.Robot.Mechanical.SerialPortCommunicator import SerialPortCommunicator
+from Client.Robot.LocalVision.RobotVision import RobotVision
+from Client.Robot.Mechanical.maestro import Controller
+from Client.Robot.Mechanical.CameraTower import CameraTower
+import cv2
 
 class PositionAdjuster:
     #Manque un SerialPortCommunication
-    def __init__(self, wheelManager, robotVision, maestro):
+    def __init__(self, wheelManager, robotVision, maestro, spc):
         self.maestro = maestro
         self.maestro.setSpeed(2, 50)
+        self.spc = spc
 
         self.wheelManager = wheelManager
         self.localVision = robotVision
@@ -24,18 +31,23 @@ class PositionAdjuster:
         self.wheelManager.moveTo((-3, 0))
 
     def activateMagnet(self):
-        print "ManipulateTresor.activeElectroAiment() : Pas encore implementer"
-        pass
+        self.spc.changeCondensatorMode(0)
 
     def deactivateMagnet(self):
-        print "ManipulateTresor.desactiveElectroAiment() : Pas encore implementer"
-        pass
+        self.spc.changeCondensatorMode(1)
+
+    def rechargeMagnet(self):
+        self.spc.changeCondensatorMode(2)
+
+    def readCondensatorVoltage(self):
+        spc.readConsensatorVoltage()
 
     def getCloserToChargingStation(self):
         self.ascendArm()
         while not self.localVision.getCloserToChargingStation():
             pass
         self.goForwardToStopApproaching()
+        self.rechargeMagnet()
         return True
 
     def getCloserToIsland(self):
@@ -48,11 +60,8 @@ class PositionAdjuster:
 
 
     def stopCharging(self):
-        i = 0
-        while i < 1000:
-            print "ManipuleTresor.approcheStationDeCharge() : Robot is charging"
-            i = i + 1
-        self.wheelManager.moveTo((-10, -10))
+        self.deactivateMagnet()
+        self.wheelManager.moveTo((-15, -15))
         return True
 
     def getCloserToTreasure(self):
@@ -60,15 +69,39 @@ class PositionAdjuster:
         self.lowerArm()
         while not self.localVision.getCloserToTreasures():
             pass
-        self.goForwardToStopApproaching()
 
         self.activateMagnet()
+        self.goForwardToStopApproaching()
 
         self.goBackwardToGrabTreasure()
         self.ascendArm()
-
+        time.sleep(2)
         self.deactivateMagnet()
         return True
+
+if __name__ == "__main__":
+    # __init__(self, wheelManager, robotVision, maestro, spc):
+    # def __init__(self, wheelManager, cameraTower, videoCapture):
+
+
+    m = Controller()
+    spc = SerialPortCommunicator()
+    wm = WheelManager(spc)
+
+    rv = RobotVision(wm, CameraTower(m), cv2.VideoCapture(0))
+    pa = PositionAdjuster(wm, rv, m, spc)
+
+    while True:
+        print "Voltage : ", pa.readCondensatorVoltage()
+        time.sleep(5)
+    # a = raw_input("Press to mode recharge")
+    # pa.rechargeMagnet()
+    # a = raw_input("Press to mode stop magnet")
+    # pa.deactivateMagnet()
+    # a = raw_input("Press to start magnet")
+    # pa.activateMagnet()
+    # a = raw_input("Press to stop magnet")
+    # pa.deactivateMagnet()
 
     
 

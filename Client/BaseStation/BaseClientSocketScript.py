@@ -56,6 +56,8 @@ def verifyIfMoving(path, nextSignal, angleToRotate):
                           "positionTOy" : path[nodeBotIsGoingTo].positionY,
                           "orientation":botInfo["robotOrientation"]}
             socketIO.emit("sendNextCoordinates", jsonToSend)
+            time.sleep(5)
+            botInfo = dispatcher.getCurrentWorldInformation()
             print("emitting" + nextSignal)
             jsonToSend = {"botOrientation":botInfo["robotOrientation"],
                           "angleToGo":angleToRotate,
@@ -77,7 +79,7 @@ def sendNextCoordinates():
     if(path != None and nextSignal != None):
         verifyIfMoving(path, nextSignal, angleToRotate)
 
-def sendAlignPositionToChargingStationSignal():
+def sendAlignPositionToChargingStationSignal(bob):
     botInfo = dispatcher.getCurrentWorldInformation()
     jsonToSend = {"robotOrientation":botInfo['robotOrientation'],
                   "sequence":True}
