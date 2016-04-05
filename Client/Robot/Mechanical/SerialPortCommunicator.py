@@ -99,10 +99,32 @@ class SerialPortCommunicator:
         self.sendCommand(self.CHANGE_CONDENSATOR_MODE, self.FALSE, self.ONE_SECOND_DELAY, mode)
 
     def readConsensatorVoltage(self):
-        return self.sendCommand(self.READ_VOLTAGE, self.TRUE, self.ONE_SECOND_DELAY, 1) / 100
+        tmpTempo = self.sendCommand(self.LED_FUNCTION_ON, self.TRUE, self.ONE_SECOND_DELAY, 1)
+        if tmpTempo == '':
+            return 0
+        else:
+            return float(tmpTempo) / 100.0
 
 
 
 if __name__ == "__main__":
     spc = SerialPortCommunicator()
+    spc.changeCondensatorMode(2)
+
+    v = spc.readConsensatorVoltage()
+
+    while v <= 3:
+        sleep(1)
+        v = spc.readConsensatorVoltage()
+        print "Voltage : ", v
+
+    spc.changeCondensatorMode(1)
+    a = raw_input("Press enter to active magnet")
+    spc.changeCondensatorMode(0)
+
+    while True:
+        sleep(1)
+        v = spc.readConsensatorVoltage()
+        print "Voltage : ", v
+
 

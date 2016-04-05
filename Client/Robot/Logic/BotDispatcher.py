@@ -12,11 +12,12 @@ from os import system
 
 
 class BotDispatcher():
-    def __init__(self, wheelManager, maestro):
+    def __init__(self, wheelManager, maestro, spc):
         self.wheelManager = wheelManager
         self.maestro = maestro
         self.cameraTower = CameraTower(self.maestro)
         self.treasureAngle = 0
+        self.spc = spc
 
 
     def followPath(self, coordinates):
@@ -46,7 +47,7 @@ class BotDispatcher():
 
         self.vision = RobotVision(self.wheelManager, self.cameraTower, self.video)
         self.maestro = maestro
-        self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro)
+        self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro, self.spc)
         self.positionAdjuster.getCloserToTreasure()
 
     def detectTreasure(self):
@@ -69,7 +70,7 @@ class BotDispatcher():
 
 
         self.vision = RobotVision(self.wheelManager, self.cameraTower, self.video)
-        self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro)
+        self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro, self.spc)
 
         self.positionAdjuster.getCloserToChargingStation()
 
