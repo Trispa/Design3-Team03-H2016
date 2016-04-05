@@ -23,7 +23,6 @@ socketIO = SocketIO(config['url'], int(config['port']))
 
 def verifyIfMoving(path, nextSignal, angleToRotate):
     print("verify if moving")
-    pixelRangeToSendNextCoordinates = 15
     for nodeBotIsGoingTo in range(0, len(path)):
         pixelRangeToSendNextCoordinates = 10
         xPositionOfNodeThatBotIsGoingTo = path[nodeBotIsGoingTo].positionX
@@ -33,7 +32,6 @@ def verifyIfMoving(path, nextSignal, angleToRotate):
 
         botPositionX = botInfo["robotPosition"][0]
         botPositionY = botInfo["robotPosition"][1]
-        botOrientation = botInfo["robotOrientation"]
         stuckIndex = 0
         while ((botPositionX > xPositionOfNodeThatBotIsGoingTo + pixelRangeToSendNextCoordinates or
             botPositionX < xPositionOfNodeThatBotIsGoingTo - pixelRangeToSendNextCoordinates) and
@@ -42,7 +40,6 @@ def verifyIfMoving(path, nextSignal, angleToRotate):
             botInfo = dispatcher.getCurrentWorldInformation()
             botPositionX = botInfo["robotPosition"][0]
             botPositionY = botInfo["robotPosition"][1]
-            botOrientation = botInfo["robotOrientation"]
             stuckIndex += 1
             if stuckIndex > 4:
                 pixelRangeToSendNextCoordinates += 1
@@ -51,8 +48,16 @@ def verifyIfMoving(path, nextSignal, angleToRotate):
         print "close enough"
         print "Allo ??"
         if(nodeBotIsGoingTo+1 == len(path)):
+            print "send bot to last node again"
+            botInfo = dispatcher.getCurrentWorldInformation()
+            jsonToSend = {"positionFROMx" : botInfo["robotPosition"][0],
+                          "positionFROMy" : botInfo["robotPosition"][1],
+                          "positionTOx" : path[nodeBotIsGoingTo].positionX,
+                          "positionTOy" : path[nodeBotIsGoingTo].positionY,
+                          "orientation":botInfo["robotOrientation"]}
+            socketIO.emit("sendNextCoordinates", jsonToSend)
             print("emitting" + nextSignal)
-            jsonToSend = {"botOrientation":botOrientation,
+            jsonToSend = {"botOrientation":botInfo["robotOrientation"],
                           "angleToGo":angleToRotate,
                           "sequence":True}
             socketIO.emit(nextSignal, jsonToSend)

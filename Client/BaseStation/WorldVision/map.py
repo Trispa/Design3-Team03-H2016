@@ -10,8 +10,8 @@ import copy
 
 class Map:
 
-    SAFE_MARGIN = 80
-    SAFE_MARGIN_FOR_ISLAND = 80
+    SAFE_MARGIN = 100
+    SAFE_MARGIN_FOR_ISLAND = 100
 
     def __init__(self):
         self.__shapes = []
@@ -68,7 +68,7 @@ class Map:
         myMapCoorDinateAjuster = MapCoordinatesAjuster(self)
         myBestPosition = (0,0)
         orientation = 0
-
+        targetShape = self.target
         edgesList = self.target.getEdgesList()
         for edge in edgesList:
             xCenterOfEdge = edge[0].item(0) + (((edge[0].item(0) - edge[1].item(0)) / 2) * -1)
