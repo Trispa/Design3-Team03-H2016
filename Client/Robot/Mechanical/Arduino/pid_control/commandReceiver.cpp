@@ -63,7 +63,11 @@ void CommandReceiver::dispatchCommand() {
 
 	switch (commandIndex) {
 	case 1: //lightEndingLED
-		digitalWrite(endingLEDPin, HIGH);
+    double tempVoltage;
+    tempVoltage = analogRead(A0) * 5.0 / 1023.0;
+    if(callbackRequested == 1){
+             sendCallback(long(tempVoltage * 100));
+          }
 		break;
 
 	case 2: //turnOffEndingLED
@@ -134,15 +138,15 @@ void CommandReceiver::dispatchCommand() {
     // 0 decharge
     // 1 ou else garde charge
     // 2 recharge
-    if(parameters[1] == 0)
-    {
-      digitalWrite(52, HIGH);
-      digitalWrite(53, HIGH);
-    }
-    else if(parameters[1] == 2)
+    if(parameters[0] == 0)
     {
       digitalWrite(52, LOW);
       digitalWrite(53, LOW);
+    }
+    else if(parameters[0] == 2)
+    {
+      digitalWrite(52, HIGH);
+      digitalWrite(53, HIGH);
     }
     else
     {
@@ -153,8 +157,10 @@ void CommandReceiver::dispatchCommand() {
 
   //callback de la lecture du condensenteur
   case 10:
+//    long voltage;
+//    voltage = analogRead(A0);
     if(callbackRequested == 1){
-             sendCallback((analogRead(A0) * 5 / 1024) * 100);
+             sendCallback(long(134));
           }
           break;
 
