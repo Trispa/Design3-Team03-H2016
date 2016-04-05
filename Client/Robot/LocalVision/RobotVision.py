@@ -178,7 +178,7 @@ class RobotVision:
 
         return (distanceX, distanceY)
 
-    def differenceParraleleLines(self):
+    def differenceParraleleLinesTresor(self):
         ret,thresh1 = cv2.threshold(self.image,75,255,cv2.THRESH_BINARY)
 
 
@@ -225,6 +225,52 @@ class RobotVision:
         return distancePixel
 
 
+    def differenceParraleleLinesStation(self):
+        ret,thresh1 = cv2.threshold(self.image,100,255,cv2.THRESH_BINARY)
+
+
+        ih, iw, ic = self.image.shape
+        col1 = 0
+        col2 = iw - 1
+        dot1 = []
+        dot2 = []
+
+
+        for i in range(0, ih):
+            if np.equal(thresh1[i, 0], np.array([255,255,255])).all():
+                dot1 = (0, i)
+                break
+            if dot1 == []:
+                dot1 = (0, ih-1)
+
+        for i in range(0, ih):
+            if not np.equal(thresh1[i, col2], np.array([0,0,0])).all():
+                dot2 = (col2, i)
+                break
+            if dot2 == []:
+                for i in range(iw - 1, -1, -1):
+                    if not np.equal(thresh1[ih - 1, i], np.array([0,0,0])).all():
+                        dot2 = (col2, i)
+                        break
+
+        # print dot1
+        # print dot2
+        # dot1 = (1279, 0)
+        if dot1 == []:
+            print "dot1 etait null"
+            dot1 = [0, 0]
+        if dot2 == []:
+            print "dot2 etait null"
+            dot2 = [iw - 1, ih - 1]
+
+        self.image = thresh1
+
+        cv2.line(self.image, dot1, dot2, (255, 0, 0), 2)
+        cv2.line(self.image, (dot1[0], (dot1[1] + dot2[1])/2), (dot2[0], (dot1[1] + dot2[1])/2),(0, 0, 255), 2)
+        distancePixel = dot1[1] - (dot1[1] + dot2[1])/2
+        # print distancePixel
+        return distancePixel
+
     def getCloserToTreasures(self):
         findSomething = False
         movingY = False
@@ -259,7 +305,7 @@ class RobotVision:
 
             if not self.robot.isMoving and center:
                 if not movingY and not moveYArriver:
-                    diff = self.differenceParraleleLines()
+                    diff = self.differenceParraleleLinesTresor()
                     if diff < 0:
                         self.robot.moveForever(0, -30)
                     else:
@@ -272,7 +318,7 @@ class RobotVision:
                         movingX = True
 
             if movingY and not moveYArriver:
-                if abs(self.differenceParraleleLines()) < 8:
+                if abs(self.differenceParraleleLinesTresor()) < 8:
                     self.robot.stopAllMotors()
                     moveYArriver = True
                     movingY = False
@@ -299,9 +345,9 @@ class RobotVision:
                 print "!!! ARRIVER !!!"
                 return True
 
-            cv2.imshow("Image", self.image)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+            #cv2.imshow("Image", self.image)
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     break
         self.video.release()
         cv2.destroyAllWindows()
 
@@ -315,7 +361,7 @@ class RobotVision:
         lastAngle= 180
 
         self.camera.moveCameraByAngle(1, 70)
-        self.camera.moveCameraByAngle(0, 30)
+        self.camera.moveCameraByAngle(0, 50)
 
         while(self.video.isOpened()):
             ret, self.image = self.video.read()
@@ -339,7 +385,7 @@ class RobotVision:
 
             if not self.robot.isMoving and center:
                 if not movingY and not moveYArriver:
-                    diff = self.differenceParraleleLines()
+                    diff = self.differenceParraleleLinesStation()
                     if diff < 0:
                         self.robot.moveForever(0, -30)
                     else:
@@ -352,7 +398,7 @@ class RobotVision:
                         movingX = True
 
             if movingY and not moveYArriver:
-                if abs(self.differenceParraleleLines()) < 8:
+                if abs(self.differenceParraleleLinesStation()) < 8:
                     self.robot.stopAllMotors()
                     moveYArriver = True
                     movingY = False
@@ -379,9 +425,9 @@ class RobotVision:
                 print "!!! ARRIVER !!!"
                 return True
 
-            cv2.imshow("Image", self.image)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+            # #cv2.imshow("Image", self.image)
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     break
         self.video.release()
         cv2.destroyAllWindows()
 

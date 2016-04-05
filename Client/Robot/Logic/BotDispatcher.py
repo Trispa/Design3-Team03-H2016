@@ -18,20 +18,6 @@ class BotDispatcher():
         self.cameraTower = CameraTower(self.maestro)
         self.treasureAngle = 0
 
-        if platform.linux_distribution()[0].lower() == "Ubuntu".lower():
-            self.video = cv2.VideoCapture(1)
-            system("v4l2-ctl --device=1 --set-ctrl gain=50")
-        elif platform.linux_distribution()[0].lower() == "Fedora".lower():
-            self.video = cv2.VideoCapture(0)
-            system("v4l2-ctl --device=1 -c brightness=100 -c gain=100 -c exposure_auto=1")
-            system("v4l2-ctl --device=1 -c exposure_absolute=400")
-        # else:
-        #     self.video = cv2.VideoCapture(0)
-
-
-        self.vision = RobotVision(wheelManager, self.cameraTower, self.video)
-        self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro)
-
 
     def followPath(self, coordinates):
         print(coordinates)
@@ -47,7 +33,18 @@ class BotDispatcher():
         self.wheelManager.moveTo(pointConverted)
 
     def alignToTreasure(self, maestro):
-        self.positionAdjuster = None
+        if platform.linux_distribution()[0].lower() == "Ubuntu".lower():
+            self.video = cv2.VideoCapture(1)
+            system("v4l2-ctl --device=1 --set-ctrl gain=50")
+        elif platform.linux_distribution()[0].lower() == "Fedora".lower():
+            self.video = cv2.VideoCapture(0)
+            system("v4l2-ctl --device=1 -c brightness=100 -c gain=75 -c exposure_auto=1")
+            system("v4l2-ctl --device=1 -c exposure_absolute=600")
+        # else:
+        #     self.video = cv2.VideoCapture(0)
+
+
+        self.vision = RobotVision(self.wheelManager, self.cameraTower, self.video)
         self.maestro = maestro
         self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro)
         self.positionAdjuster.getCloserToTreasure()
@@ -60,7 +57,22 @@ class BotDispatcher():
         self.wheelManager.setOrientation(robotAngle, angleToGetRobotTo)
 
     def alignToChargingStation(self):
+        if platform.linux_distribution()[0].lower() == "Ubuntu".lower():
+            self.video = cv2.VideoCapture(1)
+            system("v4l2-ctl --device=1 --set-ctrl gain=50")
+        elif platform.linux_distribution()[0].lower() == "Fedora".lower():
+            self.video = cv2.VideoCapture(0)
+            system("v4l2-ctl --device=1 -c brightness=128 -c gain=129 -c exposure_auto=1")
+            system("v4l2-ctl --device=1 -c exposure_absolute=275")
+        # else:
+        #     self.video = cv2.VideoCapture(0)
+
+
+        self.vision = RobotVision(self.wheelManager, self.cameraTower, self.video)
+        self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro)
+
         self.positionAdjuster.getCloserToChargingStation()
+
 
     def getRobotBackOnMap(self):
         self.positionAdjuster.stopCharging()
