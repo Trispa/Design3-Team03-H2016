@@ -41,11 +41,13 @@ def myMain2():
 
 
         #ret, frame = camera.read()
-        frame = cv2.imread('Photo-Test/Frames/Picture 234.jpg')
+        frame = cv2.imread('Photo-Test/Frames/Picture 500.jpg')
         frame = cv2.resize(frame, (960, 720))
         # copyF = copy.copy(frame)
         geometricalImage.buildMap(frame)
         geometricalImage.updateRobotPosition(frame)
+        geometricalImage.defineTreasures([88, 30])
+        geometricalImage.findBestTresor()
         geometricalImage.addLabels(frame)
         geometricalImage.defineTreasures([30, 150, 87])
         myTarget = ShapeTarget("triangle")
