@@ -63,7 +63,11 @@ void CommandReceiver::dispatchCommand() {
 
 	switch (commandIndex) {
 	case 1: //lightEndingLED
-		digitalWrite(endingLEDPin, HIGH);
+    double tempVoltage;
+    tempVoltage = analogRead(A0) * 5.0 / 1023.0;
+    if(callbackRequested == 1){
+             sendCallback(long(tempVoltage * 100));
+          }
 		break;
 
 	case 2: //turnOffEndingLED
@@ -129,6 +133,36 @@ void CommandReceiver::dispatchCommand() {
 			}
       break;
 
+  case 9:
+    //controle electro aiment 00 decharge 10 ou 01 garde la charge 11 pour recharger
+    // 0 decharge
+    // 1 ou else garde charge
+    // 2 recharge
+    if(parameters[0] == 0)
+    {
+      digitalWrite(52, LOW);
+      digitalWrite(53, LOW);
+    }
+    else if(parameters[0] == 2)
+    {
+      digitalWrite(52, HIGH);
+      digitalWrite(53, HIGH);
+    }
+    else
+    {
+      digitalWrite(52, HIGH);
+      digitalWrite(53, LOW);      
+    }
+    break;
+
+  //callback de la lecture du condensenteur
+  case 10:
+//    long voltage;
+//    voltage = analogRead(A0);
+    if(callbackRequested == 1){
+             sendCallback(long(134));
+          }
+          break;
 
 	default: //for test purposes
 		if(callbackRequested == 1) {

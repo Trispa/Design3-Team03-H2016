@@ -6,7 +6,7 @@ from Client.Robot.Mechanical.maestro import Controller
 from Client.Robot.Mechanical.SerialPortCommunicator import SerialPortCommunicator
 import fcntl
 from socketIO_client import SocketIO
-
+import time
 from Client.Robot.Movement.WheelManager import WheelManager
 from Logic.BotDispatcher import BotDispatcher
 
@@ -16,8 +16,8 @@ configPath = os.path.join(c, "..", "..", "Shared", "config.json")
 with open(configPath) as json_data_file:
     config = json.load(json_data_file)
 socketIO = SocketIO(config['url'], int(config['port']))
-
-botDispatcher = BotDispatcher(WheelManager(SerialPortCommunicator()), Controller())
+spc = SerialPortCommunicator()
+botDispatcher = BotDispatcher(WheelManager(spc), Controller(), spc)
 
 def goToNextPosition(data):
     print("heading toward next coordinates")
@@ -60,12 +60,18 @@ def alignToChargingStation(json):
         botDispatcher.setRobotOrientation(json['robotOrientation'], angleToGetForChargingStation)
     botDispatcher.alignToChargingStation()
     readManchester()
+    voltage = spc.readConsensatorVoltage()
+    while(voltage <= 3.0):
+        voltage = spc.readConsensatorVoltage()
+        print "Tension : ", voltage
+        time.sleep(1)
     botDispatcher.getRobotBackOnMap()
+    time.sleep(1)
     if(json['sequence']):
         socketIO.emit("needNewCoordinates")
 
-def alignToTarget():
-    #TODO code pour s'enligner a la cible
+def alignToTarget(json):
+    botDispatcher.setRobotOrientation(json['botOrientation'], json['angleToGo'])
     socketIO.emit("needNewCoordinates")
 
 def endRound():

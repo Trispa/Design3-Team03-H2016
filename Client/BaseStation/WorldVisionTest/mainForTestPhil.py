@@ -1,7 +1,7 @@
 from Client.BaseStation.WorldVision.worldImage import WorldImage
 import copy
-from Client.BaseStation.WorldVision.worldVision import worldVision
 import cv2
+from Client.BaseStation.Logic.TargetTypes import ShapeTarget
 import cProfile
 
 
@@ -41,12 +41,19 @@ def myMain2():
 
 
         #ret, frame = camera.read()
-        frame = cv2.imread('Photo-Test/Frames/Picture 234.jpg')
+        frame = cv2.imread('Photo-Test/Frames/Picture 500.jpg')
         frame = cv2.resize(frame, (960, 720))
         # copyF = copy.copy(frame)
         geometricalImage.buildMap(frame)
         geometricalImage.updateRobotPosition(frame)
+        geometricalImage.defineTreasures([88, 30])
+        geometricalImage.findBestTresor()
         geometricalImage.addLabels(frame)
+        geometricalImage.defineTreasures([30, 150, 87])
+        myTarget = ShapeTarget("triangle")
+        geometricalImage.getIslandPositioning(myTarget)
+
+        geometricalImage.drawMapOnFrame(frame)
 
 
         cv2.imshow("resized", frame)

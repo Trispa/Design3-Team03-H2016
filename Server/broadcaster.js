@@ -99,8 +99,9 @@ io.on('connection', function (client) {
     client.on('alignPositionToTreasure', function(json){
         io.emit('alignPositionToTreasure', json);
     });
-    client.on('alignPositionToTarget', function (robotAngle){
-        io.emit('alignPositionToTarget', robotAngle);
+    client.on('alignPositionToTarget', function (json){
+        console.log('align position to target ' + json['angleToGo'])
+        io.emit('alignPositionToTarget', json);
     });
     client.on('detectTreasure', function(jsonAngles){
         console.log(jsonAngles);

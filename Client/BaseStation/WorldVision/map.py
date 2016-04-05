@@ -10,8 +10,8 @@ import copy
 
 class Map:
 
-    SAFE_MARGIN = 80
-    SAFE_MARGIN_FOR_ISLAND = 80
+    SAFE_MARGIN = 100
+    SAFE_MARGIN_FOR_ISLAND = 100
 
     def __init__(self):
         self.__shapes = []
@@ -20,6 +20,7 @@ class Map:
         self.target = None
         self.treasures = []
         self.orientationForTreasure = 0
+        self.target = Square("Square", np.array([[]], dtype=np.int32))
 
     def getShapesList(self):
         return self.__shapes
@@ -41,53 +42,61 @@ class Map:
             averageSize = averageSize/len(self.__shapes)
         return averageSize
 
+    def getEdgeGradiant(self, edge):
+        if float(edge[1].item(0) - edge[0].item(0)) != 0 and float(edge[1].item(1) - edge[0].item(1)) != 0:
+            edgePerpendicularGradient = float(-1 / (float(float(edge[1].item(1) - edge[0].item(1)) / float(edge[1].item(0) - edge[0].item(0)))))
+        elif float(edge[1].item(0) - edge[0].item(0)) == 0:
+            edgePerpendicularGradient = float(-1 / (float(float(edge[1].item(1) - edge[0].item(1)) / 0.0001)))
+        else:
+            edgePerpendicularGradient = float(-1 / 0.00001 / float(edge[1].item(0) - edge[0].item(0)))
+
+        return edgePerpendicularGradient
+
     def getPositionInFrontOfTreasure(self):
         myPathFinder = Pathfinder(self)
         myMapCoorDinateAjuster = MapCoordinatesAjuster(self)
-        orientationForTreasure = 0
+        myBestPath = myPathFinder.findPath((-1, -1), (-1, -1))
+        bestInFrontPosition = (0,0)
+        bestOrientationForTreasure = 0
         for treasurePosition in self.treasures:
             if treasurePosition[1] == self.limit.getMaxCorner()[1]:
-                orientationForTreasure = 90
-                inFrontPosition = (treasurePosition[0], treasurePosition[1] - self.SAFE_MARGIN)
+                newOrientationForTreasure = 90
+                newInFrontPosition = (treasurePosition[0], treasurePosition[1] - self.SAFE_MARGIN)
             elif treasurePosition[1] == self.limit.getMinCorner()[1]:
-                orientationForTreasure  = 270
-                inFrontPosition = (treasurePosition[0], treasurePosition[1] + self.SAFE_MARGIN)
+                newOrientationForTreasure  = 270
+                newInFrontPosition = (treasurePosition[0], treasurePosition[1] + self.SAFE_MARGIN)
             else:
-                orientationForTreasure  = 180
-                inFrontPosition = (treasurePosition[0] + self.SAFE_MARGIN, treasurePosition[1])
+                newOrientationForTreasure  = 180
+                newInFrontPosition = (treasurePosition[0] + self.SAFE_MARGIN, treasurePosition[1])
 
 
-            myPath = myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint(inFrontPosition))
-            if len(myPath) > 1:
-                return inFrontPosition, orientationForTreasure
-        return (0,0),0
+            myNewPath = myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint(newInFrontPosition))
+            if myNewPath.totalDistance < myBestPath.totalDistance:
+                myBestPath = myNewPath
+                bestOrientationForTreasure = newOrientationForTreasure
+                bestInFrontPosition = newInFrontPosition
+        return bestInFrontPosition,bestOrientationForTreasure
 
-    def getPositionInFrontOfIsland(self, islandShapeName):
+    def getPositionInFrontOfIsland(self):
         myPathFinder = Pathfinder(self)
         myPath = myPathFinder.findPath((-1, -1), (-1, -1))
         myMapCoorDinateAjuster = MapCoordinatesAjuster(self)
+        myBestPosition = (0,0)
         orientation = 0
-        for shape in self.__shapes:
-            if shape.getName() == islandShapeName:
-                targetShape = shape
-
-        edgesList = targetShape.getEdgesList()
+        targetShape = self.target
+        edgesList = self.target.getEdgesList()
         for edge in edgesList:
             xCenterOfEdge = edge[0].item(0) + (((edge[0].item(0) - edge[1].item(0)) / 2) * -1)
             yCenterOfEdge = edge[0].item(1) + (((edge[0].item(1) - edge[1].item(1)) / 2) * -1)
 
-            if float(edge[1].item(0) - edge[0].item(0)) != 0 and float(edge[1].item(1) - edge[0].item(1)) != 0:
-                edgePerpendicularGradient = float(-1 / (float(float(edge[1].item(1) - edge[0].item(1)) / float(edge[1].item(0) - edge[0].item(0)))))
-            elif float(edge[1].item(0) - edge[0].item(0)) == 0:
-                edgePerpendicularGradient = float(-1 / (float(float(edge[1].item(1) - edge[0].item(1)) / 0.0001)))
-            else:
-                edgePerpendicularGradient = float(-1 / 0.00001 / float(edge[1].item(0) - edge[0].item(0)))
+            edgePerpendicularGradient = self.getEdgeGradiant(edge)
+
             conversionGradient = 1
             if abs(edgePerpendicularGradient) > 1:
                 conversionGradient = 0.1
             if abs(edgePerpendicularGradient) > 10:
                 conversionGradient = 0.01
-            if targetShape.isOutside((xCenterOfEdge + 1 * conversionGradient, yCenterOfEdge + 1 * edgePerpendicularGradient * conversionGradient)):
+            if self.target.isOutside((xCenterOfEdge + 1 * conversionGradient, yCenterOfEdge + 1 * edgePerpendicularGradient * conversionGradient)):
                 positionToGo = (xCenterOfEdge + self.SAFE_MARGIN_FOR_ISLAND * conversionGradient, yCenterOfEdge + self.SAFE_MARGIN_FOR_ISLAND * edgePerpendicularGradient * conversionGradient)
                 hypothenuse = 0
                 while hypothenuse < self.SAFE_MARGIN:
@@ -108,19 +117,20 @@ class Map:
 
             angle = math.degrees(math.atan2(opp,adj))
             if positionToGo[0] > xCenterOfEdge and positionToGo[1] < yCenterOfEdge:
-                angle = angle + 90
+                angle = 180 - angle
             if positionToGo[0] > xCenterOfEdge and positionToGo[1] > yCenterOfEdge:
                 angle = angle + 180
             if positionToGo[0] < xCenterOfEdge and positionToGo[1] > yCenterOfEdge:
-                angle = angle + 270
+                angle = 360 - angle
 
             myNewPath = myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint(positionToGo))
 
             if myNewPath.totalDistance < myPath.totalDistance:
                 myPath = myNewPath
+                myBestPosition = positionToGo
                 orientation = angle
 
-        return positionToGo, orientation
+        return myBestPosition, orientation
 
 
     def setMapLimit(self, contour):
