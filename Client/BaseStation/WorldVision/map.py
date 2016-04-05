@@ -44,23 +44,27 @@ class Map:
     def getPositionInFrontOfTreasure(self):
         myPathFinder = Pathfinder(self)
         myMapCoorDinateAjuster = MapCoordinatesAjuster(self)
-        orientationForTreasure = 0
+        myBestPath = myPathFinder.findPath((-1, -1), (-1, -1))
+        bestInFrontPosition = (0,0)
+        bestOrientationForTreasure = 0
         for treasurePosition in self.treasures:
             if treasurePosition[1] == self.limit.getMaxCorner()[1]:
-                orientationForTreasure = 90
-                inFrontPosition = (treasurePosition[0], treasurePosition[1] - self.SAFE_MARGIN)
+                newOrientationForTreasure = 90
+                newInFrontPosition = (treasurePosition[0], treasurePosition[1] - self.SAFE_MARGIN)
             elif treasurePosition[1] == self.limit.getMinCorner()[1]:
-                orientationForTreasure  = 270
-                inFrontPosition = (treasurePosition[0], treasurePosition[1] + self.SAFE_MARGIN)
+                newOrientationForTreasure  = 270
+                newInFrontPosition = (treasurePosition[0], treasurePosition[1] + self.SAFE_MARGIN)
             else:
-                orientationForTreasure  = 180
-                inFrontPosition = (treasurePosition[0] + self.SAFE_MARGIN, treasurePosition[1])
+                newOrientationForTreasure  = 180
+                newInFrontPosition = (treasurePosition[0] + self.SAFE_MARGIN, treasurePosition[1])
 
 
-            myPath = myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint(inFrontPosition))
-            if len(myPath) > 1:
-                return inFrontPosition, orientationForTreasure
-        return (0,0),0
+            myNewPath = myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint(newInFrontPosition))
+            if myNewPath.totalDistance < myBestPath.totalDistance:
+                myBestPath = myNewPath
+                bestOrientationForTreasure = newOrientationForTreasure
+                bestInFrontPosition = newInFrontPosition
+        return bestInFrontPosition,bestOrientationForTreasure
 
     def getPositionInFrontOfIsland(self):
         myPathFinder = Pathfinder(self)
