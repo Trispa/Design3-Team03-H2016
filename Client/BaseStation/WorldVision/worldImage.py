@@ -19,8 +19,12 @@ class WorldImage:
         self.__map.setTreasures(relativeAngles)
 
     def findBestTresor(self):
-        self.myPath, ret = self.__map.getPositionInFrontOfTreasure()
+        self.myPath, self.orientation = self.__map.getPositionInFrontOfTreasure()
         return self.__map.getPositionInFrontOfTreasure()
+
+    def getIslandPositioning(self):
+        self.myPath, ret = self.__map.getPositionInFrontOfIsland()
+        return self.__map.getPositionInFrontOfIsland()
 
     def buildMap(self, frame):
         self.__map = self.__myMapBuilder.buildMapWithAllFilter(frame, self.__map)

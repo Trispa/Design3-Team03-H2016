@@ -23,8 +23,8 @@ socketIO = SocketIO(config['url'], int(config['port']))
 
 def verifyIfMoving(path, nextSignal, angleToRotate):
     print("verify if moving")
-    pixelRangeToSendNextCoordinates = 10
     for nodeBotIsGoingTo in range(0, len(path)):
+        pixelRangeToSendNextCoordinates = 10
         xPositionOfNodeThatBotIsGoingTo = path[nodeBotIsGoingTo].positionX
         yPositionOfNodeThatBotIsGoingTo = path[nodeBotIsGoingTo].positionY
 
@@ -32,8 +32,7 @@ def verifyIfMoving(path, nextSignal, angleToRotate):
 
         botPositionX = botInfo["robotPosition"][0]
         botPositionY = botInfo["robotPosition"][1]
-        botOrientation = botInfo["robotOrientation"]
-
+        stuckIndex = 0
         while ((botPositionX > xPositionOfNodeThatBotIsGoingTo + pixelRangeToSendNextCoordinates or
             botPositionX < xPositionOfNodeThatBotIsGoingTo - pixelRangeToSendNextCoordinates) and
                (botPositionY > yPositionOfNodeThatBotIsGoingTo + pixelRangeToSendNextCoordinates or
@@ -41,14 +40,24 @@ def verifyIfMoving(path, nextSignal, angleToRotate):
             botInfo = dispatcher.getCurrentWorldInformation()
             botPositionX = botInfo["robotPosition"][0]
             botPositionY = botInfo["robotPosition"][1]
-            botOrientation = botInfo["robotOrientation"]
-            print "not close enough"
+            stuckIndex += 1
+            if stuckIndex > 4:
+                pixelRangeToSendNextCoordinates += 1
+            print "not close enough " + str(stuckIndex)
         time.sleep(5)
         print "close enough"
-
+        print "Allo ??"
         if(nodeBotIsGoingTo+1 == len(path)):
+            print "send bot to last node again"
+            botInfo = dispatcher.getCurrentWorldInformation()
+            jsonToSend = {"positionFROMx" : botInfo["robotPosition"][0],
+                          "positionFROMy" : botInfo["robotPosition"][1],
+                          "positionTOx" : path[nodeBotIsGoingTo].positionX,
+                          "positionTOy" : path[nodeBotIsGoingTo].positionY,
+                          "orientation":botInfo["robotOrientation"]}
+            socketIO.emit("sendNextCoordinates", jsonToSend)
             print("emitting" + nextSignal)
-            jsonToSend = {"botOrientation":botOrientation,
+            jsonToSend = {"botOrientation":botInfo["robotOrientation"],
                           "angleToGo":angleToRotate,
                           "sequence":True}
             socketIO.emit(nextSignal, jsonToSend)
@@ -121,15 +130,6 @@ def sendImageThread():
         sendInformations()
         time.sleep(5)
 
-
-
-
-
-
-
-
-
-
 #debug section
 def verifyIfMovingDebug(path, nextSignal, angleToRotate):
     print("verify if moving")
@@ -153,7 +153,7 @@ def verifyIfMovingDebug(path, nextSignal, angleToRotate):
             print "not close enough"
         time.sleep(5)
         print "close enough"
-
+        print "wtf?"
         if(nodeBotIsGoingTo+1 != len(path)):
             print("sending bot to next coordinates")
             botInfo = dispatcher.getCurrentWorldInformation()
@@ -199,7 +199,7 @@ def debugAlignBotToTreasure():
 def debugSendBotToTarget():
     dispatcher.setSequencerStateToSendToTarget()
     path, nextSignal, angleToRotate = dispatcher.handleCurrentSequencerState()
-    verifyIfMovingDebug(path, nextSignal, angleToRotate)
+    verifyIfMoving(path, nextSignal, angleToRotate)
 
 def initializeWorld():
     dispatcher.initialiseWorldData()
