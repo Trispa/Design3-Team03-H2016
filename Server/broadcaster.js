@@ -130,27 +130,35 @@ io.on('connection', function (client) {
 
     //debug section
     client.on("debugAlignBotToTarget", function(){
+        console.log("sending align to target command to base");
         io.emit('debugAlignBotToTarget');
     });
     client.on("debugSendBotToTarget", function(){
+        console.log("sending send bot to target command to base");
         io.emit('debugSendBotToTarget');
     });
     client.on("debugAlignBotToTreasure", function(){
+        console.log("sending align position to treasures command to base");
         io.emit('debugAlignBotToTreasure');
     });
     client.on("debugSendBotToTreasure", function(){
+        console.log("sending send bot to treasre command to base");
         io.emit('debugSendBotToTreasure');
     });
     client.on("debugSearchAllTreasure", function(){
+        console.log("sending search all treasures command to base");
         io.emit('debugSearchAllTreasure');
     });
     client.on("debugAlignBotToChargingStation", function(){
+        console.log("sending align bot to charging station command to base");
         io.emit('debugAlignBotToChargingStation');
     });
     client.on("debugSendBotToChargingStation", function(){
+        console.log("sending send bot to charging station command to base");
         io.emit('debugSendBotToChargingStation');
     });
     client.on("initializeWorld", function(){
+        console.log("sending initialize world command to base");
         io.emit('initializeWorld');
     });
 });

@@ -165,17 +165,21 @@ def verifyIfMovingDebug(path, nextSignal, angleToRotate):
             socketIO.emit("sendNextCoordinates", jsonToSend)
 
 def debugSendBotToChargingStation():
+    print "send bot to charging station debug launching"
     dispatcher.setSequencerStateToSendChargingStation()
     path, nextSignal, angleToRotate = dispatcher.handleCurrentSequencerState()
     verifyIfMovingDebug(path, nextSignal, angleToRotate)
 
 def debugAlignBotToChargingStation():
+    print "align bot to charging station debug launching"
     botInfo = dispatcher.getCurrentWorldInformation()
     jsonToSend = {"robotOrientation":botInfo['robotOrientation'],
                   "sequence":False}
     socketIO.emit('alignPositionToChargingStation', jsonToSend)
 
 def debugSearchAllTreasure():
+    print "search all treasures debug launching"
+
     dispatcher.setSequencerStateToDetectTreasures()
     path, nextSignal, angleToRotate = dispatcher.handleCurrentSequencerState()
     verifyIfMovingDebug(path, nextSignal, angleToRotate)
@@ -186,22 +190,30 @@ def debugSearchAllTreasure():
     socketIO.emit(nextSignal, jsonToSend)
 
 def debugSendBotToTreasure():
+    print "send bot to treasure debug launching"
+
     dispatcher.setSequencerStateToSendToTreasure()
     path, nextSignal, angleToRotate = dispatcher.handleCurrentSequencerState()
     verifyIfMovingDebug(path, nextSignal, angleToRotate)
 
 def debugAlignBotToTreasure():
+    print "align bot to treasure debug launching"
+
     botInfo = dispatcher.getCurrentWorldInformation()
     jsonToSend = {"robotOrientation":botInfo['robotOrientation'],
                   "sequence":False}
     socketIO.emit('alignPositionToTreasure', jsonToSend)
 
 def debugSendBotToTarget():
+    print "send bot to target debug launching"
+
     dispatcher.setSequencerStateToSendToTarget()
     path, nextSignal, angleToRotate = dispatcher.handleCurrentSequencerState()
     verifyIfMoving(path, nextSignal, angleToRotate)
 
 def initializeWorld():
+    print "initialize world debug launching"
+
     dispatcher.initialiseWorldData()
 
 Thread(target=sendImageThread).start()
