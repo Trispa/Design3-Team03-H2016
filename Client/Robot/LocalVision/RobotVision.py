@@ -348,9 +348,9 @@ class RobotVision:
                 print "!!! ARRIVER !!!"
                 return True
 
-            cv2.imshow("Image", self.image)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+            # cv2.imshow("Image", self.image)
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     break
         self.video.release()
         cv2.destroyAllWindows()
 
@@ -428,9 +428,9 @@ class RobotVision:
                 print "!!! ARRIVER !!!"
                 return True
 
-            cv2.imshow("Image", self.image)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+            # cv2.imshow("Image", self.image)
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     break
         self.video.release()
         cv2.destroyAllWindows()
 
