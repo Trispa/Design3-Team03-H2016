@@ -38,6 +38,14 @@ class PositionAdjuster:
         self.goForwardToStopApproaching()
         return True
 
+    def getCloserToIsland(self):
+        self.wheelManager.moveTo(5, 0)
+        self.wheelManager.moveTo(0, 5)
+        self.activateMagnet()
+        self.lowerArm()
+        self.deactivateMagnet()
+        self.wheelManager(0, -5)
+
 
     def stopCharging(self):
         i = 0
