@@ -46,7 +46,7 @@ def verifyIfMoving(path, nextSignal, angleToRotate):
             print "not close enough " + str(stuckIndex)
         time.sleep(5)
         print "close enough"
-        print "Allo ??"
+
         if(nodeBotIsGoingTo+1 == len(path)):
             print "send bot to last node again"
             botInfo = dispatcher.getCurrentWorldInformation()
@@ -153,7 +153,6 @@ def verifyIfMovingDebug(path, nextSignal, angleToRotate):
             print "not close enough"
         time.sleep(5)
         print "close enough"
-        print "wtf?"
         if(nodeBotIsGoingTo+1 != len(path)):
             print("sending bot to next coordinates")
             botInfo = dispatcher.getCurrentWorldInformation()
