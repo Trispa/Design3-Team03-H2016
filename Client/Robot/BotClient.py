@@ -81,7 +81,6 @@ def detectTreasure(json):
     minimumAngleDifferenceToRotate = 3
     if(abs(json['botOrientation'] - json['angleToGo']) > minimumAngleDifferenceToRotate):
         botDispatcher.setRobotOrientation(json['botOrientation'], json['angleToGo'])
-    botDispatcher.setRobotOrientation(float(json['botOrientation']), float(json['angleToGo']))
     anglesList = botDispatcher.detectTreasure()
     socketIO.emit('setTreasures', anglesList)
     if(json['sequence']):

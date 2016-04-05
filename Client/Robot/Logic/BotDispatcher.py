@@ -19,7 +19,6 @@ class BotDispatcher():
         self.treasureAngle = 0
         self.spc = spc
 
-
     def followPath(self, coordinates):
         print(coordinates)
         print("Bot going to "
@@ -51,7 +50,8 @@ class BotDispatcher():
         self.positionAdjuster.getCloserToTreasure()
 
     def detectTreasure(self):
-        treasureDetector = TreasuresDetector(self.cameraTower, self.video )
+	self.video = cv2.VideoCapture(0)
+	treasureDetector = TreasuresDetector(self.cameraTower, self.video )
         return treasureDetector.buildTresorsAngleList()
 
     def setRobotOrientation(self, robotAngle, angleToGetRobotTo):

@@ -364,7 +364,7 @@ class RobotVision:
         lastAngle= 180
 
         self.camera.moveCameraByAngle(1, 70)
-        self.camera.moveCameraByAngle(0, 50)
+        self.camera.moveCameraByAngle(0, 40)
 
         while(self.video.isOpened()):
             ret, self.image = self.video.read()
