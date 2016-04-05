@@ -30,7 +30,10 @@ def startRound(*args):
 
 def alignToTreasure(json):
     if(json['sequence']):
-        botDispatcher.setRobotOrientation(json['robotOrientation'], botDispatcher.treasureAngle)
+        angleToGetForChargingStation = botDispatcher.treasureAngle
+        minimumAngleDifferenceToRotate = 3
+        if(abs(json['robotOrientation'] - angleToGetForChargingStation) > minimumAngleDifferenceToRotate):
+            botDispatcher.setRobotOrientation(json['robotOrientation'], botDispatcher.treasureAngle)
     botDispatcher.alignToTreasure(Controller())
     if(json['sequence']):
         socketIO.emit("needNewCoordinates")
@@ -47,7 +50,7 @@ def rotateToTreasure(json):
 
 def alignToChargingStation(json):
     angleToGetForChargingStation = 270
-    minimumAngleDifferenceToRotate = 10
+    minimumAngleDifferenceToRotate = 3
     if(abs(json['robotOrientation'] - angleToGetForChargingStation) > minimumAngleDifferenceToRotate):
         botDispatcher.setRobotOrientation(json['robotOrientation'], angleToGetForChargingStation)
     botDispatcher.alignToChargingStation()
@@ -56,8 +59,8 @@ def alignToChargingStation(json):
     if(json['sequence']):
         socketIO.emit("needNewCoordinates")
 
-def alignToTarget():
-    #TODO code pour s'enligner a la cible
+def alignToTarget(json):
+    botDispatcher.setRobotOrientation(json['botOrientation'], json['angleToGo'])
     socketIO.emit("needNewCoordinates")
 
 def endRound():

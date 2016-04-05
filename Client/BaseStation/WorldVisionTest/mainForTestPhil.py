@@ -30,14 +30,15 @@ def myMain():
 
 def myMain2():
 
-    camera = cv2.VideoCapture(1)
+    camera = cv2.VideoCapture(0)
     camera.set(3, 3264)
     camera.set(4, 2448)
 
-    frame = cv2.imread('Photo-Test/Frames/Picture 500.jpg')
+    #frame = cv2.imread('Photo-Test/Frames/Picture 500.jpg')
     geometricalImage = WorldImage()
 
     while(True):
+
 
         #ret, frame = camera.read()
         frame = cv2.imread('Photo-Test/Frames/Picture 234.jpg')
@@ -51,6 +52,7 @@ def myMain2():
         geometricalImage.getIslandPositioning(myTarget)
 
         geometricalImage.drawMapOnFrame(frame)
+
 
         cv2.imshow("resized", frame)
 
