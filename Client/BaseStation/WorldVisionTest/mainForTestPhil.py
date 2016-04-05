@@ -1,7 +1,7 @@
 from Client.BaseStation.WorldVision.worldImage import WorldImage
 import copy
-from Client.BaseStation.WorldVision.worldVision import worldVision
 import cv2
+from Client.BaseStation.Logic.TargetTypes import ShapeTarget
 import cProfile
 
 
@@ -47,6 +47,12 @@ def myMain2():
         geometricalImage.buildMap(frame)
         geometricalImage.updateRobotPosition(frame)
         geometricalImage.addLabels(frame)
+        geometricalImage.defineTreasures([30, 150, 87])
+        myTarget = ShapeTarget("triangle")
+        geometricalImage.getIslandPositioning(myTarget)
+
+        geometricalImage.drawMapOnFrame(frame)
+
 
         cv2.imshow("resized", frame)
 
