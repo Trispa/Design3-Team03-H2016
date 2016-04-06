@@ -42,9 +42,11 @@ class BotDispatcher():
 
     def detectTreasure(self):
         self.__initializeVideoCapture()
+	print "Video supposed to be initialize is open : ", self.video.isOpened()
         treasureDetector = TreasuresDetector(self.cameraTower, self.video )
+	anglesList = treasureDetector.buildTresorsAngleList()
         self.video.release()
-        return treasureDetector.buildTresorsAngleList()
+        return anglesList
 
     def setRobotOrientation(self, robotAngle, angleToGetRobotTo):
         self.wheelManager.setOrientation(robotAngle, angleToGetRobotTo)
