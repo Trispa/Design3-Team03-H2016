@@ -17,7 +17,9 @@ class TreasuresDetector:
         self.camera = cameraTower
         self.camera.step = 0.4
         self.centered = False
+        print "Given video is open : ", video.isOpened()
         self.video = video
+        print "Video given is open : ", video.isOpened()
 
     def setMask(self):
         blurMapImage = cv2.GaussianBlur(self.image, (5, 5), 0)
@@ -71,6 +73,8 @@ class TreasuresDetector:
         self.camera.moveCameraByAngle(0, self.START_CAMERA_VERTICAL_ANGLE)
         self.followedTreasure = None
 
+	print "Camera for find treasure open : ", self.video.isOpened()
+
         while(self.video.isOpened() and self.camera.horizontalDegree < 173):
 
             self.centered = False
@@ -87,7 +91,6 @@ class TreasuresDetector:
                 self.camera.moveCameraRight()
                 self.centered = self.isCenteredWithTreasure()
 
-        self.video.release()
         print("Liste des angles : ", self.treasuresAngle)
         return self.treasuresAngle
 

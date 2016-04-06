@@ -20,7 +20,6 @@ class Map:
         self.target = None
         self.treasures = []
         self.orientationForTreasure = 0
-        self.target = Square("Square", np.array([[]], dtype=np.int32))
 
     def getShapesList(self):
         return self.__shapes
@@ -136,18 +135,10 @@ class Map:
     def setMapLimit(self, contour):
         cornerList = []
         minX = 0
-        maxX = 0
-        minY = 1000
-        maxY = 0
-        for corner in contour:
-            cornerList.append((corner.item(0), corner.item(1)))
-        for corner in cornerList:
-            if(corner[0] > maxX):
-                maxX = corner[0]
-            if(corner[1] > maxY):
-                maxY = corner[1]
-            if(corner[1] < minY):
-                minY = corner[1]
+        maxX = 960
+        minY = 92
+        maxY = 580
+
         newFoundLimit = Square("limit", np.array([[[minX,minY + 5]],[[minX,maxY - 5]],[[maxX, maxY - 5]],[[maxX,minY + 5]]], dtype=np.int32))
 
         if newFoundLimit.getArea() < self.limit.getArea() or len(self.limit.getContour()) == 0:
@@ -159,6 +150,7 @@ class Map:
 
     def setTarget(self, target):
         self.target =  target.getObstacle(self.__shapes)
+        print "Target = ", self.target.getName()
 
     def setTreasures(self, relativeAngles):
         rightAngle = 90
