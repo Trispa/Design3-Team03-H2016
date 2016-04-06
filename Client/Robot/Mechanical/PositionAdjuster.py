@@ -61,7 +61,7 @@ class PositionAdjuster:
 
     def stopCharging(self):
         self.deactivateMagnet()
-	time.sleep(0.1)
+        time.sleep(0.1)
         self.wheelManager.moveTo((-15, -15))
         return True
 

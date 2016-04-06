@@ -53,6 +53,7 @@ io.on('connection', function (client) {
     });
 
     client.on('needNewCoordinates', function(){
+        console.log('needNewCoordinatesSignal')
         io.emit('needNewCoordinates');
     });
     client.on('sendNextCoordinates', function(data){
