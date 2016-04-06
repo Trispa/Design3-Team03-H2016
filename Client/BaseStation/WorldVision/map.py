@@ -20,7 +20,6 @@ class Map:
         self.target = None
         self.treasures = []
         self.orientationForTreasure = 0
-        self.target = Square("Square", np.array([[]], dtype=np.int32))
 
     def getShapesList(self):
         return self.__shapes
