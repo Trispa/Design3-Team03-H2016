@@ -44,9 +44,9 @@ class worldVision:
                 break
         frame = old_frame
         frame = cv2.resize(frame, (960, 720))
-        self.worldImage.updateRobotPosition(frame)
         self.worldImage.drawMapOnFrame(frame)
-
+        self.worldImage.updateRobotPosition(frame)
+        self.worldImage.addLabels(frame)
         return frame, self.worldImage.getMap()
 
     def setTarget(self, target):
