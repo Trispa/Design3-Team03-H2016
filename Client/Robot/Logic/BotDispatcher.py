@@ -18,6 +18,7 @@ class BotDispatcher():
         self.cameraTower = CameraTower(self.maestro)
         self.treasureAngle = 0
         self.spc = spc
+        self.__initializeVideoCapture()
 
     def followPath(self, coordinates):
         print(coordinates)
@@ -33,31 +34,28 @@ class BotDispatcher():
         self.wheelManager.moveTo(pointConverted)
 
     def alignToTreasure(self, maestro):
-        self.__initializeVideoCapture()
         self.vision = RobotVision(self.wheelManager, self.cameraTower, self.video)
         self.maestro = maestro
         self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro, self.spc)
         self.positionAdjuster.getCloserToTreasure()
+        self.video.release()
 
     def detectTreasure(self):
-        self.__initializeVideoCapture()
         treasureDetector = TreasuresDetector(self.cameraTower, self.video )
+        self.video.release()
         return treasureDetector.buildTresorsAngleList()
 
     def setRobotOrientation(self, robotAngle, angleToGetRobotTo):
         self.wheelManager.setOrientation(robotAngle, angleToGetRobotTo)
 
     def alignToChargingStation(self):
-        self.__initializeVideoCapture()
         self.vision = RobotVision(self.wheelManager, self.cameraTower, self.video)
         self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro, self.spc)
-
         self.positionAdjuster.getCloserToChargingStation()
-
+        self.video.release()
 
     def getRobotBackOnMap(self):
         self.positionAdjuster.stopCharging()
-
 
     def readManchester(self):
         serial = SerialPortCommunicator()

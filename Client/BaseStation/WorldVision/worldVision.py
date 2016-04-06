@@ -32,6 +32,7 @@ class worldVision:
         self.worldImage.buildMap(frame)
         self.worldImage.addLabels(frame)
         self.worldImage.updateRobotPosition(frame)
+        self.worldImage.drawMapOnFrame(frame)
 
     def getCurrentImage(self):
         ret = True
@@ -46,6 +47,7 @@ class worldVision:
         frame = old_frame
         frame = cv2.resize(frame, (960, 720))
         self.worldImage.updateRobotPosition(frame)
+
         return frame, self.worldImage.getMap()
 
     def setTarget(self, target):
