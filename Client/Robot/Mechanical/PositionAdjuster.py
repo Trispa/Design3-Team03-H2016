@@ -46,7 +46,7 @@ class PositionAdjuster:
         self.ascendArm()
         while not self.localVision.getCloserTo(False):
             pass
-        self.goForwardToStopApproaching()
+        self.wheelManager.moveTo((25, 0))
         self.rechargeMagnet()
         return True
 
