@@ -51,31 +51,35 @@ class PositionAdjuster:
         return True
 
     def getCloserToIsland(self):
-        self.wheelManager.moveTo((5, 0))
-        self.wheelManager.moveTo((0, 5))
+        self.wheelManager.moveTo((20, 0))
+        self.wheelManager.moveTo((0,20))
         self.activateMagnet()
         self.lowerArm()
+	time.sleep(2)
         self.deactivateMagnet()
-        self.wheelManager.moveTo((0, -5))
+       
 
 
     def stopCharging(self):
         self.deactivateMagnet()
-	time.sleep(0.1)
-        self.wheelManager.moveTo((-15, -15))
+	time.sleep(0.5)
+        self.wheelManager.moveTo((-25, -25))
         return True
 
     def getCloserToTreasure(self):
         print "debut approche tresors"
         self.lowerArm()
+	time.sleep(0.5)
         while not self.localVision.getCloserTo(True):
             pass
-
+	time.sleep(0.5)
         self.activateMagnet()
+	time.sleep(0.5)
         self.goForwardToStopApproaching()
-
+	time.sleep(0.5)
         self.goBackwardToGrabTreasure()
-        self.ascendArm()
+	time.sleep(0.5)
+	self.ascendArm()
         time.sleep(2)
         self.deactivateMagnet()
         return True
