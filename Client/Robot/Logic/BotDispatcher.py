@@ -18,7 +18,6 @@ class BotDispatcher():
         self.cameraTower = CameraTower(self.maestro)
         self.treasureAngle = 0
         self.spc = spc
-        self.__initializeVideoCapture()
 
     def followPath(self, coordinates):
         print(coordinates)
