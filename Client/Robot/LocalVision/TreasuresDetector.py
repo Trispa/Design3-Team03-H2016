@@ -17,6 +17,7 @@ class TreasuresDetector:
         self.camera = cameraTower
         self.camera.step = 0.4
         self.centered = False
+        print "Given video is open : ", video.isOpened()
         self.video = video
 
     def setMask(self):
@@ -71,6 +72,8 @@ class TreasuresDetector:
         self.camera.moveCameraByAngle(0, self.START_CAMERA_VERTICAL_ANGLE)
         self.followedTreasure = None
 
+        print "Camera for find treasure open : ", self.video.isOpened()
+        print "Camera tower angle : ", self.camera.horizontalDegree
         while(self.video.isOpened() and self.camera.horizontalDegree < 173):
 
             self.centered = False

@@ -42,6 +42,7 @@ class BotDispatcher():
 
     def detectTreasure(self):
         self.__initializeVideoCapture()
+        print "The video supposed to be initialize is open : ", self.video.isOpened()
         treasureDetector = TreasuresDetector(self.cameraTower, self.video )
         self.video.release()
         return treasureDetector.buildTresorsAngleList()
@@ -63,6 +64,13 @@ class BotDispatcher():
         serial = SerialPortCommunicator()
         manchester = ManchesterCode(serial)
         return manchester.getAsciiManchester()
+
+    def alignToTargetIsland(self):
+        self.__initializeVideoCapture()
+        self.vision = RobotVision(self.wheelManager, self.cameraTower, self.video)
+        self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro, self.spc)
+        self.positionAdjuster.getCloserToIsland()
+        self.video.release()
 
     def __initializeVideoCapture(self):
         if platform.linux_distribution()[0].lower() == "Ubuntu".lower():
