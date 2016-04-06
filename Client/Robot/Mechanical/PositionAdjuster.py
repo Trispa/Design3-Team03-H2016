@@ -44,7 +44,7 @@ class PositionAdjuster:
 
     def getCloserToChargingStation(self):
         self.ascendArm()
-        while not self.localVision.getCloserToChargingStation():
+        while not self.localVision.getCloserTo(False):
             pass
         self.goForwardToStopApproaching()
         self.rechargeMagnet()
@@ -67,7 +67,7 @@ class PositionAdjuster:
     def getCloserToTreasure(self):
         print "debut approche tresors"
         self.lowerArm()
-        while not self.localVision.getCloserToTreasures():
+        while not self.localVision.getCloserTo(True):
             pass
 
         self.activateMagnet()
