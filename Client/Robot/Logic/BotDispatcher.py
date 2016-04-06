@@ -34,6 +34,7 @@ class BotDispatcher():
         self.wheelManager.moveTo(pointConverted)
 
     def alignToTreasure(self, maestro):
+        self.__initializeVideoCapture()
         self.vision = RobotVision(self.wheelManager, self.cameraTower, self.video)
         self.maestro = maestro
         self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro, self.spc)
@@ -41,6 +42,7 @@ class BotDispatcher():
         self.video.release()
 
     def detectTreasure(self):
+        self.__initializeVideoCapture()
         treasureDetector = TreasuresDetector(self.cameraTower, self.video )
         self.video.release()
         return treasureDetector.buildTresorsAngleList()
@@ -49,6 +51,7 @@ class BotDispatcher():
         self.wheelManager.setOrientation(robotAngle, angleToGetRobotTo)
 
     def alignToChargingStation(self):
+        self.__initializeVideoCapture()
         self.vision = RobotVision(self.wheelManager, self.cameraTower, self.video)
         self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro, self.spc)
         self.positionAdjuster.getCloserToChargingStation()

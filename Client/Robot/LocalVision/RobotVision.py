@@ -282,7 +282,6 @@ class RobotVision:
             if movingX and not moveXArriver:
                 print self.camera.verticalDegree
 
-
                 if self.camera.verticalDegree <= minCameraAngleToStopApproaching:
                     self.robot.stopAllMotors()
                     moveXArriver = True
@@ -294,8 +293,6 @@ class RobotVision:
                     movingX = False
                     lastAngle = self.camera.verticalDegree
 
-
-
             if moveYArriver and moveXArriver:
                 print "!!! ARRIVER !!!"
                 return True
@@ -303,8 +300,6 @@ class RobotVision:
             # cv2.imshow("Image", self.image)
             # if cv2.waitKey(1) & 0xFF == ord('q'):
             #     break
-        self.video.release()
-        cv2.destroyAllWindows()
 
 
 

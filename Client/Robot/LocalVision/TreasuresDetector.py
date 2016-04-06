@@ -87,7 +87,6 @@ class TreasuresDetector:
                 self.camera.moveCameraRight()
                 self.centered = self.isCenteredWithTreasure()
 
-        self.video.release()
         print("Liste des angles : ", self.treasuresAngle)
         return self.treasuresAngle
 

@@ -66,7 +66,7 @@ def alignToChargingStation(json):
         print "Tension : ", voltage
         time.sleep(1)
     botDispatcher.getRobotBackOnMap()
-    time.sleep(1)
+    time.sleep(2)
     if(json['sequence']):
         socketIO.emit("needNewCoordinates")
 
