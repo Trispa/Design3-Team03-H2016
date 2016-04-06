@@ -69,7 +69,7 @@ def alignToChargingStation(json):
     time.sleep(20)
     if(json['sequence']):
         print ('asking new commands')
-	socketIO.emit("needNewCoordinates")
+        socketIO.emit("needNewCoordinates")
 
 def alignToTarget(json):
     botDispatcher.setRobotOrientation(json['botOrientation'], json['angleToGo'])
