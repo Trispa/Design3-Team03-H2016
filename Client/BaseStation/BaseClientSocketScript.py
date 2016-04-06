@@ -97,7 +97,7 @@ def sendDetectTreasureSignal():
     jsonToSend = {"botOrientation":botInfo['robotOrientation'],
                           "angleToGo":180,
                           "sequence":True}
-    socketIO.emit('alignPositionToTreasure', jsonToSend)
+    socketIO.emit('detectTreasure', jsonToSend)
 
 def startRound():
     botPosition, botOrientation = dispatcher.initialiseWorldData()
