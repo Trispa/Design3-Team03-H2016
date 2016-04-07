@@ -5,6 +5,7 @@ import struct
 from Client.Robot.Mechanical.maestro import Controller
 from Client.Robot.Mechanical.SerialPortCommunicator import SerialPortCommunicator
 import fcntl
+from threading import Thread
 from socketIO_client import SocketIO
 import time
 from Client.Robot.Movement.WheelManager import WheelManager
@@ -60,9 +61,9 @@ def alignToChargingStation(json):
         botDispatcher.setRobotOrientation(json['robotOrientation'], angleToGetForChargingStation)
     botDispatcher.alignToChargingStation()
     readManchester()
-    voltage = spc.readConsensatorVoltage()
+    voltage = botDispatcher.botVoltage
     while(voltage <= 3.0):
-        voltage = spc.readConsensatorVoltage()
+        voltage = botDispatcher.botVoltage
         print "Tension : ", voltage
         time.sleep(1)
     botDispatcher.getRobotBackOnMap()
@@ -99,6 +100,20 @@ def get_ip_address(ifname):
         0x8915,
         struct.pack('256s', ifname[:15])
     )[20:24])
+
+def getBotVoltage():
+    while(True):
+        botDispatcher.botVoltage = spc.readConsensatorVoltage()
+        time.sleep(1)
+
+def sendBotVoltage():
+    while(True):
+        socketIO.emit('sendVoltage', botDispatcher.botVoltage)
+        time.sleep(5)
+
+Thread(target=getBotVoltage).start()
+Thread(target=sendBotVoltage).start()
+
 
 socketIO.emit('sendBotClientStatus','Connected')
 socketIO.emit('sendBotIP', get_ip_address('wlp4s0'))

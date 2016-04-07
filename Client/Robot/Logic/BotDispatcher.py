@@ -17,6 +17,7 @@ class BotDispatcher():
         self.maestro = maestro
         self.cameraTower = CameraTower(self.maestro)
         self.treasureAngle = 0
+        self.botVoltage = 0
         self.spc = spc
 
     def followPath(self, coordinates):
@@ -42,9 +43,9 @@ class BotDispatcher():
 
     def detectTreasure(self):
         self.__initializeVideoCapture()
-	print "Video supposed to be initialize is open : ", self.video.isOpened()
+        print "Video supposed to be initialize is open : ", self.video.isOpened()
         treasureDetector = TreasuresDetector(self.cameraTower, self.video )
-	anglesList = treasureDetector.buildTresorsAngleList()
+        anglesList = treasureDetector.buildTresorsAngleList()
         self.video.release()
         return anglesList
 
