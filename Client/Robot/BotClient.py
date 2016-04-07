@@ -37,7 +37,7 @@ def alignToTreasure(json):
         if(abs(json['robotOrientation'] - angleToGetForChargingStation) > minimumAngleDifferenceToRotate):
             botDispatcher.setRobotOrientation(json['robotOrientation'], botDispatcher.treasureAngle)
     botDispatcher.alignToTreasure(Controller())
-    if(botDispatcher.lastPositionGoneTo[0] == 0):
+    if(botDispatcher.lastPositionGoneTo[0] - 100 == 0):
         botDispatcher.getRobotBackOnMapWhenOutOfBound()
     if(json['sequence']):
         socketIO.emit("needNewCoordinates")
