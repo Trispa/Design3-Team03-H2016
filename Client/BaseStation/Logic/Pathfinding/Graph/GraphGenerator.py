@@ -55,8 +55,14 @@ class GraphGenerator:
             borderNodeRightBottom = Node((currentOstacleBottomRightCorner[0],
                 (currentOstacleBottomRightCorner[1] + collisionBottomRightCorner.positionY - self.SAFE_MARGIN) / 2))
 
-            endNode = self.endNodeGenerator.generateEndNode(currentObstacle, currentOstacleTopRightCorner, currentOstacleBottomRightCorner,
+            resultTop, collisionInnerTop = self.collisionDetector.hasUpperInnerCollision(currentObstacle)
+            resultBot, collisionInnerBot = self.collisionDetector.hasLowerInnerCollision(currentObstacle)
+            if not(self.collisionDetector.hasEndInnerCollision(currentObstacle) and resultTop and resultBot and collisionInnerBot[-1].positionY - self.SAFE_MARGIN <= collisionInnerTop[-1].positionY + self.SAFE_MARGIN):
+                endNode = self.endNodeGenerator.generateEndNode(currentObstacle, currentOstacleTopRightCorner, currentOstacleBottomRightCorner,
                                                             collisionBottomRightCorner, collisionUpperRightCorner, compteur)
+            else:
+                #Might be the Problem
+                endNode = Node((1000,1000))
 
             if self.collisionDetector.isCollidingWithWallFront(currentObstacle) == False:
                 self.__generateFrontPath(borderNodeLeftBottom, borderNodeLeftTop, currentObstacle, startingNode)
