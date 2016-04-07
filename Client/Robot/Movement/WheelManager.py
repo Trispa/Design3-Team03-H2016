@@ -18,7 +18,7 @@ class WheelManager:
     NEGATIVE_SPEED = 0
     MAX_SPEED = 0.11
     MAX_SPEED_VISION = 0.02
-    ROTATION_SPEED = 0.05
+    ROTATION_SPEED = 0.04
 
     def __init__(self, serialPortCommunicator):
         self.spc = serialPortCommunicator
@@ -55,14 +55,16 @@ class WheelManager:
         print("xSpeed : " + str(xSpeed) + " ySpeed : " + str(ySpeed) + " Time : " + str(timeToTravel))
         print "Reel distance : ", xSpeed * timeToTravel
 
+        distanceCm = max(abs(pointConverted[0]), abs(pointConverted[1]))
+
         if pointX > 0:
-            self.spc.driveMoteurLine(self.X_AXIS, xSpeed, self.POSITIVE_SPEED)
+            self.spc.driveMoteurLine(self.X_AXIS, xSpeed, self.POSITIVE_SPEED, distanceCm)
         if pointX < 0:
-            self.spc.driveMoteurLine(self.X_AXIS, xSpeed, self.NEGATIVE_SPEED)
+            self.spc.driveMoteurLine(self.X_AXIS, xSpeed, self.NEGATIVE_SPEED, distanceCm)
         if pointY > 0:
-            self.spc.driveMoteurLine(self.Y_AXIS, ySpeed, self.POSITIVE_SPEED)
+            self.spc.driveMoteurLine(self.Y_AXIS, ySpeed, self.POSITIVE_SPEED, distanceCm)
         if pointY < 0:
-            self.spc.driveMoteurLine(self.Y_AXIS, ySpeed, self.NEGATIVE_SPEED)
+            self.spc.driveMoteurLine(self.Y_AXIS, ySpeed, self.NEGATIVE_SPEED, distanceCm)
 
         # self.debutDeLInterruption(timeToTravel)
         time.sleep(timeToTravel)
@@ -85,13 +87,13 @@ class WheelManager:
         print("xSpeed : " + str(xSpeed) + " ySpeed : " + str(ySpeed))
 
         if pointX > 0:
-            self.spc.driveMoteurLine(self.X_AXIS, xSpeed, self.POSITIVE_SPEED)
+            self.spc.driveMoteurLine(self.X_AXIS, xSpeed, self.POSITIVE_SPEED, 100)
         if pointX < 0:
-            self.spc.driveMoteurLine(self.X_AXIS, xSpeed, self.NEGATIVE_SPEED)
+            self.spc.driveMoteurLine(self.X_AXIS, xSpeed, self.NEGATIVE_SPEED, 100)
         if pointY > 0:
-            self.spc.driveMoteurLine(self.Y_AXIS, ySpeed, self.POSITIVE_SPEED)
+            self.spc.driveMoteurLine(self.Y_AXIS, ySpeed, self.POSITIVE_SPEED, 100)
         if pointY < 0:
-            self.spc.driveMoteurLine(self.Y_AXIS, ySpeed, self.NEGATIVE_SPEED)
+            self.spc.driveMoteurLine(self.Y_AXIS, ySpeed, self.NEGATIVE_SPEED, 100)
 
         # self.debutDeLInterruption(timeToTravel)
 
@@ -99,15 +101,15 @@ class WheelManager:
 
     def rotate(self, degree):
         self.isMoving = True
-        timeToSleep = 0.035 * abs(degree) + 0.068
+        timeToSleep = 0.035 * abs(degree) + 0.168
         self.__resetMotors()
 
         if(degree <=0):
-            self.spc.driveMoteurRotation(self.ROTATION_SPEED, self.NEGATIVE_SPEED, degree)
+            self.spc.driveMoteurRotation(self.ROTATION_SPEED, self.NEGATIVE_SPEED, abs(degree))
         else:
-            self.spc.driveMoteurRotation(self.ROTATION_SPEED, self.POSITIVE_SPEED, degree)
+            self.spc.driveMoteurRotation(self.ROTATION_SPEED, self.POSITIVE_SPEED, abs(degree))
         print timeToSleep
-        # time.sleep(timeToSleep)
+        time.sleep(timeToSleep)
         # self.debutDeLInterruption(timeToSleep)
         # self.stopAllMotors()
         return timeToSleep
@@ -194,8 +196,16 @@ if __name__ == '__main__':
     mr.stopAllMotors()
     time.sleep(0.1)
 
+    mr.moveTo((19*ratio, 0))
 
-    mr.rotate(10)
+
+    # mr.rotate(20)
+    # time.sleep(3)
+    # mr.rotate(20)
+    # time.sleep(3)
+    # mr.rotate(40)
+    # time.sleep(3)
+    # mr.rotate(10)
 
 
 
