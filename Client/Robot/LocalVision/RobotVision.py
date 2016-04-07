@@ -34,25 +34,13 @@ class RobotVision:
         self.yellowColor = [(yellowDown, yellowUp)]
         self.greenColor = [(greenDown, greenUp)]
 
-    def detectTreasureColor(self):
+    def detectColor(self, colorRange):
         self.mask = 0
 
-        colorContainer = ColorContainer()
         hsvImage = cv2.cvtColor(self.image,cv2.COLOR_BGR2HSV)
 
-        lower = colorContainer.yellowTreasure.lower
-        upper = colorContainer.yellowTreasure.higher
-
-        self.mask = self.mask + cv2.inRange(hsvImage, lower, upper)
-
-    def detectChargingStationColor(self):
-        self.mask = 0
-
-        colorContainer = ColorContainer()
-        hsvImage = cv2.cvtColor(self.image,cv2.COLOR_BGR2HSV)
-
-        lower = colorContainer.green.lower
-        upper = colorContainer.green.higher
+        lower = colorRange.lower
+        upper = colorRange.higher
 
         self.mask = self.mask + cv2.inRange(hsvImage, lower, upper)
 
@@ -181,9 +169,9 @@ class RobotVision:
 
         return (distanceX, distanceY)
 
-    def differenceParraleleLinesTresor(self):
+    def differenceParraleleLines(self):
         ret,thresh1 = cv2.threshold(self.image,100,255,cv2.THRESH_BINARY)
-
+        self.image = thresh1
 
         ih, iw, ic = self.image.shape
         col1 = 0
@@ -211,15 +199,15 @@ class RobotVision:
 
         # print dot1
         # print dot2
-        # dot1 = (1279, 0)
+        # dot1 = (1279, 0)self.image = thresh1
         if dot1 == []:
             print "dot1 etait null"
-            dot1 = [0, 0]
+            dot1 = (0, 0)
         if dot2 == []:
             print "dot2 etait null"
-            dot2 = [iw - 1, ih - 1]
+            dot2 = (iw - 1, ih - 1)
 
-        self.image = thresh1
+
 
         cv2.line(self.image, dot1, dot2, (255, 0, 0), 2)
         cv2.line(self.image, (dot1[0], (dot1[1] + dot2[1])/2), (dot2[0], (dot1[1] + dot2[1])/2),(0, 0, 255), 2)
@@ -227,54 +215,13 @@ class RobotVision:
         # print distancePixel
         return distancePixel
 
+    def __signeDiff(self, diffValue):
+        if diffValue <= 0:
+            return 'N'
+        else:
+            return 'P'
 
-    def differenceParraleleLinesStation(self):
-        ret,thresh1 = cv2.threshold(self.image,100,255,cv2.THRESH_BINARY)
-
-
-        ih, iw, ic = self.image.shape
-        col1 = 0
-        col2 = iw - 1
-        dot1 = []
-        dot2 = []
-
-
-        for i in range(0, ih):
-            if np.equal(thresh1[i, 0], np.array([255,255,255])).all():
-                dot1 = (0, i)
-                break
-            if dot1 == []:
-                dot1 = (0, ih-1)
-
-        for i in range(0, ih):
-            if not np.equal(thresh1[i, col2], np.array([0,0,0])).all():
-                dot2 = (col2, i)
-                break
-            if dot2 == []:
-                for i in range(iw - 1, -1, -1):
-                    if not np.equal(thresh1[ih - 1, i], np.array([0,0,0])).all():
-                        dot2 = (col2, i)
-                        break
-
-        # print dot1
-        # print dot2
-        # dot1 = (1279, 0)
-        if dot1 == []:
-            print "dot1 etait null"
-            dot1 = [0, 0]
-        if dot2 == []:
-            print "dot2 etait null"
-            dot2 = [iw - 1, ih - 1]
-
-        self.image = thresh1
-
-        cv2.line(self.image, dot1, dot2, (255, 0, 0), 2)
-        cv2.line(self.image, (dot1[0], (dot1[1] + dot2[1])/2), (dot2[0], (dot1[1] + dot2[1])/2),(0, 0, 255), 2)
-        distancePixel = dot1[1] - (dot1[1] + dot2[1])/2
-        # print distancePixel
-        return distancePixel
-
-    def getCloserToTreasures(self):
+    def getCloserTo(self, isChargeTreasure):
         findSomething = False
         movingY = False
         moveYArriver = False
@@ -282,13 +229,25 @@ class RobotVision:
         moveXArriver = False
         self.tresor = None
         lastAngle= 180
+        oldDiff = 'E' # 'N' = negatif 'P' positif
+
+        colorContainer = ColorContainer()
+
+        if isChargeTreasure:
+            minCameraAngleToStopApproaching = 8
+            minCameraAngleToStartApproaching = 30
+            colorRange = colorContainer.yellowTreasure
+        else:
+            minCameraAngleToStopApproaching = 20
+            minCameraAngleToStartApproaching = 50
+            colorRange = colorContainer.green
 
         self.camera.moveCameraByAngle(1, 70)
-        self.camera.moveCameraByAngle(0, 30)
+        self.camera.moveCameraByAngle(0, minCameraAngleToStartApproaching)
 
         while(self.video.isOpened()):
             ret, self.image = self.video.read()
-            self.detectTreasureColor()
+            self.detectColor(colorRange)
             self.findContour()
 
             if not findSomething:
@@ -308,7 +267,8 @@ class RobotVision:
 
             if not self.robot.isMoving and center:
                 if not movingY and not moveYArriver:
-                    diff = self.differenceParraleleLinesTresor()
+                    diff = self.differenceParraleleLines()
+                    # oldDiff = self.__signeDiff(diff)
                     if diff < 0:
                         self.robot.moveForever(0, -30)
                     else:
@@ -321,28 +281,28 @@ class RobotVision:
                         movingX = True
 
             if movingY and not moveYArriver:
-                if abs(self.differenceParraleleLinesTresor()) < 8:
+                diff = self.differenceParraleleLines()
+                # print "Trace difference des ligne", self.__signeDiff(diff), oldDiff
+                if abs(diff) < 5 or self.__signeDiff(diff) != oldDiff:
                     self.robot.stopAllMotors()
                     moveYArriver = True
                     movingY = False
+                oldDiff = self.__signeDiff(diff)
 
 
             if movingX and not moveXArriver:
-                print self.camera.verticalDegree
+                # print self.camera.verticalDegree
 
-
-                if self.camera.verticalDegree <= 7.5:
+                if self.camera.verticalDegree <= minCameraAngleToStopApproaching:
                     self.robot.stopAllMotors()
                     moveXArriver = True
-                elif self.camera.verticalDegree <= (lastAngle - 0.5) and self.camera.verticalDegree >= 16:
+                elif self.camera.verticalDegree < (lastAngle - 1.8) and self.camera.verticalDegree >= 16:
                     print "Ajustement en Y", self.camera.verticalDegree
                     self.robot.stopAllMotors()
                     # moveXArriver = True
                     moveYArriver = False
                     movingX = False
                     lastAngle = self.camera.verticalDegree
-
-
 
             if moveYArriver and moveXArriver:
                 print "!!! ARRIVER !!!"
@@ -351,88 +311,6 @@ class RobotVision:
             # cv2.imshow("Image", self.image)
             # if cv2.waitKey(1) & 0xFF == ord('q'):
             #     break
-        self.video.release()
-        cv2.destroyAllWindows()
-
-    def getCloserToChargingStation(self):
-        findSomething = False
-        movingY = False
-        moveYArriver = False
-        movingX = False
-        moveXArriver = False
-        self.tresor = None
-        lastAngle= 180
-
-        self.camera.moveCameraByAngle(1, 70)
-        self.camera.moveCameraByAngle(0, 50)
-
-        while(self.video.isOpened()):
-            ret, self.image = self.video.read()
-            self.detectChargingStationColor()
-            self.findContour()
-
-            if not findSomething:
-                findSomething = self.swipeCamera()
-
-            if self.tresor == None:
-                findSomething = False
-                movingY = False
-                moveYArriver = False
-                movingX = False
-                moveXArriver = False
-
-
-
-            center = self.moveCamera()
-
-
-            if not self.robot.isMoving and center:
-                if not movingY and not moveYArriver:
-                    diff = self.differenceParraleleLinesStation()
-                    if diff < 0:
-                        self.robot.moveForever(0, -30)
-                    else:
-                        self.robot.moveForever(0, 30)
-                    movingY = True
-
-                if moveYArriver:
-                    if not movingX and not moveXArriver:
-                        self.robot.moveForever(30, 0)
-                        movingX = True
-
-            if movingY and not moveYArriver:
-                if abs(self.differenceParraleleLinesStation()) < 8:
-                    self.robot.stopAllMotors()
-                    moveYArriver = True
-                    movingY = False
-
-
-            if movingX and not moveXArriver:
-                print self.camera.verticalDegree
-
-
-                if self.camera.verticalDegree <= 20:
-                    self.robot.stopAllMotors()
-                    moveXArriver = True
-                elif self.camera.verticalDegree <= (lastAngle - 0.5) and self.camera.verticalDegree >= 16:
-                    print "Ajustement en Y", self.camera.verticalDegree
-                    self.robot.stopAllMotors()
-                    # moveXArriver = True
-                    moveYArriver = False
-                    movingX = False
-                    lastAngle = self.camera.verticalDegree
-
-
-
-            if moveYArriver and moveXArriver:
-                print "!!! ARRIVER !!!"
-                return True
-
-            # cv2.imshow("Image", self.image)
-            # if cv2.waitKey(1) & 0xFF == ord('q'):
-            #     break
-        self.video.release()
-        cv2.destroyAllWindows()
 
 
 

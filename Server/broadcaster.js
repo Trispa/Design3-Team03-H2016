@@ -53,6 +53,7 @@ io.on('connection', function (client) {
     });
 
     client.on('needNewCoordinates', function(){
+        console.log('needNewCoordinatesSignal')
         io.emit('needNewCoordinates');
     });
     client.on('sendNextCoordinates', function(data){
@@ -122,6 +123,13 @@ io.on('connection', function (client) {
     });
     client.on("rotateDoneToTreasure", function(){
         io.emit('rotateDoneToTreasure');
+    });
+    client.on("rotateToDetectTreasure", function(data){
+        console.log("rotateToDetectTreasure")
+        io.emit('rotateToDetectTreasure', data);
+    });
+    client.on("rotateDoneToDetectTreasure", function(){
+        io.emit('rotateDoneToDetectTreasure');
     });
 
 
