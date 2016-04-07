@@ -96,7 +96,7 @@ class Map:
             if abs(edgePerpendicularGradient) > 10:
                 conversionGradient = 0.01
             if self.target.isOutside((xCenterOfEdge + 1 * conversionGradient, yCenterOfEdge + 1 * edgePerpendicularGradient * conversionGradient)):
-                positionToGo = (xCenterOfEdge + self.SAFE_MARGIN_FOR_ISLAND * conversionGradient, yCenterOfEdge + self.SAFE_MARGIN_FOR_ISLAND * edgePerpendicularGradient * conversionGradient)
+                positionToGo = (xCenterOfEdge + self.SAFE_MARGIN * conversionGradient, yCenterOfEdge + self.SAFE_MARGIN * edgePerpendicularGradient * conversionGradient)
                 hypothenuse = 0
                 while hypothenuse < self.SAFE_MARGIN:
                     positionToGo = (positionToGo[0] + 1, positionToGo[1] + edgePerpendicularGradient)
@@ -104,7 +104,7 @@ class Map:
                     adj = abs(xCenterOfEdge - positionToGo[0])
                     hypothenuse = math.sqrt((opp * opp) + (adj * adj))
             else:
-                positionToGo = (xCenterOfEdge - self.SAFE_MARGIN_FOR_ISLAND * conversionGradient, yCenterOfEdge - self.SAFE_MARGIN_FOR_ISLAND * edgePerpendicularGradient * conversionGradient)
+                positionToGo = (xCenterOfEdge - self.SAFE_MARGIN * conversionGradient, yCenterOfEdge - self.SAFE_MARGIN * edgePerpendicularGradient * conversionGradient)
                 opp = abs(yCenterOfEdge - positionToGo[1])
                 adj = abs(xCenterOfEdge - positionToGo[0])
                 hypothenuse = math.sqrt((opp * opp) + (adj * adj))
@@ -129,7 +129,26 @@ class Map:
                 myBestPosition = positionToGo
                 orientation = angle
 
+        if myBestPosition == (0, 0):
+            x,y,width,height = cv2.boundingRect(targetShape.getContour())
+            centerOfMassX, centerOfMassY = targetShape.findCenterOfMass()
+            point = ((centerOfMassX - (self.SAFE_MARGIN + width), centerOfMassY))
+            if myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint((centerOfMassX - (self.SAFE_MARGIN + width), centerOfMassY))).totalDistance < 99999:
+                myBestPosition = (centerOfMassX - (self.SAFE_MARGIN + width), centerOfMassY)
+                orientation = 0
+            elif myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint((centerOfMassX + (self.SAFE_MARGIN + width), centerOfMassY))).totalDistance < 99999:
+                myBestPosition = (centerOfMassX + (self.SAFE_MARGIN + width), centerOfMassY)
+                orientation = 180
+            elif myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint((centerOfMassX, centerOfMassY - (self.SAFE_MARGIN + height)))).totalDistance < 99999:
+                myBestPosition = (centerOfMassX, centerOfMassY - (self.SAFE_MARGIN + height))
+                orientation = 90
+            elif myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint((centerOfMassX, centerOfMassY + (self.SAFE_MARGIN + height)))).totalDistance < 99999:
+                myBestPosition = (centerOfMassX, centerOfMassY + (self.SAFE_MARGIN + height))
+                orientation = 270
+
+        print "MEILLEUR ",myBestPosition, ", Orientation :", orientation
         return myBestPosition, orientation
+
 
 
     def setMapLimit(self, contour):

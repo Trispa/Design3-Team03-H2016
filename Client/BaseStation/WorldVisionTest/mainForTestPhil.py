@@ -36,31 +36,24 @@ def myMain2():
 
     #frame = cv2.imread('Photo-Test/Frames/Picture 500.jpg')
     geometricalImage = WorldImage()
+    #ret, frame = camera.read()
+    frame = cv2.imread('Photo-Test/Frames/Picture 500.jpg')
+    frame = cv2.resize(frame, (960, 720))
+    # copyF = copy.copy(frame)
+    geometricalImage.buildMap(frame)
+    geometricalImage.updateRobotPosition(frame)
+    geometricalImage.defineTreasures([88, 30])
+    #geometricalImage.findBestTresor()
+    geometricalImage.addLabels(frame)
+    myTarget = ShapeTarget("cercle")
+    geometricalImage.getIslandPositioning(myTarget)
 
-    while(True):
-
-
-        #ret, frame = camera.read()
-        frame = cv2.imread('Photo-Test/Frames/Picture 500.jpg')
-        frame = cv2.resize(frame, (960, 720))
-        # copyF = copy.copy(frame)
-        geometricalImage.buildMap(frame)
-        geometricalImage.updateRobotPosition(frame)
-        geometricalImage.defineTreasures([88, 30])
-        geometricalImage.findBestTresor()
-        geometricalImage.addLabels(frame)
-        geometricalImage.defineTreasures([30, 150, 87])
-        myTarget = ShapeTarget("triangle")
-        geometricalImage.getIslandPositioning(myTarget)
-
-        geometricalImage.drawMapOnFrame(frame)
-
-
-        cv2.imshow("resized", frame)
-
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            #cv2.imwrite('test.jpg',copyF)
-            break
+    geometricalImage.drawMapOnFrame(frame)
+    cv2.imshow("resized", frame)
+    cv2.waitKey(0)
+        # if cv2.waitKey(1) & 0xFF == ord('q'):
+        #     #cv2.imwrite('test.jpg',copyF)
+        #     break
 
 if __name__ == '__main__':
     myMain2()
