@@ -5,7 +5,7 @@ class SendingBotToChargingStationState():
         mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
         convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.center)
         sequencer.setState(DetectTreasureState())
-        return pathfinder.findPath(convertedPoint, (885,110)), "rotateToChargingStation", 270
+        return pathfinder.findPath(convertedPoint, (100,100)), "rotateToChargingStation", 270
 
 
 class DetectTreasureState():

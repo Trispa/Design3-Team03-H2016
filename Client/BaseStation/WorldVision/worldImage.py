@@ -46,6 +46,7 @@ class WorldImage:
         cv2.drawContours( frame, orientation, -1, (0, 255, 0), 3 )
         cv2.drawContours( frame, robot, -1, (0, 255, 0), 3 )
 
+
     def getMap(self):
         return self.__map
 

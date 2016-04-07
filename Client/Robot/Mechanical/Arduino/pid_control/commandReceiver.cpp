@@ -129,6 +129,8 @@ void CommandReceiver::dispatchCommand() {
 	case 8:
 		for(int i = 0; i<4; i++)
 			{
+          double angle = parameters[2] / 100;
+          dm[i].setTickToDo(angle * 4435 / 360);
 	  			dm[i].driveMoteur(parameters[0]/100.0, parameters[1]);
 			}
       break;

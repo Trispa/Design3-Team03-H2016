@@ -88,8 +88,8 @@ class SerialPortCommunicator:
     def driveMoteurLine(self, axe, speed, positif):
         self.sendCommand(self.CHANGE_SPEED_LINE, self.FALSE, self.ONE_SECOND_DELAY, axe, speed * 100, positif)
 
-    def driveMoteurRotation(self, speed, direction):
-        self.sendCommand(self.CHANGE_SPEED_ROTATION, self.FALSE, self.ONE_SECOND_DELAY, speed * 100, direction)
+    def driveMoteurRotation(self, speed, direction, angle):
+        self.sendCommand(self.CHANGE_SPEED_ROTATION, self.FALSE, self.ONE_SECOND_DELAY, speed * 100, direction, angle * 100)
 
     #/controle electro aiment 00 decharge 10 ou 01 garde la charge 11 pour recharger
     # // 0 decharge magnetique

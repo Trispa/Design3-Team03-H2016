@@ -103,13 +103,13 @@ class WheelManager:
         self.__resetMotors()
 
         if(degree <=0):
-            self.spc.driveMoteurRotation(self.ROTATION_SPEED, self.NEGATIVE_SPEED)
+            self.spc.driveMoteurRotation(self.ROTATION_SPEED, self.NEGATIVE_SPEED, degree)
         else:
-            self.spc.driveMoteurRotation(self.ROTATION_SPEED, self.POSITIVE_SPEED)
+            self.spc.driveMoteurRotation(self.ROTATION_SPEED, self.POSITIVE_SPEED, degree)
         print timeToSleep
-        time.sleep(timeToSleep)
+        # time.sleep(timeToSleep)
         # self.debutDeLInterruption(timeToSleep)
-        self.stopAllMotors()
+        # self.stopAllMotors()
         return timeToSleep
 
 
@@ -195,7 +195,7 @@ if __name__ == '__main__':
     time.sleep(0.1)
 
 
-    mr.moveTo((10*ratio, 0))
+    mr.rotate(10)
 
 
 
