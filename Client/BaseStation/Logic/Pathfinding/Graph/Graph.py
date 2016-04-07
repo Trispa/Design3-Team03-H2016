@@ -16,13 +16,37 @@ class Graph:
 
 
     def findGoodSafeNodeToGo(self, point):
-        nodeToBeReturned = Node((0,0))
+        fakeNode = Node((0,0))
+        nodeToBeReturned = fakeNode
         for compteur in range(0, self.safeZonesList.__len__()):
             currentZone = self.safeZonesList[compteur]
             if point[0] >= currentZone.cornerTopLeft[0] and point[0] <= currentZone.cornerBottomRight[0]:
                 if point[1] >= currentZone.cornerTopLeft[1] and point[1] <= currentZone.cornerBottomRight[1]:
                     nodeToBeReturned = currentZone.centerNode
         return nodeToBeReturned
+
+
+    def needAGoodPointToGo(self, point):
+        fakePoint = (0,0)
+        pointToBeReturned = fakePoint
+        for compteur in range(0, self.safeZonesList.__len__()):
+            currentZone = self.safeZonesList[compteur]
+            if point[0] >= currentZone.cornerTopLeft[0] and point[0] <= currentZone.cornerBottomRight[0]:
+                if point[1] >= currentZone.cornerTopLeft[1] and point[1] <= currentZone.cornerBottomRight[1]:
+                    pointToBeReturned = (currentZone.centerNode.positionX, currentZone.centerNode.positionY)
+        if pointToBeReturned == fakePoint:
+            buffer = 5
+            while pointToBeReturned[0] == 0 and pointToBeReturned[1] == 0:
+                for xIteration in range (-1,2):
+                    for yIteration in range(-1,2):
+                        pointX = point[0] + buffer*xIteration
+                        pointY = point[1] + buffer*yIteration
+                        if pointToBeReturned[0] == 0 and pointToBeReturned[1] == 0:
+                            centerNode = self.findGoodSafeNodeToGo((pointX,pointY))
+                            if centerNode.positionX != 0 and centerNode.positionY != 1:
+                                pointToBeReturned = (pointX, pointY)
+                buffer += 5
+        return pointToBeReturned
 
 
     def __areNodesPresentInNodesList(self, firstNode, secondNode):
