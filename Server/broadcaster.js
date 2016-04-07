@@ -131,7 +131,9 @@ io.on('connection', function (client) {
     client.on("rotateDoneToDetectTreasure", function(){
         io.emit('rotateDoneToDetectTreasure');
     });
-
+    client.on('isOutOfBound', function(data){
+        io.emit('isOutOfBound', data);
+    });
 
 
 

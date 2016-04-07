@@ -18,6 +18,7 @@ class BotDispatcher():
         self.cameraTower = CameraTower(self.maestro)
         self.treasureAngle = 0
         self.spc = spc
+        self.lastPositionGoneTo = (0,0)
 
     def followPath(self, coordinates):
         print(coordinates)
@@ -58,8 +59,11 @@ class BotDispatcher():
         self.positionAdjuster.getCloserToChargingStation()
         self.video.release()
 
-    def getRobotBackOnMap(self):
+    def getRobotBackOnMapAfterCharging(self):
         self.positionAdjuster.stopCharging()
+
+    def getRobotBackOnMapWhenOutOfBound(self):
+        self.positionAdjuster.getBackToMapAfterGrabingBackgroundTreausre()
 
     def readManchester(self):
         serial = SerialPortCommunicator()
