@@ -171,7 +171,7 @@ class RobotVision:
 
     def differenceParraleleLines(self):
         ret,thresh1 = cv2.threshold(self.image,100,255,cv2.THRESH_BINARY)
-
+        self.image = thresh1
 
         ih, iw, ic = self.image.shape
         col1 = 0
@@ -199,21 +199,27 @@ class RobotVision:
 
         # print dot1
         # print dot2
-        # dot1 = (1279, 0)
+        # dot1 = (1279, 0)self.image = thresh1
         if dot1 == []:
             print "dot1 etait null"
-            dot1 = [0, 0]
+            dot1 = (0, 0)
         if dot2 == []:
             print "dot2 etait null"
-            dot2 = [iw - 1, ih - 1]
+            dot2 = (iw - 1, ih - 1)
 
-        self.image = thresh1
+
 
         cv2.line(self.image, dot1, dot2, (255, 0, 0), 2)
         cv2.line(self.image, (dot1[0], (dot1[1] + dot2[1])/2), (dot2[0], (dot1[1] + dot2[1])/2),(0, 0, 255), 2)
         distancePixel = dot1[1] - (dot1[1] + dot2[1])/2
         # print distancePixel
         return distancePixel
+
+    def __signeDiff(self, diffValue):
+        if diffValue <= 0:
+            return 'N'
+        else:
+            return 'P'
 
     def getCloserTo(self, isChargeTreasure):
         findSomething = False
@@ -223,11 +229,12 @@ class RobotVision:
         moveXArriver = False
         self.tresor = None
         lastAngle= 180
+        oldDiff = 'E' # 'N' = negatif 'P' positif
 
         colorContainer = ColorContainer()
 
         if isChargeTreasure:
-            minCameraAngleToStopApproaching = 7.5
+            minCameraAngleToStopApproaching = 8
             minCameraAngleToStartApproaching = 30
             colorRange = colorContainer.yellowTreasure
         else:
@@ -261,6 +268,7 @@ class RobotVision:
             if not self.robot.isMoving and center:
                 if not movingY and not moveYArriver:
                     diff = self.differenceParraleleLines()
+                    # oldDiff = self.__signeDiff(diff)
                     if diff < 0:
                         self.robot.moveForever(0, -30)
                     else:
@@ -273,19 +281,22 @@ class RobotVision:
                         movingX = True
 
             if movingY and not moveYArriver:
-                if abs(self.differenceParraleleLines()) < 8:
+                diff = self.differenceParraleleLines()
+                # print "Trace difference des ligne", self.__signeDiff(diff), oldDiff
+                if abs(diff) < 5 or self.__signeDiff(diff) != oldDiff:
                     self.robot.stopAllMotors()
                     moveYArriver = True
                     movingY = False
+                oldDiff = self.__signeDiff(diff)
 
 
             if movingX and not moveXArriver:
-                print self.camera.verticalDegree
+                # print self.camera.verticalDegree
 
                 if self.camera.verticalDegree <= minCameraAngleToStopApproaching:
                     self.robot.stopAllMotors()
                     moveXArriver = True
-                elif self.camera.verticalDegree <= (lastAngle - 0.5) and self.camera.verticalDegree >= 16:
+                elif self.camera.verticalDegree < (lastAngle - 1.8) and self.camera.verticalDegree >= 16:
                     print "Ajustement en Y", self.camera.verticalDegree
                     self.robot.stopAllMotors()
                     # moveXArriver = True
