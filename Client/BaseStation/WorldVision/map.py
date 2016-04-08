@@ -154,21 +154,22 @@ class Map:
 
     def setTreasures(self, relativeAngles):
         rightAngle = 90
-        yDistanceFromPurpleCircle = 15
+        yDistanceFromPurpleCircle = 55
         cameraDistanceFromBackgroundWall = self.robot.purpleCircle.findCenterOfMass()[0] - 20 - self.limit.getMinCorner()[0]
-        cameraDistanceFromLowerWall = self.limit.getMaxCorner()[1] - self.robot.purpleCircle.findCenterOfMass()[1] - yDistanceFromPurpleCircle
-        cameraDistanceFromUpperWall = self.robot.purpleCircle.findCenterOfMass()[1] - yDistanceFromPurpleCircle - self.limit.getMinCorner()[1]
+        cameraDistanceFromLowerWall = self.limit.getMaxCorner()[1] - self.robot.purpleCircle.findCenterOfMass()[1] + yDistanceFromPurpleCircle
+        cameraDistanceFromUpperWall = self.robot.purpleCircle.findCenterOfMass()[1] + yDistanceFromPurpleCircle - self.limit.getMinCorner()[1]
+        angleError = abs(180 - self.robot.orientation)
         for cameraAngle in relativeAngles:
 
             lowerWall = True
             angleError = abs(180 - self.robot.orientation)
             if cameraAngle < rightAngle:
-                xDistanceOfTreasureFromCamera = math.tan(math.radians(cameraAngle))*cameraDistanceFromLowerWall
+                xDistanceOfTreasureFromCamera = math.tan(math.radians(cameraAngle - angleError))*cameraDistanceFromLowerWall
                 treasurePosition = (cameraDistanceFromBackgroundWall - xDistanceOfTreasureFromCamera, self.limit.getMaxCorner()[1])
             else:
                 lowerWall = False
                 cameraAngle = 180 - cameraAngle
-                xDistanceOfTreasureFromCamera = math.tan(math.radians(cameraAngle))*cameraDistanceFromUpperWall
+                xDistanceOfTreasureFromCamera = math.tan(math.radians(cameraAngle - angleError))*cameraDistanceFromUpperWall
                 treasurePosition = (cameraDistanceFromBackgroundWall - xDistanceOfTreasureFromCamera, self.limit.getMinCorner()[1])
 
             treasureDistanceFromBackground = cameraDistanceFromBackgroundWall - xDistanceOfTreasureFromCamera
