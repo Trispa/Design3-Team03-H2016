@@ -96,7 +96,7 @@ class Map:
             if abs(edgePerpendicularGradient) > 10:
                 conversionGradient = 0.01
             if self.target.isOutside((xCenterOfEdge + 1 * conversionGradient, yCenterOfEdge + 1 * edgePerpendicularGradient * conversionGradient)):
-                positionToGo = (xCenterOfEdge + self.SAFE_MARGIN_FOR_ISLAND * conversionGradient, yCenterOfEdge + self.SAFE_MARGIN_FOR_ISLAND * edgePerpendicularGradient * conversionGradient)
+                positionToGo = (xCenterOfEdge + self.SAFE_MARGIN * conversionGradient, yCenterOfEdge + self.SAFE_MARGIN * edgePerpendicularGradient * conversionGradient)
                 hypothenuse = 0
                 while hypothenuse < self.SAFE_MARGIN:
                     positionToGo = (positionToGo[0] + 1, positionToGo[1] + edgePerpendicularGradient)
@@ -104,7 +104,7 @@ class Map:
                     adj = abs(xCenterOfEdge - positionToGo[0])
                     hypothenuse = math.sqrt((opp * opp) + (adj * adj))
             else:
-                positionToGo = (xCenterOfEdge - self.SAFE_MARGIN_FOR_ISLAND * conversionGradient, yCenterOfEdge - self.SAFE_MARGIN_FOR_ISLAND * edgePerpendicularGradient * conversionGradient)
+                positionToGo = (xCenterOfEdge - self.SAFE_MARGIN * conversionGradient, yCenterOfEdge - self.SAFE_MARGIN * edgePerpendicularGradient * conversionGradient)
                 opp = abs(yCenterOfEdge - positionToGo[1])
                 adj = abs(xCenterOfEdge - positionToGo[0])
                 hypothenuse = math.sqrt((opp * opp) + (adj * adj))
@@ -129,15 +129,34 @@ class Map:
                 myBestPosition = positionToGo
                 orientation = angle
 
+        if myBestPosition == (0, 0):
+            x,y,width,height = cv2.boundingRect(targetShape.getContour())
+            centerOfMassX, centerOfMassY = targetShape.findCenterOfMass()
+            point = ((centerOfMassX - (self.SAFE_MARGIN + width), centerOfMassY))
+            if myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint((centerOfMassX - (self.SAFE_MARGIN + width), centerOfMassY))).totalDistance < 99999:
+                myBestPosition = (centerOfMassX - (self.SAFE_MARGIN + width), centerOfMassY)
+                orientation = 0
+            elif myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint((centerOfMassX + (self.SAFE_MARGIN + width), centerOfMassY))).totalDistance < 99999:
+                myBestPosition = (centerOfMassX + (self.SAFE_MARGIN + width), centerOfMassY)
+                orientation = 180
+            elif myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint((centerOfMassX, centerOfMassY - (self.SAFE_MARGIN + height)))).totalDistance < 99999:
+                myBestPosition = (centerOfMassX, centerOfMassY - (self.SAFE_MARGIN + height))
+                orientation = 90
+            elif myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint((centerOfMassX, centerOfMassY + (self.SAFE_MARGIN + height)))).totalDistance < 99999:
+                myBestPosition = (centerOfMassX, centerOfMassY + (self.SAFE_MARGIN + height))
+                orientation = 270
+
+        print "MEILLEUR ",myBestPosition, ", Orientation :", orientation
         return myBestPosition, orientation
+
 
 
     def setMapLimit(self, contour):
         cornerList = []
         minX = 0
         maxX = 960
-        minY = 92
-        maxY = 580
+        minY = 109
+        maxY = 597
 
         newFoundLimit = Square("limit", np.array([[[minX,minY + 5]],[[minX,maxY - 5]],[[maxX, maxY - 5]],[[maxX,minY + 5]]], dtype=np.int32))
 
@@ -154,21 +173,22 @@ class Map:
 
     def setTreasures(self, relativeAngles):
         rightAngle = 90
-        yDistanceFromPurpleCircle = 15
+        yDistanceFromPurpleCircle = 55
         cameraDistanceFromBackgroundWall = self.robot.purpleCircle.findCenterOfMass()[0] - 20 - self.limit.getMinCorner()[0]
-        cameraDistanceFromLowerWall = self.limit.getMaxCorner()[1] - self.robot.purpleCircle.findCenterOfMass()[1] - yDistanceFromPurpleCircle
-        cameraDistanceFromUpperWall = self.robot.purpleCircle.findCenterOfMass()[1] - yDistanceFromPurpleCircle - self.limit.getMinCorner()[1]
+        cameraDistanceFromLowerWall = self.limit.getMaxCorner()[1] - self.robot.purpleCircle.findCenterOfMass()[1] + yDistanceFromPurpleCircle
+        cameraDistanceFromUpperWall = self.robot.purpleCircle.findCenterOfMass()[1] + yDistanceFromPurpleCircle - self.limit.getMinCorner()[1]
+        angleError = abs(180 - self.robot.orientation)
         for cameraAngle in relativeAngles:
 
             lowerWall = True
-
+            angleError = abs(180 - self.robot.orientation)
             if cameraAngle < rightAngle:
-                xDistanceOfTreasureFromCamera = math.tan(math.radians(cameraAngle))*cameraDistanceFromLowerWall
+                xDistanceOfTreasureFromCamera = math.tan(math.radians(cameraAngle - angleError))*cameraDistanceFromLowerWall
                 treasurePosition = (cameraDistanceFromBackgroundWall - xDistanceOfTreasureFromCamera, self.limit.getMaxCorner()[1])
             else:
                 lowerWall = False
                 cameraAngle = 180 - cameraAngle
-                xDistanceOfTreasureFromCamera = math.tan(math.radians(cameraAngle))*cameraDistanceFromUpperWall
+                xDistanceOfTreasureFromCamera = math.tan(math.radians(cameraAngle - angleError))*cameraDistanceFromUpperWall
                 treasurePosition = (cameraDistanceFromBackgroundWall - xDistanceOfTreasureFromCamera, self.limit.getMinCorner()[1])
 
             treasureDistanceFromBackground = cameraDistanceFromBackgroundWall - xDistanceOfTreasureFromCamera

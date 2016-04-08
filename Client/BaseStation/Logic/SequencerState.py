@@ -5,7 +5,7 @@ class SendingBotToChargingStationState():
         mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
         convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.center)
         sequencer.setState(DetectTreasureState())
-        return pathfinder.findPath(convertedPoint, (885,110)), "rotateToChargingStation", 270
+        return pathfinder.findPath(convertedPoint, (895,110)), "rotateToChargingStation", 270
 
 
 class DetectTreasureState():
@@ -13,7 +13,7 @@ class DetectTreasureState():
         mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
         convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.center)
         sequencer.setState(SendingBotToTreasureState())
-        return  pathfinder.findPath(convertedPoint, (850,200)), "rotateToDetectTreasure", 180
+        return  pathfinder.findPath(convertedPoint, (800,250)), "rotateToDetectTreasure", 180
 
 class SendingBotToTreasureState():
     def handle(self, sequencer, map, pathfinder):
