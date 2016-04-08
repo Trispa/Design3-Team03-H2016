@@ -31,6 +31,10 @@ unsigned long graphTime = 0;
 unsigned int ar = 0;
 unsigned long diffTime = 0;
 char* chaine;
+
+unsigned long nbOfTicks = 0;
+bool asStop = false;
+
 DriveMoteur dv[4] = {DriveMoteur(4,18, 26, 27), DriveMoteur(5,19, 28, 29), DriveMoteur(6,20, 30, 31), DriveMoteur(7,21, 32, 33)};
 
 
@@ -57,7 +61,7 @@ void setup() {
   
   for(int i = 0; i < NB_DRIVEMOTEUR; i++)
   {
-    dv[i].driveMoteur(0, 0);
+    dv[i].driveMoteur(0.05, 0);
     listPID[i].SetMode(AUTOMATIC);
     listPID[i].SetOutputLimits(0, 2080);
   }
@@ -79,6 +83,17 @@ void loop()
 
   cmdRec.process();  
   rm.getMaschesterBits();
+
+  
+//  if(nbOfTicks >= 4435 && !asStop)
+//  {
+//    for(int i = 0; i < NB_DRIVEMOTEUR; i++)
+//    {
+//      dv[i].driveMoteur(0, 0);
+//    }
+//    asStop = true;
+//  }
+  
    
     for(int i = 0; i < NB_DRIVEMOTEUR; i++)
     {
@@ -87,14 +102,15 @@ void loop()
           updateFreqEnco();
           listPID[i].Compute();
           dv[i].asservissement();
+          dv[i].stopMotorByTick();
         }
         else if(dv[i].isRunning() == -1)
-//        else
         {
           listEndCounting[i] = 0;
           listStartCounting[i] = 0;
           listNbTicks[i] = 0;
           listPID[i].Initialize();
+          dv[i].setRun(0);
         }
     }
 
@@ -108,11 +124,12 @@ void updateFreqEnco()
       listEndCounting[i] = micros();
       diffTime = listEndCounting[i] - listStartCounting[i];
       if(diffTime >= 9800)
-      {
+      {     
+          dv[i].setTickDone(dv[i].getTickDone() + listNbTicks[i]);
           dv[i].setInput(1000000*listNbTicks[i]/(listEndCounting[i] - listStartCounting[i]));
           listStartCounting[i] = listEndCounting[i];
           listNbTicks[i] = 0;
-        }
+      }
   }
   
 }

@@ -65,6 +65,16 @@ class YellowTreasure(Color):
         self.lower = np.array([25,lowerSaturation,lowerValue])
         self.higher = np.array([36,higherSaturation,higherValue])
 
+class YellowTreasureDetect(Color):
+    def __init__(self, bgrColor, colorName):
+        Color.__init__(self, bgrColor, colorName)
+        lowerValue = 75
+        higherValue = 150
+        lowerSaturation = 150
+        higherSaturation = 255
+        self.lower = np.array([25,lowerSaturation,lowerValue])
+        self.higher = np.array([36,higherSaturation,higherValue])
+
 class Purple(Color):
     def __init__(self, bgrColor, colorName):
         Color.__init__(self, bgrColor, colorName)
