@@ -8,12 +8,14 @@ class SendingBotToChargingStationState():
         return pathfinder.findPath(convertedPoint, (885,110)), "alignPositionToChargingStation", 270
 
 
+
 class DetectTreasureState():
     def handle(self, sequencer, map, pathfinder):
         mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
         convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.center)
         sequencer.setState(SendingBotToTreasureState())
         return  pathfinder.findPath(convertedPoint, (850,200)), "detectTreasure", 180
+
 
 class SendingBotToTreasureState():
     def handle(self, sequencer, map, pathfinder):

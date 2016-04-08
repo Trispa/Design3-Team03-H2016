@@ -97,8 +97,15 @@ void CommandReceiver::dispatchCommand() {
           break;
 
 	case 7:
+      double distanceCm;
+      distanceCm = parameters[3] / 100;
+      double tick;
+      tick = distanceCm * 72.912;
 		if (parameters[0] == 0) //Axe des X
 		{
+      
+      dm[1].setTickToDo(tick);
+      dm[2].setTickToDo(tick);
 			if(parameters[2] == 1) //Direction positive
 			{
 				dm[1].driveMoteur(parameters[1]/100.0, 0);
@@ -112,6 +119,8 @@ void CommandReceiver::dispatchCommand() {
 		}
 		else //Axe des Y
 		{
+      dm[0].setTickToDo(tick);
+      dm[3].setTickToDo(tick);
 			if(parameters[2] == 1) //Direction positive
 			{
 				dm[0].driveMoteur(parameters[1]/100.0, 1);
@@ -129,6 +138,8 @@ void CommandReceiver::dispatchCommand() {
 	case 8:
 		for(int i = 0; i<4; i++)
 			{
+          double angle = parameters[2] / 100;
+          dm[i].setTickToDo(angle * 4475 / 360);
 	  			dm[i].driveMoteur(parameters[0]/100.0, parameters[1]);
 			}
       break;

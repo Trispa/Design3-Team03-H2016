@@ -38,7 +38,6 @@ def alignToTreasure(json):
     if(json['sequence']):
         socketIO.emit("needNewCoordinates")
 
-
 def alignToChargingStation(json):
     angleToGetForChargingStation = 270
     minimumAngleDifferenceToRotate = 3
@@ -52,7 +51,6 @@ def alignToChargingStation(json):
         print "Tension : ", voltage
         time.sleep(1)
     botDispatcher.getRobotBackOnMap()
-    time.sleep(20)
     if(json['sequence']):
         print ('asking new commands')
         socketIO.emit("needNewCoordinates")

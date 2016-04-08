@@ -134,8 +134,8 @@ def sendImageThread():
 #debug section
 def verifyIfMovingDebug(path, nextSignal, angleToRotate):
     print("verify if moving")
-    pixelRangeToSendNextCoordinates = 10
     for nodeBotIsGoingTo in range(0, len(path)):
+        pixelRangeToSendNextCoordinates = 10
         xPositionOfNodeThatBotIsGoingTo = path[nodeBotIsGoingTo].positionX
         yPositionOfNodeThatBotIsGoingTo = path[nodeBotIsGoingTo].positionY
 
@@ -143,7 +143,7 @@ def verifyIfMovingDebug(path, nextSignal, angleToRotate):
 
         botPositionX = botInfo["robotPosition"][0]
         botPositionY = botInfo["robotPosition"][1]
-
+        stuckIndex = 0
         while ((botPositionX > xPositionOfNodeThatBotIsGoingTo + pixelRangeToSendNextCoordinates or
             botPositionX < xPositionOfNodeThatBotIsGoingTo - pixelRangeToSendNextCoordinates) and
                (botPositionY > yPositionOfNodeThatBotIsGoingTo + pixelRangeToSendNextCoordinates or
@@ -151,9 +151,13 @@ def verifyIfMovingDebug(path, nextSignal, angleToRotate):
             botInfo = dispatcher.getCurrentWorldInformation()
             botPositionX = botInfo["robotPosition"][0]
             botPositionY = botInfo["robotPosition"][1]
-            print "not close enough"
+            stuckIndex += 1
+            if stuckIndex > 4:
+                pixelRangeToSendNextCoordinates += 5
+            print "not close enough " + str(stuckIndex)
         time.sleep(5)
         print "close enough"
+
         if(nodeBotIsGoingTo+1 != len(path)):
             print("sending bot to next coordinates")
             botInfo = dispatcher.getCurrentWorldInformation()
