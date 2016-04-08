@@ -161,7 +161,7 @@ class Map:
         for cameraAngle in relativeAngles:
 
             lowerWall = True
-
+            angleError = abs(180 - self.robot.orientation)
             if cameraAngle < rightAngle:
                 xDistanceOfTreasureFromCamera = math.tan(math.radians(cameraAngle))*cameraDistanceFromLowerWall
                 treasurePosition = (cameraDistanceFromBackgroundWall - xDistanceOfTreasureFromCamera, self.limit.getMaxCorner()[1])

@@ -1,5 +1,6 @@
 import math
 from math import sqrt, cos, sin, radians
+from os import system
 
 import cv2
 import numpy as np
@@ -55,7 +56,7 @@ class RobotVision:
                 if cv2.contourArea(c) > cv2.contourArea(cntsMax):
                     cntsMax = c
 
-            if cv2.contourArea(cntsMax) > 100:
+            if cv2.contourArea(cntsMax) > 100 and cv2.contourArea(cntsMax) < 5000:
                 self.tresor = cntsMax
                 x,y,w,h = cv2.boundingRect(self.tresor)
                 dots.append((x,y,w,h))
@@ -170,7 +171,7 @@ class RobotVision:
         return (distanceX, distanceY)
 
     def differenceParraleleLines(self):
-        ret,thresh1 = cv2.threshold(self.image,100,255,cv2.THRESH_BINARY)
+        ret,thresh1 = cv2.threshold(self.image,60,255,cv2.THRESH_BINARY)
         self.image = thresh1
 
         ih, iw, ic = self.image.shape
@@ -228,8 +229,10 @@ class RobotVision:
         movingX = False
         moveXArriver = False
         self.tresor = None
+
         lastAngle= 180
         oldDiff = 'E' # 'N' = negatif 'P' positif
+
 
         colorContainer = ColorContainer()
 
@@ -240,13 +243,23 @@ class RobotVision:
         else:
             minCameraAngleToStopApproaching = 20
             minCameraAngleToStartApproaching = 50
-            colorRange = colorContainer.green
+            colorRange = colorContainer.red
 
         self.camera.moveCameraByAngle(1, 70)
         self.camera.moveCameraByAngle(0, minCameraAngleToStartApproaching)
+        cameraSet = False
 
         while(self.video.isOpened()):
             ret, self.image = self.video.read()
+            if not cameraSet:
+                system("v4l2-ctl -c gain=0")
+                system("v4l2-ctl -c exposure_auto=1")
+                system("v4l2-ctl -c brightness=128")
+                system("v4l2-ctl -c exposure_absolute=110")
+                system("v4l2-ctl -c white_balance_temperature_auto=0")
+                system("v4l2-ctl -c white_balance_temperature=504")
+                cameraSet = True
+
             self.detectColor(colorRange)
             self.findContour()
 
@@ -280,6 +293,8 @@ class RobotVision:
                         self.robot.moveForever(30, 0)
                         movingX = True
 
+            center = self.moveCamera()
+
             if movingY and not moveYArriver:
                 diff = self.differenceParraleleLines()
                 # print "Trace difference des ligne", self.__signeDiff(diff), oldDiff
@@ -296,7 +311,7 @@ class RobotVision:
                 if self.camera.verticalDegree <= minCameraAngleToStopApproaching:
                     self.robot.stopAllMotors()
                     moveXArriver = True
-                elif self.camera.verticalDegree < (lastAngle - 1.8) and self.camera.verticalDegree >= 16:
+                elif self.camera.verticalDegree < (lastAngle - 1.8) and self.camera.verticalDegree >= 13:
                     print "Ajustement en Y", self.camera.verticalDegree
                     self.robot.stopAllMotors()
                     # moveXArriver = True
