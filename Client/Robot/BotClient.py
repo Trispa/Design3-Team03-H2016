@@ -44,16 +44,16 @@ def alignToTreasure(json):
 
 
 def rotateToChargingStation(json):
-    botDispatcher.setRobotOrientation(float(json['botOrientation']), float(json['angleToGo']))
+   # botDispatcher.setRobotOrientation(float(json['botOrientation']), float(json['angleToGo']))
     socketIO.emit('rotateDoneToChargingStation', json["sequence"])
 
 def rotateToTreasure(json):
     botDispatcher.treasureAngle =  float(json['angleToGo'])
-    botDispatcher.setRobotOrientation(float(json['botOrientation']), float(json['angleToGo']))
+   # botDispatcher.setRobotOrientation(float(json['botOrientation']), float(json['angleToGo']))
     socketIO.emit('rotateDoneToTreasure')
 
 def rotateToDetectTreasure(json):
-    botDispatcher.setRobotOrientation(json['botOrientation'],json['angleToGo'])
+    #botDispatcher.setRobotOrientation(json['botOrientation'],json['angleToGo'])
     socketIO.emit('rotateDoneToDetectTreasure')
 
 
@@ -70,7 +70,6 @@ def alignToChargingStation(json):
         print "Tension : ", voltage
         time.sleep(1)
     botDispatcher.getRobotBackOnMapAfterCharging()
-    time.sleep(20)
     if(json['sequence']):
         print ('asking new commands')
         socketIO.emit("needNewCoordinates")

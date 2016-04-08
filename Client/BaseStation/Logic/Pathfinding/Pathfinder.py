@@ -21,12 +21,16 @@ class Pathfinder:
         self.theGoodPath = Path()
 
 
+    def findGoodPoint(self, point):
+        return self.graph.needAGoodPointToGo(point)
+
+
     def findPath(self, positionRobot, pointToMoveTo):
         print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
         startingPathNode = self.graph.findGoodSafeNodeToGo(positionRobot)
         endingPathNode = self.graph.findGoodSafeNodeToGo(pointToMoveTo)
         print pointToMoveTo, endingPathNode.positionX, endingPathNode.positionY
-
+        self.theGoodPath = Path()
         self.pathsList = []
         self.goodPaths = []
         path = Path()
@@ -51,6 +55,9 @@ class Pathfinder:
             if currentPath.totalDistance < goodPath.totalDistance:
                     goodPath = currentPath
         self.printPath(goodPath)
+        if goodPath.totalDistance == 99999:
+            self.__displayPathfinder(goodPath, positionRobot)
+            return False
         self.theGoodPath = goodPath
         self.__displayPathfinder(goodPath, positionRobot)
         return goodPath
@@ -138,5 +145,4 @@ class Pathfinder:
                       (0, 150, 150), 2, 1)
         cv2.imwrite('image' + str(self.indice) + '.jpg', img)
         self.indice = self.indice + 1
-
 

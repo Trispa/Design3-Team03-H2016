@@ -28,7 +28,7 @@ class PositionAdjuster:
         self.wheelManager.moveTo((30, 0))
 
     def goBackwardToGrabTreasure(self):
-        self.wheelManager.moveTo((-3, 0))
+        self.wheelManager.moveTo((-15, 0))
 
     def activateMagnet(self):
         self.spc.changeCondensatorMode(0)
@@ -46,7 +46,7 @@ class PositionAdjuster:
         self.ascendArm()
         while not self.localVision.getCloserTo(False):
             pass
-        self.wheelManager.moveTo((25, 0))
+        self.wheelManager.moveTo((30, 0))
         self.rechargeMagnet()
         return True
 
@@ -63,8 +63,9 @@ class PositionAdjuster:
 
     def stopCharging(self):
         self.deactivateMagnet()
-        time.sleep(0.5)
-        self.wheelManager.moveTo((-25, -25))
+
+        self.wheelManager.moveTo((-20, 0))
+        self.wheelManager.moveTo((0, -30))
         return True
 
     def getCloserToTreasure(self):

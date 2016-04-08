@@ -34,6 +34,7 @@ void DriveMoteur::driveMoteur(double speed, int direction)
 //	Serial.print("   Output : "); Serial.println(encoFreqToSpeed(output));
 	if(speed > 0)
 		{
+      _tickDone = 0;
 			if(direction == 0)
 			{
 				digitalWrite(_pin1, LOW);
@@ -53,12 +54,12 @@ void DriveMoteur::driveMoteur(double speed, int direction)
 	else
 		{
 			analogWrite(_pinMoteur, 0);
+      digitalWrite(_pin1, LOW);
+      digitalWrite(_pin2, LOW);
 			input = 0;
       output = 0;
       setpoint = 0;
       _run = -1;
-			digitalWrite(_pin1, LOW);
-			digitalWrite(_pin2, LOW);
 		}
 }
 
@@ -118,13 +119,18 @@ int DriveMoteur::isRunning()
 //  {
 //    return _run;
 //  }
-    if(_run == -1)
-    {
-      _run = 0;
-      return  -1;
-    }
-    else
+//    if(_run == -1)
+//    {
+//      _run = 0;
+//      return  -1;
+//    }
+//    else
       return _run;
+}
+
+void DriveMoteur::setRun(int r)
+{
+  _run = r;
 }
 
 void DriveMoteur::setInput(double i)
@@ -149,3 +155,32 @@ double* DriveMoteur::getSetpoint()
 {
   return &setpoint;
 }
+
+void DriveMoteur::setTickToDo(int tick)
+{
+  _tickToDo = tick;
+}
+
+void DriveMoteur::setTickDone(int tick)
+{
+  _tickDone = tick;
+}
+
+int DriveMoteur::getTickToDo()
+{
+  return _tickToDo;
+}
+
+int DriveMoteur::getTickDone()
+{
+  return _tickDone;
+}
+
+void DriveMoteur::stopMotorByTick()
+{
+  if(_tickDone >= _tickToDo)
+  {
+    driveMoteur(0,0);
+  }
+}
+
