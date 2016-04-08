@@ -61,6 +61,8 @@ def alignToChargingStation(json):
         botDispatcher.setRobotOrientation(json['robotOrientation'], angleToGetForChargingStation)
     botDispatcher.alignToChargingStation()
     readManchester()
+    Thread(target=getBotVoltage).start()
+    Thread(target=sendBotVoltage).start()
     voltage = botDispatcher.botVoltage
     while(voltage <= 3.0):
         voltage = botDispatcher.botVoltage
@@ -108,14 +110,15 @@ def getBotVoltage():
 def sendBotVoltage():
     while(True):
         socketIO.emit('sendVoltage', botDispatcher.botVoltage)
+        print "send bot voltage"
         time.sleep(5)
 
-Thread(target=getBotVoltage).start()
-Thread(target=sendBotVoltage).start()
+
 
 
 socketIO.emit('sendBotClientStatus','Connected')
 socketIO.emit('sendBotIP', get_ip_address('wlp4s0'))
+socketIO.emit('sendVoltage', botDispatcher.botVoltage)
 
 socketIO.on('sendNextCoordinates', goToNextPosition)
 socketIO.on('startSignalRobot', startRound)
