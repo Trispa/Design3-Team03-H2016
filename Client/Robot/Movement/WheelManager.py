@@ -84,7 +84,6 @@ class WheelManager:
             xSpeed = (abs(pointX) * ySpeed) / abs(pointY)
 
 
-        print("xSpeed : " + str(xSpeed) + " ySpeed : " + str(ySpeed))
 
         if pointX > 0:
             self.spc.driveMoteurLine(self.X_AXIS, xSpeed, self.POSITIVE_SPEED, 100)
@@ -103,13 +102,13 @@ class WheelManager:
         self.isMoving = True
         timeToSleep = 0.035 * abs(degree) + 0.168
         self.__resetMotors()
-
+	print "rotating", degree
         if(degree <=0):
             self.spc.driveMoteurRotation(self.ROTATION_SPEED, self.NEGATIVE_SPEED, abs(degree))
         else:
             self.spc.driveMoteurRotation(self.ROTATION_SPEED, self.POSITIVE_SPEED, abs(degree))
         print timeToSleep
-        time.sleep(timeToSleep)
+        time.sleep(timeToSleep+1)
         # self.debutDeLInterruption(timeToSleep)
         # self.stopAllMotors()
         return timeToSleep
@@ -139,7 +138,7 @@ class WheelManager:
         print angleToRotate
         point = (0,0)
         referentialConverter = ReferentialConverter(point, angleToRotate)
-
+	print "adjusting angle", -angleToRotate
         self.rotate(-angleToRotate)
 
         pointAdjusted = referentialConverter.convertWorldToRobot(pointToMove)

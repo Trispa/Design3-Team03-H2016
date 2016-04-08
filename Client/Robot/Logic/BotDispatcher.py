@@ -78,9 +78,18 @@ class BotDispatcher():
             self.video = cv2.VideoCapture(1)
             system("v4l2-ctl --device=1 --set-ctrl gain=50")
         elif platform.linux_distribution()[0].lower() == "Fedora".lower():
+            system("echo 'Hello world1'")
+            system("v4l2-ctl -c gain=0")
+            system("v4l2-ctl -c exposure_auto=1")
+            system("v4l2-ctl -c exposure_absolute=125")
+            system("echo 'Hello world2'")
+            #system("v4l2-ctl -c white_balance_temperature_auto=0")
+            #system("v4l2-ctl -c white_balance_temperature_auto=0")
+            system("echo 'Hello world3'")
+            #system("v4l2-ctl -c white_balance_temperature=100000")
+
+          #  system("echo 'Hello world4'")
+            #system("v4l2-ctl -c white_balance_temperature=1500")
             self.video = cv2.VideoCapture(0)
-            system("v4l2-ctl -c brightness=128 -c gain=0 -c exposure_auto=0")
-            # system("v4l2-ctl -c white_balance_temperature=0")
-            system("v4l2-ctl -c exposure_absolute=200")
         # else:
         #     self.video = cv2.VideoCapture(0)
