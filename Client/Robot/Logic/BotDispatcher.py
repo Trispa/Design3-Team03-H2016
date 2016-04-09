@@ -77,6 +77,13 @@ class BotDispatcher():
         self.positionAdjuster.getCloserToIsland()
         self.video.release()
 
+    def alignToTargetIslandTest(self, color):
+        self.__initializeVideoCapture()
+        self.vision = RobotVision(self.wheelManager, self.cameraTower, self.video)
+        self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro, self.spc)
+        self.positionAdjuster.alignToIsland(color)
+        self.video.release()
+
     def __initializeVideoCapture(self):
         if platform.linux_distribution()[0].lower() == "Ubuntu".lower():
             self.video = cv2.VideoCapture(1)

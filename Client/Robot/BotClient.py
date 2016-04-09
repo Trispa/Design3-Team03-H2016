@@ -21,7 +21,7 @@ botDispatcher = BotDispatcher(WheelManager(spc), Controller(), spc)
 
 def goToNextPosition(data):
     print("heading toward next coordinates")
-    botDispatcher.lastPositionGoneTo = (data['positionTOX'], data['positionTOY'])
+    botDispatcher.lastPositionGoneTo = (data['positionTOx'], data['positionTOy'])
     botDispatcher.followPath(data)
 
 
@@ -76,8 +76,8 @@ def alignToChargingStation(json):
 
 def alignToTarget(json):
     botDispatcher.setRobotOrientation(json['botOrientation'], json['angleToGo'])
-    botDispatcher.alignToTargetIsland()
-    socketIO.emit("needNewCoordinates")
+    botDispatcher.alignToTargetIslandTest(json['targetColor'])
+
 
 def endRound():
     print("end round")
@@ -117,6 +117,5 @@ socketIO.on("detectTreasure", detectTreasure)
 socketIO.on('rotateToChargingStation', rotateToChargingStation)
 socketIO.on('rotateToTreasure', rotateToTreasure)
 socketIO.on('rotateToDetectTreasure', rotateToDetectTreasure)
-socketIO.on('debugAlignToTarget', alignToTarget)
 
 socketIO.wait()
