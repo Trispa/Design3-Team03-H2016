@@ -10,6 +10,7 @@ class ColorContainer():
     yellowTreasureDetect = colorFactory.constructColor(np.uint8([[[162, 148, 17]]]), "YellowTreasureDetect")
     green = colorFactory.constructColor(np.uint8([[[0,255,0]]]), "Green")
     red = colorFactory.constructColor(np.uint8([[[150,179,255]]]), "Red")
+    everything = colorFactory.constructColor(np.uint8([[[0,0,0]]]), "Everything")
 
 
     islandColors.append(colorFactory.constructColor(np.uint8([[[0,255,0]]]), "Green"))

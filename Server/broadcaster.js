@@ -101,7 +101,7 @@ io.on('connection', function (client) {
         io.emit('alignPositionToTreasure', json);
     });
     client.on('alignPositionToTarget', function (json){
-        console.log('align position to target ' + json['angleToGo'])
+        console.log('align position to target ' + json['angleToGo']);
         io.emit('alignPositionToTarget', json);
     });
     client.on('detectTreasure', function(jsonAngles){
@@ -131,7 +131,9 @@ io.on('connection', function (client) {
     client.on("rotateDoneToDetectTreasure", function(){
         io.emit('rotateDoneToDetectTreasure');
     });
-
+    client.on('isOutOfBound', function(data){
+        io.emit('isOutOfBound', data);
+    });
 
 
 

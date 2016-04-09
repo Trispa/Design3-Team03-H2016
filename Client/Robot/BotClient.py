@@ -21,11 +21,13 @@ botDispatcher = BotDispatcher(WheelManager(spc), Controller(), spc)
 
 def goToNextPosition(data):
     print("heading toward next coordinates")
+    botDispatcher.lastPositionGoneTo = (data['positionTOx'], data['positionTOy'])
     botDispatcher.followPath(data)
 
 
-def startRound(*args):
+def startRound(json):
     print("start round")
+    botDispatcher.lastPositionGoneTo = (json['positionX'], json['positionY'])
     socketIO.emit("needNewCoordinates")
 
 def alignToTreasure(json):
@@ -35,6 +37,8 @@ def alignToTreasure(json):
         if(abs(json['robotOrientation'] - angleToGetForChargingStation) > minimumAngleDifferenceToRotate):
             botDispatcher.setRobotOrientation(json['robotOrientation'], botDispatcher.treasureAngle)
     botDispatcher.alignToTreasure(Controller())
+    if(botDispatcher.lastPositionGoneTo[0] - 100 == 0):
+        botDispatcher.getRobotBackOnMapWhenOutOfBound()
     if(json['sequence']):
         socketIO.emit("needNewCoordinates")
 
@@ -65,15 +69,15 @@ def alignToChargingStation(json):
         voltage = spc.readConsensatorVoltage()
         print "Tension : ", voltage
         time.sleep(1)
-    botDispatcher.getRobotBackOnMap()
+    botDispatcher.getRobotBackOnMapAfterCharging()
     if(json['sequence']):
         print ('asking new commands')
         socketIO.emit("needNewCoordinates")
 
 def alignToTarget(json):
     botDispatcher.setRobotOrientation(json['botOrientation'], json['angleToGo'])
-    botDispatcher.alignToTargetIsland()
-    socketIO.emit("needNewCoordinates")
+    botDispatcher.alignToTargetIslandTest(json['targetColor'])
+
 
 def endRound():
     print("end round")
@@ -113,6 +117,5 @@ socketIO.on("detectTreasure", detectTreasure)
 socketIO.on('rotateToChargingStation', rotateToChargingStation)
 socketIO.on('rotateToTreasure', rotateToTreasure)
 socketIO.on('rotateToDetectTreasure', rotateToDetectTreasure)
-socketIO.on('debugAlignToTarget', alignToTarget)
 
 socketIO.wait()
