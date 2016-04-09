@@ -4,6 +4,7 @@ from shape import Shape
 from Robot import Robot
 from allShapes import Square
 from Client.BaseStation.Logic.Pathfinding.Pathfinder import Pathfinder
+from Client.BaseStation.Logic.Pathfinding.Path import Path
 from Client.BaseStation.Logic.MapCoordinatesAjuster import MapCoordinatesAjuster
 import math
 import copy
@@ -54,7 +55,8 @@ class Map:
     def getPositionInFrontOfTreasure(self):
         myPathFinder = Pathfinder(self)
         myMapCoorDinateAjuster = MapCoordinatesAjuster(self)
-        myBestPath = myPathFinder.findPath((-1, -1), (-1, -1))
+        myBestPath = Path()
+        myBestPath.totalDistance = 99999
         bestInFrontPosition = (0,0)
         bestOrientationForTreasure = 0
         for treasurePosition in self.treasures:
@@ -67,18 +69,20 @@ class Map:
             else:
                 newOrientationForTreasure  = 180
                 newInFrontPosition = (treasurePosition[0] + self.SAFE_MARGIN, treasurePosition[1])
-
+                print newInFrontPosition
 
             myNewPath = myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint(newInFrontPosition))
-            if myNewPath.totalDistance < myBestPath.totalDistance:
-                myBestPath = myNewPath
-                bestOrientationForTreasure = newOrientationForTreasure
-                bestInFrontPosition = newInFrontPosition
+            if myNewPath != False:
+                if myNewPath.totalDistance < myBestPath.totalDistance:
+                    myBestPath = myNewPath
+                    bestOrientationForTreasure = newOrientationForTreasure
+                    bestInFrontPosition = newInFrontPosition
         return bestInFrontPosition,bestOrientationForTreasure
 
     def getPositionInFrontOfIsland(self):
         myPathFinder = Pathfinder(self)
-        myPath = myPathFinder.findPath((-1, -1), (-1, -1))
+        myPath = Path()
+        myPath.totalDistance = 9999
         myMapCoorDinateAjuster = MapCoordinatesAjuster(self)
         myBestPosition = (0,0)
         orientation = 0
@@ -124,10 +128,11 @@ class Map:
 
             myNewPath = myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint(positionToGo))
 
-            if myNewPath.totalDistance < myPath.totalDistance:
-                myPath = myNewPath
-                myBestPosition = positionToGo
-                orientation = angle
+            if myNewPath != False:
+                if myNewPath.totalDistance < myPath.totalDistance:
+                    myPath = myNewPath
+                    myBestPosition = positionToGo
+                    orientation = angle
 
         if myBestPosition == (0, 0):
             x,y,width,height = cv2.boundingRect(targetShape.getContour())
@@ -173,7 +178,7 @@ class Map:
 
     def setTreasures(self, relativeAngles):
         rightAngle = 90
-        yDistanceFromPurpleCircle = 55
+        yDistanceFromPurpleCircle = 25
         cameraDistanceFromBackgroundWall = self.robot.purpleCircle.findCenterOfMass()[0] - 20 - self.limit.getMinCorner()[0]
         cameraDistanceFromLowerWall = self.limit.getMaxCorner()[1] - self.robot.purpleCircle.findCenterOfMass()[1] + yDistanceFromPurpleCircle
         cameraDistanceFromUpperWall = self.robot.purpleCircle.findCenterOfMass()[1] + yDistanceFromPurpleCircle - self.limit.getMinCorner()[1]

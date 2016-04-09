@@ -48,17 +48,17 @@ def verifyIfMoving(path, nextSignal, angleToRotate):
         print "close enough"
 
         if(nodeBotIsGoingTo+1 == len(path)):
-            print "send bot to last node again"
             botInfo = dispatcher.getCurrentWorldInformation()
             positionFromX = botInfo["robotPosition"][0]
             positionFromY = botInfo["robotPosition"][1]
             positionToX = path[nodeBotIsGoingTo].positionX
             positionToY = path[nodeBotIsGoingTo].positionY
 
-            if ((positionFromX > positionToX + 10) or
-                (positionFromX < positionToX - 10) and
-                ((positionToY > positionToY + 10) or
-                (positionToY < positionToY - 10))):
+            if ((positionFromX > positionToX + 2) or
+                (positionFromX < positionToX - 2) and
+                ((positionToY > positionToY + 2) or
+                (positionToY < positionToY - 2))):
+                print "send bot to last node again"
 
                 jsonToSend = {"positionFROMx" : positionFromX,
                               "positionFROMy" : positionFromY,
