@@ -85,18 +85,11 @@ class TreasuresDetector:
             if not cameraSet:
                 system("v4l2-ctl -c gain=0")
                 system("v4l2-ctl -c brightness=128")
-
-                system("v4l2-ctl -c exposure_auto=3")
                 system("v4l2-ctl -c exposure_auto=1")
-
-                system("v4l2-ctl -c white_balance_temperature_auto=1")
                 system("v4l2-ctl -c white_balance_temperature_auto=0")
-
-                system("v4l2-ctl -c exposure_absolute=166")
                 system("v4l2-ctl -c exposure_absolute=110")
-
-                system("v4l2-ctl -c white_balance_temperature=4000")
                 system("v4l2-ctl -c white_balance_temperature=504")
+                system("echo 'Camera set'")
                 cameraSet = True
 
             self.xCoordinateToBeHigher = self.image.shape[1] / 2
@@ -104,18 +97,18 @@ class TreasuresDetector:
                 ret, self.image = self.video.read()
                 self.detectAndShowImage()
                 self.camera.moveCameraRight()
-#                cv2.imshow("Image", self.image)
- #               if cv2.waitKey(1) & 0xFF == ord('q'):
-  #                  break
+     #           cv2.imshow("Image", self.image)
+    #            if cv2.waitKey(1) & 0xFF == ord('q'):
+   #                 break
 
             while not self.centered and self.camera.horizontalDegree < 173:
                 ret, self.image = self.video.read()
                 self.detectAndShowImage()
                 self.camera.moveCameraRight()
                 self.centered = self.isCenteredWithTreasure()
-   #             cv2.imshow("Image", self.image)
-    #            if cv2.waitKey(1) & 0xFF == ord('q'):
-     #               break
+  #              cv2.imshow("Image", self.image)
+ #               if cv2.waitKey(1) & 0xFF == ord('q'):
+#                    break
 
         print("Liste des angles : ", self.treasuresAngle)
         return self.treasuresAngle
