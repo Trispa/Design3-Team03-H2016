@@ -11,8 +11,7 @@ import copy
 
 class Map:
 
-    SAFE_MARGIN = 100
-    SAFE_MARGIN_FOR_ISLAND = 100
+    SAFE_MARGIN = 130
 
     def __init__(self):
         self.__shapes = []
@@ -180,9 +179,8 @@ class Map:
         rightAngle = 90
         yDistanceFromPurpleCircle = 25
         cameraDistanceFromBackgroundWall = self.robot.purpleCircle.findCenterOfMass()[0] - 20 - self.limit.getMinCorner()[0]
-        cameraDistanceFromLowerWall = self.limit.getMaxCorner()[1] - self.robot.purpleCircle.findCenterOfMass()[1] + yDistanceFromPurpleCircle
-        cameraDistanceFromUpperWall = self.robot.purpleCircle.findCenterOfMass()[1] + yDistanceFromPurpleCircle - self.limit.getMinCorner()[1]
-        angleError = abs(180 - self.robot.orientation)
+        cameraDistanceFromLowerWall = self.limit.getMaxCorner()[1] - self.robot.purpleCircle.findCenterOfMass()[1] + 25
+        cameraDistanceFromUpperWall = self.robot.purpleCircle.findCenterOfMass()[1] + 105 - self.limit.getMinCorner()[1]
         for cameraAngle in relativeAngles:
 
             lowerWall = True
@@ -204,7 +202,7 @@ class Map:
                 else:
                     treasurePosition = (self.limit.getMinCorner()[0], self.limit.getMinCorner()[1] + yDistanceFromCamera)
 
-
+            print "Tresor ajoute ", treasurePosition
             self.treasures.append(treasurePosition)
 
     def findSimilarShape(self, newPossibleShape):
