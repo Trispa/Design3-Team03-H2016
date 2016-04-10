@@ -16,11 +16,12 @@ class MapAdaptator:
         for compteur in range(0, self.map.getShapesList().__len__()):
             currentShape = self.map.getShapesList()[compteur]
             centerX, centerY = currentShape.findCenterOfMass()
-            if compteur > 0:
-                if centerX-minCorner[0] == obstaclesList[compteur-1].positionX:
-                    centerX += 1
-                elif centerX-minCorner[0] < obstaclesList[compteur-1].positionX:
-                    centerX += 2
-            obstaclesList.append(Obstacle((centerX - minCorner[0],centerY - minCorner[1])))
+            if centerY > minCorner[1] and centerY < maxCorner[1]:
+                if obstaclesList.__len__() > 0:
+                    if centerX-minCorner[0] == obstaclesList[compteur-1].positionX:
+                        centerX += 1
+                    elif centerX-minCorner[0] < obstaclesList[compteur-1].positionX:
+                        centerX += 2
+                obstaclesList.append(Obstacle((centerX - minCorner[0],centerY - minCorner[1])))
         return obstaclesList, mapSizeX, mapSizeY, minCorner
 

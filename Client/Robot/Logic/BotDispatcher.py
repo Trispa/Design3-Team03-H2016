@@ -20,6 +20,7 @@ class BotDispatcher():
         self.botVoltage = 0
         self.spc = spc
         self.serialPortCommunicatorIsReadByManchester = False
+        self.lastPositionGoneTo = (0,0)
 
     def followPath(self, coordinates):
         print(coordinates)
@@ -60,8 +61,11 @@ class BotDispatcher():
         self.positionAdjuster.getCloserToChargingStation()
         self.video.release()
 
-    def getRobotBackOnMap(self):
+    def getRobotBackOnMapAfterCharging(self):
         self.positionAdjuster.stopCharging()
+
+    def getRobotBackOnMapWhenOutOfBound(self):
+        self.positionAdjuster.getBackToMapAfterGrabingBackgroundTreausre()
 
     def readManchester(self):
         serial = SerialPortCommunicator()
@@ -73,6 +77,13 @@ class BotDispatcher():
         self.vision = RobotVision(self.wheelManager, self.cameraTower, self.video)
         self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro, self.spc)
         self.positionAdjuster.getCloserToIsland()
+        self.video.release()
+
+    def alignToTargetIslandTest(self, color):
+        self.__initializeVideoCapture()
+        self.vision = RobotVision(self.wheelManager, self.cameraTower, self.video)
+        self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro, self.spc)
+        self.positionAdjuster.alignToIsland(color)
         self.video.release()
 
     def __initializeVideoCapture(self):

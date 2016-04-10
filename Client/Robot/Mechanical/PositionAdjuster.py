@@ -51,18 +51,31 @@ class PositionAdjuster:
         return True
 
     def getCloserToIsland(self):
-        self.wheelManager.moveTo((20, 0))
-        self.wheelManager.moveTo((0,20))
+        self.wheelManager.moveTo((45, 0))
+        self.wheelManager.moveTo((0,50))
         self.activateMagnet()
         self.lowerArm()
         time.sleep(2)
         self.deactivateMagnet()
-       
 
+    def alignToIsland(self, color):
+        while not self.localVision.getCloserToIsland(color):
+            pass
+        self.activateMagnet()
+        self.lowerArm()
+        time.sleep(2)
+        self.deactivateMagnet()
+        time.sleep(0.5)
+        self.ascendArm()
+        time.sleep(0.5)
+        self.wheelManager.moveTo((-20,0))
+       
+    def getBackToMapAfterGrabingBackgroundTreausre(self):
+        self.wheelManager.moveTo((-40, 0))
 
     def stopCharging(self):
         self.deactivateMagnet()
-        time.sleep(0.5)
+
         self.wheelManager.moveTo((-20, 0))
         self.wheelManager.moveTo((0, -30))
         return True

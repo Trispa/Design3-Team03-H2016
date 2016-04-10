@@ -45,6 +45,23 @@ class RobotVision:
 
         self.mask = self.mask + cv2.inRange(hsvImage, lower, upper)
 
+    def detectColorIsland(self, color):
+        self.mask = 0
+
+        hsvImage = cv2.cvtColor(self.image, cv2.COLOR_BGR2HSV)
+        colorContainer = ColorContainer()
+
+        myColor = None
+
+        for colors in colorContainer.islandColors:
+            if colors.getName() == color:
+                myColor = colors
+
+        lower = myColor.lower
+        upper = myColor.higher
+
+        self.mask = self.mask + cv2.inRange(hsvImage, lower, upper)
+
     def findContour(self):
 
         (cnts, _) = cv2.findContours(self.mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_TC89_L1)
@@ -71,6 +88,30 @@ class RobotVision:
                 self.tresor = None
             return 0
 
+    def findContourIsland(self):
+
+        (cnts, _) = cv2.findContours(self.mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_TC89_L1)
+        dots = []
+        if len(cnts):
+
+            cntsMax = cnts[0]
+            for c in cnts:
+                if cv2.contourArea(c) > cv2.contourArea(cntsMax):
+                    cntsMax = c
+
+            if cv2.contourArea(cntsMax) > 100 and cv2.contourArea(cntsMax) < 100000:
+                self.tresor = cntsMax
+                x, y, w, h = cv2.boundingRect(self.tresor)
+                dots.append((x, y, w, h))
+
+                cv2.rectangle(self.image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                self.addLabels(self.tresor)
+
+                self.largeurTresorPixel = max(w, h)
+                return self.largeurTresorPixel
+            else:
+                self.tresor = None
+            return 0
 
 
     def addLabelsLines(self, dots):
@@ -323,9 +364,94 @@ class RobotVision:
                 print "!!! ARRIVER !!!"
                 return True
 
-           # cv2.imshow("Image", self.image)
-           # if cv2.waitKey(1) & 0xFF == ord('q'):
-           #     break
+#            cv2.imshow("Image", self.image)
+ #           if cv2.waitKey(1) & 0xFF == ord('q'):
+  #              break
+
+
+
+
+    def getCloserToIsland(self, color):
+        findSomething = False
+        movingY = False
+        moveYArriver = False
+        movingX = False
+        moveXArriver = False
+        self.tresor = None
+
+
+        colorContainer = ColorContainer()
+
+
+        minCameraAngleToStopApproaching = 6.5
+        minCameraAngleToStartApproaching = 40
+
+        self.camera.moveCameraByAngle(1, 70)
+        self.camera.moveCameraByAngle(0, minCameraAngleToStartApproaching)
+        cameraSet = False
+
+        while(self.video.isOpened()):
+            ret, self.image = self.video.read()
+            if not cameraSet:
+                system("v4l2-ctl -c gain=0")
+                system("v4l2-ctl -c exposure_auto=1")
+                system("v4l2-ctl -c brightness=128")
+                system("v4l2-ctl -c exposure_absolute=110")
+                system("v4l2-ctl -c white_balance_temperature_auto=0")
+                system("v4l2-ctl -c white_balance_temperature=504")
+                cameraSet = True
+
+            self.detectColorIsland(color)
+            self.findContourIsland()
+
+            if not findSomething:
+                findSomething = self.swipeCamera()
+
+            if self.tresor == None:
+                findSomething = False
+                movingY = False
+                moveYArriver = False
+                movingX = False
+                moveXArriver = False
+            center = self.moveCamera()
+
+            if not self.robot.isMoving and center:
+                if not movingY and not moveYArriver:
+
+                    if self.camera.horizontalDegree > 90:
+                        self.robot.moveForever(0, 30)
+                    else:
+                        self.robot.moveForever(0, -30)
+                    movingY = True
+
+                if moveYArriver:
+                    if not movingX and not moveXArriver:
+                        self.robot.moveForever(30, 0)
+                        movingX = True
+
+            center = self.moveCamera()
+
+            if movingY and not moveYArriver:
+
+                if self.camera.horizontalDegree <= 92 and self.camera.horizontalDegree >= 88:
+                    self.robot.stopAllMotors()
+                    moveYArriver = True
+                    movingY = False
+
+            if movingX and not moveXArriver:
+                # print self.camera.verticalDegree
+
+                if self.camera.verticalDegree <= minCameraAngleToStopApproaching:
+                    self.robot.stopAllMotors()
+                    moveXArriver = True
+
+            if moveYArriver and moveXArriver:
+                print "!!! ARRIVER !!!"
+                return True
+
+            #cv2.imshow("Image", self.image)
+            #if cv2.waitKey(1) & 0xFF == ord('q'):
+             #   break
 
 
 

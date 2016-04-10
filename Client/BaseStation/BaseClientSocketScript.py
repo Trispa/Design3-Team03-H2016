@@ -48,17 +48,17 @@ def verifyIfMoving(path, nextSignal, angleToRotate):
         print "close enough"
 
         if(nodeBotIsGoingTo+1 == len(path)):
-            print "send bot to last node again"
             botInfo = dispatcher.getCurrentWorldInformation()
             positionFromX = botInfo["robotPosition"][0]
             positionFromY = botInfo["robotPosition"][1]
             positionToX = path[nodeBotIsGoingTo].positionX
             positionToY = path[nodeBotIsGoingTo].positionY
 
-            if ((positionFromX > positionToX + 10) or
-                (positionFromX < positionToX - 10) and
-                ((positionToY > positionToY + 10) or
-                (positionToY < positionToY - 10))):
+            if ((positionFromX > positionToX + 2) or
+                (positionFromX < positionToX - 2) and
+                ((positionToY > positionToY + 2) or
+                (positionToY < positionToY - 2))):
+                print "send bot to last node again"
 
                 jsonToSend = {"positionFROMx" : positionFromX,
                               "positionFROMy" : positionFromY,
@@ -69,7 +69,13 @@ def verifyIfMoving(path, nextSignal, angleToRotate):
                 time.sleep(5)
             botInfo = dispatcher.getCurrentWorldInformation()
             print("emitting" + nextSignal)
-            jsonToSend = {"botOrientation":botInfo["robotOrientation"],
+            if nextSignal == "alignPositionToTarget":
+                jsonToSend = {"botOrientation":botInfo["robotOrientation"],
+                          "angleToGo":angleToRotate,
+                          "sequence":True,
+                            "targetColor":botInfo["targetColor"]}
+            else:
+                jsonToSend = {"botOrientation":botInfo["robotOrientation"],
                           "angleToGo":angleToRotate,
                           "sequence":True}
             socketIO.emit(nextSignal, jsonToSend)
@@ -212,6 +218,16 @@ def debugSearchAllTreasure():
                   "sequence":False}
     socketIO.emit(nextSignal, jsonToSend)
 
+def debugAlignBotToTarget():
+    print "search all treasures debug launching"
+    botInfo = dispatcher.getCurrentWorldInformation()
+
+    jsonToSend = {"botOrientation":180,
+                          "angleToGo":180,
+                          "sequence":True,
+                            "targetColor":"Green"}
+    socketIO.emit("alignPositionToTarget", jsonToSend)
+
 def debugSendBotToTreasure():
     print "send bot to treasure debug launching"
 
@@ -256,6 +272,8 @@ socketIO.on('debugSearchAllTreasure', debugSearchAllTreasure)
 socketIO.on('debugSendBotToTreasure', debugSendBotToTreasure)
 socketIO.on('debugAlignBotToTreasure', debugAlignBotToTreasure)
 socketIO.on('debugSendBotToTarget', debugSendBotToTarget)
+socketIO.on('debugAlignBotToTarget', debugAlignBotToTarget)
+
 socketIO.on('initializeWorld', initializeWorld)
 socketIO.on('rotateDoneToTreasure', sendAlignPositionToTreasureSignal)
 socketIO.on('rotateDoneToChargingStation', sendAlignPositionToChargingStationSignal)
