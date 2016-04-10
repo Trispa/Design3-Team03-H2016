@@ -11,6 +11,9 @@ socket.on("sendInfo", function(data){
     $("#position").text(data["robotPosition"]);
     $("#orientation").text(data["robotOrientation"]);
 });
+socket.on('sendVoltage', function(data){
+    $('#voltage').text(data);
+});
 
 socket.on("sendEndSignal", function() {
     $("#buttonGo").prop("disabled", false);

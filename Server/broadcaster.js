@@ -43,6 +43,10 @@ io.on('connection', function (client) {
         io.emit('sendInfo', data);
     });
 
+    client.on('sendVoltage', function(voltage){
+        io.emit('sendVoltage', voltage);
+    });
+
     client.on('startSignal', function(){
         io.emit('startSignal');
     });

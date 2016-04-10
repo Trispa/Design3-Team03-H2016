@@ -17,7 +17,9 @@ class BotDispatcher():
         self.maestro = maestro
         self.cameraTower = CameraTower(self.maestro)
         self.treasureAngle = 0
+        self.botVoltage = 0
         self.spc = spc
+        self.serialPortCommunicatorIsReadByManchester = False
         self.lastPositionGoneTo = (0,0)
 
     def followPath(self, coordinates):
