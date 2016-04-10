@@ -11,7 +11,7 @@ import copy
 
 class Map:
 
-    SAFE_MARGIN = 130
+    SAFE_MARGIN = 110
     SAFE_MARGIN_FOR_TREASURE = 100
 
     def __init__(self):
