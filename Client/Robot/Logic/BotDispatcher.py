@@ -19,8 +19,7 @@ class BotDispatcher():
         self.treasureAngle = 0
         self.botVoltage = 0
         self.spc = spc
-        self.threadSetter = None
-        self.threadGetter = None
+        self.serialPortCommunicatorIsReadByManchester = False
 
     def followPath(self, coordinates):
         print(coordinates)

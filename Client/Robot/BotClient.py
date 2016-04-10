@@ -62,15 +62,9 @@ def alignToChargingStation(json):
     if(abs(json['robotOrientation'] - angleToGetForChargingStation) > minimumAngleDifferenceToRotate):
         botDispatcher.setRobotOrientation(json['robotOrientation'], angleToGetForChargingStation)
     botDispatcher.alignToChargingStation()
-    if botDispatcher.threadGetter != None and botDispatcher.threadSetter != None :
-        botDispatcher.threadGetter._Thread_stop()
-        botDispatcher.threadSetter._Thread_stop()
-
+    botDispatcher.serialPortCommunicatorIsReadByManchester = True
     readManchester()
-    if botDispatcher.threadGetter == None and botDispatcher.threadSetter == None :
-        botDispatcher.threadGetter = Thread(target=getBotVoltage).start()
-        botDispatcher.threadSetter = Thread(target=sendBotVoltage).start()
-
+    botDispatcher.serialPortCommunicatorIsReadByManchester = False
     voltage = botDispatcher.botVoltage
     while(voltage <= 3.0):
         voltage = botDispatcher.botVoltage
@@ -112,7 +106,8 @@ def get_ip_address(ifname):
 
 def getBotVoltage():
     while(True):
-        botDispatcher.botVoltage = spc.readConsensatorVoltage()
+        if not botDispatcher.serialPortCommunicatorIsReadByManchester:
+            botDispatcher.botVoltage = spc.readConsensatorVoltage()
         time.sleep(1)
 
 def sendBotVoltage():
@@ -122,6 +117,8 @@ def sendBotVoltage():
         time.sleep(5)
 
 
+Thread(target=getBotVoltage).start()
+Thread(target=sendBotVoltage).start()
 
 
 socketIO.emit('sendBotClientStatus','Connected')
