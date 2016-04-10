@@ -5,6 +5,7 @@ import struct
 from Client.Robot.Mechanical.maestro import Controller
 from Client.Robot.Mechanical.SerialPortCommunicator import SerialPortCommunicator
 import fcntl
+from threading import Thread
 from socketIO_client import SocketIO
 import time
 from Client.Robot.Movement.WheelManager import WheelManager
@@ -18,6 +19,8 @@ with open(configPath) as json_data_file:
 socketIO = SocketIO(config['url'], int(config['port']))
 spc = SerialPortCommunicator()
 botDispatcher = BotDispatcher(WheelManager(spc), Controller(), spc)
+
+
 
 def goToNextPosition(data):
     print("heading toward next coordinates")
@@ -63,10 +66,12 @@ def alignToChargingStation(json):
     if(abs(json['robotOrientation'] - angleToGetForChargingStation) > minimumAngleDifferenceToRotate):
         botDispatcher.setRobotOrientation(json['robotOrientation'], angleToGetForChargingStation)
     botDispatcher.alignToChargingStation()
+    botDispatcher.serialPortCommunicatorIsReadByManchester = True
     readManchester()
-    voltage = spc.readConsensatorVoltage()
+    botDispatcher.serialPortCommunicatorIsReadByManchester = False
+    voltage = botDispatcher.botVoltage
     while(voltage <= 3.0):
-        voltage = spc.readConsensatorVoltage()
+        voltage = botDispatcher.botVoltage
         print "Tension : ", voltage
         time.sleep(1)
     botDispatcher.getRobotBackOnMapAfterCharging()
@@ -103,8 +108,26 @@ def get_ip_address(ifname):
         struct.pack('256s', ifname[:15])
     )[20:24])
 
+def getBotVoltage():
+    while(True):
+        if not botDispatcher.serialPortCommunicatorIsReadByManchester:
+            botDispatcher.botVoltage = spc.readConsensatorVoltage()
+        time.sleep(1)
+
+def sendBotVoltage():
+    while(True):
+        socketIO.emit('sendVoltage', botDispatcher.botVoltage)
+        print "send bot voltage"
+        time.sleep(5)
+
+
+Thread(target=getBotVoltage).start()
+Thread(target=sendBotVoltage).start()
+
+
 socketIO.emit('sendBotClientStatus','Connected')
 socketIO.emit('sendBotIP', get_ip_address('wlp4s0'))
+socketIO.emit('sendVoltage', botDispatcher.botVoltage)
 
 socketIO.on('sendNextCoordinates', goToNextPosition)
 socketIO.on('startSignalRobot', startRound)
