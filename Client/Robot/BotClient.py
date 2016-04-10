@@ -20,6 +20,8 @@ socketIO = SocketIO(config['url'], int(config['port']))
 spc = SerialPortCommunicator()
 botDispatcher = BotDispatcher(WheelManager(spc), Controller(), spc)
 
+
+
 def goToNextPosition(data):
     print("heading toward next coordinates")
     botDispatcher.followPath(data)
@@ -60,9 +62,15 @@ def alignToChargingStation(json):
     if(abs(json['robotOrientation'] - angleToGetForChargingStation) > minimumAngleDifferenceToRotate):
         botDispatcher.setRobotOrientation(json['robotOrientation'], angleToGetForChargingStation)
     botDispatcher.alignToChargingStation()
+    if botDispatcher.threadGetter != None and botDispatcher.threadSetter != None :
+        botDispatcher.threadGetter._Thread_stop()
+        botDispatcher.threadSetter._Thread_stop()
+
     readManchester()
-    Thread(target=getBotVoltage).start()
-    Thread(target=sendBotVoltage).start()
+    if botDispatcher.threadGetter == None and botDispatcher.threadSetter == None :
+        botDispatcher.threadGetter = Thread(target=getBotVoltage).start()
+        botDispatcher.threadSetter = Thread(target=sendBotVoltage).start()
+
     voltage = botDispatcher.botVoltage
     while(voltage <= 3.0):
         voltage = botDispatcher.botVoltage
