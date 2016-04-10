@@ -54,7 +54,7 @@ class TreasuresDetector:
         if abs(self.followedTreasure[0] - (self.image.shape[1]/2)) <= self.ACCEPTABLE_PIXEL_DIFFERENCE:
             alreadyAdded = False
             for angle in self.treasuresAngle:
-                if self.camera.horizontalDegree - angle < 2:
+                if self.camera.horizontalDegree - angle < 3:
                     averageAngle = (angle + self.camera.horizontalDegree) / 2
                     self.treasuresAngle.remove(angle)
                     self.treasuresAngle.append(averageAngle)
