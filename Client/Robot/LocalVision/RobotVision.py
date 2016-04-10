@@ -99,7 +99,7 @@ class RobotVision:
                 if cv2.contourArea(c) > cv2.contourArea(cntsMax):
                     cntsMax = c
 
-            if cv2.contourArea(cntsMax) > 100 and cv2.contourArea(cntsMax) < 100000:
+            if cv2.contourArea(cntsMax) > 100 and cv2.contourArea(cntsMax) < 30000:
                 self.tresor = cntsMax
                 x, y, w, h = cv2.boundingRect(self.tresor)
                 dots.append((x, y, w, h))
@@ -391,8 +391,8 @@ class RobotVision:
         colorContainer = ColorContainer()
 
 
-        minCameraAngleToStopApproaching = 6.5
-        minCameraAngleToStartApproaching = 40
+        minCameraAngleToStopApproaching = 7
+        minCameraAngleToStartApproaching = 20
 
         self.camera.moveCameraByAngle(1, 70)
         self.camera.moveCameraByAngle(0, minCameraAngleToStartApproaching)
@@ -465,9 +465,9 @@ class RobotVision:
                 print "!!! ARRIVER !!!"
                 return True
 
-            cv2.imshow("Image", self.image)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+#            cv2.imshow("Image", self.image)
+ #           if cv2.waitKey(1) & 0xFF == ord('q'):
+  #              break
 
 
 
