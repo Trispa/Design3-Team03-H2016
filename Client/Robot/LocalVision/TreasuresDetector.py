@@ -83,12 +83,20 @@ class TreasuresDetector:
             self.centered = False
             ret, self.image = self.video.read()
             if not cameraSet:
-                system("v4l2-ctl -c gain=50")
-                system("v4l2-ctl -c exposure_auto=1")
-                system("v4l2-ctl -c exposure_absolute=150")
-                system("v4l2-ctl -c white_balance_temperature_auto=0")
-                system("v4l2-ctl -c white_balance_temperature=0")
+                system("v4l2-ctl -c gain=0")
                 system("v4l2-ctl -c brightness=128")
+
+                system("v4l2-ctl -c exposure_auto=3")
+                system("v4l2-ctl -c exposure_auto=1")
+
+                system("v4l2-ctl -c white_balance_temperature_auto=1")
+                system("v4l2-ctl -c white_balance_temperature_auto=0")
+
+                system("v4l2-ctl -c exposure_absolute=166")
+                system("v4l2-ctl -c exposure_absolute=110")
+
+                system("v4l2-ctl -c white_balance_temperature=4000")
+                system("v4l2-ctl -c white_balance_temperature=504")
                 cameraSet = True
 
             self.xCoordinateToBeHigher = self.image.shape[1] / 2

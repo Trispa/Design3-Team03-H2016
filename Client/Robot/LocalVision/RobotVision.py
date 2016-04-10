@@ -294,10 +294,18 @@ class RobotVision:
             ret, self.image = self.video.read()
             if not cameraSet:
                 system("v4l2-ctl -c gain=0")
-                system("v4l2-ctl -c exposure_auto=1")
                 system("v4l2-ctl -c brightness=128")
-                system("v4l2-ctl -c exposure_absolute=110")
+
+                system("v4l2-ctl -c exposure_auto=3")
+                system("v4l2-ctl -c exposure_auto=1")
+
+                system("v4l2-ctl -c white_balance_temperature_auto=1")
                 system("v4l2-ctl -c white_balance_temperature_auto=0")
+
+                system("v4l2-ctl -c exposure_absolute=166")
+                system("v4l2-ctl -c exposure_absolute=110")
+
+                system("v4l2-ctl -c white_balance_temperature=4000")
                 system("v4l2-ctl -c white_balance_temperature=504")
                 cameraSet = True
 
@@ -394,10 +402,18 @@ class RobotVision:
             ret, self.image = self.video.read()
             if not cameraSet:
                 system("v4l2-ctl -c gain=0")
-                system("v4l2-ctl -c exposure_auto=1")
                 system("v4l2-ctl -c brightness=128")
-                system("v4l2-ctl -c exposure_absolute=110")
+
+                system("v4l2-ctl -c exposure_auto=3")
+                system("v4l2-ctl -c exposure_auto=1")
+
+                system("v4l2-ctl -c white_balance_temperature_auto=1")
                 system("v4l2-ctl -c white_balance_temperature_auto=0")
+                
+                system("v4l2-ctl -c exposure_absolute=166")
+                system("v4l2-ctl -c exposure_absolute=110")
+
+                system("v4l2-ctl -c white_balance_temperature=4000")
                 system("v4l2-ctl -c white_balance_temperature=504")
                 cameraSet = True
 
@@ -449,9 +465,9 @@ class RobotVision:
                 print "!!! ARRIVER !!!"
                 return True
 
-            #cv2.imshow("Image", self.image)
-            #if cv2.waitKey(1) & 0xFF == ord('q'):
-             #   break
+            cv2.imshow("Image", self.image)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
 
 
 
