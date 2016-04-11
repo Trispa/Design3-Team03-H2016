@@ -27,7 +27,8 @@ class Pathfinder:
 
     def findPath(self, positionRobot, pointToMoveTo):
         print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-        startingPathNode = self.graph.findGoodSafeNodeToGo(positionRobot)
+        goodPositionRobot = self.findGoodPoint(positionRobot)
+        startingPathNode = self.graph.findGoodSafeNodeToGo(goodPositionRobot)
         endingPathNode = self.graph.findGoodSafeNodeToGo(pointToMoveTo)
         print pointToMoveTo, endingPathNode.positionX, endingPathNode.positionY
         self.theGoodPath = Path()
