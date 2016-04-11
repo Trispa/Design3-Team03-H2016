@@ -114,6 +114,7 @@ class SerialPortCommunicator:
             self.tensionCondensateur = 0
         else:
             self.tensionCondensateur = float(tmpTempo) / 100.0
+        return self.tensionCondensateur
 
     def getTensionCondensateur(self):
         return self.tensionCondensateur
