@@ -66,10 +66,9 @@ class PositionAdjuster:
         time.sleep(2)
         self.deactivateMagnet()
         time.sleep(0.5)
-        self.ascendArm()
-        time.sleep(0.5)
         self.wheelManager.moveTo((-20,0))
-       
+        time.sleep(0.5)
+        self.ascendArm()
     def getBackToMapAfterGrabingBackgroundTreausre(self):
         self.wheelManager.moveTo((-40, 0))
 
