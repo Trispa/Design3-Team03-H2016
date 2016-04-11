@@ -22,6 +22,8 @@ class SerialPortCommunicator:
     CW = 0
     CCW = 1
 
+    tensionCondensateur = 0
+
 
 
     # def __init__(self, bitrateArduino = 9600, arduinoPort = "/dev/ttyUSB0"):
@@ -86,10 +88,18 @@ class SerialPortCommunicator:
         self.sendCommand(self.STOP_ALL_MOTEUR, self.FALSE, self.ONE_SECOND_DELAY, 1)
 
     def driveMoteurLine(self, axe, speed, positif, distance):
-        self.sendCommand(self.CHANGE_SPEED_LINE, self.FALSE, self.ONE_SECOND_DELAY, axe, speed * 100, positif, distance * 100)
+        tmpVoltage = self.sendCommand(self.CHANGE_SPEED_LINE, self.TRUE, self.ONE_SECOND_DELAY, axe, speed * 100, positif, distance * 100)
+        if tmpVoltage == '':
+            self.tensionCondensateur = 0
+        else:
+            self.tensionCondensateur = float(tmpVoltage) / 100.0
 
     def driveMoteurRotation(self, speed, direction, angle):
-        self.sendCommand(self.CHANGE_SPEED_ROTATION, self.FALSE, self.ONE_SECOND_DELAY, speed * 100, direction, angle * 100)
+        tmpVoltage = self.sendCommand(self.CHANGE_SPEED_ROTATION, self.TRUE, self.ONE_SECOND_DELAY, speed * 100, direction, angle * 100)
+        if tmpVoltage == '':
+            self.tensionCondensateur = 0
+        else:
+            self.tensionCondensateur = float(tmpVoltage) / 100.0
 
     #/controle electro aiment 00 decharge 10 ou 01 garde la charge 11 pour recharger
     # // 0 decharge magnetique
@@ -101,9 +111,12 @@ class SerialPortCommunicator:
     def readConsensatorVoltage(self):
         tmpTempo = self.sendCommand(self.LED_FUNCTION_ON, self.TRUE, self.ONE_SECOND_DELAY, 1)
         if tmpTempo == '':
-            return 0
+            self.tensionCondensateur = 0
         else:
-            return float(tmpTempo) / 100.0
+            self.tensionCondensateur = float(tmpTempo) / 100.0
+
+    def getTensionCondensateur(self):
+        return self.tensionCondensateur
 
 
 
