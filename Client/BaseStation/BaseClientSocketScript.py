@@ -58,15 +58,15 @@ def verifyIfMoving(path, nextSignal, angleToRotate):
                 (positionFromX < positionToX - 2) and
                 ((positionToY > positionToY + 2) or
                 (positionToY < positionToY - 2))):
-                print "send bot to last node again"
+                print "would have sent bot to last node again"
 
                 jsonToSend = {"positionFROMx" : positionFromX,
                               "positionFROMy" : positionFromY,
                               "positionTOx" : positionToX,
                               "positionTOy" : positionToY,
                               "orientation":botInfo["robotOrientation"]}
-                socketIO.emit("sendNextCoordinates", jsonToSend)
-                time.sleep(5)
+                #socketIO.emit("sendNextCoordinates", jsonToSend)
+                #time.sleep(5)
             botInfo = dispatcher.getCurrentWorldInformation()
             print("emitting" + nextSignal)
             if nextSignal == "alignPositionToTarget":
