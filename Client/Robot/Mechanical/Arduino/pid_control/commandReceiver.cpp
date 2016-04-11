@@ -60,10 +60,11 @@ void CommandReceiver::readPort() {
 void CommandReceiver::dispatchCommand() {
 	long resistance;
 	int rotationDirection = 1;
+  double tempVoltage;
 
 	switch (commandIndex) {
 	case 1: //lightEndingLED
-    double tempVoltage;
+//    double tempVoltage;
     tempVoltage = analogRead(A0) * 5.0 / 1023.0;
     if(callbackRequested == 1){
              sendCallback(long(tempVoltage * 100));
@@ -133,6 +134,12 @@ void CommandReceiver::dispatchCommand() {
 			}
 
 		}
+//   double tempVoltage;
+    tempVoltage = analogRead(A0) * 5.0 / 1023.0;
+    if(callbackRequested == 1){
+             sendCallback(long(tempVoltage * 100));
+          }
+   break;
     break;
 
 	case 8:
@@ -142,6 +149,12 @@ void CommandReceiver::dispatchCommand() {
           dm[i].setTickToDo(angle * 4475 / 360);
 	  			dm[i].driveMoteur(parameters[0]/100.0, parameters[1]);
 			}
+//     double tempVoltage;
+    tempVoltage = analogRead(A0) * 5.0 / 1023.0;
+    if(callbackRequested == 1){
+             sendCallback(long(tempVoltage * 100));
+          }
+   break;
       break;
 
   case 9:

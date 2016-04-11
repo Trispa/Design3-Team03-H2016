@@ -16,7 +16,7 @@ class worldVision:
             self.camera = cv2.VideoCapture(1)
         else:
             self.camera = cv2.VideoCapture(0)
-        #self.camera.set(3, 3264)
+        self.camera.set(3, 3264)
         self.camera.set(4, 2448)
         self.worldImage = None
         ret, frame = self.camera.read()

@@ -109,21 +109,14 @@ def get_ip_address(ifname):
         struct.pack('256s', ifname[:15])
     )[20:24])
 
-def getBotVoltage():
-    while(True):
-        if not botDispatcher.serialPortCommunicatorIsReadByManchester:
-            pass 
-# botDispatcher.botVoltage = spc.readConsensatorVoltage()
-        time.sleep(1)
-
 def sendBotVoltage():
     while(True):
-        socketIO.emit('sendVoltage', botDispatcher.botVoltage)
+        voltage = spc.getTensionCondensateur()
+        socketIO.emit('sendVoltage', voltage)
         print "send bot voltage"
         time.sleep(5)
 
 
-Thread(target=getBotVoltage).start()
 Thread(target=sendBotVoltage).start()
 
 

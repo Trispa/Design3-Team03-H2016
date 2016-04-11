@@ -160,8 +160,8 @@ class Map:
         cornerList = []
         minX = 0
         maxX = 960
-        minY = 109
-        maxY = 597
+        minY = 92
+        maxY = 580
 
         newFoundLimit = Square("limit", np.array([[[minX,minY + 5]],[[minX,maxY - 5]],[[maxX, maxY - 5]],[[maxX,minY + 5]]], dtype=np.int32))
 
