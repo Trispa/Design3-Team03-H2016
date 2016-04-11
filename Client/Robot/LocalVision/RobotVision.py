@@ -303,7 +303,7 @@ class RobotVision:
                 system("v4l2-ctl -c brightness=128")
                 system("v4l2-ctl -c exposure_auto=1")
                 system("v4l2-ctl -c white_balance_temperature_auto=0")
-                system("v4l2-ctl -c exposure_absolute=110")
+                system("v4l2-ctl -c exposure_absolute=160")
                 system("v4l2-ctl -c white_balance_temperature=504")
                 system("echo 'Camera set'")
                 cameraSet = True
@@ -372,9 +372,9 @@ class RobotVision:
                 print "!!! ARRIVER !!!"
                 return True
 
-            cv2.imshow("Image", self.image)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+#            cv2.imshow("Image", self.image)
+ #           if cv2.waitKey(1) & 0xFF == ord('q'):
+  #              break
 
 
 
@@ -459,9 +459,9 @@ class RobotVision:
                 print "!!! ARRIVER !!!"
                 return True
 
-            cv2.imshow("Image", self.image)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+   #         cv2.imshow("Image", self.image)
+    #        if cv2.waitKey(1) & 0xFF == ord('q'):
+     #           break
 
 
 
