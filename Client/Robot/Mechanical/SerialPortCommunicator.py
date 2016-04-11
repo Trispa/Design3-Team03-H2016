@@ -89,10 +89,18 @@ class SerialPortCommunicator:
 
     def driveMoteurLine(self, axe, speed, positif, distance):
         tmpVoltage = self.sendCommand(self.CHANGE_SPEED_LINE, self.TRUE, self.ONE_SECOND_DELAY, axe, speed * 100, positif, distance * 100)
+
         if tmpVoltage == '':
             self.tensionCondensateur = 0
         else:
             self.tensionCondensateur = float(tmpVoltage) / 100.0
+
+
+    def driveMoteurLinePrecision(self, axe, speed, positif, distance):
+
+        self.sendCommand(self.CHANGE_SPEED_LINE, self.FALSE, self.ONE_SECOND_DELAY, axe, speed * 100, positif,
+                         distance * 100)
+
 
     def driveMoteurRotation(self, speed, direction, angle):
         tmpVoltage = self.sendCommand(self.CHANGE_SPEED_ROTATION, self.TRUE, self.ONE_SECOND_DELAY, speed * 100, direction, angle * 100)
@@ -104,7 +112,7 @@ class SerialPortCommunicator:
     #/controle electro aiment 00 decharge 10 ou 01 garde la charge 11 pour recharger
     # // 0 decharge magnetique
     # // 1 ou else garde charge
-    # // 2 recharge
+    # // 2 rechargesendCommand
     def changeCondensatorMode(self, mode):
         self.sendCommand(self.CHANGE_CONDENSATOR_MODE, self.FALSE, self.ONE_SECOND_DELAY, mode)
 

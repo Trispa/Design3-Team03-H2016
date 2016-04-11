@@ -1,4 +1,5 @@
 import math
+import time
 from math import sqrt, cos, sin, radians
 from os import system
 
@@ -105,7 +106,6 @@ class RobotVision:
                 x, y, w, h = cv2.boundingRect(c)
                 if cv2.contourArea(c) > cv2.contourArea(cntsMax) and w < 250 and h < 250:
                     cntsMax = c
-
             if cv2.contourArea(cntsMax) > 100 and cv2.contourArea(cntsMax) < 30000:
                 self.tresor = cntsMax
                 dots.append((x, y, w, h))
@@ -247,7 +247,7 @@ class RobotVision:
 
         # print dot1
         # print dot2
-        # dot1 = (1279, 0)self.image = thresh1
+        # dot1 = (1279, 0)self.imagmoveCamerae = thresh1
         if dot1 == []:
             print "dot1 etait null"
             dot1 = (0, 0)
@@ -365,7 +365,7 @@ class RobotVision:
                     # moveXArriver = True
                     moveYArriver = False
                     movingX = False
-                    lastAngle = self.camera.verticalDegree
+                    lastAngle = self.camera.vmoveCameraerticalDegree
 
             if moveYArriver and moveXArriver:
                 self.camera.moveCameraByAngle(0, 90)
@@ -386,6 +386,7 @@ class RobotVision:
         movingX = False
         moveXArriver = False
         self.tresor = None
+        self.camera.step = 0.5
 
 
         colorContainer = ColorContainer()
@@ -400,6 +401,7 @@ class RobotVision:
 
         while(self.video.isOpened()):
             ret, self.image = self.video.read()
+
             if not cameraSet:
                 system("v4l2-ctl -c gain=0")
                 system("v4l2-ctl -c brightness=128")
@@ -448,22 +450,26 @@ class RobotVision:
                     movingY = False
 
             if movingX and not moveXArriver:
-                # print self.camera.verticalDegree
+                # print self.camera.verticalDemoveCameragree
 
                 if self.camera.verticalDegree <= minCameraAngleToStopApproaching:
                     self.robot.stopAllMotors()
                     moveXArriver = True
+
 
             if moveYArriver and moveXArriver:
                 self.camera.moveCameraByAngle(0, 90)
                 print "!!! ARRIVER !!!"
                 return True
 
-   #         cv2.imshow("Image", self.image)
-    #        if cv2.waitKey(1) & 0xFF == ord('q'):
-     #           break
+            #cv2.imshow("Image", self.image)
+            #if cv2.waitKey(1) & 0xFF == ord('q'):
+            #    break
 
-    def getCloserToIslandTest(self, color):
+
+
+
+    def getCloserToIslandTest(self, color, angle):
         findSomething = False
         movingY = False
         moveYArriver = False
@@ -471,8 +477,10 @@ class RobotVision:
         moveXArriver = False
         self.tresor = None
         lastAngle = 180
+        self.camera.step = 0.3
 
-        minCameraAngleToStopApproaching = 20
+
+        minCameraAngleToStopApproaching = angle
         minCameraAngleToStartApproaching = 30
 
         self.camera.moveCameraByAngle(1, 70)
@@ -481,6 +489,7 @@ class RobotVision:
 
         while(self.video.isOpened()):
             ret, self.image = self.video.read()
+
             if not cameraSet:
                 system("v4l2-ctl -c gain=0")
                 system("v4l2-ctl -c brightness=128")
@@ -494,8 +503,11 @@ class RobotVision:
             self.detectColorIsland(color)
             self.findContourIsland()
 
+
             if not findSomething:
+
                 findSomething = self.swipeCamera()
+
 
             if self.tresor == None:
                 findSomething = False
@@ -503,16 +515,22 @@ class RobotVision:
                 moveYArriver = False
                 movingX = False
                 moveXArriver = False
+
             center = self.moveCamera()
 
             if not self.robot.isMoving and center:
                 if not movingY and not moveYArriver:
 
                     if self.camera.horizontalDegree > 90:
+
                         self.robot.moveForever(0, 30)
+
                     else:
+
                         self.robot.moveForever(0, -30)
+
                     movingY = True
+
 
                 if moveYArriver:
                     if not movingX and not moveXArriver:
@@ -520,6 +538,7 @@ class RobotVision:
                         movingX = True
 
             center = self.moveCamera()
+
 
             if movingY and not moveYArriver:
 
@@ -529,7 +548,7 @@ class RobotVision:
                     movingY = False
 
             if movingX and not moveXArriver:
-                # print self.camera.verticalDegree
+
 
                 if self.camera.verticalDegree <= minCameraAngleToStopApproaching:
                     self.robot.stopAllMotors()
@@ -542,8 +561,14 @@ class RobotVision:
                     movingX = False
                     lastAngle = self.camera.verticalDegree
 
+            #cv2.imshow("Image", self.image)
+            #if cv2.waitKey(1) & 0xFF == ord('q'):
+            #    break
+
+
             if moveYArriver and moveXArriver:
                 self.camera.moveCameraByAngle(0, 90)
+                self.camera.step = 0.5
                 print "!!! ARRIVER !!!"
                 return True
 
