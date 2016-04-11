@@ -225,7 +225,7 @@ def debugAlignBotToTarget():
     jsonToSend = {"botOrientation":180,
                           "angleToGo":180,
                           "sequence":True,
-                            "targetColor":"Green"}
+                            "targetColor":"Yellow"}
     socketIO.emit("alignPositionToTarget", jsonToSend)
 
 def debugSendBotToTreasure():
