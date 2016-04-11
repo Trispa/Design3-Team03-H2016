@@ -46,7 +46,7 @@ class PositionAdjuster:
         self.ascendArm()
         while not self.localVision.getCloserTo(False):
             pass
-        self.wheelManager.moveTo((30, 0))
+        self.wheelManager.moveTo((35, 0))
         self.rechargeMagnet()
         return True
 
@@ -66,10 +66,9 @@ class PositionAdjuster:
         time.sleep(2)
         self.deactivateMagnet()
         time.sleep(0.5)
-        self.ascendArm()
-        time.sleep(0.5)
         self.wheelManager.moveTo((-20,0))
-       
+        time.sleep(0.5)
+        self.ascendArm()
     def getBackToMapAfterGrabingBackgroundTreausre(self):
         self.wheelManager.moveTo((-40, 0))
 
@@ -88,7 +87,7 @@ class PositionAdjuster:
             pass
         time.sleep(0.5)
         self.activateMagnet()
-        time.sleep(0.5)
+        time.sleep(1)
         self.goForwardToStopApproaching()
         time.sleep(0.5)
         self.goBackwardToGrabTreasure()

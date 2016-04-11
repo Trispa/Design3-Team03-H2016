@@ -57,6 +57,9 @@ class RobotVision:
             if colors.getName() == color:
                 myColor = colors
 
+        if color == "YellowTreasure":
+            myColor = colorContainer.yellowTreasure
+
         lower = myColor.lower
         upper = myColor.higher
 
@@ -154,7 +157,7 @@ class RobotVision:
             y = y + height /2
             ih, iw, ic = self.image.shape
             # print x, y, iw, ih
-            squareW = 5
+            squareW = 8
             squareH = 20
 
             xob = (iw/2-5) - squareW/2 + 15
@@ -212,7 +215,7 @@ class RobotVision:
         return (distanceX, distanceY)
 
     def differenceParraleleLines(self):
-        ret,thresh1 = cv2.threshold(self.image,60,255,cv2.THRESH_BINARY)
+        ret,thresh1 = cv2.threshold(self.image,100,255,cv2.THRESH_BINARY)
         self.image = thresh1
 
         ih, iw, ic = self.image.shape
@@ -295,18 +298,11 @@ class RobotVision:
             if not cameraSet:
                 system("v4l2-ctl -c gain=0")
                 system("v4l2-ctl -c brightness=128")
-
-                system("v4l2-ctl -c exposure_auto=3")
                 system("v4l2-ctl -c exposure_auto=1")
-
-                system("v4l2-ctl -c white_balance_temperature_auto=1")
                 system("v4l2-ctl -c white_balance_temperature_auto=0")
-
-                system("v4l2-ctl -c exposure_absolute=166")
                 system("v4l2-ctl -c exposure_absolute=110")
-
-                system("v4l2-ctl -c white_balance_temperature=4000")
                 system("v4l2-ctl -c white_balance_temperature=504")
+                system("echo 'Camera set'")
                 cameraSet = True
 
             self.detectColor(colorRange)
@@ -369,12 +365,13 @@ class RobotVision:
                     lastAngle = self.camera.verticalDegree
 
             if moveYArriver and moveXArriver:
+                self.camera.moveCameraByAngle(0, 90)
                 print "!!! ARRIVER !!!"
                 return True
 
-#            cv2.imshow("Image", self.image)
+  #          cv2.imshow("Image", self.image)
  #           if cv2.waitKey(1) & 0xFF == ord('q'):
-  #              break
+#                break
 
 
 
@@ -403,18 +400,11 @@ class RobotVision:
             if not cameraSet:
                 system("v4l2-ctl -c gain=0")
                 system("v4l2-ctl -c brightness=128")
-
-                system("v4l2-ctl -c exposure_auto=3")
                 system("v4l2-ctl -c exposure_auto=1")
-
-                system("v4l2-ctl -c white_balance_temperature_auto=1")
                 system("v4l2-ctl -c white_balance_temperature_auto=0")
-                
-                system("v4l2-ctl -c exposure_absolute=166")
                 system("v4l2-ctl -c exposure_absolute=110")
-
-                system("v4l2-ctl -c white_balance_temperature=4000")
                 system("v4l2-ctl -c white_balance_temperature=504")
+                system("echo 'Camera set'")
                 cameraSet = True
 
             self.detectColorIsland(color)
@@ -462,6 +452,7 @@ class RobotVision:
                     moveXArriver = True
 
             if moveYArriver and moveXArriver:
+                self.camera.moveCameraByAngle(0, 90)
                 print "!!! ARRIVER !!!"
                 return True
 

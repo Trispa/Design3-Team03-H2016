@@ -10,10 +10,11 @@ from socketIO_client import SocketIO
 import time
 from Client.Robot.Movement.WheelManager import WheelManager
 from Logic.BotDispatcher import BotDispatcher
-
+import subprocess
 c = os.path.dirname(__file__)
 configPath = os.path.join(c, "..", "..", "Shared", "config.json")
 
+subprocess.call(['./cameraSettings.sh'])
 with open(configPath) as json_data_file:
     config = json.load(json_data_file)
 socketIO = SocketIO(config['url'], int(config['port']))
@@ -69,9 +70,9 @@ def alignToChargingStation(json):
     botDispatcher.serialPortCommunicatorIsReadByManchester = True
     readManchester()
     botDispatcher.serialPortCommunicatorIsReadByManchester = False
-    voltage = botDispatcher.botVoltage
-    while(voltage <= 3.0):
-        voltage = botDispatcher.botVoltage
+    voltage = spc.readConsensatorVoltage()
+    while(voltage <= 3.5):
+        voltage = spc.readConsensatorVoltage()
         print "Tension : ", voltage
         time.sleep(1)
     botDispatcher.getRobotBackOnMapAfterCharging()
@@ -82,7 +83,7 @@ def alignToChargingStation(json):
 def alignToTarget(json):
     botDispatcher.setRobotOrientation(json['botOrientation'], json['angleToGo'])
     botDispatcher.alignToTargetIslandTest(json['targetColor'])
-
+    socketIO.emit("sendEndSignal")
 
 def endRound():
     print("end round")
@@ -108,20 +109,14 @@ def get_ip_address(ifname):
         struct.pack('256s', ifname[:15])
     )[20:24])
 
-def getBotVoltage():
-    while(True):
-        if not botDispatcher.serialPortCommunicatorIsReadByManchester:
-            botDispatcher.botVoltage = spc.readConsensatorVoltage()
-        time.sleep(1)
-
 def sendBotVoltage():
     while(True):
-        socketIO.emit('sendVoltage', botDispatcher.botVoltage)
+        voltage = spc.getTensionCondensateur()
+        socketIO.emit('sendVoltage', voltage)
         print "send bot voltage"
         time.sleep(5)
 
 
-Thread(target=getBotVoltage).start()
 Thread(target=sendBotVoltage).start()
 
 

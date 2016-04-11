@@ -163,7 +163,6 @@ class Map:
         minY = 92
         maxY = 580
 
-
 #table 1 : (0,110), (960,590)
 
 #table 2 : (0,109), (960,597)
@@ -173,8 +172,6 @@ class Map:
 #table 5 : (0,125), (960,605)
 
 #table 6 : (0,92), (960,580)
-
-
 
         newFoundLimit = Square("limit", np.array([[[minX,minY + 5]],[[minX,maxY - 5]],[[maxX, maxY - 5]],[[maxX,minY + 5]]], dtype=np.int32))
 
