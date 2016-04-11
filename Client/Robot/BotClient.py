@@ -82,7 +82,7 @@ def alignToChargingStation(json):
 def alignToTarget(json):
     botDispatcher.setRobotOrientation(json['botOrientation'], json['angleToGo'])
     botDispatcher.alignToTargetIslandTest(json['targetColor'])
-
+    socketIO.emit("sendEndSignal")
 
 def endRound():
     print("end round")
