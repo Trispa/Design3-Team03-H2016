@@ -157,7 +157,7 @@ class RobotVision:
             y = y + height /2
             ih, iw, ic = self.image.shape
             # print x, y, iw, ih
-            squareW = 5
+            squareW = 8
             squareH = 20
 
             xob = (iw/2-5) - squareW/2 + 15
@@ -215,7 +215,7 @@ class RobotVision:
         return (distanceX, distanceY)
 
     def differenceParraleleLines(self):
-        ret,thresh1 = cv2.threshold(self.image,60,255,cv2.THRESH_BINARY)
+        ret,thresh1 = cv2.threshold(self.image,100,255,cv2.THRESH_BINARY)
         self.image = thresh1
 
         ih, iw, ic = self.image.shape
@@ -281,7 +281,7 @@ class RobotVision:
         colorContainer = ColorContainer()
 
         if isChargeTreasure:
-            minCameraAngleToStopApproaching = 9
+            minCameraAngleToStopApproaching = 8
             minCameraAngleToStartApproaching = 30
             colorRange = colorContainer.yellowTreasure
         else:
@@ -369,9 +369,9 @@ class RobotVision:
                 print "!!! ARRIVER !!!"
                 return True
 
-     #       cv2.imshow("Image", self.image)
-    #        if cv2.waitKey(1) & 0xFF == ord('q'):
-   #             break
+  #          cv2.imshow("Image", self.image)
+ #           if cv2.waitKey(1) & 0xFF == ord('q'):
+#                break
 
 
 

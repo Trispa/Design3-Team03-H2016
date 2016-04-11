@@ -46,7 +46,7 @@ class PositionAdjuster:
         self.ascendArm()
         while not self.localVision.getCloserTo(False):
             pass
-        self.wheelManager.moveTo((30, 0))
+        self.wheelManager.moveTo((35, 0))
         self.rechargeMagnet()
         return True
 
@@ -87,7 +87,7 @@ class PositionAdjuster:
             pass
         time.sleep(0.5)
         self.activateMagnet()
-        time.sleep(0.5)
+        time.sleep(1)
         self.goForwardToStopApproaching()
         time.sleep(0.5)
         self.goBackwardToGrabTreasure()

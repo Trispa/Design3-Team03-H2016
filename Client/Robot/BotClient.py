@@ -71,7 +71,7 @@ def alignToChargingStation(json):
     readManchester()
     botDispatcher.serialPortCommunicatorIsReadByManchester = False
     voltage = spc.readConsensatorVoltage()
-    while(voltage <= 3.0):
+    while(voltage <= 3.5):
         voltage = spc.readConsensatorVoltage()
         print "Tension : ", voltage
         time.sleep(1)
