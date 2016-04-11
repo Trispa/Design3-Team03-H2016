@@ -463,6 +463,89 @@ class RobotVision:
     #        if cv2.waitKey(1) & 0xFF == ord('q'):
      #           break
 
+    def getCloserToIslandTest(self, color):
+        findSomething = False
+        movingY = False
+        moveYArriver = False
+        movingX = False
+        moveXArriver = False
+        self.tresor = None
+        lastAngle = 180
+
+        minCameraAngleToStopApproaching = 20
+        minCameraAngleToStartApproaching = 30
+
+        self.camera.moveCameraByAngle(1, 70)
+        self.camera.moveCameraByAngle(0, minCameraAngleToStartApproaching)
+        cameraSet = False
+
+        while(self.video.isOpened()):
+            ret, self.image = self.video.read()
+            if not cameraSet:
+                system("v4l2-ctl -c gain=0")
+                system("v4l2-ctl -c brightness=128")
+                system("v4l2-ctl -c exposure_auto=1")
+                system("v4l2-ctl -c white_balance_temperature_auto=0")
+                system("v4l2-ctl -c exposure_absolute=160")
+                system("v4l2-ctl -c white_balance_temperature=504")
+                system("echo 'Camera set'")
+                cameraSet = True
+
+            self.detectColorIsland(color)
+            self.findContourIsland()
+
+            if not findSomething:
+                findSomething = self.swipeCamera()
+
+            if self.tresor == None:
+                findSomething = False
+                movingY = False
+                moveYArriver = False
+                movingX = False
+                moveXArriver = False
+            center = self.moveCamera()
+
+            if not self.robot.isMoving and center:
+                if not movingY and not moveYArriver:
+
+                    if self.camera.horizontalDegree > 90:
+                        self.robot.moveForever(0, 30)
+                    else:
+                        self.robot.moveForever(0, -30)
+                    movingY = True
+
+                if moveYArriver:
+                    if not movingX and not moveXArriver:
+                        self.robot.moveForever(30, 0)
+                        movingX = True
+
+            center = self.moveCamera()
+
+            if movingY and not moveYArriver:
+
+                if self.camera.horizontalDegree < 91 and self.camera.horizontalDegree > 89:
+                    self.robot.stopAllMotors()
+                    moveYArriver = True
+                    movingY = False
+
+            if movingX and not moveXArriver:
+                # print self.camera.verticalDegree
+
+                if self.camera.verticalDegree <= minCameraAngleToStopApproaching:
+                    self.robot.stopAllMotors()
+                    moveXArriver = True
+                elif self.camera.verticalDegree < (lastAngle - 1.8) and self.camera.verticalDegree >= 13:
+                    print "Ajustement en Y", self.camera.verticalDegree
+                    self.robot.stopAllMotors()
+                    # moveXArriver = True
+                    moveYArriver = False
+                    movingX = False
+                    lastAngle = self.camera.verticalDegree
+
+            if moveYArriver and moveXArriver:
+                self.camera.moveCameraByAngle(0, 90)
+                print "!!! ARRIVER !!!"
+                return True
 
 
 if __name__ == "__main__":
