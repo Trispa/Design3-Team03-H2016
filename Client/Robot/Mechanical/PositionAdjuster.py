@@ -61,12 +61,15 @@ class PositionAdjuster:
     def alignToIsland(self, color):
         while not self.localVision.getCloserToIsland(color):
             pass
+        time.sleep(0.5)
+        self.wheelManager.moveTo((10,0))
+        time.sleep(0.5)
         self.activateMagnet()
         self.lowerArm()
         time.sleep(2)
         self.deactivateMagnet()
         time.sleep(0.5)
-        self.wheelManager.moveTo((-20,0))
+        self.wheelManager.moveTo((-30,0))
         time.sleep(0.5)
         self.ascendArm()
     def getBackToMapAfterGrabingBackgroundTreausre(self):

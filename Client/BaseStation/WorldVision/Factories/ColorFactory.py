@@ -15,5 +15,7 @@ class ColorFactory():
             return YellowTreasureDetect(bgrColor, colorName)
         elif colorName == "Everything":
             return Everything(bgrColor, colorName)
+        elif colorName == "RedProximity":
+            return RedProximity(bgrColor, colorName)
         else:
             return GenericColor(bgrColor, colorName)
