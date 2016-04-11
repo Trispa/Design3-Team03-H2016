@@ -11,6 +11,7 @@ class ColorContainer():
     green = colorFactory.constructColor(np.uint8([[[0,255,0]]]), "Green")
     red = colorFactory.constructColor(np.uint8([[[150,179,255]]]), "Red")
     everything = colorFactory.constructColor(np.uint8([[[0,0,0]]]), "Everything")
+    redProximity = colorFactory.constructColor(np.uint8([[[150,179,255]]]), "RedProximity")
 
 
     islandColors.append(colorFactory.constructColor(np.uint8([[[0,255,0]]]), "Green"))

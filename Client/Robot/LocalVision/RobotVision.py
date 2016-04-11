@@ -60,6 +60,9 @@ class RobotVision:
         if color == "YellowTreasure":
             myColor = colorContainer.yellowTreasure
 
+        if color == "Red":
+            myColor = colorContainer.redProximity
+
         lower = myColor.lower
         upper = myColor.higher
 
@@ -99,12 +102,12 @@ class RobotVision:
 
             cntsMax = cnts[0]
             for c in cnts:
-                if cv2.contourArea(c) > cv2.contourArea(cntsMax):
+                x, y, w, h = cv2.boundingRect(c)
+                if cv2.contourArea(c) > cv2.contourArea(cntsMax) and w < 250 and h < 250:
                     cntsMax = c
 
             if cv2.contourArea(cntsMax) > 100 and cv2.contourArea(cntsMax) < 30000:
                 self.tresor = cntsMax
-                x, y, w, h = cv2.boundingRect(self.tresor)
                 dots.append((x, y, w, h))
 
                 cv2.rectangle(self.image, (x, y), (x + w, y + h), (0, 255, 0), 2)
@@ -144,7 +147,7 @@ class RobotVision:
 
         x,y,width,height = cv2.boundingRect(contour)
         point = (x, y - 5)
-        cv2.putText(self.image, "Position " + str(x) + " " + str(y) + " " + str(max(width, height)) + " pixel, " + str(cv2.contourArea(contour)) + " area", point, font, scale, (0, 0, 255), thickness, 8)
+        cv2.putText(self.image, "Position " + str(x) + " " + str(y) + " " + str(width) + " " + str(height) + " pixel, " + str(cv2.contourArea(contour)) + " area", point, font, scale, (0, 0, 255), thickness, 8)
 
 
     def moveCamera(self):
@@ -369,9 +372,9 @@ class RobotVision:
                 print "!!! ARRIVER !!!"
                 return True
 
-  #          cv2.imshow("Image", self.image)
- #           if cv2.waitKey(1) & 0xFF == ord('q'):
-#                break
+            cv2.imshow("Image", self.image)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
 
 
 
@@ -388,7 +391,7 @@ class RobotVision:
         colorContainer = ColorContainer()
 
 
-        minCameraAngleToStopApproaching = 7
+        minCameraAngleToStopApproaching = 5
         minCameraAngleToStartApproaching = 20
 
         self.camera.moveCameraByAngle(1, 70)
@@ -402,7 +405,7 @@ class RobotVision:
                 system("v4l2-ctl -c brightness=128")
                 system("v4l2-ctl -c exposure_auto=1")
                 system("v4l2-ctl -c white_balance_temperature_auto=0")
-                system("v4l2-ctl -c exposure_absolute=110")
+                system("v4l2-ctl -c exposure_absolute=160")
                 system("v4l2-ctl -c white_balance_temperature=504")
                 system("echo 'Camera set'")
                 cameraSet = True
@@ -456,9 +459,9 @@ class RobotVision:
                 print "!!! ARRIVER !!!"
                 return True
 
-#            cv2.imshow("Image", self.image)
- #           if cv2.waitKey(1) & 0xFF == ord('q'):
-  #              break
+            cv2.imshow("Image", self.image)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
 
 
 

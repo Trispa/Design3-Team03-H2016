@@ -107,6 +107,18 @@ class Red(Color):
         self.lower = np.array([150,lowerSaturation,lowerValue])
         self.higher = np.array([179,higherSaturation,higherValue])
 
+class RedProximity(Color):
+    def __init__(self, bgrColor, colorName):
+        Color.__init__(self, bgrColor, colorName)
+
+        lowerSaturation = 0
+        higherSaturation = 255
+        lowerValue = 38
+        higherValue = 255
+
+        self.lower = np.array([150, lowerSaturation, lowerValue])
+        self.higher = np.array([179, higherSaturation, higherValue])
+
     def isInHueRange(self, hue):
         if (hue >= self.lower[0] and hue <= self.higher[0]) or hue >= 0 and hue <= 8:
             return True
