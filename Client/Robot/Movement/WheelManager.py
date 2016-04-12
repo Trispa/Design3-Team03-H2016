@@ -40,6 +40,8 @@ class WheelManager:
         pointX = pointConverted[0]
         pointY = pointConverted[1]
 
+
+
         self.isMoving = True
         self.__resetMotors()
         xSpeed = self.MAX_SPEED
@@ -53,7 +55,7 @@ class WheelManager:
         timeToTravel = max(abs(pointX), abs(pointY)) / (max(xSpeed, ySpeed) * 100) + max(xSpeed, ySpeed)
         timeToTravel = timeToTravel * 1.03
         print("xSpeed : " + str(xSpeed) + " ySpeed : " + str(ySpeed) + " Time : " + str(timeToTravel))
-        print "Reel distance : ", xSpeed * timeToTravel
+        print "Reel d   istance : ", xSpeed * timeToTravel
 
         distanceCm = max(abs(pointConverted[0]), abs(pointConverted[1]))
 
@@ -74,7 +76,6 @@ class WheelManager:
     def moveForever(self, pointX, pointY):
 
         self.isMoving = True
-        self.__resetMotors()
         xSpeed = self.MAX_SPEED_VISION
         ySpeed = self.MAX_SPEED_VISION
 
@@ -86,13 +87,14 @@ class WheelManager:
 
 
         if pointX > 0:
-            self.spc.driveMoteurLine(self.X_AXIS, xSpeed, self.POSITIVE_SPEED, 100)
+            self.spc.driveMoteurLinePrecision(self.X_AXIS, xSpeed, self.POSITIVE_SPEED, 100)
         if pointX < 0:
-            self.spc.driveMoteurLine(self.X_AXIS, xSpeed, self.NEGATIVE_SPEED, 100)
+            self.spc.driveMoteurLinePrecision(self.X_AXIS, xSpeed, self.NEGATIVE_SPEED, 100)
         if pointY > 0:
-            self.spc.driveMoteurLine(self.Y_AXIS, ySpeed, self.POSITIVE_SPEED, 100)
+            self.spc.driveMoteurLinePrecision(self.Y_AXIS, ySpeed, self.POSITIVE_SPEED, 100)
         if pointY < 0:
-            self.spc.driveMoteurLine(self.Y_AXIS, ySpeed, self.NEGATIVE_SPEED, 100)
+            self.spc.driveMoteurLinePrecision(self.Y_AXIS, ySpeed, self.NEGATIVE_SPEED, 100)
+
 
         # self.debutDeLInterruption(timeToTravel)
 
@@ -102,7 +104,7 @@ class WheelManager:
         self.isMoving = True
         timeToSleep = 0.035 * abs(degree) + 0.168
         self.__resetMotors()
-	print "rotating", degree
+        print "rotating", degree
         if(degree <=0):
             self.spc.driveMoteurRotation(self.ROTATION_SPEED, self.NEGATIVE_SPEED, abs(degree))
         else:
@@ -116,14 +118,13 @@ class WheelManager:
 
     def setOrientation(self, currentRobotOrientation, angleToSet):
         print currentRobotOrientation, "<= robot", angleToSet, "<= setting"
-	if (angleToSet - currentRobotOrientation < 0 and angleToSet - currentRobotOrientation <= -180):
+        if (angleToSet - currentRobotOrientation < 0 and angleToSet - currentRobotOrientation <= -180):
             angleToSet += 360
-	    angleToRotate = angleToSet - currentRobotOrientation
-	    print "boba1"
+            angleToRotate = angleToSet - currentRobotOrientation
         elif (angleToSet - currentRobotOrientation < 0 and angleToSet - currentRobotOrientation > -180):
             angleToRotate = -(currentRobotOrientation - angleToSet)
             print "boba2"
-	elif (angleToSet - currentRobotOrientation < 180):
+        elif (angleToSet - currentRobotOrientation < 180):
             angleToRotate = angleToSet - currentRobotOrientation
         else:
             angleToRotate = angleToSet - (currentRobotOrientation+360)
@@ -141,7 +142,7 @@ class WheelManager:
         print angleToRotate
         point = (0,0)
         referentialConverter = ReferentialConverter(point, angleToRotate)
-	print "adjusting angle", -angleToRotate
+        print "adjusting angle", -angleToRotate
         self.rotate(-angleToRotate)
 
         pointAdjusted = referentialConverter.convertWorldToRobot(pointToMove)
@@ -151,7 +152,6 @@ class WheelManager:
 
     def __resetMotors(self):
         self.stopAllMotors()
-        time.sleep(0.2)
 
     def __interruptionStart(self, timeToWait):
         self.thread = Timer(timeToWait, self.__stopAllMotorsFromInterruption)
