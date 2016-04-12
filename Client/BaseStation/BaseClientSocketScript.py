@@ -45,7 +45,6 @@ def verifyIfMoving(path, nextSignal, angleToRotate):
                 pixelRangeToSendNextCoordinates += 5
                 print "not close enough " + str(stuckIndex)
                 time.sleep(1)
-        time.sleep(5)
         print "close enough"
 
         if(nodeBotIsGoingTo+1 == len(path)):
@@ -55,22 +54,22 @@ def verifyIfMoving(path, nextSignal, angleToRotate):
             positionToX = path[nodeBotIsGoingTo].positionX
             positionToY = path[nodeBotIsGoingTo].positionY
 
-            if ((positionFromX > positionToX + 2) or
-                (positionFromX < positionToX - 2) and
-                ((positionToY > positionToY + 2) or
-                (positionToY < positionToY - 2))):
-                print "would have sent bot to last node again"
-
-                jsonToSend = {"positionFROMx" : positionFromX,
-                              "positionFROMy" : positionFromY,
-                              "positionTOx" : positionToX,
-                              "positionTOy" : positionToY,
-                              "orientation":botInfo["robotOrientation"]}
-                socketIO.emit("sendNextCoordinates", jsonToSend)
-                time.sleep(5)
-            botInfo = dispatcher.getCurrentWorldInformation()
-            print("emitting" + nextSignal)
             if nextSignal == "alignPositionToTarget":
+                if ((positionFromX > positionToX + 2) or
+                    (positionFromX < positionToX - 2) and
+                    ((positionToY > positionToY + 2) or
+                    (positionToY < positionToY - 2))):
+                    print "send bot to last node again"
+
+                    jsonToSend = {"positionFROMx" : positionFromX,
+                                  "positionFROMy" : positionFromY,
+                                  "positionTOx" : positionToX,
+                                  "positionTOy" : positionToY,
+                                  "orientation":botInfo["robotOrientation"]}
+                    socketIO.emit("sendNextCoordinates", jsonToSend)
+                    time.sleep(5)
+                botInfo = dispatcher.getCurrentWorldInformation()
+                print("emitting" + nextSignal)
                 jsonToSend = {"botOrientation":botInfo["robotOrientation"],
                           "angleToGo":angleToRotate,
                           "sequence":True,

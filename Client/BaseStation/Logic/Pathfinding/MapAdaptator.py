@@ -24,6 +24,10 @@ class MapAdaptator:
                         centerX += 1
                     elif centerX-minCorner[0] < obstaclesList[compteur-1].positionX:
                         centerX += 2
+                for compteur in range(0, obstaclesList.__len__()):
+                    obstacleY = obstaclesList[compteur]
+                    if centerY == obstacleY.positionY:
+                        centerY += 1
                 obstaclesList.append(Obstacle((centerX - minCorner[0],centerY - minCorner[1])))
         return obstaclesList, mapSizeX, mapSizeY, minCorner
 
