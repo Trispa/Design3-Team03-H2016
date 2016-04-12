@@ -38,7 +38,7 @@ def myMain2():
     #frame = cv2.imread('Photo-Test/Frames/Picture 500.jpg')
     geometricalImage = WorldImage()
     #ret, frame = camera.read()
-    frame = cv2.imread('Photo-Test/Frames/Picture 500.jpg')
+    frame = cv2.imread('Photo-Test/Frames/Picture 503.jpg')
     frame = cv2.resize(frame, (960, 720))
     # copyF = copy.copy(frame)
     geometricalImage.buildMap(frame)
@@ -46,7 +46,7 @@ def myMain2():
     geometricalImage.defineTreasures([88, 30])
     #geometricalImage.findBestTresor()
     geometricalImage.addLabels(frame)
-    myTarget = ShapeTarget("cercle")
+    myTarget = ShapeTarget("pentagone")
     geometricalImage.getIslandPositioning(myTarget)
 
     geometricalImage.drawMapOnFrame(frame)
@@ -57,5 +57,5 @@ def myMain2():
         #     break
 
 if __name__ == '__main__':
-    myMain()
+    myMain2()
     #cProfile.run('myMain()')
