@@ -36,7 +36,7 @@ def startRound(json):
 
 def alignToTreasure(json):
     if(json['sequence']):
-        botDispatcher.setRobotOrientation(json['robotOrientation'], json["angleToGo"])
+        botDispatcher.setRobotOrientation(json['botOrientation'], json["angleToGo"])
     botDispatcher.alignToTreasure(Controller())
     if(botDispatcher.lastPositionGoneTo[0] - 100 == 0):
         botDispatcher.getRobotBackOnMapWhenOutOfBound()
@@ -51,7 +51,7 @@ def alignToChargingStation(json):
     readManchester()
     botDispatcher.serialPortCommunicatorIsReadByManchester = False
     voltage = spc.readConsensatorVoltage()
-    while(voltage <= 3.5):
+    while(voltage <= 3):
         voltage = spc.readConsensatorVoltage()
         print "Tension : ", voltage
         time.sleep(1)

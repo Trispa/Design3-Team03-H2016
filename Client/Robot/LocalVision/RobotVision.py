@@ -542,7 +542,7 @@ class RobotVision:
 
             if movingY and not moveYArriver:
 
-                if self.camera.horizontalDegree < 91 and self.camera.horizontalDegree > 89:
+                if self.camera.horizontalDegree < 90.5 and self.camera.horizontalDegree > 89.5:
                     self.robot.stopAllMotors()
                     moveYArriver = True
                     movingY = False
