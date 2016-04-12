@@ -17,7 +17,10 @@ class BotDispatcher():
         self.maestro = maestro
         self.cameraTower = CameraTower(self.maestro)
         self.treasureAngle = 0
+        self.botVoltage = 0
         self.spc = spc
+        self.serialPortCommunicatorIsReadByManchester = False
+        self.lastPositionGoneTo = (0,0)
 
     def followPath(self, coordinates):
         print(coordinates)
@@ -30,14 +33,18 @@ class BotDispatcher():
         orientation = int(coordinates["orientation"])
         referentialConverter = ReferentialConverter(botPosition,orientation)
         pointConverted = referentialConverter.convertWorldToRobot((int(coordinates["positionTOx"]), int(coordinates["positionTOy"])))
+        self.serialPortCommunicatorIsReadByManchester = True
         self.wheelManager.moveTo(pointConverted)
+        self.serialPortCommunicatorIsReadByManchester = False
 
     def alignToTreasure(self, maestro):
         self.__initializeVideoCapture()
         self.vision = RobotVision(self.wheelManager, self.cameraTower, self.video)
         self.maestro = maestro
         self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro, self.spc)
+        self.serialPortCommunicatorIsReadByManchester = True
         self.positionAdjuster.getCloserToTreasure()
+        self.serialPortCommunicatorIsReadByManchester = False
         self.video.release()
 
     def detectTreasure(self):
@@ -55,11 +62,20 @@ class BotDispatcher():
         self.__initializeVideoCapture()
         self.vision = RobotVision(self.wheelManager, self.cameraTower, self.video)
         self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro, self.spc)
+        self.serialPortCommunicatorIsReadByManchester = True
         self.positionAdjuster.getCloserToChargingStation()
+        self.serialPortCommunicatorIsReadByManchester = False
         self.video.release()
 
-    def getRobotBackOnMap(self):
+    def getRobotBackOnMapAfterCharging(self):
+        self.serialPortCommunicatorIsReadByManchester = True
         self.positionAdjuster.stopCharging()
+        self.serialPortCommunicatorIsReadByManchester = False
+
+    def getRobotBackOnMapWhenOutOfBound(self):
+        self.serialPortCommunicatorIsReadByManchester = True
+        self.positionAdjuster.getBackToMapAfterGrabingBackgroundTreausre()
+        self.serialPortCommunicatorIsReadByManchester = False
 
     def readManchester(self):
         serial = SerialPortCommunicator()
@@ -70,7 +86,18 @@ class BotDispatcher():
         self.__initializeVideoCapture()
         self.vision = RobotVision(self.wheelManager, self.cameraTower, self.video)
         self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro, self.spc)
+        self.serialPortCommunicatorIsReadByManchester = True
         self.positionAdjuster.getCloserToIsland()
+        self.serialPortCommunicatorIsReadByManchester = False
+        self.video.release()
+
+    def alignToTargetIslandTest(self, color):
+        self.__initializeVideoCapture()
+        self.vision = RobotVision(self.wheelManager, self.cameraTower, self.video)
+        self.positionAdjuster = PositionAdjuster(self.wheelManager, self.vision, self.maestro, self.spc)
+        self.serialPortCommunicatorIsReadByManchester = True
+        self.positionAdjuster.alignToIsland(color)
+        self.serialPortCommunicatorIsReadByManchester = False
         self.video.release()
 
     def __initializeVideoCapture(self):

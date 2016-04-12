@@ -43,6 +43,10 @@ io.on('connection', function (client) {
         io.emit('sendInfo', data);
     });
 
+    client.on('sendVoltage', function(voltage){
+        io.emit('sendVoltage', voltage);
+    });
+
     client.on('startSignal', function(){
         io.emit('startSignal');
     });
@@ -101,7 +105,7 @@ io.on('connection', function (client) {
         io.emit('alignPositionToTreasure', json);
     });
     client.on('alignPositionToTarget', function (json){
-        console.log('align position to target ' + json['angleToGo'])
+        console.log('align position to target ' + json['angleToGo']);
         io.emit('alignPositionToTarget', json);
     });
     client.on('detectTreasure', function(jsonAngles){

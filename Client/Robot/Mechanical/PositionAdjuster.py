@@ -44,25 +44,40 @@ class PositionAdjuster:
 
     def getCloserToChargingStation(self):
         self.ascendArm()
-        while not self.localVision.getCloserTo(False):
+        while not self.localVision.getCloserToIslandTest("Red", 20):
             pass
-        self.wheelManager.moveTo((30, 0))
+        self.wheelManager.moveTo((35, 0))
         self.rechargeMagnet()
         return True
 
     def getCloserToIsland(self):
-        self.wheelManager.moveTo((20, 0))
-        self.wheelManager.moveTo((0,20))
+        self.wheelManager.moveTo((45, 0))
+        self.wheelManager.moveTo((0,50))
         self.activateMagnet()
         self.lowerArm()
         time.sleep(2)
         self.deactivateMagnet()
-       
 
+    def alignToIsland(self, color):
+        while not self.localVision.getCloserToIsland(color):
+            pass
+        time.sleep(0.5)
+        self.wheelManager.moveTo((10,0))
+        time.sleep(0.5)
+        self.activateMagnet()
+        self.lowerArm()
+        time.sleep(2)
+        self.deactivateMagnet()
+        time.sleep(0.5)
+        self.wheelManager.moveTo((-30,0))
+        time.sleep(0.5)
+        self.ascendArm()
+    def getBackToMapAfterGrabingBackgroundTreausre(self):
+        self.wheelManager.moveTo((-40, 0))
 
     def stopCharging(self):
         self.deactivateMagnet()
-        time.sleep(0.5)
+
         self.wheelManager.moveTo((-20, 0))
         self.wheelManager.moveTo((0, -30))
         return True
@@ -75,7 +90,7 @@ class PositionAdjuster:
             pass
         time.sleep(0.5)
         self.activateMagnet()
-        time.sleep(0.5)
+        time.sleep(1)
         self.goForwardToStopApproaching()
         time.sleep(0.5)
         self.goBackwardToGrabTreasure()

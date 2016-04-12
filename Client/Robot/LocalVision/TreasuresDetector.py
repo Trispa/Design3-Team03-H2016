@@ -54,7 +54,7 @@ class TreasuresDetector:
         if abs(self.followedTreasure[0] - (self.image.shape[1]/2)) <= self.ACCEPTABLE_PIXEL_DIFFERENCE:
             alreadyAdded = False
             for angle in self.treasuresAngle:
-                if self.camera.horizontalDegree - angle < 2:
+                if self.camera.horizontalDegree - angle < 3:
                     averageAngle = (angle + self.camera.horizontalDegree) / 2
                     self.treasuresAngle.remove(angle)
                     self.treasuresAngle.append(averageAngle)
@@ -83,12 +83,13 @@ class TreasuresDetector:
             self.centered = False
             ret, self.image = self.video.read()
             if not cameraSet:
-                system("v4l2-ctl -c gain=50")
-                system("v4l2-ctl -c exposure_auto=1")
-                system("v4l2-ctl -c exposure_absolute=150")
-                system("v4l2-ctl -c white_balance_temperature_auto=0")
-                system("v4l2-ctl -c white_balance_temperature=0")
+                system("v4l2-ctl -c gain=0")
                 system("v4l2-ctl -c brightness=128")
+                system("v4l2-ctl -c exposure_auto=1")
+                system("v4l2-ctl -c white_balance_temperature_auto=0")
+                system("v4l2-ctl -c exposure_absolute=160")
+                system("v4l2-ctl -c white_balance_temperature=504")
+                system("echo 'Camera set'")
                 cameraSet = True
 
             self.xCoordinateToBeHigher = self.image.shape[1] / 2
@@ -105,9 +106,11 @@ class TreasuresDetector:
                 self.detectAndShowImage()
                 self.camera.moveCameraRight()
                 self.centered = self.isCenteredWithTreasure()
-                #cv2.imshow("Image", self.image)
-               # if cv2.waitKey(1) & 0xFF == ord('q'):
-                #    break
+
+#                cv2.imshow("Image", self.image)
+ #               if cv2.waitKey(1) & 0xFF == ord('q'):
+  #                  break
+
 
         print("Liste des angles : ", self.treasuresAngle)
         return self.treasuresAngle

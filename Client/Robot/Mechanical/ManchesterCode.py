@@ -57,6 +57,8 @@ class ManchesterCode():
 
 
     def getLetterFromBits(self, bits, encoding='utf-8', errors='surrogatepass'):
+        if(bits == ''):
+            return -1
         n = int(bits, 2)
         return self.convertIntegerToBytes(n).decode(encoding, errors)
 

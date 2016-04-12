@@ -14,8 +14,8 @@ class DetectTreasureState():
         mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
         convertedPoint = mapCoordinatesAdjuster.convertPoint(map.robot.center)
         sequencer.setState(SendingBotToTreasureState())
-        return  pathfinder.findPath(convertedPoint, (850,200)), "detectTreasure", 180
-
+        safeSpot = pathfinder.findGoodPoint((800,250))
+        return  pathfinder.findPath(convertedPoint,safeSpot), "rotateToDetectTreasure", 180
 
 class SendingBotToTreasureState():
     def handle(self, sequencer, map, pathfinder):
