@@ -125,8 +125,8 @@ class Map:
                 angle = angle + 180
             if positionToGo[0] < xCenterOfEdge and positionToGo[1] > yCenterOfEdge:
                 angle = 360 - angle
-
-            myNewPath = myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint(positionToGo))
+            closePoint = myPathFinder.findClosePoint(myMapCoorDinateAjuster.convertPoint(positionToGo))
+            myNewPath = myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), closePoint)
 
             if myNewPath != False:
                 if myNewPath.totalDistance < myPath.totalDistance:
@@ -160,18 +160,9 @@ class Map:
         cornerList = []
         minX = 0
         maxX = 960
-        minY = 105
-        maxY = 587
 
-#table 1 : (0,110), (960,590)
-
-#table 2 : (0,109), (960,597)
-
-#table 3 : (0,105), (960,587)
-
-#table 5 : (0,125), (960,605)
-
-#table 6 : (0,92), (960,580)
+        minY = 92
+        maxY = 580
 
         newFoundLimit = Square("limit", np.array([[[minX,minY + 5]],[[minX,maxY - 5]],[[maxX, maxY - 5]],[[maxX,minY + 5]]], dtype=np.int32))
 
