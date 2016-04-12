@@ -86,7 +86,7 @@ class PositionAdjuster:
         print "debut approche tresors"
         self.lowerArm()
         time.sleep(0.5)
-        while not self.localVision.getCloserToIslandTest("YellowTreasure", 8):
+        while not self.localVision.getCloserTo(True):
             pass
         time.sleep(0.5)
         self.activateMagnet()

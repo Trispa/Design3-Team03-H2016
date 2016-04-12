@@ -365,7 +365,7 @@ class RobotVision:
                     # moveXArriver = True
                     moveYArriver = False
                     movingX = False
-                    lastAngle = self.camera.vmoveCameraerticalDegree
+                    lastAngle = self.camera.verticalDegree
 
             if moveYArriver and moveXArriver:
                 self.camera.moveCameraByAngle(0, 90)
