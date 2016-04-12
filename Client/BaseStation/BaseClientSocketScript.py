@@ -96,25 +96,6 @@ def sendNextCoordinates():
     if(path != None and nextSignal != None):
         verifyIfMoving(path, nextSignal, angleToRotate)
 
-def sendAlignPositionToChargingStationSignal(bob):
-    botInfo = dispatcher.getCurrentWorldInformation()
-    jsonToSend = {"robotOrientation":botInfo['robotOrientation'],
-                  "sequence":True}
-    socketIO.emit('alignPositionToChargingStation', jsonToSend)
-
-def sendAlignPositionToTreasureSignal():
-    botInfo = dispatcher.getCurrentWorldInformation()
-    jsonToSend = {"robotOrientation":botInfo['robotOrientation'],
-                  "sequence":True}
-    socketIO.emit('alignPositionToTreasure', jsonToSend)
-
-def sendDetectTreasureSignal():
-    botInfo = dispatcher.getCurrentWorldInformation()
-
-    jsonToSend = {"botOrientation":botInfo['robotOrientation'],
-                          "angleToGo":180,
-                          "sequence":True}
-    socketIO.emit('detectTreasure', jsonToSend)
 
 def startRound():
     botPosition, botOrientation = dispatcher.initialiseWorldData()
@@ -276,9 +257,6 @@ socketIO.on('debugSendBotToTarget', debugSendBotToTarget)
 socketIO.on('debugAlignBotToTarget', debugAlignBotToTarget)
 
 socketIO.on('initializeWorld', initializeWorld)
-socketIO.on('rotateDoneToTreasure', sendAlignPositionToTreasureSignal)
-socketIO.on('rotateDoneToChargingStation', sendAlignPositionToChargingStationSignal)
-socketIO.on('rotateDoneToDetectTreasure', sendDetectTreasureSignal)
 #cProfile.run('socketIO.wait()')
 socketIO.wait()
 
