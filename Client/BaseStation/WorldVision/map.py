@@ -160,8 +160,8 @@ class Map:
         cornerList = []
         minX = 0
         maxX = 960
-        minY = 92
-        maxY = 580
+        minY = 105
+        maxY = 587
 
 #table 1 : (0,110), (960,590)
 
