@@ -4,7 +4,7 @@ class ColorFactory():
 
     def constructColor(self,bgrColor, colorName):
         if colorName== "Red":
-            return Red(bgrColor, colorName)
+            return RedProximity(bgrColor, colorName)
         elif colorName=="Black":
             return Black(bgrColor, colorName)
         elif colorName == "Purple":
