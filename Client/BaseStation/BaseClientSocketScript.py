@@ -24,7 +24,7 @@ socketIO = SocketIO(config['url'], int(config['port']))
 def verifyIfMoving(path, nextSignal, angleToRotate):
     print("verify if moving")
     for nodeBotIsGoingTo in range(0, len(path)):
-        pixelRangeToSendNextCoordinates = 10
+        pixelRangeToSendNextCoordinates = 1
         xPositionOfNodeThatBotIsGoingTo = path[nodeBotIsGoingTo].positionX
         yPositionOfNodeThatBotIsGoingTo = path[nodeBotIsGoingTo].positionY
 
@@ -33,17 +33,18 @@ def verifyIfMoving(path, nextSignal, angleToRotate):
         botPositionX = botInfo["robotPosition"][0]
         botPositionY = botInfo["robotPosition"][1]
         stuckIndex = 0
-        while ((botPositionX > xPositionOfNodeThatBotIsGoingTo + pixelRangeToSendNextCoordinates or
-            botPositionX < xPositionOfNodeThatBotIsGoingTo - pixelRangeToSendNextCoordinates) and
-               (botPositionY > yPositionOfNodeThatBotIsGoingTo + pixelRangeToSendNextCoordinates or
-            botPositionY < yPositionOfNodeThatBotIsGoingTo - pixelRangeToSendNextCoordinates)):
+        while not ((botPositionX < xPositionOfNodeThatBotIsGoingTo + pixelRangeToSendNextCoordinates and
+            botPositionX > xPositionOfNodeThatBotIsGoingTo - pixelRangeToSendNextCoordinates) and
+               (botPositionY < yPositionOfNodeThatBotIsGoingTo + pixelRangeToSendNextCoordinates and
+            botPositionY > yPositionOfNodeThatBotIsGoingTo - pixelRangeToSendNextCoordinates)):
             botInfo = dispatcher.getCurrentWorldInformation()
             botPositionX = botInfo["robotPosition"][0]
             botPositionY = botInfo["robotPosition"][1]
             stuckIndex += 1
             if stuckIndex > 4:
                 pixelRangeToSendNextCoordinates += 5
-            print "not close enough " + str(stuckIndex)
+                print "not close enough " + str(stuckIndex)
+                time.sleep(1)
         time.sleep(5)
         print "close enough"
 
@@ -65,8 +66,8 @@ def verifyIfMoving(path, nextSignal, angleToRotate):
                               "positionTOx" : positionToX,
                               "positionTOy" : positionToY,
                               "orientation":botInfo["robotOrientation"]}
-                #socketIO.emit("sendNextCoordinates", jsonToSend)
-                #time.sleep(5)
+                socketIO.emit("sendNextCoordinates", jsonToSend)
+                time.sleep(5)
             botInfo = dispatcher.getCurrentWorldInformation()
             print("emitting" + nextSignal)
             if nextSignal == "alignPositionToTarget":

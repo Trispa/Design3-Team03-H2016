@@ -44,7 +44,7 @@ class Graph:
                         if pointToBeReturned[0] == 0 and pointToBeReturned[1] == 0:
                             centerNode = self.findGoodSafeNodeToGo((pointX,pointY))
                             if centerNode.positionX != 0 and centerNode.positionY != 1:
-                                pointToBeReturned = (pointX, pointY)
+                                pointToBeReturned = (centerNode.positionX, centerNode.positionY)
                 buffer += 5
         return pointToBeReturned
 
