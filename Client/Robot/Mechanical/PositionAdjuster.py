@@ -61,16 +61,17 @@ class PositionAdjuster:
     def alignToIsland(self, color):
         while not self.localVision.getCloserToIsland(color):
             pass
-        time.sleep(0.5)
+        time.sleep(0.1)
         self.wheelManager.moveTo((10,0))
-        time.sleep(0.5)
+        time.sleep(0.1)
         self.activateMagnet()
+        time.sleep(0.1)
         self.lowerArm()
         time.sleep(2)
         self.deactivateMagnet()
-        time.sleep(0.5)
+        time.sleep(0.1)
         self.wheelManager.moveTo((-30,0))
-        time.sleep(0.5)
+        time.sleep(0.1)
         self.ascendArm()
     def getBackToMapAfterGrabingBackgroundTreausre(self):
         self.wheelManager.moveTo((-40, 0))
@@ -86,15 +87,15 @@ class PositionAdjuster:
         print "debut approche tresors"
         self.lowerArm()
         time.sleep(0.5)
-        while not self.localVision.getCloserTo(True):
+        while not self.localVision.getCloserToIslandTest("YellowTreasure", 8):
             pass
-        time.sleep(0.5)
+        time.sleep(0.1)
         self.activateMagnet()
-        time.sleep(1)
+        time.sleep(0.1)
         self.goForwardToStopApproaching()
-        time.sleep(0.5)
+        time.sleep(0.1)
         self.goBackwardToGrabTreasure()
-        time.sleep(0.5)
+        time.sleep(0.1)
         self.ascendArm()
         time.sleep(2)
         self.deactivateMagnet()
