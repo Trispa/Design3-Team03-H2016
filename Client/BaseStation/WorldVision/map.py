@@ -137,11 +137,12 @@ class Map:
                     orientation = angle
 
         if myBestPosition == (0, 0):
+            print "aucun angle parallele"
             hypothenuse = 100
             xCenterOfMass, yCenterOfMass = targetShape.findCenterOfMass()
             for angle in range (0, 90, 10):
-                yValue = hypothenuse * math.cos(math.radians(angle))
-                xValue = hypothenuse * math.sin(math.radians(angle))
+                xValue = hypothenuse * math.cos(math.radians(angle))
+                yValue = hypothenuse * math.sin(math.radians(angle))
                 positionToGo = (xCenterOfMass - xValue, yCenterOfMass - yValue)
                 myNewPath = myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint(positionToGo))
                 if not isinstance(myNewPath, bool):

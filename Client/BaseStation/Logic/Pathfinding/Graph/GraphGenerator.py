@@ -121,8 +121,8 @@ class GraphGenerator:
 
 
     def __defaultStart(self, firstObstacle):
-        safeZoneCornerTopLeft = (0, 0 + (self.SAFE_MARGIN -20))
-        safeZoneCornerBotLeft = (0, self.MAP_SIZE_Y - (self.SAFE_MARGIN-20))
+        safeZoneCornerTopLeft = (0 + (self.SAFE_MARGIN-20), 0 + (self.SAFE_MARGIN -20))
+        safeZoneCornerBotLeft = (0 + (self.SAFE_MARGIN-20), self.MAP_SIZE_Y - (self.SAFE_MARGIN-20))
         safeZoneCornerTopRight = (firstObstacle.positionX - self.SAFE_MARGIN, safeZoneCornerTopLeft[1])
         startingNode = self.graph.generateSafeZone(safeZoneCornerBotLeft, safeZoneCornerTopLeft, safeZoneCornerTopRight)
         firstObstacle.setStartingNode(startingNode)
