@@ -183,7 +183,8 @@ def debugSendBotToChargingStation():
 def debugAlignBotToChargingStation():
     print "align bot to charging station debug launching"
     botInfo = dispatcher.getCurrentWorldInformation()
-    jsonToSend = {"robotOrientation":botInfo['robotOrientation'],
+    jsonToSend = {"botOrientation":botInfo['robotOrientation'],
+                  "angleToGo":270,
                   "sequence":False}
     socketIO.emit('alignPositionToChargingStation', jsonToSend)
 

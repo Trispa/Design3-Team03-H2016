@@ -25,8 +25,8 @@ class EndNodeGenerator:
 
 
     def __noCollisionOnTheRightSide(self, counter, currentObstacle):
-        safeZoneCornerTopLeft = (currentObstacle.positionX + self.SAFE_MARGIN, 0)
-        safeZoneCornerBotLeft = (currentObstacle.positionX + self.SAFE_MARGIN, self.MAP_SIZE_Y)
+        safeZoneCornerTopLeft = (currentObstacle.positionX + self.SAFE_MARGIN, 0 + (self.SAFE_MARGIN - 20))
+        safeZoneCornerBotLeft = (currentObstacle.positionX + self.SAFE_MARGIN, self.MAP_SIZE_Y - (self.SAFE_MARGIN - 20))
         if (counter == self.obstaclesList.__len__() - 1):
             endNode = self.__noCollision_obstacleIsTheLastOne(safeZoneCornerBotLeft, safeZoneCornerTopLeft)
         else:
@@ -35,7 +35,7 @@ class EndNodeGenerator:
         return endNode
 
     def __noCollision_ObstacleIsNotTheLastOne(self, compteur, safeZoneCornerBotLeft, safeZoneCornerTopLeft):
-        safeZoneCornerTopRight = (self.obstaclesList[compteur + 1].positionX - self.SAFE_MARGIN, 0)
+        safeZoneCornerTopRight = (self.obstaclesList[compteur + 1].positionX - self.SAFE_MARGIN, 0 + (self.SAFE_MARGIN - 20))
         safeZone = SafeZone(safeZoneCornerTopLeft, safeZoneCornerTopRight, safeZoneCornerBotLeft)
         endNode = safeZone.getCenterNodeOfSafeZone()
         self.graph.safeZonesList.append(safeZone)
@@ -43,7 +43,7 @@ class EndNodeGenerator:
         return endNode
 
     def __noCollision_obstacleIsTheLastOne(self, safeZoneCornerBotLeft, safeZoneCornerTopLeft):
-        safeZoneCornerTopRight = (self.MAP_SIZE_X, 0)
+        safeZoneCornerTopRight = (self.MAP_SIZE_X, 0 + (self.SAFE_MARGIN - 20))
         safeZone = SafeZone(safeZoneCornerTopLeft, safeZoneCornerTopRight, safeZoneCornerBotLeft)
         endNode = safeZone.getCenterNodeOfSafeZone()
         self.graph.safeZonesList.append(safeZone)
