@@ -163,7 +163,7 @@ class RobotVision:
             squareW = 8
             squareH = 20
 
-            xob = (iw/2-5) - squareW/2 + 15
+            xob = (iw/2-5) - squareW/2
             yob = ih/2 - squareH/2
             # print xob, yob
             # print xob + square, yob +square
@@ -464,7 +464,7 @@ class RobotVision:
 
             #cv2.imshow("Image", self.image)
             #if cv2.waitKey(1) & 0xFF == ord('q'):
-            #    break
+                #break
 
 
 
@@ -563,7 +563,7 @@ class RobotVision:
 
             #cv2.imshow("Image", self.image)
             #if cv2.waitKey(1) & 0xFF == ord('q'):
-            #    break
+                #break
 
 
             if moveYArriver and moveXArriver:

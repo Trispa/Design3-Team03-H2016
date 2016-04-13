@@ -71,6 +71,7 @@ class TreasuresDetector:
     def buildTresorsAngleList(self):
 
         self.center = True
+        self.treasuresAngle = []
         self.camera.moveCameraByAngle(1, self.START_CAMERA_HORIZONTAL_ANGLE)
         self.camera.moveCameraByAngle(0, self.START_CAMERA_VERTICAL_ANGLE)
         self.followedTreasure = None
