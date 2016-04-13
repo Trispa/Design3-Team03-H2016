@@ -57,7 +57,7 @@ class GraphGenerator:
 
             resultTop, collisionInnerTop = self.collisionDetector.hasUpperInnerCollision(currentObstacle)
             resultBot, collisionInnerBot = self.collisionDetector.hasLowerInnerCollision(currentObstacle)
-            if not(self.collisionDetector.hasEndInnerCollision(currentObstacle) and resultTop and resultBot and collisionInnerBot[-1].positionY - self.SAFE_MARGIN <= collisionInnerTop[-1].positionY + self.SAFE_MARGIN):
+            if not(self.collisionDetector.hasEndInnerCollision(currentObstacle) and (resultTop and collisionInnerTop[-1].positionY > currentObstacle.positionY) and (resultBot and collisionInnerBot[-1].positionY > currentObstacle.positionY)):
                 endNode = self.endNodeGenerator.generateEndNode(currentObstacle, currentOstacleTopRightCorner, currentOstacleBottomRightCorner,
                                                             collisionBottomRightCorner, collisionUpperRightCorner, compteur)
             else:

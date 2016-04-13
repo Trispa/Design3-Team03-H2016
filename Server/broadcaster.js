@@ -117,9 +117,11 @@ io.on('connection', function (client) {
         io.emit('setTreasures', data);
     });
     client.on('rotateToChargingStation', function(angles){
+        console.log("rotate to charging station")
         io.emit('rotateToChargingStation', angles);
     });
     client.on('rotateDoneToChargingStation', function(isInSequence){
+        console.log("rotate done to charging station")
         io.emit('rotateDoneToChargingStation', isInSequence);
     });
     client.on('rotateToTreasure', function(angles){
