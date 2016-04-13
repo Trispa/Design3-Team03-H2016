@@ -56,7 +56,7 @@ class Graph:
             currentZone = self.safeZonesList[compteur]
             if point[0] >= currentZone.cornerTopLeft[0] and point[0] <= currentZone.cornerBottomRight[0]:
                 if point[1] >= currentZone.cornerTopLeft[1] and point[1] <= currentZone.cornerBottomRight[1]:
-                    pointToBeReturned = (currentZone.centerNode.positionX, currentZone.centerNode.positionY)
+                    pointToBeReturned = point
         if pointToBeReturned == fakePoint:
             buffer = 5
             while pointToBeReturned[0] == 0 and pointToBeReturned[1] == 0 and buffer <= 15:

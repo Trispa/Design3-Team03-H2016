@@ -97,18 +97,20 @@ class TreasuresDetector:
                 ret, self.image = self.video.read()
                 self.detectAndShowImage()
                 self.camera.moveCameraRight()
-   #             cv2.imshow("Image", self.image)
-    #            if cv2.waitKey(1) & 0xFF == ord('q'):
-     #               break
+                #cv2.imshow("Image", self.image)
+                #if cv2.waitKey(1) & 0xFF == ord('q'):
+                    #break
 
             while not self.centered and self.camera.horizontalDegree < 173:
                 ret, self.image = self.video.read()
                 self.detectAndShowImage()
                 self.camera.moveCameraRight()
                 self.centered = self.isCenteredWithTreasure()
-#                cv2.imshow("Image", self.image)
- #               if cv2.waitKey(1) & 0xFF == ord('q'):
-  #                  break
+
+                #cv2.imshow("Image", self.image)
+                #if cv2.waitKey(1) & 0xFF == ord('q'):
+                    #break
+
 
         print("Liste des angles : ", self.treasuresAngle)
         return self.treasuresAngle

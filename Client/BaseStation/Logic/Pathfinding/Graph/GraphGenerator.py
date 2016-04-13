@@ -6,7 +6,7 @@ from Client.BaseStation.Logic.Pathfinding.Graph.TopPathGenerator import TopPathG
 from Client.BaseStation.Logic.Pathfinding.Graph.Graph import Graph
 
 class GraphGenerator:
-    SAFE_MARGIN = 90
+    SAFE_MARGIN = 85
 
 
     def __init__(self, obstaclesList, mapSizeX, mapSizeY):
@@ -121,8 +121,8 @@ class GraphGenerator:
 
 
     def __defaultStart(self, firstObstacle):
-        safeZoneCornerTopLeft = (0, 0)
-        safeZoneCornerBotLeft = (0, self.MAP_SIZE_Y)
+        safeZoneCornerTopLeft = (0, 0 + (self.SAFE_MARGIN -20))
+        safeZoneCornerBotLeft = (0, self.MAP_SIZE_Y - (self.SAFE_MARGIN-20))
         safeZoneCornerTopRight = (firstObstacle.positionX - self.SAFE_MARGIN, safeZoneCornerTopLeft[1])
         startingNode = self.graph.generateSafeZone(safeZoneCornerBotLeft, safeZoneCornerTopLeft, safeZoneCornerTopRight)
         firstObstacle.setStartingNode(startingNode)

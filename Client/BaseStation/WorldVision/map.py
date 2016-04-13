@@ -186,9 +186,8 @@ class Map:
                         myPath = myNewPath
                         break
 
-
         print "MEILLEUR ",myBestPosition, ", Orientation :", orientation
-        return myBestPosition, orientation
+        return myPath, orientation
 
 
 
@@ -196,9 +195,18 @@ class Map:
         cornerList = []
         minX = 0
         maxX = 960
+        minY = 105
+        maxY = 587
 
-        minY = 92
-        maxY = 580
+#table 1 : (0,110), (960,590)
+
+#table 2 : (0,109), (960,597)
+
+#table 3 : (0,105), (960,587)
+
+#table 5 : (0,125), (960,605)
+
+#table 6 : (0,92), (960,580)
 
         newFoundLimit = Square("limit", np.array([[[minX,minY + 5]],[[minX,maxY - 5]],[[maxX, maxY - 5]],[[maxX,minY + 5]]], dtype=np.int32))
 
@@ -222,15 +230,13 @@ class Map:
         for cameraAngle in relativeAngles:
 
             lowerWall = True
-            angleError = abs(180 - self.robot.orientation)
-            angleError = 0
             if cameraAngle < rightAngle:
-                xDistanceOfTreasureFromCamera = math.tan(math.radians(cameraAngle - angleError))*cameraDistanceFromLowerWall
+                xDistanceOfTreasureFromCamera = math.tan(math.radians(cameraAngle))*cameraDistanceFromLowerWall
                 treasurePosition = (cameraDistanceFromBackgroundWall - xDistanceOfTreasureFromCamera, self.limit.getMaxCorner()[1])
             else:
                 lowerWall = False
                 cameraAngle = 180 - cameraAngle
-                xDistanceOfTreasureFromCamera = math.tan(math.radians(cameraAngle - angleError))*cameraDistanceFromUpperWall
+                xDistanceOfTreasureFromCamera = math.tan(math.radians(cameraAngle))*cameraDistanceFromUpperWall
                 treasurePosition = (cameraDistanceFromBackgroundWall - xDistanceOfTreasureFromCamera, self.limit.getMinCorner()[1])
 
             treasureDistanceFromBackground = cameraDistanceFromBackgroundWall - xDistanceOfTreasureFromCamera
