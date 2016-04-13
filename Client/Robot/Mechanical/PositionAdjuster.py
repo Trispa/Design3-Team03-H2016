@@ -43,16 +43,22 @@ class PositionAdjuster:
         spc.readConsensatorVoltage()
 
     def getCloserToChargingStation(self):
+        time.sleep(0.1)
         self.ascendArm()
+        time.sleep(0.1)
         while not self.localVision.getCloserToIslandTest("Red", 20):
             pass
-        self.wheelManager.moveTo((35, 0))
+        time.sleep(0.1)
+        self.wheelManager.moveTo((32, 0))
+        time.sleep(0.1)
         self.rechargeMagnet()
+        time.sleep(0.1)
         return True
 
     def getCloserToIsland(self):
         self.wheelManager.moveTo((45, 0))
         self.wheelManager.moveTo((0,50))
+        time.sleep(0.1)
         self.activateMagnet()
         self.lowerArm()
         time.sleep(2)
@@ -61,43 +67,49 @@ class PositionAdjuster:
     def alignToIsland(self, color):
         while not self.localVision.getCloserToIsland(color):
             pass
-        time.sleep(0.5)
+        time.sleep(0.1)
         self.wheelManager.moveTo((10,0))
-        time.sleep(0.5)
+        time.sleep(0.1)
         self.activateMagnet()
+        time.sleep(0.1)
         self.lowerArm()
         time.sleep(2)
         self.deactivateMagnet()
-        time.sleep(0.5)
+        time.sleep(0.1)
         self.wheelManager.moveTo((-30,0))
-        time.sleep(0.5)
+        time.sleep(0.1)
         self.ascendArm()
+        time.sleep(0.1)
+
     def getBackToMapAfterGrabingBackgroundTreausre(self):
         self.wheelManager.moveTo((-40, 0))
+        time.sleep(0.1)
 
     def stopCharging(self):
         self.deactivateMagnet()
-
+        time.sleep(0.1)
         self.wheelManager.moveTo((-20, 0))
         self.wheelManager.moveTo((0, -30))
         return True
 
     def getCloserToTreasure(self):
         print "debut approche tresors"
+        time.sleep(0.1)
         self.lowerArm()
         time.sleep(0.5)
-        while not self.localVision.getCloserTo(True):
+        while not self.localVision.getCloserToIslandTest("YellowTreasure", 8):
             pass
-        time.sleep(0.5)
-        self.activateMagnet()
-        time.sleep(1)
+        time.sleep(0.1)
         self.goForwardToStopApproaching()
-        time.sleep(0.5)
+        time.sleep(0.1)
+        self.activateMagnet()
+        time.sleep(0.1)
         self.goBackwardToGrabTreasure()
-        time.sleep(0.5)
+        time.sleep(0.1)
         self.ascendArm()
-        time.sleep(2)
+        time.sleep(3)
         self.deactivateMagnet()
+        time.sleep(0.1)
         return True
 
 if __name__ == "__main__":

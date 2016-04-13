@@ -24,6 +24,8 @@ class Pathfinder:
     def findGoodPoint(self, point):
         return self.graph.needAGoodPointToGo(point)
 
+    def findClosePoint(self, point):
+        return self.graph.needAClosePoint(point)
 
     def findPath(self, positionRobot, pointToMoveTo):
         print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")

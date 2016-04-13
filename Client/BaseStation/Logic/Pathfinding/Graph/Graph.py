@@ -44,8 +44,33 @@ class Graph:
                         if pointToBeReturned[0] == 0 and pointToBeReturned[1] == 0:
                             centerNode = self.findGoodSafeNodeToGo((pointX,pointY))
                             if centerNode.positionX != 0 and centerNode.positionY != 1:
+                                pointToBeReturned = (centerNode.positionX, centerNode.positionY)
+                buffer += 5
+        return pointToBeReturned
+
+
+    def needAClosePoint(self, point):
+        fakePoint = (0,0)
+        pointToBeReturned = fakePoint
+        for compteur in range(0, self.safeZonesList.__len__()):
+            currentZone = self.safeZonesList[compteur]
+            if point[0] >= currentZone.cornerTopLeft[0] and point[0] <= currentZone.cornerBottomRight[0]:
+                if point[1] >= currentZone.cornerTopLeft[1] and point[1] <= currentZone.cornerBottomRight[1]:
+                    pointToBeReturned = point
+        if pointToBeReturned == fakePoint:
+            buffer = 5
+            while pointToBeReturned[0] == 0 and pointToBeReturned[1] == 0 and buffer <= 15:
+                for xIteration in range (-1,2):
+                    for yIteration in range(-1,2):
+                        pointX = point[0] + buffer*xIteration
+                        pointY = point[1] + buffer*yIteration
+                        if pointToBeReturned[0] == 0 and pointToBeReturned[1] == 0:
+                            centerNode = self.findGoodSafeNodeToGo((pointX,pointY))
+                            if centerNode.positionX != 0 and centerNode.positionY != 1:
                                 pointToBeReturned = (pointX, pointY)
                 buffer += 5
+        if pointToBeReturned == fakePoint:
+            return point
         return pointToBeReturned
 
 
