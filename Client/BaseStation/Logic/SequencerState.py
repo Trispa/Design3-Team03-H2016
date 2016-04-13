@@ -29,12 +29,10 @@ class SendingBotToTreasureState():
 
 class SendingBotToTargetState():
     def handle(self, sequencer, map, pathfinder):
-        mapCoordinatesAdjuster = MapCoordinatesAjuster(map)
-        targetPosition, orientationToGo = map.getPositionInFrontOfIsland()
-        convertedTargetPosition = mapCoordinatesAdjuster.convertPoint(targetPosition)
-        convertedRobotPosition = mapCoordinatesAdjuster.convertPoint(map.robot.center)
+        path, orientationToGo = map.getPositionInFrontOfIsland()
+        pathfinder.theGoodPath = path
         sequencer.setState(StopMovingState())
-        return pathfinder.findPath(convertedRobotPosition, convertedTargetPosition), "alignPositionToTarget", orientationToGo
+        return path, "alignPositionToTarget", orientationToGo
 
 class StopMovingState():
     def handle(self, sequencer, map, pathfinder):

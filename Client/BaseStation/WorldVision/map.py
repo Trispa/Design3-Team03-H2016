@@ -141,18 +141,22 @@ class Map:
             if not isinstance(myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint((centerOfMassX - (self.SAFE_MARGIN + width), centerOfMassY))), bool):
                 myBestPosition = (centerOfMassX - (self.SAFE_MARGIN + width), centerOfMassY)
                 orientation = 0
+                myNewPath = not isinstance(myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint((centerOfMassX - (self.SAFE_MARGIN + width), centerOfMassY))), bool)
             elif not isinstance(myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint((centerOfMassX + (self.SAFE_MARGIN + width), centerOfMassY))), bool):
                 myBestPosition = (centerOfMassX + (self.SAFE_MARGIN + width), centerOfMassY)
                 orientation = 180
+                myNewPath = not isinstance(myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint((centerOfMassX - (self.SAFE_MARGIN + width), centerOfMassY))), bool)
             elif not isinstance(myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint((centerOfMassX, centerOfMassY - (self.SAFE_MARGIN + height)))), bool):
                 myBestPosition = (centerOfMassX, centerOfMassY - (self.SAFE_MARGIN + height))
                 orientation = 90
+                myNewPath = not isinstance(myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint((centerOfMassX - (self.SAFE_MARGIN + width), centerOfMassY))), bool)
             elif not isinstance(myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint((centerOfMassX, centerOfMassY + (self.SAFE_MARGIN + height)))), bool):
                 myBestPosition = (centerOfMassX, centerOfMassY + (self.SAFE_MARGIN + height))
                 orientation = 270
+                myNewPath = not isinstance(myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint((centerOfMassX - (self.SAFE_MARGIN + width), centerOfMassY))), bool)
 
         print "MEILLEUR ",myBestPosition, ", Orientation :", orientation
-        return myBestPosition, orientation
+        return myPath, orientation
 
 
 
@@ -195,15 +199,13 @@ class Map:
         for cameraAngle in relativeAngles:
 
             lowerWall = True
-            angleError = abs(180 - self.robot.orientation)
-            angleError = 0
             if cameraAngle < rightAngle:
-                xDistanceOfTreasureFromCamera = math.tan(math.radians(cameraAngle - angleError))*cameraDistanceFromLowerWall
+                xDistanceOfTreasureFromCamera = math.tan(math.radians(cameraAngle))*cameraDistanceFromLowerWall
                 treasurePosition = (cameraDistanceFromBackgroundWall - xDistanceOfTreasureFromCamera, self.limit.getMaxCorner()[1])
             else:
                 lowerWall = False
                 cameraAngle = 180 - cameraAngle
-                xDistanceOfTreasureFromCamera = math.tan(math.radians(cameraAngle - angleError))*cameraDistanceFromUpperWall
+                xDistanceOfTreasureFromCamera = math.tan(math.radians(cameraAngle))*cameraDistanceFromUpperWall
                 treasurePosition = (cameraDistanceFromBackgroundWall - xDistanceOfTreasureFromCamera, self.limit.getMinCorner()[1])
 
             treasureDistanceFromBackground = cameraDistanceFromBackgroundWall - xDistanceOfTreasureFromCamera

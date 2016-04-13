@@ -67,7 +67,6 @@ def verifyIfMoving(path, nextSignal, angleToRotate):
                                   "positionTOy" : positionToY,
                                   "orientation":botInfo["robotOrientation"]}
                     socketIO.emit("sendNextCoordinates", jsonToSend)
-                    time.sleep(5)
                 botInfo = dispatcher.getCurrentWorldInformation()
                 print("emitting" + nextSignal)
                 jsonToSend = {"botOrientation":botInfo["robotOrientation"],

@@ -24,7 +24,7 @@ class WorldImage:
 
     def getIslandPositioning(self, target):
         self.__map.setTarget(target)
-        self.position, ret = self.__map.getPositionInFrontOfIsland()
+        self.islandPath, ret = self.__map.getPositionInFrontOfIsland()
         return self.__map.getPositionInFrontOfIsland()
 
     def buildMap(self, frame):

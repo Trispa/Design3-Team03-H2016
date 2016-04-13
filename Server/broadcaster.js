@@ -77,6 +77,7 @@ io.on('connection', function (client) {
     client.on('sendManchesterCode', function(data){
         request(manchesterUrl+'?code='+data, function(error, response, body) {
             manchesterInfo = {"decryptedCharacter":data, "target":JSON.parse(body)};
+            //manchesterInfo = {"decryptedCharacter":data, "target":{"forme" : "rectangle"}};
             io.emit('sendManchesterInfo', manchesterInfo);
         });
     });
