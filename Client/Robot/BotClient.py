@@ -36,7 +36,7 @@ def startRound(json):
 
 def alignToTreasure(json):
     if(json['sequence']):
-        botDispatcher.setRobotOrientation(json['robotOrientation'], json["angleToGo"])
+        botDispatcher.setRobotOrientation(json['botOrientation'], json["angleToGo"])
     botDispatcher.alignToTreasure(Controller())
     if(botDispatcher.lastPositionGoneTo[0] - 100 == 0):
         botDispatcher.getRobotBackOnMapWhenOutOfBound()
@@ -44,8 +44,7 @@ def alignToTreasure(json):
         socketIO.emit("needNewCoordinates")
 
 def alignToChargingStation(json):
-    angleToGetForChargingStation = 270
-    botDispatcher.setRobotOrientation(json['botOrientation'], angleToGetForChargingStation)
+    botDispatcher.setRobotOrientation(json['botOrientation'], json["angleToGo"])
     botDispatcher.alignToChargingStation()
     botDispatcher.serialPortCommunicatorIsReadByManchester = True
     readManchester()
