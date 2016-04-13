@@ -44,14 +44,13 @@ def alignToTreasure(json):
         socketIO.emit("needNewCoordinates")
 
 def alignToChargingStation(json):
-    angleToGetForChargingStation = 270
-    botDispatcher.setRobotOrientation(json['botOrientation'], angleToGetForChargingStation)
+    botDispatcher.setRobotOrientation(json['botOrientation'], json["angleToGo"])
     botDispatcher.alignToChargingStation()
     botDispatcher.serialPortCommunicatorIsReadByManchester = True
     readManchester()
     botDispatcher.serialPortCommunicatorIsReadByManchester = False
     voltage = spc.readConsensatorVoltage()
-    while(voltage <= 3):
+    while(voltage <= 3.5):
         voltage = spc.readConsensatorVoltage()
         print "Tension : ", voltage
         time.sleep(1)
