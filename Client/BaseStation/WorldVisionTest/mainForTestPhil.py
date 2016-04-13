@@ -38,7 +38,7 @@ def myMain2():
     #frame = cv2.imread('Photo-Test/Frames/Picture 500.jpg')
     geometricalImage = WorldImage()
     #ret, frame = camera.read()
-    frame = cv2.imread('Photo-Test/Frames/Picture 503.jpg')
+    frame = cv2.imread('Photo-Test/Frames/Picture 501.jpg')
     frame = cv2.resize(frame, (960, 720))
     # copyF = copy.copy(frame)
     geometricalImage.buildMap(frame)
