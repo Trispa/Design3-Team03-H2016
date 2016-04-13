@@ -81,8 +81,10 @@ class Map:
 
     def getPositionInFrontOfIsland(self):
         myPathFinder = Pathfinder(self)
-        myPath = Path()
-        myPath.totalDistance = 9999
+
+        fakePath = Path()
+        fakePath.totalDistance = 99999
+        myPath = fakePath
         myMapCoorDinateAjuster = MapCoordinatesAjuster(self)
         myBestPosition = (0,0)
         orientation = 0
@@ -135,21 +137,55 @@ class Map:
                     orientation = angle
 
         if myBestPosition == (0, 0):
-            x,y,width,height = cv2.boundingRect(targetShape.getContour())
-            centerOfMassX, centerOfMassY = targetShape.findCenterOfMass()
-            point = ((centerOfMassX - (self.SAFE_MARGIN + width), centerOfMassY))
-            if not isinstance(myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint((centerOfMassX - (self.SAFE_MARGIN + width), centerOfMassY))), bool):
-                myBestPosition = (centerOfMassX - (self.SAFE_MARGIN + width), centerOfMassY)
-                orientation = 0
-            elif not isinstance(myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint((centerOfMassX + (self.SAFE_MARGIN + width), centerOfMassY))), bool):
-                myBestPosition = (centerOfMassX + (self.SAFE_MARGIN + width), centerOfMassY)
-                orientation = 180
-            elif not isinstance(myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint((centerOfMassX, centerOfMassY - (self.SAFE_MARGIN + height)))), bool):
-                myBestPosition = (centerOfMassX, centerOfMassY - (self.SAFE_MARGIN + height))
-                orientation = 90
-            elif not isinstance(myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint((centerOfMassX, centerOfMassY + (self.SAFE_MARGIN + height)))), bool):
-                myBestPosition = (centerOfMassX, centerOfMassY + (self.SAFE_MARGIN + height))
-                orientation = 270
+            hypothenuse = 100
+            xCenterOfMass, yCenterOfMass = targetShape.findCenterOfMass()
+            for angle in range (0, 90, 10):
+                yValue = hypothenuse * math.cos(math.radians(angle))
+                xValue = hypothenuse * math.sin(math.radians(angle))
+                positionToGo = (xCenterOfMass - xValue, yCenterOfMass - yValue)
+                myNewPath = myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint(positionToGo))
+                if not isinstance(myNewPath, bool):
+                    myBestPosition = positionToGo
+                    orientation = angle
+                    myPath = myNewPath
+                    break
+
+            if myPath.totalDistance == 99999:
+                for angle in range (0, 90, 10):
+                    xValue = hypothenuse * math.sin(math.radians(angle))
+                    yValue = hypothenuse * math.cos(math.radians(angle))
+                    positionToGo = (xCenterOfMass + xValue, yCenterOfMass - yValue)
+                    myNewPath = myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint(positionToGo))
+                    if not isinstance(myNewPath, bool):
+                        myBestPosition = positionToGo
+                        orientation = angle + 90
+                        myPath = myNewPath
+                        break
+
+            if myPath.totalDistance == 99999:
+                for angle in range (0, 91, 10):
+                    yValue = hypothenuse * math.sin(math.radians(angle))
+                    xValue = hypothenuse * math.cos(math.radians(angle))
+                    positionToGo = (xCenterOfMass + xValue, yCenterOfMass + yValue)
+                    myNewPath = myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint(positionToGo))
+                    if not isinstance(myNewPath, bool):
+                        myBestPosition = positionToGo
+                        orientation = angle + 180
+                        myPath = myNewPath
+                        break
+
+            if myPath.totalDistance == 99999:
+                for angle in range (0, 91, 10):
+                    xValue = hypothenuse * math.sin(math.radians(angle))
+                    yValue = hypothenuse * math.cos(math.radians(angle))
+                    positionToGo = (xCenterOfMass - xValue, yCenterOfMass + yValue)
+                    myNewPath = myPathFinder.findPath(myMapCoorDinateAjuster.convertPoint((self.robot.center)), myMapCoorDinateAjuster.convertPoint(positionToGo))
+                    if not isinstance(myNewPath, bool):
+                        myBestPosition = positionToGo
+                        orientation = angle + 270
+                        myPath = myNewPath
+                        break
+
 
         print "MEILLEUR ",myBestPosition, ", Orientation :", orientation
         return myBestPosition, orientation
