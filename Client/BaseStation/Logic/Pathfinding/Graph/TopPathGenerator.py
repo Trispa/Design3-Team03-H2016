@@ -47,9 +47,13 @@ class TopPathGenerator:
 
 
     def __obstacleIsNextToWall(self, borderNodeLeftTop, borderNodeRightTop, collisionUpperLeftCorner, topLeftCorner):
-        safeZoneCornerTopLeft = (topLeftCorner[0], collisionUpperLeftCorner.positionY + self.WALL_SAFE_MARGIN)
+        if topLeftCorner[0] <= 60:
+            safeZoneCornerTopLeft = (60, collisionUpperLeftCorner.positionY + self.WALL_SAFE_MARGIN)
+            safeZoneCornerBotLeft = (60, topLeftCorner[1])
+        else:
+            safeZoneCornerTopLeft = (topLeftCorner[0], collisionUpperLeftCorner.positionY + self.WALL_SAFE_MARGIN)
+            safeZoneCornerBotLeft = (topLeftCorner[0], topLeftCorner[1])
         safeZoneCornerTopRight = (borderNodeRightTop.positionX, collisionUpperLeftCorner.positionY + self.WALL_SAFE_MARGIN)
-        safeZoneCornerBotLeft = (topLeftCorner[0], topLeftCorner[1])
         tempNode = self.graph.generateSafeZone(safeZoneCornerBotLeft, safeZoneCornerTopLeft, safeZoneCornerTopRight)
         self.graph.connectTwoNodes(borderNodeLeftTop, tempNode)
         self.graph.connectTwoNodes(borderNodeRightTop, tempNode)
